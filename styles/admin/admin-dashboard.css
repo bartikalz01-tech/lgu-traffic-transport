@@ -1,0 +1,323 @@
+    /* Custom styles for traffic dashboard */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: var(--card-bg-1);
+            border: 1px solid var(--border-color-1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--shadow-1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px var(--shadow-1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color-1);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary-1);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-card {
+            background: var(--card-bg-1);
+            border: 1px solid var(--border-color-1);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px var(--shadow-1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px var(--shadow-1);
+        }
+        
+        .feature-header {
+            background: var(--primary-color-1);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .feature-header i {
+            font-size: 1.25rem;
+        }
+        
+        .feature-header h3 {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .feature-body {
+            padding: 1.5rem;
+        }
+        
+        .feature-body p {
+            color: var(--text-secondary-1);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .feature-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .map-container {
+            background: var(--card-bg-1);
+            border: 1px solid var(--border-color-1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px var(--shadow-1);
+        }
+        
+        .map-header {
+            background: var(--primary-color-1);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .map-header h3 {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .map-content {
+            height: 400px;
+            background: var(--bg-color-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary-1);
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .activity-section {
+            background: var(--card-bg-1);
+            border: 1px solid var(--border-color-1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px var(--shadow-1);
+        }
+        
+        .activity-header {
+            background: var(--primary-color-1);
+            color: white;
+            padding: 1rem 1.5rem;
+        }
+        
+        .activity-header h3 {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .activity-list {
+            padding: 0;
+            margin: 0;
+        }
+        
+        .activity-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color-1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: background-color 0.2s ease;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-item:hover {
+            background-color: var(--sidebar-hover-bg-1);
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(76, 138, 137, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color-1);
+            flex-shrink: 0;
+        }
+        
+        .activity-info {
+            flex: 1;
+        }
+        
+        .activity-info h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 0.95rem;
+            color: var(--text-color-1);
+            font-weight: 600;
+        }
+        
+        .activity-info p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: var(--text-secondary-1);
+        }
+        
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary-1);
+            white-space: nowrap;
+        }
+        
+        /* Button styles */
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color-1);
+            color: white;
+            border-color: var(--primary-color-1);
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a6d6c;
+            border-color: #3a6d6c;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-color-1);
+            border-color: var(--border-color-1);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--border-color-1);
+            transform: translateY(-1px);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .dashboard-stats,
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-stats,
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .map-content {
+                height: 300px;
+            }
+            
+            .feature-actions {
+                flex-direction: column;
+            }
+            
+            .feature-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.25rem;
+            }
+            
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .stat-value {
+                font-size: 1.75rem;
+            }
+            
+            .feature-header {
+                padding: 0.875rem 1.25rem;
+            }
+            
+            .feature-body {
+                padding: 1.25rem;
+            }
+            
+            .activity-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+            
+            .activity-time {
+                align-self: center;
+            }
+        }
