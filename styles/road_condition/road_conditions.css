@@ -6,6 +6,11 @@
   height: 100vh;
   background-color: #00000099;
   z-index: 999;
+  display: none;
+}
+
+.sidebar-overlay.visible {
+  display: block;
   animation: fadeIn 0.3s ease;
 }
 
