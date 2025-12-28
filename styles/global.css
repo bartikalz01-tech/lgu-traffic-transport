@@ -1,0 +1,26 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #E8E8E8;
+  color: #333;
+  line-height: 1.6;
+  height: 750px;
+}
+
+:root {
+  --primary-color: #4c8a89;
+  --secondary-color: #2c3e50;
+  --accent-color: #3498db;
+  --light-color: #f5f7fa;
+  --dark-color: #0b132b;
+  --success-color: #2ecc71;
+  --warning-color: #f39c12;
+  --danger-color: #e74c3c;
+  --sidebar-w: 250px;
+  --header-h: 70px;
+}
