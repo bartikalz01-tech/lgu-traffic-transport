@@ -511,6 +511,6 @@ $pageTitle = 'Violation Ticketing System';
         </div>
     </div>
 
-    <script src="includes/violation.js"></script>
+    <script src="scripts/violation.js"></script>
 </body>
 </html>
