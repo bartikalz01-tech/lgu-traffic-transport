@@ -51,6 +51,11 @@
           <i class="fas fa-ticket-alt"></i>
           <span>Violation Ticketing</span>
         </a>
+
+                <a href="#" class="sidebar-link">
+          <i class="fas fa-ticket-alt"></i>
+          <span>Violation Ticketing</span>
+        </a>
       </div>
 
     </nav>
