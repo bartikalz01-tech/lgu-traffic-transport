@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles/sidebar.css">
   <link rel="stylesheet" href="styles/road_condition/road_conditions.css">
   <link rel="stylesheet" href="styles/road_condition/road_condition_header.css">
+  <link rel="stylesheet" href="styles/road_condition/detailed_cctv.css">
   <title>Road Updates</title>
 </head>
 
@@ -64,8 +65,9 @@
       </div>
     </header>
 
-    <section class="cctv-grid js-cctv-grid">
-    </section>
+    <section class="cctv-grid js-cctv-grid"></section>
+
+    <div class="road-condition-overlay hidden"></div>
   </main>
 
   <script type="module" src="scripts/road_condition.js"></script>
