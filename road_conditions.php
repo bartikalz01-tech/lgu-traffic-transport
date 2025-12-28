@@ -64,9 +64,11 @@
       </div>
     </header>
 
+    <section class="cctv-grid js-cctv-grid">
+    </section>
   </main>
 
-  <script src="scripts/road_condition.js"></script>
+  <script type="module" src="scripts/road_condition.js"></script>
 </body>
 
 </html>
