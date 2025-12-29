@@ -1,0 +1,505 @@
+/* CCTV Monitoring Detailed View Styles */
+.cctv-dashboard {
+    margin-left: 20px;
+    padding: 1.5rem 0;
+}
+
+@media (max-width: 1024px) {
+    .cctv-dashboard {
+        margin-left: 10px;
+    }
+}
+
+/* CCTV Grid Layout */
+.cctv-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+    .cctv-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* CCTV Video Container */
+.cctv-video-container {
+    background: var(--card-bg-1);
+    border: 1px solid var(--border-color-1);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+.cctv-video-header {
+    padding: 1.25rem 1.5rem;
+    background: var(--header-bg-1);
+    border-bottom: 1px solid var(--border-color-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cctv-video-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color-1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cctv-video-header h3 i {
+    color: var(--primary-color-1);
+}
+
+/* Live Status */
+.live-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.live-status i {
+    font-size: 0.625rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Video Display */
+.cctv-video-display {
+    position: relative;
+    background: #000;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.video-placeholder {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.video-placeholder i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.video-placeholder p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Video Controls */
+.video-controls {
+    padding: 1rem 1.5rem;
+    background: var(--header-bg-1);
+    border-top: 1px solid var(--border-color-1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.time-display {
+    color: var(--text-secondary-1);
+    font-size: 0.875rem;
+    font-family: 'Courier New', monospace;
+}
+
+/* Camera Info Sidebar */
+.camera-info-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Camera Details Card */
+.camera-details-card {
+    background: var(--card-bg-1);
+    border: 1px solid var(--border-color-1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+.camera-details-card h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color-1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.camera-details-card h4 i {
+    color: var(--primary-color-1);
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary-1);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.detail-value {
+    font-size: 0.875rem;
+    color: var(--text-color-1);
+    font-weight: 500;
+}
+
+/* Camera Status */
+.camera-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-online {
+    background-color: #10b981;
+    animation: pulse 2s infinite;
+}
+
+.status-offline {
+    background-color: #ef4444;
+}
+
+.status-maintenance {
+    background-color: #f59e0b;
+}
+
+/* Predictive AI Card */
+.predictive-ai-card {
+    background: var(--card-bg-1);
+    border: 1px solid var(--border-color-1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+.predictive-ai-card h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color-1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.predictive-ai-card h4 i {
+    color: #8b5cf6;
+}
+
+.ai-predictions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.prediction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--sidebar-hover-bg-1);
+    border-radius: 8px;
+    border-left: 3px solid transparent;
+}
+
+.prediction-item.traffic {
+    border-left-color: #f59e0b;
+}
+
+.prediction-item.accident {
+    border-left-color: #ef4444;
+}
+
+.prediction-item.congestion {
+    border-left-color: #8b5cf6;
+}
+
+.prediction-label {
+    font-size: 0.875rem;
+    color: var(--text-color-1);
+}
+
+.prediction-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.prediction-value.high {
+    color: #ef4444;
+}
+
+.prediction-value.medium {
+    color: #f59e0b;
+}
+
+.prediction-value.low {
+    color: #10b981;
+}
+
+/* Camera List */
+.camera-list-card {
+    background: var(--card-bg-1);
+    border: 1px solid var(--border-color-1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+.camera-list-card h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color-1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.camera-list-card h4 i {
+    color: var(--primary-color-1);
+}
+
+.camera-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.camera-list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.camera-list-item:hover {
+    background: var(--sidebar-hover-bg-1);
+}
+
+.camera-list-item.active {
+    background: rgba(76, 138, 137, 0.1);
+    border-color: var(--primary-color-1);
+}
+
+.camera-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: rgba(76, 138, 137, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color-1);
+}
+
+.camera-info {
+    flex: 1;
+}
+
+.camera-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-color-1);
+}
+
+.camera-location {
+    font-size: 0.75rem;
+    color: var(--text-secondary-1);
+}
+
+/* Traffic Statistics */
+.traffic-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-card {
+    background: var(--sidebar-hover-bg-1);
+    padding: 0.75rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color-1);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary-1);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Modal for Full Screen */
+.fullscreen-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.fullscreen-modal.active {
+    display: flex;
+}
+
+.fullscreen-video {
+    width: 90%;
+    height: 90%;
+    background: #000;
+    position: relative;
+}
+
+.fullscreen-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+}
+
+.close-fullscreen {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close-fullscreen:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cctv-dashboard {
+        margin-left: 5px;
+    }
+    
+    .cctv-video-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+    
+    .video-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .control-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .traffic-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .camera-list-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .camera-info {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .cctv-video-display {
+        min-height: 300px;
+    }
+    
+    .video-placeholder i {
+        font-size: 3rem;
+    }
+    
+    .stat-card {
+        padding: 0.5rem;
+    }
+    
+    .stat-value {
+        font-size: 1.25rem;
+    }
+}
