@@ -59,9 +59,24 @@
     <header class="road-ud-header">
       <div class="road-ud-title-container">
         <button class="hamburger-menu-btn"><i class="fas fa-bars"></i></button>
-        <a href="#" class="header-title">CCTV Monitor</a>
-        <a href="#" class="header-title">Traffic Flow Monitoring</a>
-        <a href="#" class="header-title">Prone Road Accidents</a>
+        <div class="cctv-title-container">
+          <a href="#" class="header-title">
+            <i class="fas fa-video"></i>
+            <span>CCTV Monitor</span>
+          </a>
+        </div>
+        <div class="cctv-title-container">
+          <a href="#" class="header-title">
+            <i class="fas fa-traffic-light"></i>
+            Traffic Flow Monitoring
+          </a>
+        </div>
+        <div class="cctv-title-container">
+          <a href="#" class="header-title">
+            <i class="fas fa-car-crash"></i>
+            Prone Road Accidents
+          </a>
+        </div>
       </div>
     </header>
 
