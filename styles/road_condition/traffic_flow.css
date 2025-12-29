@@ -1,0 +1,39 @@
+.traffic-container {
+  margin-top: calc(var(--header-h) + 20px);
+  display: flex;
+  align-items: center;
+  justify-self: center;
+}
+
+.heat-map {
+  background: #d4d2d2;
+  width: 70vw;
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 3px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.map-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  color: #666;
+  z-index: 1;
+  pointer-events: none;
+}
+
+#map {
+  width: 70vw;
+  height: 70vh;
+}
+
+.map-title i {
+  font-size: 60px;
+}

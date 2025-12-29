@@ -5,11 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="styles/global.css">
-  <link rel="stylesheet" href="styles/sidebar.css">
-  <link rel="stylesheet" href="styles/road_condition/road_conditions.css">
-  <link rel="stylesheet" href="styles/road_condition/road_condition_header.css">
-  <link rel="stylesheet" href="styles/road_condition/detailed_cctv.css">
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="../styles/sidebar.css">
+  <link rel="stylesheet" href="../styles/road_condition/road_conditions.css">
+  <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+  <link rel="stylesheet" href="../styles/road_condition/detailed_cctv.css">
   <title>Road Updates</title>
 </head>
 
@@ -85,7 +85,7 @@
     <div class="road-condition-overlay hidden"></div>
   </main>
 
-  <script type="module" src="scripts/road_condition.js"></script>
+  <script type="module" src="../scripts/road_condition.js"></script>
 </body>
 
 </html>

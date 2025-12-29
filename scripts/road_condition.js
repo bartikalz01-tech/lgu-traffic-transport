@@ -2,7 +2,21 @@ import { roads } from './data/roads.js';
 import { openRoadCondition } from './road_details.js';
 import { openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay, cctvGrid, roadOverlay } from './road_variables.js';
 
-openSidebarBtn.addEventListener('click', () => {
+export function initSidebar(openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay) {
+  openSidebarBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    sidebarOverlay.classList.toggle('visible');
+  });
+
+  closeSidebarBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    sidebarOverlay.classList.toggle('visible');
+  });
+}
+
+initSidebar(openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay);
+
+/*openSidebarBtn.addEventListener('click', () => {
   sidebar.classList.toggle('open');
   sidebarOverlay.classList.toggle('visible');
 });
@@ -10,7 +24,7 @@ openSidebarBtn.addEventListener('click', () => {
 closeSidebarBtn.addEventListener('click', () => {
   sidebar.classList.toggle('open');
   sidebarOverlay.classList.toggle('visible');
-});
+});*/
 
 function renderCctvFeed() {
   let cctvs = '';
@@ -48,7 +62,7 @@ roadOverlay.addEventListener('click', (e) => {
 cctvGrid.addEventListener('click', (e) => {
   const detailsBtn = e.target.closest('.details-right-arrow');
 
-  if(!detailsBtn) return;
+  if (!detailsBtn) return;
 
   const roadName = detailsBtn.dataset.roadName;
 
