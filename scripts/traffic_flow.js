@@ -1,15 +1,16 @@
 window.initMap = function () {
-  const location = { lat: 14.5995, lng: 120.9842 };
+  //const location = { lat: 14.5995, lng: 120.9842 };
+  const location = { lat: 14.641401, lng: 120.990927 };
 
   const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 13,
+    zoom: 18.1,
     center: location
   });
 
   new google.maps.Marker({
     position: location,
     map,
-    title: "Manila, Philippines"
+    title: "Brgy 127, Caloocan, Philippines"
   });
 };
 

@@ -81,10 +81,6 @@
 
     <section class="traffic-container">
       <div class="heat-map">
-        <!--<div class="map-title">
-          <i class="fas fa-map-marked-alt"></i>
-          <h3>Barangay Traffic Flow Map</h3>
-        </div>-->
         <div id="map"></div>
       </div>
     </section>
