@@ -33,7 +33,10 @@ function renderCctvFeed() {
     cctvs = cctvs + `
       <div class="cctv-feed">
         <div class="cctv-info">
-          <p>${road.roadName}</p>
+          <div class='cctv-road-title'>
+            <i class='fas fa-video'></i>
+            <p>${road.roadName}</p>
+          </div>
           <div class="details-right-arrow" data-road-name="${road.roadName}">
             <p>View Details</p>
             <i class="fas fa-list"></i>

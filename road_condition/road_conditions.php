@@ -80,6 +80,11 @@
       </div>
     </header>
 
+    <div class="module-title-container">
+      <h1 class="module-title">Real Time Road Condition Updates</h1>
+      <p class="module-description">Real-time surveillance and predictive analytics</p>
+    </div>
+
     <section class="cctv-grid js-cctv-grid"></section>
 
     <div class="road-condition-overlay hidden"></div>

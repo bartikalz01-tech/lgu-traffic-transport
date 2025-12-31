@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: #E8E8E8;
+  background-color: var(--light-color);
   color: #333;
   line-height: 1.6;
   height: 750px;
@@ -21,6 +21,20 @@ body {
   --success-color: #2ecc71;
   --warning-color: #f39c12;
   --danger-color: #e74c3c;
+  --text-secondary: #575757;
+  --shadow-1: rgba(0, 0, 0, 0.05);
   --sidebar-w: 250px;
   --header-h: 70px;
+}
+
+.module-title-container {
+  margin-top: calc(var(--header-h) + 25px);
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.module-description {
+  color: var(--text-secondary);
 }

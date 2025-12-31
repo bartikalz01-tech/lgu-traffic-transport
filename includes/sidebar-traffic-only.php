@@ -30,9 +30,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <!-- 1. Traffic Flow Monitoring (CCTV Integration) -->
                     <li class="sidebar-menu-item">
                         <a href="traffic-monitoring.php" class="sidebar-link <?php echo $currentPage == 'traffic-monitoring.php' ? 'active' : ''; ?>">
-                            <i class="fas fa-video"></i>
-                            <span>Traffic Flow Monitoring</span>
-                            <span class="submenu-tag">CCTV</span>
+                            <i class="fa-brands fa-flipboard"></i>
+                            <span>Dashboard</span>
+                            <span class="submenu-tag">Summary</span>
                         </a>
                     </li>
                     
