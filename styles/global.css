@@ -21,8 +21,11 @@ body {
   --success-color: #2ecc71;
   --warning-color: #f39c12;
   --danger-color: #e74c3c;
+  --text-color-1: #171717;
   --text-secondary: #575757;
   --shadow-1: rgba(0, 0, 0, 0.05);
+  --sidebar-hover-bg-1: rgba(76, 138, 137, 0.1);
+  --sidebar-active-bg-1: var(--primary-color);
   --sidebar-w: 250px;
   --header-h: 70px;
 }
