@@ -10,64 +10,15 @@
   <link rel="stylesheet" href="../styles/road_condition/road_conditions.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/road_condition/detailed_cctv.css">
+  <link rel="stylesheet" href="../styles/buttons.css">
   <title>Road Updates</title>
 </head>
 
 <body>
   <main class="app">
     <div class="sidebar-overlay"></div>
-
-    <nav class="sidebar-container">
-      <div class="sidebar-header">
-        <div class="sidebar-header-content">
-          <img src="../images/logo.svg" alt="Traffic Management System" class="logo-img">
-        </div>
-        <button class="sidebar-close-btn">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-
-      <div class="menu-items">
-        <h3 class="system-title">Traffic and Transport Management</h3>
-        <a href="#" class="sidebar-link">
-          <i class="fas fa-home"></i>
-          <span>Dashboard</span>
-          <span class="purpose">Summary</span>
-        </a>
-        <a href="#" class="sidebar-link">
-          <i class="fas fa-road"></i>
-          <span>Road Conditions</span>
-          <span class="purpose">Real-Time</span>
-        </a>
-        <a href="#" class="sidebar-link">
-          <i class="fas fa-car-crash"></i>
-          <span>Accident Reports</span>
-          <span class="purpose">Violations</span>
-        </a>
-        <a href="#" class="sidebar-link">
-          <i class="fas fa-route"></i>
-          <span>Route Planning</span>
-          <span class="purpose">Diversion</span>
-        </a>
-        <a href="#" class="sidebar-link">
-          <i class="fas fa-car"></i>
-          <span>Public Transport</span>
-          <span class="purpose">Coordination</span>
-        </a>
-        <a href="#" class="sidebar-link">
-          <i class="fas fa-ticket-alt"></i>
-          <span>Violation Ticketing</span>
-          <span class="purpose">Permits</span>
-        </a>
-
-        <div class="sidebar-footer">
-          <div class="online-status">
-            <div class="status-indicator"></div>
-            <div class="status-text">Online</div>
-          </div>
-        </div>
-      </div>
-    </nav>
+    
+    <?php include('../includes/official_sidebar.php') ?>
 
     <header class="road-ud-header">
       <div class="road-ud-title-container">
@@ -114,7 +65,7 @@
     <div class="module-title-container">
       <p class="module-title">Real Time Road Condition Updates</p>
       <h1 class="sub-module-title">CCTV Monitoring</h1>
-      <p class="sub-module-description">Real-time surveillance and predictive analytics</p>
+      <p class="sub-module-description">Real-time surveillance and predictive analytics<span class="streetName remove"></span></p>
     </div>
 
     <section class="cctv-grid js-cctv-grid"></section>

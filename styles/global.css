@@ -24,11 +24,18 @@ body {
   --text-color-1: #171717;
   --text-secondary: #575757;
   --sidebar-bg-1: #ffffff;
+  --border-color-1: #e5e5e5;
   --shadow-1: rgba(0, 0, 0, 0.05);
   --sidebar-hover-bg-1: rgba(76, 138, 137, 0.1);
   --sidebar-active-bg-1: var(--primary-color);
   --sidebar-w: 250px;
   --header-h: 70px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
 }
 
 .module-title-container {

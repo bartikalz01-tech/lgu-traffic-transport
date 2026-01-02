@@ -37,7 +37,7 @@ function renderCctvFeed() {
             <i class='fas fa-video'></i>
             <p>${road.roadName}</p>
           </div>
-          <div class="details-right-arrow" data-road-name="${road.roadName}">
+          <div class="details-right-arrow" href="cctv-details.php" data-road-name="${road.roadName}">
             <p>View Details</p>
             <i class="fas fa-list"></i>
           </div>

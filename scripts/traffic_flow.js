@@ -1,3 +1,8 @@
+/*import { openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay } from "./road_variables.js";
+import { initSidebar } from "./road_condition.js";  
+
+initSidebar(openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay);*/
+
 window.initMap = function () {
   //const location = { lat: 14.5995, lng: 120.9842 };
   const location = { lat: 14.641401, lng: 120.990927 };
@@ -13,6 +18,7 @@ window.initMap = function () {
     title: "Brgy 127, Caloocan, Philippines"
   });
 };
+
 
 
 
