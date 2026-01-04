@@ -1,8 +1,19 @@
+.current-time {
+  font-size: 25px;
+  margin-top: var(--header-h);
+  margin-right: 20px;
+}
+
 .traffic-container {
-  margin-top: calc(var(--header-h) + 20px);
-  display: flex;
+  margin-top: var(--header-h);
+  margin-left: 20px;
+  margin-right: 20px;
+  /*display: flex;
   align-items: center;
-  justify-self: center;
+  justify-self: center;*/
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
 }
 
 .heat-map {
@@ -36,4 +47,202 @@
 
 .map-title i {
   font-size: 60px;
+}
+
+.roads-table {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+  background: var(--header-bg);
+  font-weight: 600;
+  color: var(--text-color-1);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.data-table th:hover {
+  background: var(--border-color-1);
+}
+
+.data-table th i {
+  margin-left: 0.5rem;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.traffic-right-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.map-color-details {
+  background: var(--card-bg-1);
+  border: 1px solid var(--border-color-1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.high-traffic-color {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 57px;
+}
+
+.color-red {
+  background-color: #dc3545;
+  width: 100px;
+  height: 20px;
+}
+
+.moderate-traffic-color {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.color-yellow {
+  background-color: #ffc107;
+  width: 100px;
+  height: 20px;
+}
+
+.low-traffic-color {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+}
+
+.color-green {
+  background-color: #2ecc71;
+  width: 100px;
+  height: 20px;
+}
+
+.traffic-status-indicator {
+  background: var(--card-bg-1);
+  border: 1px solid var(--border-color-1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.traffic-indicator-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.traffic-indicator-title h3 {
+  font-size: 21px;
+}
+
+.traffic-indicator-title p {
+  color: var(--primary-color);
+  font-size: 14px;
+}
+
+.high-traffic-percent, 
+.low-traffic-percent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 57px;
+}
+
+.moderate-traffic-percent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.red-percentage, .yellow-percentage, .green-percentage {
+  width: 100px;
+  height: 20px;
+  text-align: center;
+  color: white;
+  font-size: 13px;
+}
+
+.red-percentage {
+  background-color: #dc3545;
+}
+
+.yellow-percentage {
+  background-color: #ffc107;
+}
+
+.green-percentage {
+  background-color: #2ecc71;
+}
+
+.most-congested-road {
+  background: var(--card-bg-1);
+  border: 1px solid var(--border-color-1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.congested-roads {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.road-type {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.74rem;
+  background-color: var(--sidebar-hover-bg-1);
+  border-radius: 8px;
+  border-left: 3px solid #dc3545;
+  width: 250px;
+}
+
+.time {
+  color: #dc3545;
 }
