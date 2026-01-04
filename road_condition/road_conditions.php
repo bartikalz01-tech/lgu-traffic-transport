@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/road_condition/detailed_cctv.css">
   <link rel="stylesheet" href="../styles/buttons.css">
+  <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Road Updates</title>
 </head>
 
@@ -72,6 +73,8 @@
 
     <div class="road-condition-overlay hidden"></div>
   </main>
+
+  <?php include '../includes/admin-footer.php'; ?>
 
   <script type="module" src="../scripts/road_condition.js"></script>
 </body>
