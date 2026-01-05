@@ -175,13 +175,17 @@
 
   <?php include '../includes/admin-footer.php'; ?>
 
-  <script type="module" src="../scripts/traffic_flow.js"></script>
+  <script type="module" src="../scripts/traffic_flow_test.js"></script>
   <!--<script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&callback=initMap"
     async
     defer></script>-->
-    <script
+    <!--<script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&libraries=visualization&callback=initMap"
+    async
+    defer></script>-->
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&callback=initMap"
     async
     defer></script>
 </body>

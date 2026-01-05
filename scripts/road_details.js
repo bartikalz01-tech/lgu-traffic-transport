@@ -7,9 +7,9 @@ export function openRoadCondition(roadName) {
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
       <div class="module-title-container">
-        <!--<button class="close-btn">
+        <button class="close-btn">
           <img class="left-arrow-logo" src="../images/arrow_to_left_fill.svg">
-        </button>-->
+        </button>
         <p class="module-title">Real Time Road Condition Updates</p>
         <h1 class="sub-module-title">CCTV Monitoring</h1>
         <p class="sub-module-description">Real-time surveillance and predictive analytics of ${roadName}</p>

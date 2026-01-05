@@ -31,81 +31,132 @@ window.initMap = function () {
     map,
     title: "Brgy 127, Caloocan, Philippines"
   });
-
-  // Traffic heatmap data for specific streets
-  // Weight values: 0-0.3 = low traffic (green #2ecc71), 0.3-0.7 = moderate (yellow), 0.7-1.0 = high (red)
-  const trafficData = [
-    // Tagatay Street - HIGH TRAFFIC (Red) - weight 0.8-1.0
-    { location: new google.maps.LatLng(14.641401, 120.990927), weight: 0.95 }, // Start
-    { location: new google.maps.LatLng(14.6415, 120.9912), weight: 0.92 },
-    { location: new google.maps.LatLng(14.6416, 120.9915), weight: 0.90 },
-    { location: new google.maps.LatLng(14.6417, 120.9918), weight: 0.88 },
-    { location: new google.maps.LatLng(14.6418, 120.9921), weight: 0.85 },
-    { location: new google.maps.LatLng(14.6419, 120.9924), weight: 0.90 },
-    { location: new google.maps.LatLng(14.6420, 120.9927), weight: 0.93 },
-    { location: new google.maps.LatLng(14.6421, 120.9930), weight: 0.95 },
-    
-    // Dome Street - MODERATE TRAFFIC (Yellow) - weight 0.4-0.6
-    { location: new google.maps.LatLng(14.6410, 120.9905), weight: 0.50 },
-    { location: new google.maps.LatLng(14.6408, 120.9902), weight: 0.55 },
-    { location: new google.maps.LatLng(14.6406, 120.9899), weight: 0.50 },
-    { location: new google.maps.LatLng(14.6404, 120.9896), weight: 0.45 },
-    { location: new google.maps.LatLng(14.6402, 120.9893), weight: 0.50 },
-    { location: new google.maps.LatLng(14.6400, 120.9890), weight: 0.55 },
-    { location: new google.maps.LatLng(14.6398, 120.9887), weight: 0.50 },
-    
-    // Mt.Natib Street - LOW TRAFFIC (Green #2ecc71) - weight 0.1-0.3
-    { location: new google.maps.LatLng(14.6422, 120.9900), weight: 0.20 },
-    { location: new google.maps.LatLng(14.6424, 120.9897), weight: 0.25 },
-    { location: new google.maps.LatLng(14.6426, 120.9894), weight: 0.20 },
-    { location: new google.maps.LatLng(14.6428, 120.9891), weight: 0.15 },
-    { location: new google.maps.LatLng(14.6430, 120.9888), weight: 0.20 },
-    { location: new google.maps.LatLng(14.6432, 120.9885), weight: 0.25 },
-    { location: new google.maps.LatLng(14.6434, 120.9882), weight: 0.20 },
-    
-    // Klawit Street - HIGH TRAFFIC (Red) - weight 0.85-1.0
-    { location: new google.maps.LatLng(14.6412, 120.9910), weight: 0.90 },
-    { location: new google.maps.LatLng(14.6410, 120.9913), weight: 0.92 },
-    { location: new google.maps.LatLng(14.6408, 120.9916), weight: 0.88 },
-    { location: new google.maps.LatLng(14.6406, 120.9919), weight: 0.90 },
-    { location: new google.maps.LatLng(14.6404, 120.9922), weight: 0.95 },
-    { location: new google.maps.LatLng(14.6402, 120.9925), weight: 0.93 },
-    { location: new google.maps.LatLng(14.6400, 120.9928), weight: 0.90 },
-    
-    // Kalandang Street - MODERATE TRAFFIC (Yellow) - weight 0.4-0.65
-    { location: new google.maps.LatLng(14.6414, 120.9900), weight: 0.55 },
-    { location: new google.maps.LatLng(14.6416, 120.9897), weight: 0.50 },
-    { location: new google.maps.LatLng(14.6418, 120.9894), weight: 0.60 },
-    { location: new google.maps.LatLng(14.6420, 120.9891), weight: 0.55 },
-    { location: new google.maps.LatLng(14.6422, 120.9888), weight: 0.50 },
-    { location: new google.maps.LatLng(14.6424, 120.9885), weight: 0.60 },
-    { location: new google.maps.LatLng(14.6426, 120.9882), weight: 0.55 },
-    
-    // Mauban Street - LOW TRAFFIC (Green #2ecc71) - weight 0.1-0.25
-    { location: new google.maps.LatLng(14.6405, 120.9908), weight: 0.15 },
-    { location: new google.maps.LatLng(14.6403, 120.9905), weight: 0.20 },
-    { location: new google.maps.LatLng(14.6401, 120.9902), weight: 0.15 },
-    { location: new google.maps.LatLng(14.6399, 120.9899), weight: 0.10 },
-    { location: new google.maps.LatLng(14.6397, 120.9896), weight: 0.15 },
-    { location: new google.maps.LatLng(14.6395, 120.9893), weight: 0.20 },
-    { location: new google.maps.LatLng(14.6393, 120.9890), weight: 0.15 },
+  // Define road paths as polylines to highlight the streets
+  // RED polylines - High traffic streets
+    // Define road paths as polylines to highlight the streets
+  // RED polylines - High traffic streets
+  const domeStreetPath = [
+    { lat: 14.6410, lng: 120.9905 },
+    { lat: 14.6408, lng: 120.9902 },
+    { lat: 14.6406, lng: 120.9899 },
+    { lat: 14.6404, lng: 120.9896 },
+    { lat: 14.6402, lng: 120.9893 },
+    { lat: 14.6400, lng: 120.9890 },
+    { lat: 14.6398, lng: 120.9887 }
   ];
 
-  // Create heatmap with custom gradient
-  const heatmap = new google.maps.visualization.HeatmapLayer({
-    data: trafficData,
-    map: map,
-    gradient: [
-      'rgba(46, 204, 113, 0)',      // Transparent green at 0 (low traffic)
-      'rgba(46, 204, 113, 0.6)',     // Green #2ecc71 at low traffic
-      'rgba(255, 255, 0, 0.6)',      // Yellow at moderate traffic
-      'rgba(255, 255, 0, 0.8)',      // Brighter yellow
-      'rgba(255, 0, 0, 0.8)',        // Red at high traffic
-      'rgba(255, 0, 0, 1)'           // Bright red at very high traffic
-    ],
-    radius: 50,                       // Size of heat points
-    opacity: 0.8,                     // Overall opacity
-    maxIntensity: 1.0                 // Maximum intensity
+  const tagatayStreetPath = [
+    { lat: 14.641401, lng: 120.990927 },
+    { lat: 14.6415, lng: 120.9912 },
+    { lat: 14.6416, lng: 120.9915 },
+    { lat: 14.6417, lng: 120.9918 },
+    { lat: 14.6418, lng: 120.9921 },
+    { lat: 14.6419, lng: 120.9924 },
+    { lat: 14.6420, lng: 120.9927 },
+    { lat: 14.6421, lng: 120.9930 }
+  ];
+
+  const klawitStreetPath = [
+    { lat: 14.6412, lng: 120.9910 },
+    { lat: 14.6410, lng: 120.9913 },
+    { lat: 14.6408, lng: 120.9916 },
+    { lat: 14.6406, lng: 120.9919 },
+    { lat: 14.6404, lng: 120.9922 },
+    { lat: 14.6402, lng: 120.9925 },
+    { lat: 14.6400, lng: 120.9928 }
+  ];
+
+  // YELLOW polylines - Moderate traffic streets
+  const kalandangStreetPath = [
+    { lat: 14.6414, lng: 120.9900 },
+    { lat: 14.6416, lng: 120.9897 },
+    { lat: 14.6418, lng: 120.9894 },
+    { lat: 14.6420, lng: 120.9891 },
+    { lat: 14.6422, lng: 120.9888 },
+    { lat: 14.6424, lng: 120.9885 },
+    { lat: 14.6426, lng: 120.9882 }
+  ];
+
+  // GREEN polylines - Low traffic streets (#2ecc71)
+  const mtNatibStreetPath = [
+    { lat: 14.6422, lng: 120.9900 },
+    { lat: 14.6424, lng: 120.9897 },
+    { lat: 14.6426, lng: 120.9894 },
+    { lat: 14.6428, lng: 120.9891 },
+    { lat: 14.6430, lng: 120.9888 },
+    { lat: 14.6432, lng: 120.9885 },
+    { lat: 14.6434, lng: 120.9882 }
+  ];
+
+  const maubanStreetPath = [
+    { lat: 14.6405, lng: 120.9908 },
+    { lat: 14.6403, lng: 120.9905 },
+    { lat: 14.6401, lng: 120.9902 },
+    { lat: 14.6399, lng: 120.9899 },
+    { lat: 14.6397, lng: 120.9896 },
+    { lat: 14.6395, lng: 120.9893 },
+    { lat: 14.6393, lng: 120.9890 }
+  ];
+
+  // Create RED polylines (High traffic)
+  // Dome Street - RED
+  new google.maps.Polyline({
+    path: domeStreetPath,
+    geodesic: true,
+    strokeColor: '#FF0000',  // Red
+    strokeOpacity: 0.8,
+    strokeWeight: 5,
+    map: map
+  });
+
+  // Klawit Street - RED (example)
+  new google.maps.Polyline({
+    path: klawitStreetPath,
+    geodesic: true,
+    strokeColor: '#FF0000',  // Red
+    strokeOpacity: 0.8,
+    strokeWeight: 5,
+    map: map
+  });
+
+  // Create YELLOW polylines (Moderate traffic)
+  // Tagatay Street - YELLOW
+  new google.maps.Polyline({
+    path: tagatayStreetPath,
+    geodesic: true,
+    strokeColor: '#FFFF00',  // Yellow
+    strokeOpacity: 0.8,
+    strokeWeight: 5,
+    map: map
+  });
+
+  // Kalandang Street - YELLOW (example)
+  new google.maps.Polyline({
+    path: kalandangStreetPath,
+    geodesic: true,
+    strokeColor: '#FFFF00',  // Yellow
+    strokeOpacity: 0.8,
+    strokeWeight: 5,
+    map: map
+  });
+
+  // Create GREEN polylines (Low traffic)
+  new google.maps.Polyline({
+    path: mtNatibStreetPath,
+    geodesic: true,
+    strokeColor: '#2ecc71',  // Green
+    strokeOpacity: 0.8,
+    strokeWeight: 5,
+    map: map
+  });
+
+  new google.maps.Polyline({
+    path: maubanStreetPath,
+    geodesic: true,
+    strokeColor: '#2ecc71',  // Green
+    strokeOpacity: 0.8,
+    strokeWeight: 5,
+    map: map
   });
 };
 
