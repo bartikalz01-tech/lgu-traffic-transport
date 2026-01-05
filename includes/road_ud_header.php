@@ -17,12 +17,6 @@
           Traffic Flow Monitoring
         </a>
       </div>
-      <div class="cctv-title-container">
-        <a href="#" class="header-title">
-          <i class="fas fa-car-crash"></i>
-          Prone Road Accidents
-        </a>
-      </div>
     </div>
 
     <div class="header-right-section">

@@ -107,7 +107,7 @@
       </div>
 
       <div class="traffic-right-section">
-        
+
         <div class="map-color-details">
           <h2>Traffic Color Legend</h2>
           <div class="high-traffic-color">
@@ -169,6 +169,22 @@
             </div>
           </div>
         </div>
+        <div class="prone-road-accidents">
+          <div class="traffic-indicator-title">
+            <h3>
+              <i class="fa-solid fa-triangle-exclamation" style="color: #f39c12;"></i>
+              Prone Road Accidents
+            </h3>
+          </div>
+          <div class="road-type" style="border-left: 3px solid #f39c12;">
+            <p>Road 1</p>
+            <p style="color: #f39c12;">Moderates cases</p>
+          </div>
+          <div class="road-type">
+            <p>Road 2</p>
+            <p class="time">Critical cases</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -180,11 +196,11 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&callback=initMap"
     async
     defer></script>-->
-    <!--<script
+  <!--<script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&libraries=visualization&callback=initMap"
     async
     defer></script>-->
-    <script
+  <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&callback=initMap"
     async
     defer></script>

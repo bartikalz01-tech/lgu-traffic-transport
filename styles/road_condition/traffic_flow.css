@@ -214,7 +214,8 @@
   background-color: #2ecc71;
 }
 
-.most-congested-road {
+.most-congested-road,
+.prone-road-accidents {
   background: var(--card-bg-1);
   border: 1px solid var(--border-color-1);
   border-radius: 12px;
