@@ -1,3 +1,5 @@
+console.log("traffic_flow_test.js loaded");
+
 let map;
 let directionsService;
 
@@ -5,15 +7,31 @@ let directionsService;
    GOOGLE MAP INITIALIZATION
 ================================ */
 window.initMap = function () {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 14.6414, lng: 120.9909 },
-    zoom: 18,
-    mapTypeId: "roadmap",
-  });
+  const mapElement = document.getElementById("map");
+  
+  if (!mapElement) {
+    console.error("Map element not found!");
+    return;
+  }
 
-  directionsService = new google.maps.DirectionsService();
+  if (typeof google === 'undefined' || !google.maps) {
+    console.error("Google Maps API not loaded!");
+    return;
+  }
 
-  drawTrafficRoutes();
+  try {
+    map = new google.maps.Map(mapElement, {
+      center: { lat: 14.6414, lng: 120.9909 },
+      zoom: 18,
+      mapTypeId: "roadmap",
+    });
+
+    directionsService = new google.maps.DirectionsService();
+
+    drawTrafficRoutes();
+  } catch (error) {
+    console.error("Error initializing map:", error);
+  }
 };
 
 /* ================================

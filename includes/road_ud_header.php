@@ -6,15 +6,15 @@
 
     <div class="header-middle-section">
       <div class="cctv-title-container">
-        <a href="#" class="header-title">
+        <a href="road_conditions.php" class="header-title">
           <i class="fas fa-video"></i>
           <span>CCTV Monitoring</span>
         </a>
       </div>
       <div class="cctv-title-container">
-        <a href="#" class="header-title">
+        <a href="traffic_flow.php" class="header-title">
           <i class="fas fa-traffic-light"></i>
-          Traffic Flow Monitoring
+          <span>Traffic Flow Monitoring</span>
         </a>
       </div>
     </div>
