@@ -1,3 +1,5 @@
+<div class="sidebar-overlay"></div>
+
 <nav class="sidebar-container">
   <div class="sidebar-header">
     <div class="sidebar-header-content">
