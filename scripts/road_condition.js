@@ -1,6 +1,6 @@
 import { roads } from './data/roads.js';
 import { openRoadCondition } from './road_details.js';
-import { openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay, cctvGrid, roadOverlay } from './road_variables.js';
+import { openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay, cctvGrid, roadOverlay } from './global_variables.js';
 
 export function initSidebar(openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay) {
   openSidebarBtn.addEventListener('click', () => {

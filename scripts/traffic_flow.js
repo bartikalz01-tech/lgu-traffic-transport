@@ -45,6 +45,7 @@ window.initMap = function () {
     { lat: 14.6398, lng: 120.9887 }
   ];
 
+
   const tagatayStreetPath = [
     { lat: 14.641401, lng: 120.990927 },
     { lat: 14.6415, lng: 120.9912 },
