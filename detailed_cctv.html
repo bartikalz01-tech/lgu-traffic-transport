@@ -6,324 +6,67 @@
   <title>Google Maps Integration</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles/global.css">
   <link rel="stylesheet" href="styles/sidebar.css">
   <link rel="stylesheet" href="styles/buttons.css">
   <link rel="stylesheet" href="styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="styles/road_condition/detailed_cctv.css">
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="sidebar-overlay"></div>
 
-  <nav class="sidebar-container">
-    <div class="sidebar-header">
-      <div class="sidebar-header-content">
-        <img src="../images/logo.svg" alt="Traffic Management System" class="logo-img">
-      </div>
-      <button class="sidebar-close-btn">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
 
-    <div class="menu-items">
-      <h3 class="system-title">Traffic and Transport Management</h3>
-      <a href="#" class="sidebar-link">
-        <i class="fas fa-home"></i>
-        <span>Dashboard</span>
-        <span class="purpose">Summary</span>
-      </a>
-      <a href="#" class="sidebar-link">
-        <i class="fas fa-road"></i>
-        <span>Road Conditions</span>
-        <span class="purpose">Real-Time</span>
-      </a>
-      <a href="#" class="sidebar-link">
-        <i class="fas fa-car-crash"></i>
-        <span>Accident Reports</span>
-        <span class="purpose">Violations</span>
-      </a>
-      <a href="#" class="sidebar-link">
-        <i class="fas fa-route"></i>
-        <span>Route Planning</span>
-        <span class="purpose">Diversion</span>
-      </a>
-      <a href="#" class="sidebar-link">
-        <i class="fas fa-car"></i>
-        <span>Public Transport</span>
-        <span class="purpose">Coordination</span>
-      </a>
-      <a href="#" class="sidebar-link">
-        <i class="fas fa-ticket-alt"></i>
-        <span>Violation Ticketing</span>
-        <span class="purpose">Permits</span>
-      </a>
+  <div id="map"></div>
 
-      <div class="sidebar-footer">
-        <div class="online-status">
-          <div class="status-indicator"></div>
-          <div class="status-text">Online</div>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([14.6414, 120.9909], 18);
 
-  <header class="road-ud-header">
-    <div class="road-ud-title-container">
-      <div class="header-left-section">
-        <button class="hamburger-menu-btn"><i class="fas fa-bars"></i></button>
-      </div>
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-      <div class="header-middle-section">
-        <div class="cctv-title-container">
-          <a href="#" class="header-title">
-            <i class="fas fa-video"></i>
-            <span>CCTV Monitoring</span>
-          </a>
-        </div>
-        <div class="cctv-title-container">
-          <a href="#" class="header-title">
-            <i class="fas fa-traffic-light"></i>
-            Traffic Flow Monitoring
-          </a>
-        </div>
-        <div class="cctv-title-container">
-          <a href="#" class="header-title">
-            <i class="fas fa-car-crash"></i>
-            Prone Road Accidents
-          </a>
-        </div>
-      </div>
+    // Coordinates of a road (sample)
+    // Klawit Street polyline (aligned with the actual road)
+    // Klawit Street (accurately traced)
+    /*const roadCoords = [
+      [14.64148, 120.98965], // near Barangay St (west)
+      [14.64147, 120.98995],
+      [14.64146, 120.99030],
+      [14.64145, 120.99065],
+      [14.64144, 120.99100],
+      [14.64143, 120.99135],
+      [14.64142, 120.99170],
+      [14.64141, 120.99200]  // near Cabatuan St (east)
+    ];*/
 
-      <div class="header-right-section">
-        <div class="user-profile" id="userProfileBtn">
-          <div class="user-info">
-            <div class="user-name">Admin User</div>
-            <div class="user-role">Administrator</div>
-          </div>
-          <div class="user-avatar">
-            <img src="https://ui-avatars.com/api/?name=Admin+User&background=4c8a89&color=fff&size=128" alt="Admin User"
-              class="avatar-img">
-          </div>
-          <i class="fas fa-chevron-down dropdown-icon"></i>
-        </div>
-      </div>
-    </div>
-  </header>
+    /*const roadCoords = [
+      [14.641550, 120.99044],
+      [14.641400, 120.99090],
+    ];*/
 
-  <div class="road-condition-content">
+    const roadCoords = [
+      [14.641670, 120.99010], // extended 
+      [14.641115, 120.99170], // extended downward
+    ];
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-      <div class="module-title-container">
-        <p class="module-title">Real Time Road Condition Updates</p>
-        <h1 class="sub-module-title">CCTV Monitoring</h1>
-        <p class="sub-module-description">Real-time surveillance and predictive analytics of Kalandang Street</p>
-      </div>
-      <button class="btn btn-primary" id="fullscreenBtn">
-        <i class="fas fa-expand"></i> Full Screen
-      </button>
-    </div>
 
-    <div class="cctv-dashboard">
-      <div class="cctv-details-grid">
+    // High traffic road
+    L.polyline(roadCoords, {
+      color: 'red',
+      weight: 6,
+      opacity: 0.9
+    }).addTo(map)
+      .bindPopup('High Traffic');
+  </script>
 
-        <div class="cctv-video-container">
-          <div class="cctv-video-header">
-            <h3>
-              <i class="fas fa-video"></i>
-              <span id="currentCameraName">Camera 1 - Main Intersection View</span>
-            </h3>
-            <div class="live-status">
-              <i class="fas fa-circle"></i>
-              <span>LIVE FEED</span>
-            </div>
-          </div>
-
-          <div class="cctv-video-display">
-            <i class="fas fa-video"></i>
-          </div>
-
-          <div class="video-controls">
-            <div class="control-buttons">
-              <button class="btn btn-warning btn-sm" id="recordBtn">
-                <i class="fas fa-record-vinyl"></i>
-                <span>Record</span>
-              </button>
-              <button class="btn btn-primary btn-sm" id="snapshotBtn">
-                <i class="fas fa-camera"></i>
-                <span>Snapshot</span>
-              </button>
-              <button class="btn btn-secondary btn-sm" id="zoomInBtn">
-                <i class="fas fa-search-plus"></i>
-              </button>
-              <button class="btn btn-secondary btn-sm" id="zoomOutBtn">
-                <i class="fas fa-search-minus"></i>
-              </button>
-              <button class="btn btn-secondary btn-sm" id="rotateBtn">
-                <i class="fas fa-sync"></i>
-              </button>
-            </div>
-            <div class="time-display" id="currentTime">
-              01/02/2026 12:00
-            </div>
-          </div>
-        </div>
-
-        <div class="camera-info-sidebar">
-          <!-- Camera Details Card -->
-          <div class="camera-details-card">
-            <h4><i class="fas fa-info-circle"></i> Camera Details</h4>
-            <div class="details-grid">
-              <div class="detail-item">
-                <span class="detail-label">Camera ID</span>
-                <span class="detail-value">CAM-127-001</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Location</span>
-                <span class="detail-value">127 Street Intersection</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Type</span>
-                <span class="detail-value">Pan-Tilt-Zoom</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Resolution</span>
-                <span class="detail-value">1080p @ 30fps</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Field of View</span>
-                <span class="detail-value">120° Wide Angle</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Installation Date</span>
-                <span class="detail-value">2024-01-15</span>
-              </div>
-            </div>
-            <div class="camera-status">
-              <span class="status-indicator status-online"></span>
-              <span class="detail-value">Online - Connected to Network</span>
-            </div>
-          </div>
-
-          <!-- Predictive AI Card -->
-          <div class="predictive-ai-card">
-            <h4><i class="fas fa-brain"></i> Predictive AI Analysis</h4>
-            <div class="ai-predictions">
-              <div class="prediction-item traffic">
-                <span class="prediction-label">Traffic Congestion Risk</span>
-                <span class="prediction-value medium">Medium (65%)</span>
-              </div>
-              <div class="prediction-item accident">
-                <span class="prediction-label">Accident Probability</span>
-                <span class="prediction-value low">Low (15%)</span>
-              </div>
-              <div class="prediction-item congestion">
-                <span class="prediction-label">Peak Hour Prediction</span>
-                <span class="prediction-value high">17:30 - 19:00</span>
-              </div>
-            </div>
-            <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-secondary-1);">
-              <i class="fas fa-info-circle"></i>
-              <span>Updated every 5 minutes based on traffic patterns</span>
-            </div>
-          </div>
-
-          <!-- Camera List Card -->
-          <div class="camera-list-card">
-            <h4><i class="fas fa-list"></i> Available Cameras</h4>
-            <div class="camera-list">
-              <div class="camera-list-item active" data-camera="cam1">
-                <div class="camera-icon">
-                  <i class="fas fa-video"></i>
-                </div>
-                <div class="camera-info">
-                  <div class="camera-name">Camera 1 - Main View</div>
-                  <div class="camera-location">127 Street Intersection</div>
-                </div>
-                <span class="live-status" style="font-size: 0.625rem;">LIVE</span>
-              </div>
-              <div class="camera-list-item" data-camera="cam2">
-                <div class="camera-icon">
-                  <i class="fas fa-video"></i>
-                </div>
-                <div class="camera-info">
-                  <div class="camera-name">Camera 2 - North View</div>
-                  <div class="camera-location">127 Street North End</div>
-                </div>
-              </div>
-              <div class="camera-list-item" data-camera="cam3">
-                <div class="camera-icon">
-                  <i class="fas fa-video"></i>
-                </div>
-                <div class="camera-info">
-                  <div class="camera-name">Camera 3 - South View</div>
-                  <div class="camera-location">127 Street South End</div>
-                </div>
-              </div>
-              <div class="camera-list-item" data-camera="cam4">
-                <div class="camera-icon">
-                  <i class="fas fa-video"></i>
-                </div>
-                <div class="camera-info">
-                  <div class="camera-name">Camera 4 - Pedestrian</div>
-                  <div class="camera-location">Crosswalk Area</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Traffic Statistics -->
-          <div class="camera-details-card">
-            <h4><i class="fas fa-chart-line"></i> Real-time Statistics</h4>
-            <div class="traffic-stats">
-              <div class="stat-card">
-                <div class="stat-value">142</div>
-                <div class="stat-label">Vehicles/min</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">23</div>
-                <div class="stat-label">Pedestrians</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">65%</div>
-                <div class="stat-label">Lane Usage</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value">42s</div>
-                <div class="stat-label">Avg Wait Time</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="fullscreen-modal" id="fullscreenModal">
-    <div class="fullscreen-video">
-      <div class="video-placeholder">
-        <i class="fas fa-video" style="font-size: 5rem;"></i>
-        <p style="font-size: 1.5rem;">Full Screen CCTV View</p>
-        <p>127 Street Intersection - Live Feed</p>
-      </div>
-      <button class="close-fullscreen" id="closeFullscreen">
-        <i class="fas fa-times"></i>
-      </button>
-      <div class="fullscreen-controls">
-        <button class="btn btn-warning">
-          <i class="fas fa-record-vinyl"></i>
-        </button>
-        <button class="btn btn-primary">
-          <i class="fas fa-camera"></i>
-        </button>
-        <button class="btn btn-secondary">
-          <i class="fas fa-volume-up"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <script></script>
 </body>
 
 </html>

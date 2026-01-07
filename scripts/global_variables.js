@@ -11,3 +11,8 @@ export const fromInput = document.getElementById('dateFrom');
 export const toInput = document.getElementById('dateTo');
 export const applyBtn = document.querySelector('.date-filter-actions .btn-primary');
 export const clearBtn = document.querySelector('.date-filter-actions .btn-secondary');
+export const accidentItems = document.querySelectorAll('.accident-item');
+
+export function getQuickReportOverlay() {
+  return document.querySelector('.quick-report-overlay');
+}

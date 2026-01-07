@@ -4,12 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/accident/accident_test.css">
-  <link rel="stylesheet" href="../styles/road_condition/road_conditions.css"> <!-- Just for sidebar overlay -->
+  <link rel="stylesheet" href="../styles/accident/quick_report.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Accident Reports</title>
@@ -28,7 +29,7 @@
         <h1 class="sub-module-title">Accident Reports System</h1>
         <p class="sub-module-description">Report and manage traffic accidents, violations, and incidents in real-time</p>
       </div>
-      <button class="btn btn-primary" id="fullscreenBtn" style="margin-top: var(--header-h); margin-right: 20px;">
+      <button class="btn btn-primary" id="quickReportsBtn" style="margin-top: var(--header-h); margin-right: 20px;">
         <i class="fas fa-plus"></i> Quick Reports
       </button>
     </div>
@@ -146,11 +147,13 @@
         </div>
       </div>
     </section>
+
+    <div class="quick-report-overlay hidden"></div>
   </main>
 
   <?php include '../includes/admin-footer.php'; ?>
 
-  <script type="module" src="../scripts/accident_test.js" defer></script>
+  <script type="module" src="../scripts/accident/accident_test.js" defer></script>
 </body>
 
 </html>

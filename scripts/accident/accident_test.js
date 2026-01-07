@@ -1,3 +1,6 @@
+import { dateFilter, toggleBtn, fromInput, toInput, applyBtn, clearBtn, getQuickReportOverlay } from '../global_variables.js';
+import { renderQuickReport } from './quick_reports.js';
+
 document.addEventListener('DOMContentLoaded', function () {
   const openSidebarBtn = document.querySelector('.hamburger-menu-btn');
   const closeSidebarBtn = document.querySelector('.sidebar-close-btn');
@@ -29,13 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-const dateFilter = document.querySelector('.date-filter');
-const toggleBtn = document.querySelector('.date-filter-btn');
-const fromInput = document.getElementById('dateFrom');
-const toInput = document.getElementById('dateTo');
-const applyBtn = document.querySelector('.date-filter-actions .btn-primary');
-const clearBtn = document.querySelector('.date-filter-actions .btn-secondary');
-
+//const accidentItems = document.querySelectorAll('.accident-item');
 
 /* -----------------------------
   TOGGLE DATE FILTER
@@ -43,6 +40,7 @@ const clearBtn = document.querySelector('.date-filter-actions .btn-secondary');
 toggleBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   dateFilter.classList.toggle('open');
+  console.log(e.target); 
 });
 
 document.addEventListener('click', (e) => {
@@ -106,3 +104,18 @@ function parseAccidentDate(text) {
 
   return isNaN(parsed) ? null : parsed;
 }
+
+const quickReportOverlay = getQuickReportOverlay() ;
+
+quickReportOverlay.addEventListener('click', (e) => {
+  const closeQuickReportBtn = e.target.closest('.js-exit-quick-reports');
+
+  if(!closeQuickReportBtn) return;
+
+  quickReportOverlay.classList.add('hidden');
+  quickReportOverlay.innerHTML = '';
+});
+
+document.getElementById('quickReportsBtn').addEventListener('click', () => {
+  renderQuickReport();
+});

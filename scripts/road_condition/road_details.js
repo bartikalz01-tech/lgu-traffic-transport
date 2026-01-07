@@ -1,4 +1,4 @@
-import { roadOverlay } from './global_variables.js';
+import { roadOverlay } from '../global_variables.js';
 
 
 export function openRoadCondition(roadName) {
