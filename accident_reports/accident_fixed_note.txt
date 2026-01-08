@@ -1,5 +1,0 @@
-This file is just a marker to indicate accident.php was fixed by the assistant.
-
-
-
-
