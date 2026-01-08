@@ -1,0 +1,139 @@
+import { getDetailedReports } from "../global_variables.js";
+
+export function detailedAccidentReport() {
+  const detailedReports = getDetailedReports();
+
+  if (!detailedReports) {
+    console.error('Detail overlay not found');
+    return;
+  }
+
+  detailedReports.innerHTML = `
+    <button class="exit-accident-details js-exit-accident-details">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="detailed-reports-container">
+      <h2>Accident Case Details</h2>
+      <div class="summary-reports">
+        <div class="accident-detail-data-left-side">
+          <div class="accident-data">
+            <p class="description">Accident-ID:</p>
+            <p class="data">ACC-20260115-001</p>
+          </div>
+          <div class="accident-data">
+            <p class="description">Type of Accident:</p>
+            <p class="data">Vehicle Collision</p>
+          </div>
+          <div class="accident-data">
+            <p class="description">Road:</p>
+            <p class="data">Road 123</p>
+          </div>
+        </div>
+
+        <div class="accident-detail-data-right-side">
+          <div class="accident-data">
+            <p class="description">People Involved:</p>
+            <p class="data">3 people</p>
+          </div>
+          <div class="accident-data">
+            <p class="description">Vehicles Involved:</p>
+            <p class="data">2 Vehicles</p>
+          </div>
+          <div class="accident-data">
+            <p class="description">Status:</p>
+            <p class="data">Under Investigation</p>
+          </div>
+        </div>
+      </div>
+      <!-- People Involved -->
+      <div class="report-table-section">
+        <h3><i class="fas fa-users"></i> People Involved</h3>
+
+        <div class="table-wrapper">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Juan Dela Cruz</td>
+                <td>Driver</td>
+                <td>Minor Injuries</td>
+                <td>0912-345-6789</td>
+                <td>123 example street, Caloocan City</td>
+                <td>
+                  <button class="btn btn-danger">Delete</button>
+                  <button class="btn btn-primary">Modify</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Maria Santos</td>
+                <td>Passenger</td>
+                <td>Uninjured</td>
+                <td>—</td>
+                <td>123 example street, Caloocan City</td>
+                <td>
+                  <button class="btn btn-danger">Delete</button>
+                  <button class="btn btn-primary">Modify</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Vehicles Involved -->
+      <div class="report-table-section">
+        <h3><i class="fas fa-car"></i> Vehicles Involved</h3>
+
+        <div class="table-wrapper">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Driver</th>
+                <th>Plate No.</th>
+                <th>Vehicle Type</th>
+                <th>Model</th>
+                <th>Damage Level</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Juan Dela Cruz</td>
+                <td>ABC-1234</td>
+                <td>Private</td>
+                <td>Toyota Vios</td>
+                <td>Moderate</td>
+                <td>
+                  <button class="btn btn-danger">Delete</button>
+                  <button class="btn btn-primary">Modify</button>
+                </td>
+              </tr>
+              <tr>
+                <td>John Doe</td>
+                <td>XYZ-5678</td>
+                <td>Motorcycle</td>
+                <td>Honda Click</td>
+                <td>Minor</td>
+                <td>
+                  <button class="btn btn-danger">Delete</button>
+                  <button class="btn btn-primary">Modify</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+
+  detailedReports.classList.remove('detailed-reports-hidden');
+}

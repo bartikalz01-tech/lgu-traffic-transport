@@ -16,3 +16,7 @@ export const accidentItems = document.querySelectorAll('.accident-item');
 export function getQuickReportOverlay() {
   return document.querySelector('.quick-report-overlay');
 }
+
+export function getDetailedReports() {
+  return document.querySelector('.detailed-reports-overlay');
+}

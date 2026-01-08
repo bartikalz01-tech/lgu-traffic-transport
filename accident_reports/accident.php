@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/accident/accident_test.css">
   <link rel="stylesheet" href="../styles/accident/quick_report.css">
+  <link rel="stylesheet" href="../styles/accident/detailed_report.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Accident Reports</title>
@@ -73,7 +74,7 @@
 
         <div class="list-body" id="accidentList">
           <!-- Accident items will be loaded here -->
-          <div class="accident-item active">
+          <div class="accident-item"> <!-- "active" put on the clase -->
             <div class="accident-header">
               <span class="accident-id">ACC-20260115-001</span>
               <span class="accident-time">Jan 6, 10:15 AM</span>
@@ -149,6 +150,8 @@
     </section>
 
     <div class="quick-report-overlay hidden"></div>
+
+    <div class="detailed-reports-overlay detailed-reports-hidden"></div>
   </main>
 
   <?php include '../includes/admin-footer.php'; ?>

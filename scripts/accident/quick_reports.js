@@ -1,8 +1,7 @@
 import { getQuickReportOverlay } from "../global_variables.js";
 
-
-
 export function renderQuickReport() {
+  const accidentId = `ACC-${Date.now()}`;
   const quickReportOverlay = getQuickReportOverlay();
 
   if(!quickReportOverlay) {
@@ -27,7 +26,7 @@ export function renderQuickReport() {
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Accident ID <span class="required">*</span></label>
-            <input type="text" class="form-control" id="accidentId" value="ACC-<?php echo date('YmdHis'); ?>" readonly>
+            <input type="text" class="form-control" id="accidentId" value="${accidentId}" readonly>
           </div>
           <div class="form-group">
             <label class="form-label">Road/Location <span class="required">*</span></label>
@@ -162,6 +161,10 @@ export function renderQuickReport() {
 
         <div class="form-row">
           <div class="form-group">
+            <label class="form-label">Driver <span class="required">*</span></label>
+            <input type="text" class="form-control" id="vehicleDriver" placeholder="Enter Driver Name">
+          </div>
+          <div class="form-group">
             <label class="form-label">Plate Number <span class="required">*</span></label>
             <input type="text" class="form-control" id="vehiclePlate" placeholder="Enter plate number">
           </div>
@@ -204,6 +207,7 @@ export function renderQuickReport() {
           <table class="vehicles-table">
             <thead>
               <tr>
+                <th>Driver</th>
                 <th>Plate No.</th>
                 <th>Type</th>
                 <th>Damage</th>

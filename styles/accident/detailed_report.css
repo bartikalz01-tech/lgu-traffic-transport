@@ -1,0 +1,155 @@
+.detailed-reports-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.detailed-reports-hidden {
+  display: none;
+}
+
+.detailed-reports-container {
+  background-color: var(--card-bg);
+  border: 2px solid var(--primary-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-1);
+  width: 100%;
+  max-width: 950px;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  text-align: center;
+}
+
+.detailed-reports-container h2{
+  border-bottom: 3px solid var(--border-color-1);
+}
+
+.summary-reports {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  border-bottom: 3px solid var(--border-color-1);
+}
+
+.accident-detail-data-left-side, 
+.accident-detail-data-right-side {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.accident-data {
+  display: flex;
+  gap: 15px;
+}
+
+.description {
+  font-weight: bold;
+}
+
+.data {
+  color: var(--text-secondary);
+}
+
+/* ==============================
+   TABLE SECTIONS
+============================== */
+
+.report-table-section {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.report-table-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Wrapper for horizontal safety */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-color-1);
+  border-radius: 10px;
+  background-color: var(--card-bg);
+}
+
+/* ==============================
+   TABLE CORE
+============================== */
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.report-table thead {
+  background-color: rgba(76, 138, 137, 0.08);
+}
+
+.report-table th,
+.report-table td {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid var(--border-color-1);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.report-table th {
+  font-weight: 600;
+  color: var(--text-color-1);
+}
+
+.report-table td {
+  color: var(--text-secondary);
+}
+
+/* ==============================
+   ROW EFFECTS
+============================== */
+
+.report-table tbody tr:hover {
+  background-color: rgba(76, 138, 137, 0.05);
+}
+
+.report-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.exit-accident-details {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+
+  z-index: 1001; /* higher than overlay (999) */
+
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+
+  border: none;
+  cursor: pointer;
+
+  font-size: 20px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}

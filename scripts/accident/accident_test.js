@@ -1,5 +1,6 @@
-import { dateFilter, toggleBtn, fromInput, toInput, applyBtn, clearBtn, getQuickReportOverlay } from '../global_variables.js';
+import { dateFilter, toggleBtn, fromInput, toInput, applyBtn, clearBtn, getQuickReportOverlay, accidentItems, getDetailedReports } from '../global_variables.js';
 import { renderQuickReport } from './quick_reports.js';
+import { detailedAccidentReport } from './detailed_accident.js';
 
 document.addEventListener('DOMContentLoaded', function () {
   const openSidebarBtn = document.querySelector('.hamburger-menu-btn');
@@ -105,6 +106,7 @@ function parseAccidentDate(text) {
   return isNaN(parsed) ? null : parsed;
 }
 
+// quick reports logic
 const quickReportOverlay = getQuickReportOverlay() ;
 
 quickReportOverlay.addEventListener('click', (e) => {
@@ -118,4 +120,24 @@ quickReportOverlay.addEventListener('click', (e) => {
 
 document.getElementById('quickReportsBtn').addEventListener('click', () => {
   renderQuickReport();
+});
+
+
+// detailed reports detail logic
+const detailedReports = getDetailedReports();
+
+detailedReports.addEventListener('click', (e) => {
+  const closeDetailReport = e.target.closest('.js-exit-accident-details');
+
+  if(!closeDetailReport) return;
+
+  detailedReports.classList.add('detailed-reports-hidden');
+  detailedReports.innerHTML = '';
+});
+
+document.getElementById('accidentList').addEventListener('click', (e) => {
+  const item = e.target.closest('.accident-item');
+  if (!item) return;
+
+  detailedAccidentReport();
 });
