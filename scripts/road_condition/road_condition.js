@@ -1,18 +1,21 @@
-import { roads } from '../data/roads.js';
+import { roads, fetchRoads } from '../data/fetch_roads.js';
 import { openRoadCondition } from './road_details.js';
 import { openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay, cctvGrid, roadOverlay } from '../global_variables.js';
 
-export function initSidebar(openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay) {
-  openSidebarBtn.addEventListener('click', () => {
+export function initSidebar(openBtn, closeBtn, sidebar, overlay) {
+  if (!openBtn || !closeBtn || !sidebar || !overlay) return;
+
+  openBtn.addEventListener('click', () => {
     sidebar.classList.toggle('open');
-    sidebarOverlay.classList.toggle('visible');
+    overlay.classList.toggle('visible');
   });
 
-  closeSidebarBtn.addEventListener('click', () => {
+  closeBtn.addEventListener('click', () => {
     sidebar.classList.toggle('open');
-    sidebarOverlay.classList.toggle('visible');
+    overlay.classList.toggle('visible');
   });
 }
+
 
 initSidebar(openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay);
 
@@ -26,7 +29,7 @@ closeSidebarBtn.addEventListener('click', () => {
   sidebarOverlay.classList.toggle('visible');
 });*/
 
-function renderCctvFeed() {
+export function renderCctvFeed() {
   let cctvs = '';
 
   roads.forEach((road) => {
@@ -35,9 +38,9 @@ function renderCctvFeed() {
         <div class="cctv-info">
           <div class='cctv-road-title'>
             <i class='fas fa-video'></i>
-            <p>${road.roadName}</p>
+            <p>${road.road_name}</p>
           </div>
-          <div class="details-right-arrow" href="cctv-details.php" data-road-name="${road.roadName}">
+          <div class="details-right-arrow" href="cctv-details.php" data-road-name="${road.road_name}">
             <p>View Details</p>
             <i class="fas fa-list"></i>
           </div>
@@ -72,5 +75,4 @@ cctvGrid.addEventListener('click', (e) => {
   openRoadCondition(roadName)
 });
 
-
-renderCctvFeed();
+fetchRoads();

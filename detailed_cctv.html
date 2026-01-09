@@ -52,19 +52,38 @@
       [14.641400, 120.99090],
     ];*/
 
-    const roadCoords = [
+    const klawitCoords= [
       [14.641670, 120.99010], // extended 
       [14.641115, 120.99170], // extended downward
     ];
 
+    const tagaytayCoords = [
+      [14.64208, 120.99023],
+      [14.64190, 120.99012],
+      [14.64178, 120.99005],
+      [14.64164, 120.98998],
+      [14.64166, 120.98999],
+      [14.64153, 120.98991],
+      [14.64139, 120.98984],
+      [14.64126, 120.98978],
+      [14.64098, 120.98965],
+      [14.64081, 120.98959]
+    ];
 
     // High traffic road
-    L.polyline(roadCoords, {
+    L.polyline(klawitCoords, {
       color: 'red',
       weight: 6,
       opacity: 0.9
     }).addTo(map)
       .bindPopup('High Traffic');
+
+    L.polyline(tagaytayCoords, {
+      color: 'yellow',
+      weight: 6,
+      opacity: 0.9
+    }).addTo(map)
+      .bindPopup('Moderate Traffic');
   </script>
 
 </body>
