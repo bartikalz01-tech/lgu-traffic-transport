@@ -53,57 +53,7 @@
                 <th>Date</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>Road 1</td>
-                <td>Moderate</td>
-                <td>10:00</td>
-                <td>2026-01-01</td>
-              </tr>
-              <tr>
-                <td>Road 2</td>
-                <td>High</td>
-                <td>11:00</td>
-                <td>2026-01-02</td>
-              </tr>
-              <tr>
-                <td>Road 3</td>
-                <td>High</td>
-                <td>11:00</td>
-                <td>2026-01-02</td>
-              </tr>
-              <tr>
-                <td>Road 4</td>
-                <td>High</td>
-                <td>11:00</td>
-                <td>2026-01-02</td>
-              </tr>
-              <tr>
-                <td>Road 5</td>
-                <td>High</td>
-                <td>11:00</td>
-                <td>2026-01-02</td>
-              </tr>
-              <tr>
-                <td>Road 6</td>
-                <td>High</td>
-                <td>11:00</td>
-                <td>2026-01-02</td>
-              </tr>
-              <tr>
-                <td>Road 7</td>
-                <td>High</td>
-                <td>11:00</td>
-                <td>2026-01-02</td>
-              </tr>
-              <tr>
-                <td>Road 8</td>
-                <td>High</td>
-                <td>11:00</td>
-                <td>2026-01-02</td>
-              </tr>
-
-            </tbody>
+            <tbody id="traffic-table-body"></tbody>
           </table>
         </div>
       </div>
@@ -205,6 +155,7 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&callback=initMap"
     async
     defer></script>-->
+  <script type="module" src="../scripts/road_condition/traffic_flow.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const map = L.map('map').setView([14.6414, 120.9909], 18);

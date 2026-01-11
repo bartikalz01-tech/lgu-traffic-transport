@@ -12,6 +12,7 @@ export const toInput = document.getElementById('dateTo');
 export const applyBtn = document.querySelector('.date-filter-actions .btn-primary');
 export const clearBtn = document.querySelector('.date-filter-actions .btn-secondary');
 export const accidentItems = document.querySelectorAll('.accident-item');
+export const trafficTbody = document.querySelector('#traffic-table-body');
 
 export function getQuickReportOverlay() {
   return document.querySelector('.quick-report-overlay');
