@@ -13,21 +13,22 @@ $pageTitle = 'Violation Ticketing System';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($pageTitle); ?> - Barangay (N/A)</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/global1.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="styles/sidebar1.css">
-    <link rel="stylesheet" href="styles/admin/admin-header.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
     <link rel="stylesheet" href="styles/buttons.css">
     <link rel="stylesheet" href="styles/hero.css">
     <link rel="stylesheet" href="styles/sidebar-footer.css">
     <link rel="stylesheet" href="styles/accident/accident.css">
     <link rel="stylesheet" href="styles/violations/violation1.css">
+     <link rel="stylesheet" href="styles/road_condition/road_condition_header.css">
 </head>
 <body>
     <!-- Include Sidebar Component -->
-    <?php include 'includes/sidebar-traffic-only.php'; ?>
+    <?php include 'includes/official_sidebar.php'; ?>
     <!-- Include Admin Header Component -->
-    <?php include 'includes/admin-header.php'; ?>
+    <?php include 'includes/accident_header.php'; ?>
     
     <!-- ===================================
        MAIN CONTENT - Violation Ticketing
@@ -510,7 +511,7 @@ $pageTitle = 'Violation Ticketing System';
             </div>
         </div>
     </div>
-
+    <script src="scripts/traffic_flow_test.js"></script>
     <script src="scripts/violation.js"></script>
 </body>
 </html>
