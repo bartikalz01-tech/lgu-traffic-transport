@@ -1,11 +1,14 @@
 <?php
-require 'Roads.php';
+require 'BarangayTrafficStatus.php';
 
 $config = new config();
 $config->conn();
 
-$roads = new Roads();
-$roads->viewRoadsData();
+//$roads = new Roads();
+//$roads->viewRoadsData();
+
+$barangayTrafficStatus = new BarangayTrafficStatus();
+$barangayTrafficStatus->barangayTrafficStatus();
 
 if($config->pdo) {
   echo "Database Connected <br>";
@@ -13,7 +16,7 @@ if($config->pdo) {
   echo "Database not connected";
 }
 
-if($roads) {
+if($barangayTrafficStatus) {
   echo "Success";
 } else {
   echo "Nothing";

@@ -1,8 +1,7 @@
 <?php
 require 'config.php';
 
-class TrafficFlow extends config
-{
+class TrafficFlow extends config {
 
   public function trafficFlow(){
     $conn = $this->conn();

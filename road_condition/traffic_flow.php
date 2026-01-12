@@ -76,7 +76,7 @@
           </div>
         </div>
 
-        <div class="traffic-status-indicator">
+        <div class="traffic-status-indicator js-traffic-status-indicator">
           <div class="traffic-indicator-title">
             <h3>
               <i class="fas fa-traffic-light"></i>

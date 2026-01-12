@@ -13,6 +13,7 @@ export const applyBtn = document.querySelector('.date-filter-actions .btn-primar
 export const clearBtn = document.querySelector('.date-filter-actions .btn-secondary');
 export const accidentItems = document.querySelectorAll('.accident-item');
 export const trafficTbody = document.querySelector('#traffic-table-body');
+export const brgyTrafficStatus = document.querySelector('.js-traffic-status-indicator');
 
 export function getQuickReportOverlay() {
   return document.querySelector('.quick-report-overlay');

@@ -1,5 +1,6 @@
-import { trafficTbody  } from "../global_variables.js";
+import { trafficTbody, brgyTrafficStatus  } from "../global_variables.js";
 import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
+import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
 
 document.addEventListener('DOMContentLoaded', function () {
   const openSidebarBtn = document.querySelector('.hamburger-menu-btn');
@@ -50,3 +51,33 @@ export function renderTrafficFlowTable() {
 }
 
 fetchTrafficData();
+
+export function renderTrafficPercentage() {
+  const highEl = document.querySelector('.red-percentage');
+  const moderateEl = document.querySelector('.yellow-percentage');
+  const lowEl = document.querySelector('.green-percentage');
+
+  highEl.textContent = '0%';
+  moderateEl.textContent = '0%';
+  lowEl.textContent = '0%';
+
+  trafficPercent.forEach(item => {
+    const percent = `${item.percentage}%`;
+
+    switch(item.traffic_condition) {
+      case 'High Traffic':
+        highEl.textContent = percent;
+        break;
+      
+      case 'Moderate Traffic':
+        moderateEl.textContent = percent;
+        break;
+
+      case 'Low Traffic':
+        lowEl.textContent = percent;
+        break
+    }
+  });
+}
+
+fetchTrafficPercent();
