@@ -1,10 +1,12 @@
 import { getQuickReportOverlay } from "../global_variables.js";
 
+let accidentId = null;
+
 export function renderQuickReport() {
-  const accidentId = `ACC-${Date.now()}`;
+  accidentId = `ACC-${Date.now()}`;
   const quickReportOverlay = getQuickReportOverlay();
 
-  if(!quickReportOverlay) {
+  if (!quickReportOverlay) {
     console.error('Quick report overlay not found');
     return;
   }
@@ -32,11 +34,12 @@ export function renderQuickReport() {
             <label class="form-label">Road/Location <span class="required">*</span></label>
             <select class="form-select" id="roadId">
               <option value="">Select Road</option>
-              <option value="RD-001">Road 123 - Main Street</option>
-              <option value="RD-002">Road 456 - Market Road</option>
-              <option value="RD-003">Road 789 - Highway</option>
-              <option value="RD-004">Barangay Entrance</option>
-              <option value="RD-005">School Zone Road</option>
+              <option value="1">Dome</option>
+              <option value="2">Mt.Natib</option>
+              <option value="3">Klawit</option>
+              <option value="4">Kalandang</option>
+              <option value="5">Mauban</option>
+              <option value="6">Tagaytay Street</option>
             </select>
           </div>
         </div>
@@ -68,11 +71,11 @@ export function renderQuickReport() {
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Date <span class="required">*</span></label>
-            <input type="date" class="form-control" id="accidentDate" value="<?php echo date('Y-m-d'); ?>">
+            <input type="date" class="form-control" id="accidentDate">
           </div>
           <div class="form-group">
             <label class="form-label">Time <span class="required">*</span></label>
-            <input type="time" class="form-control" id="accidentTime" value="<?php echo date('H:i'); ?>">
+            <input type="time" class="form-control" id="accidentTime">
           </div>
         </div>
 
@@ -239,4 +242,179 @@ export function renderQuickReport() {
   `;
 
   quickReportOverlay.classList.remove('hidden');
+
+  // Set default current time (24-hour)
+  const timeInput = document.getElementById('accidentTime');
+
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+
+  timeInput.value = `${hours}:${minutes}`;
+
+  const dateInput = document.getElementById('accidentDate');
+  dateInput.value = new Date().toISOString().split('T')[0];
 }
+
+document.addEventListener('click', (e) => {
+  if(!e.target.closest('#addPersonBtn')) return ;
+
+  const name = document.getElementById('personName').value.trim();
+  const contact = document.getElementById('personContact').value.trim();
+  const address = document.getElementById('personAddress').value.trim();
+  const role = document.getElementById('personRole').value;
+  const status = document.getElementById('personStatus').value;
+
+  if(!name || !role || !status) {
+    alert("Full name, role, and status are required");
+    return;
+  }
+
+  const tbody = document.getElementById('peopleTableBody');
+
+  const tr = document.createElement('tr');
+  tr.dataset.name = name;
+  tr.dataset.contact = contact;
+  tr.dataset.address = address;
+  tr.dataset.role = role;
+  tr.dataset.status = status;
+
+  tr.innerHTML = `
+    <td>${name}</td>
+    <td>${role}</td>
+    <td>${status}</td>
+    <td>
+      <button class="btn btn-danger btn-sm remove-row">Remove</button>
+    </td>
+  `;
+
+  tbody.appendChild(tr);
+
+  document.getElementById('peopleCount').textContent = tbody.children.length;
+
+  document.getElementById('personName').value = '';
+  document.getElementById('personContact').value = '';
+  document.getElementById('personAddress').value = '';
+  document.getElementById('personRole').value = '';
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#addVehicleBtn')) return;
+
+  const driver = document.getElementById('vehicleDriver').value.trim();
+  const plate = document.getElementById('vehiclePlate').value.trim();
+  const type = document.getElementById('vehicleType').value;
+  const vehicleName = document.getElementById('vehicleName').value.trim();
+  const damage = document.getElementById('damageLevel').value;
+
+  if (!driver || !plate || !type || !damage) {
+    alert("Driver, plate number, vehicle type, and damage level are required.");
+    return;
+  }
+
+  const tbody = document.getElementById('vehiclesTableBody');
+
+  const tr = document.createElement('tr');
+  tr.dataset.driver = driver;
+  tr.dataset.vehicle = vehicleName;
+  tr.dataset.plate = plate;
+  tr.dataset.damage = damage;
+
+  tr.innerHTML = `
+    <td>${driver}</td>
+    <td>${plate}</td>
+    <td>${type}</td>
+    <td>${damage}</td>
+    <td>
+      <button class="btn btn-danger btn-sm remove-row">Remove</button>
+    </td>
+  `;
+
+  tbody.appendChild(tr);
+
+  document.getElementById('vehiclesCount').textContent = tbody.children.length;
+
+  // Clear inputs
+  document.getElementById('vehicleDriver').value = '';
+  document.getElementById('vehiclePlate').value = '';
+  document.getElementById('vehicleType').value = '';
+  document.getElementById('vehicleName').value = '';
+  document.getElementById('damageLevel').value = '';
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.classList.contains('remove-row')) return;
+
+  const row = e.target.closest('tr');
+  const tbody = row.parentElement;
+
+  row.remove();
+
+  if (tbody.id === 'peopleTableBody') {
+    document.getElementById('peopleCount').textContent = tbody.children.length;
+  }
+
+  if (tbody.id === 'vehiclesTableBody') {
+    document.getElementById('vehiclesCount').textContent = tbody.children.length;
+  }
+});
+
+document.addEventListener('click', async (e) => {
+  if (!e.target.closest('#submitReportBtn')) return;
+
+  const payLoad = {
+    accident: {
+      public_accident_id: accidentId,
+      road_id: document.getElementById('roadId').value,
+      accident_type: document.getElementById('accidentType').value,
+      accident_description: document.getElementById('description').value,
+      status_of_accident: document.getElementById('severityLevel').value,
+      date_of_accident: document.getElementById('accidentDate').value,
+      time_of_accident: document.getElementById('accidentTime').value
+    },
+    people: [],
+    vehicles: []
+  };
+
+  document.querySelectorAll('#peopleTableBody tr').forEach(row => {
+    payLoad.people.push({
+      full_name: row.dataset.name,
+      contact_num: row.dataset.contact,
+      address: row.dataset.address,
+      role: row.dataset.role,
+      status_level: row.dataset.status
+    });
+  });
+
+  document.querySelectorAll('#vehiclesTableBody tr').forEach(row => {
+    payLoad.vehicles.push({
+      driver_name: row.dataset.driver,
+      vehicle_name: row.dataset.vehicle,
+      plate_number: row.dataset.plate,
+      damage_level: row.dataset.damage
+    });
+  });
+
+  console.log(payLoad);
+
+  try {
+    const response = await fetch("../api/submit_accident_details.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payLoad)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert("Accident report submitted successfully");
+    } else {
+      alert("Error " + data.message);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+
+  console.log(JSON.stringify(payLoad, null, 2));
+});

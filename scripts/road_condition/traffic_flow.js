@@ -81,3 +81,7 @@ export function renderTrafficPercentage() {
 }
 
 fetchTrafficPercent();
+
+setInterval(() => {
+  fetchTrafficPercent();
+}, 300000); // every 5 minutes

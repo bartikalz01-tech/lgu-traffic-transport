@@ -86,15 +86,15 @@
           </div>
           <div class="high-traffic-percent">
             <p>High Traffic:</p>
-            <div class="red-percentage">10%</div>
+            <div class="red-percentage"></div>
           </div>
           <div class="moderate-traffic-percent">
             <p>Moderate Traffic:</p>
-            <div class="yellow-percentage">20%</div>
+            <div class="yellow-percentage"></div>
           </div>
           <div class="low-traffic-percent">
             <p>Low Traffic:</p>
-            <div class="green-percentage">70%</div>
+            <div class="green-percentage"></div>
           </div>
           <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-seconday);">
             <i class="fas fa-info-circle"></i>
