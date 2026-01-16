@@ -152,9 +152,9 @@
     <div class="quick-report-overlay hidden"></div>
 
     <div class="detailed-reports-overlay detailed-reports-hidden"></div>
-  </main>
 
-  <?php include '../includes/admin-footer.php'; ?>
+    <?php include '../includes/admin-footer.php'; ?>
+  </main>
 
   <script type="module" src="../scripts/accident/accident_test.js" defer></script>
 </body>

@@ -1,0 +1,252 @@
+.violation-system {
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 1.5rem 0;
+}
+
+@media (max-width: 1024px) {
+  .violation-system {
+    margin-left: 10px;
+  }
+}
+
+.violation-content {
+  display: grid;
+  grid-template-rows: 1fr 2fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .violation-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.violation-list-panel {
+  background: var(--card-bg-1);
+  border: 1px solid var(--border-color-1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+.panel-header {
+  padding: 1.25rem 1.5rem;
+  background: var(--header-bg-1);
+  border-bottom: 1px solid var(--border-color-1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color-1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.panel-header h3 i {
+  color: var(--primary-color);
+}
+
+.panel-controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.filter-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color-1);
+  border-radius: 6px;
+  background: var(--bg-color-1);
+  color: var(--text-color-1);
+  font-size: 0.875rem;
+  min-width: 120px;
+}
+
+.search-box {
+  position: relative;
+  width: 200px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2rem;
+  border: 1px solid var(--border-color-1);
+  border-radius: 6px;
+  background: var(--bg-color-1);
+  color: var(--text-color-1);
+  font-size: 0.875rem;
+}
+
+.search-box i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary-1);
+  font-size: 0.875rem;
+}
+
+.violations-container {
+  padding: 1.5rem;
+}
+
+.violations-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border-color-1);
+  position: relative;
+  padding: 0 1rem;
+}
+
+.violations-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1420px;
+  table-layout: fixed;
+}
+
+.violations-table th {
+  background: var(--header-bg-1);
+  color: var(--text-color-1);
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color-1);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.violations-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color-1);
+  color: var(--text-secondary-1);
+  vertical-align: middle;
+}
+
+.violations-table th,
+.violations-table td {
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.violations-table tr:hover {
+  background: var(--sidebar-hover-bg-1);
+}
+
+.table-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.quick-actions-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 10px;
+}
+
+.quick-action-card {
+  background: var(--card-bg-1);
+  border: 1px solid var(--border-color-1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+.quick-action-card h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color-1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quick-action-card h4 i {
+  color: var(--primary-color);
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.action-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--sidebar-hover-bg-1);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary-1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color-1);
+}
+
+.page-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-color-1);
+  background: var(--bg-color-1);
+  color: var(--text-color-1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+  background: var(--sidebar-hover-bg-1);
+}
+
+.page-btn.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.page-info {
+  color: var(--text-secondary-1);
+  font-size: 0.875rem;
+}
