@@ -11,6 +11,11 @@
   margin-left: 20px;
   display: grid;
   grid-template-columns: 300px 1fr;
+  transition: grid-template-columns 0.3s ease;
+}
+
+.puv-group-section.collapsed {
+  grid-template-columns: 0 1fr;
 }
 
 .left-part {
@@ -23,7 +28,39 @@
 
   padding: 1.25rem;
   background: var(--card-bg-1);
-  box-shadow: 0 4px 12px var(--shadow-1) ;
+  box-shadow: 0 4px 12px var(--shadow-1);
+  overflow: hidden;
+  transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+.puv-group-section.collapsed .left-part {
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
+}
+
+.puv-toggle-btn {
+  background: var(--card-bg-1);
+  border: 1px solid var(--primary-color);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.puv-toggle-btn:hover {
+  background: var(--sidebar-hover-bg-1);
+  box-shadow: 0 2px 6px var(--shadow-1);
+}
+
+.puv-toggle-btn i {
+  transition: transform 0.3s ease;
+  font-size: 1.1rem;
+}
+
+#togglePuvSidebar i {
+  transition: transform 0.3s ease;
+}
+
+.puv-group-section.collapsed #togglePuvSidebar i {
+  transform: rotate(180deg);
 }
 
 .title {

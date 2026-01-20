@@ -33,7 +33,7 @@
       </button>-->
     </div>
 
-    <section class="puv-group-section">
+    <section class="puv-group-section" id="puvLayout">
       <div class="left-part">
         <div class="title">
           <h1>PUV Groups</h1>
@@ -59,8 +59,10 @@
           <p>Test</p>
         </div>
       </div>
-
       <div class="right-part">
+        <button class="btn btn-outline-primary puv-toggle-btn" id="togglePuvSidebar">
+          <i class="fas fa-chevron-left"></i>
+        </button>
         <div class="group-overview-container">
           <h1 class="group-overview-title">Group Overview</h1>
         </div>

@@ -28,3 +28,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+
+const toggleBtn = document.getElementById('togglePuvSidebar');
+const layout = document.getElementById('puvLayout');
+
+toggleBtn.addEventListener('click', () => {
+  layout.classList.toggle('collapsed');
+});
