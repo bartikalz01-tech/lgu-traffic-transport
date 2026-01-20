@@ -72,19 +72,30 @@
             <h1>Group:</h1>
             <p id="puvGroupName">Bataan Transport Cooperative</p>
           </div>
-          <div class="total-vehicle-type">
-            <div class="total-members">
-              <h2>Total Members:</h2>
-              <p id="puvTotalMembers">124</p>
+          <div class="statistics-container">
+            <div class="stat-card">
+              <div class="stat-icon users">
+                <i class="fas fa-users"></i>
+              </div>
+              <h2 id="puvTotalMembers">124</h2>
+              <p>Total Members</p>
             </div>
-            <div class="vehicle-type">
-              <h2>Vehicle Types:</h2>
-              <p id="totalVehicleTypes">3</p>
+
+            <div class="stat-card">
+              <div class="stat-icon vehicle-types">
+                <i class="fas fa-truck-moving"></i>
+              </div>
+              <h2 id="totalVehicleTypes">3</h2>
+              <p>Vehicle Types</p>
             </div>
-          </div>
-          <div class="active-puv">
-            <h2>Active PUVs:</h2>
-            <p id="activePuv">76</p>
+
+            <div class="stat-card">
+              <div class="stat-icon active-puv">
+                <i class="fas fa-circle-check"></i>
+              </div>
+              <h2 id="activePuv">76</h2>
+              <p>Active PUVs</p>
+            </div>
           </div>
         </div>
 

@@ -24,7 +24,8 @@
 
   display: flex;
   flex-direction: column;
-  gap: 1rem;                 /* ⬅ reduced */
+  gap: 1rem;
+  /* ⬅ reduced */
 
   padding: 1.25rem;
   background: var(--card-bg-1);
@@ -98,7 +99,8 @@
 }
 
 .group i {
-  width: 14px;              /* 🔑 fixed width */
+  width: 14px;
+  /* 🔑 fixed width */
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -129,7 +131,7 @@
   border: 1px solid var(--border-color-1);
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: 0 4px 12px var(--shadow-1) ;
+  box-shadow: 0 4px 12px var(--shadow-1);
 }
 
 .group-overview-container {
@@ -159,41 +161,51 @@
   font-weight: 600;
 }
 
-.total-vehicle-type {
-  margin-top: 25px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+.statistics-container {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 15px;
 }
 
-.total-members,
-.vehicle-type {
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--border-color-1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 13px;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 1.95rem;
 }
 
-.vehicle-type {
-  margin-right: 25px;
+.stat-icon.users {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
 }
 
-.total-members p,
-.vehicle-type p {
-  font-size: 20px;
-  font-weight: 600;
+.stat-icon.vehicle-types {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
 }
 
-.active-puv{
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.active-puv p {
-  font-size: 20px;
-  font-weight: 600;
+.stat-icon.active-puv {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
 }
 
 .different-vehicles-container {
@@ -252,7 +264,7 @@
   justify-content: center;
   gap: 8px;
   font-weight: 600;
-  transition: all 0,2 ease;
+  transition: all 0, 2 ease;
 }
 
 #addVehicle:hover {
@@ -272,13 +284,13 @@
   justify-content: space-between;
 }
 
-.indicator{
+.indicator {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.indicator p{
+.indicator p {
   font-size: 19px;
   font-weight: 600;
 }
