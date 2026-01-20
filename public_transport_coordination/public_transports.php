@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
   <link rel="stylesheet" href="../styles/global.css">
@@ -172,12 +173,24 @@
           </div>
         </div>
       </div>
+
+      <div class="map-container full-width-map">
+        <div id="map"></div>
+      </div>
     </section>
 
     <?php include '../includes/admin-footer.php' ?>
   </main>
 
   <script type="module" src="../scripts/public_coordination/public_coordination.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([14.6414, 120.9909], 18);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributers'
+    }).addTo(map);
+  </script>
 </body>
 
 </html>
