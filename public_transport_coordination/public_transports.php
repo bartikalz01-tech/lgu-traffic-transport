@@ -99,6 +99,11 @@
           </div>
         </div>
 
+        <div class="map-container full-width-map">
+          <h1 style="text-align: center; margin-bottom: 20px;">Group Map</h1>
+          <div id="map"></div>
+        </div>
+
         <div class="different-vehicles-container" style="margin-top: 20px;">
           <h1 style="text-align: center;">Vehicle Types</h1>
           <div class="different-vehicles">
@@ -186,10 +191,6 @@
           </div>
         </div>
       </div>
-
-      <div class="map-container full-width-map">
-        <div id="map"></div>
-      </div>
     </section>
 
     <?php include '../includes/admin-footer.php' ?>
@@ -197,13 +198,6 @@
 
   <script type="module" src="../scripts/public_coordination/public_coordination.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    const map = L.map('map').setView([14.6414, 120.9909], 18);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributers'
-    }).addTo(map);
-  </script>
 </body>
 
 </html>
