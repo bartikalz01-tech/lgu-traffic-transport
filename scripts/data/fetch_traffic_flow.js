@@ -5,7 +5,10 @@ export let trafficData = [];
 export async function fetchTrafficData() {
   try {
     const response = await fetch('../api/get_traffic_flow.php');
-    if(!response) throw new Error('Failed to fetch traffic data');
+    if (!response.ok) {
+      throw new Error('Failed to fetch traffic data');
+    }
+
 
     trafficData = await response.json();
     renderTrafficFlowTable();

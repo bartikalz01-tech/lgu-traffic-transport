@@ -47,6 +47,8 @@ export function renderTrafficFlowTable() {
     `;
   });
 
+  console.log(trafficTbody);
+
   trafficTbody.innerHTML = trafficFlow;
 }
 

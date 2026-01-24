@@ -9,11 +9,12 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="../styles/sidebar.css">
+  <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_conditions.css"> <!-- Just for sidebar overlay -->
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/road_condition/traffic_flow.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
-  <title>Traffic Flow Monitoring</title>
+  <title>Route Planning</title>
 </head>
 
 <body>
@@ -26,9 +27,9 @@
 
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
       <div class="module-title-container">
-        <p class="module-title">Real Time Road Condition Updates</p>
-        <h1 class="sub-module-title">Traffic Flow Monitoring</h1>
-        <p class="sub-module-description">Real-time traffic flow monitoring and analysis</p>
+        <p class="module-title">Vehicle Routing Planning</p>
+        <h1 class="sub-module-title">Route Planning</h1>
+        <p class="sub-module-description">Planing the ways of transportations</p>
       </div>
       <p class="current-time">12:00:00</p>
     </div>
@@ -60,19 +61,28 @@
 
       <div class="traffic-right-section">
 
-        <div class="map-color-details">
-          <h2>Traffic Color Legend</h2>
-          <div class="high-traffic-color">
-            <p>High Traffic:</p>
-            <div class="color-red"></div>
+        <button class="btn btn-info">
+          <i class="fas fa-plus"></i>
+          Add Alternative Routes
+        </button>
+
+        <div class="most-congested-road">
+          <div class="traffic-indicator-title">
+            <h3>
+              <i class="fas fa-car-side"></i>
+              Most Congested Road
+            </h3>
+            <p>Real time status</p>
           </div>
-          <div class="moderate-traffic-color">
-            <p>Moderate Traffic:</p>
-            <div class="color-yellow"></div>
-          </div>
-          <div class="low-traffic-color">
-            <p>Low Traffic:</p>
-            <div class="color-green"></div>
+          <div class="congested-roads">
+            <div class="road-type">
+              <p>Road 1</p>
+              <p class="time">5:00pm - 7:00pm</p>
+            </div>
+            <div class="road-type">
+              <p>Road 2</p>
+              <p class="time">6:00am - 8:00am</p>
+            </div>
           </div>
         </div>
 
