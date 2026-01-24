@@ -8,7 +8,7 @@ class TrafficFlow extends config {
     $sql = "SELECT 
         r.road_name,
         tf.traffic_condition,
-        tf.traffic_time,
+        tf.start_traffic_time,
         tf.traffic_date
       FROM traffic_flow tf
       JOIN roads r 
@@ -20,7 +20,7 @@ class TrafficFlow extends config {
           WHEN 'Low Traffic' THEN 3
           ELSE 4
         END,
-        tf.traffic_time DESC";
+        tf.start_traffic_time DESC";
     $data = $conn->prepare($sql);
     $data->execute();
       

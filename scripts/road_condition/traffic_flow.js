@@ -41,7 +41,7 @@ export function renderTrafficFlowTable() {
       <tr>
         <td>${data.road_name}</td>
         <td>${data.traffic_condition}</td>
-        <td>${data.traffic_time}</td>
+        <td>${data.start_traffic_time}</td>
         <td>${data.traffic_date}</td>
       </tr>
     `;
