@@ -1,5 +1,3 @@
-import { renderTrafficFlowTable } from "../road_condition/traffic_flow.js";
-
 export let trafficData = [];
 
 export async function fetchTrafficData() {

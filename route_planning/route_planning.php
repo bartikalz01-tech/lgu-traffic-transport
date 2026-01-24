@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_conditions.css"> <!-- Just for sidebar overlay -->
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
-  <link rel="stylesheet" href="../styles/road_condition/traffic_flow.css">
+  <link rel="stylesheet" href="../styles/route_planning/route_plans.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Route Planning</title>
 </head>
@@ -165,7 +165,7 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&callback=initMap"
     async
     defer></script>-->
-  <script type="module" src="../scripts/road_condition/traffic_flow.js"></script>
+  <script type="module" src="../scripts/route_planning/route_planning.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const map = L.map('map').setView([14.6414, 120.9909], 18);
