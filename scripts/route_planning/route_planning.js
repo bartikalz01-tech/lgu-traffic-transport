@@ -52,8 +52,6 @@ export function renderTrafficFlowTable() {
   trafficTbody.innerHTML = trafficFlow;
 }
 
-//fetchTrafficData();
-
 export function renderTrafficPercentage() {
   const highEl = document.querySelector('.red-percentage');
   const moderateEl = document.querySelector('.yellow-percentage');
@@ -81,8 +79,6 @@ export function renderTrafficPercentage() {
     }
   });
 }
-
-//fetchTrafficPercent();
 
 document.addEventListener('DOMContentLoaded', async () => {
   await fetchTrafficData();
