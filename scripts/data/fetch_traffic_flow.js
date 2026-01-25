@@ -9,7 +9,7 @@ export async function fetchTrafficData() {
 
 
     trafficData = await response.json();
-    renderTrafficFlowTable();
+    //renderTrafficFlowTable();
   } catch(error) {
     console.error('Error loading roads:', error);
   }

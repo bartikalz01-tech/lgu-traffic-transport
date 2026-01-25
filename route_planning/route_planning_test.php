@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,20 +9,17 @@
   <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
-  <link rel="stylesheet" href="../styles/road_condition/road_conditions.css"> <!-- Just for sidebar overlay -->
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/route_planning/route_plans.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
-  <title>Route Planning</title>
+  <title>Route Planning Test</title>
 </head>
-
 <body>
+  <?php include '../includes/official_sidebar.php' ?>
+
+  <?php include '../includes/accident_header.php' ?>
+
   <main class="app">
-
-    <?php include '../includes/official_sidebar.php' ?>
-
-    <?php include '../includes/accident_header.php' ?>
-
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
       <div class="module-title-container">
         <p class="module-title">Vehicle Routing Planning</p>
@@ -32,12 +28,7 @@
       </div>
       <p class="current-time">12:00:00</p>
     </div>
-    <!-- For Cards Later
-    <th>Average Traffic Speed</th>
-    <th>Average Traffic Volume</th>
-    <th>Average Traffic Density</th>
-    <th>Average Traffic Flow</th>
-    -->
+
     <section class="traffic-container">
       <div class="traffic-left-section">
         <div class="heat-map">
@@ -150,21 +141,7 @@
     </section>
   </main>
 
-  <?php include '../includes/admin-footer.php'; ?>
-  
-  <!--<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&callback=initMap"
-    async
-    defer></script>-->
-  <!--<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&libraries=visualization&callback=initMap"
-    async
-    defer></script>-->
-  <!--<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm4ObcL1Xl0KdXhP6efApFlaDy99S-Yso&callback=initMap"
-    async
-    defer></script>-->
-  <script type="module" src="../scripts/route_planning/route_planning.js"></script>
+  <script type="module" src="../scripts/route_planning/route_planning_test.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const map = L.map('map').setView([14.6414, 120.9909], 18);
@@ -174,5 +151,4 @@
     }).addTo(map);
   </script>
 </body>
-
 </html>
