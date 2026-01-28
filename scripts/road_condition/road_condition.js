@@ -1,11 +1,15 @@
 import { roads, fetchRoads } from '../data/fetch_roads.js';
+import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
+import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
 import { openRoadCondition } from './road_details.js';
+import { renderTrafficConditionChart, renderTopRoadsChart, renderTrafficTrendChart } from './road_charts.js';
 import { openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay, cctvGrid, roadOverlay } from '../global_variables.js';
 
-export function initSidebar(openBtn, closeBtn, sidebar, overlay) {
+/*export function initSidebar(openBtn, closeBtn, sidebar, overlay) {
   if (!openBtn || !closeBtn || !sidebar || !overlay) return;
 
   openBtn.addEventListener('click', () => {
+    console.log('Hamburger clicked');
     sidebar.classList.toggle('open');
     overlay.classList.toggle('visible');
   });
@@ -16,18 +20,40 @@ export function initSidebar(openBtn, closeBtn, sidebar, overlay) {
   });
 }
 
+initSidebar(openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay);*/
+document.addEventListener('DOMContentLoaded', () => {
+  if (!openSidebarBtn || !closeSidebarBtn || !sidebar || !sidebarOverlay) {
+    console.warn('Sidebar elements missing');
+    return;
+  }
 
-initSidebar(openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay);
+  openSidebarBtn.addEventListener('click', () => {
+    sidebar.classList.add('open');
+    sidebarOverlay.classList.add('visible');
+  });
 
-/*openSidebarBtn.addEventListener('click', () => {
-  sidebar.classList.toggle('open');
-  sidebarOverlay.classList.toggle('visible');
+  closeSidebarBtn.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('visible');
+  });
+
+  sidebarOverlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('visible');
+  });
 });
 
-closeSidebarBtn.addEventListener('click', () => {
-  sidebar.classList.toggle('open');
-  sidebarOverlay.classList.toggle('visible');
-});*/
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await fetchTrafficPercent();
+  renderTrafficConditionChart(trafficPercent);
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await fetchTrafficData();
+  renderTopRoadsChart(trafficData);
+  renderTrafficTrendChart(trafficData);
+});
 
 export function renderCctvFeed() {
   let cctvs = '';

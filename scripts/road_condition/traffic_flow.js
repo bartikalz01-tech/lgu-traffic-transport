@@ -59,6 +59,8 @@ export function renderTrafficPercentage() {
   const moderateEl = document.querySelector('.yellow-percentage');
   const lowEl = document.querySelector('.green-percentage');
 
+  if(!highEl || !moderateEl || !lowEl) return;
+
   highEl.textContent = '0%';
   moderateEl.textContent = '0%';
   lowEl.textContent = '0%';

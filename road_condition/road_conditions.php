@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,9 +17,7 @@
 
 <body>
   <main class="app">
-    <div class="sidebar-overlay"></div>
-    
-    <?php include('../includes/official_sidebar.php') ?>
+    <?php include '../includes/official_sidebar.php'; ?>
 
     <?php include '../includes/accident_header.php' ?>
 
@@ -30,6 +27,24 @@
       <p class="sub-module-description">Real-time surveillance and predictive analytics<span class="streetName remove"></span></p>
     </div>
 
+    <section class="charts-container">
+      <div class="chart">
+        <div class="chart-title">
+          <h2>Traffic Conditions</h2>
+        </div>
+        <canvas id="trafficConditionChart"></canvas>
+      </div>
+      <div class="chart">
+        <canvas id="topRoadsChart"></canvas>
+      </div>
+      <div class="chart">
+        <canvas id="trafficTrendChart"></canvas>
+      </div>
+      <div class="chart">
+        <canvas id="congestedGauge"></canvas>
+      </div>
+    </section>
+
     <section class="cctv-grid js-cctv-grid"></section>
 
     <div class="road-condition-overlay hidden"></div>
@@ -37,6 +52,7 @@
 
   <?php include '../includes/admin-footer.php'; ?>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="../scripts/road_condition/road_condition.js"></script>
 </body>
 
