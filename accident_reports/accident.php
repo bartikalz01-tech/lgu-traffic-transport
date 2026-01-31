@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../styles/accident/accident_test.css">
   <link rel="stylesheet" href="../styles/accident/quick_report.css">
   <link rel="stylesheet" href="../styles/accident/detailed_report.css">
+  <link rel="stylesheet" href="../styles/tickets.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Accident Reports</title>
@@ -19,7 +20,7 @@
 
 <body>
   <main class="app">
-    
+
     <?php include '../includes/official_sidebar.php'; ?>
 
     <?php include '../includes/accident_header.php'; ?>
@@ -86,8 +87,11 @@
                 <span><i class="fas fa-users"></i> 3 People</span>
                 <span><i class="fas fa-car"></i> 2 Vehicles</span>
               </div>
-              <div>
+              <div class="status-and-action">
                 <span class="status-badge status-investigation">Under Investigation</span>
+                <div class="all-about-ticket-buttons">
+                  <button id="modifyTicket" class="btn btn-info">Moodfiy Report</button>
+                </div>
               </div>
             </div>
           </div>
@@ -104,8 +108,11 @@
                 <span><i class="fas fa-users"></i> 2 People</span>
                 <span><i class="fas fa-car"></i> 1 Vehicle</span>
               </div>
-              <div>
+              <div class="status-and-action">
                 <span class="status-badge status-resolved">Resolved</span>
+                <div class="all-about-ticket-buttons">
+                  <button id="modifyTicket" class="btn btn-info">Moodfiy Report</button>
+                </div>
               </div>
             </div>
           </div>
@@ -122,8 +129,11 @@
                 <span><i class="fas fa-users"></i> 1 Person</span>
                 <span><i class="fas fa-car"></i> 1 Vehicle</span>
               </div>
-              <div>
+              <div class="status-and-action">
                 <span class="status-badge status-critical">Critical</span>
+                <div class="all-about-ticket-buttons">
+                  <button id="modifyTicket" class="btn btn-info">Moodfiy Report</button>
+                </div>
               </div>
             </div>
           </div>
@@ -140,8 +150,11 @@
                 <span><i class="fas fa-users"></i> 1 Person</span>
                 <span><i class="fas fa-car"></i> 1 Vehicle</span>
               </div>
-              <div>
+              <div class="status-and-action">
                 <span class="status-badge status-resolved">Resolved</span>
+                <div class="all-about-ticket-buttons">
+                  <button id="modifyTicket" class="btn btn-info">Moodfiy Report</button>
+                </div>
               </div>
             </div>
           </div>

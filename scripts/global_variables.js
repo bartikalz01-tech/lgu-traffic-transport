@@ -22,3 +22,7 @@ export function getQuickReportOverlay() {
 export function getDetailedReports() {
   return document.querySelector('.detailed-reports-overlay');
 }
+
+export function getReportTicket() {
+  return document.querySelector();
+}

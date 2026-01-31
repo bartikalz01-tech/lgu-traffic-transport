@@ -169,6 +169,12 @@
   background: var(--sidebar-hover-bg-1);
 }
 
+.accident-item:hover .all-about-ticket-buttons {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
 .accident-item.active {
   background: rgba(76, 138, 137, 0.1);
   border-left: 3px solid var(--primary-color-1);
@@ -245,4 +251,18 @@
 .status-critical {
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
+}
+
+.status-and-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.all-about-ticket-buttons {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }

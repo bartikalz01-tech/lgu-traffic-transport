@@ -1,0 +1,162 @@
+.ticket-container {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.logo-container img {
+  height: 100px;
+}
+
+.ticket-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 35px;
+}
+
+.ticket-number, 
+.report-ref,
+.status-ticket {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/*.ticket-number h3 {
+  margin: 0;
+  line-height: 1;
+}*/
+
+.ticket-container {
+  margin-left: 20px;
+  margin-right: 20px
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.logo-container img {
+  height: 100px;
+}
+
+.ticket-header {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 25px;
+  border-bottom: 2px solid var(--border-color-1);
+}
+
+.ticket-row-date {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.date {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+
+.ticket-row,
+.details-row {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+
+.ticket-row span {
+  margin: 0;
+  line-height: 1;
+}
+
+.label {
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.value {
+  color: var(--text-color);
+  font-size: 20px;
+}
+
+.report-details h2 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.details-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 10px 12px;
+}
+
+.people-involved {
+  padding: 10px 12px;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.people-table-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.people-details {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 20px;
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+}
+
+.people-details thead tr {
+  text-align: left;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.people-details tbody tr {
+  font-size: 17px;
+  border-bottom: 1px solid #dddddd;
+}
+
+.people-details th,
+.people-details td {
+  padding: 12px 15px;
+  border: 1px solid #dddddd;
+}
+
+.people-details tbody tr:last-of-type {
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.dispatch-part {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  right: 70px;
+}
+
+.name-of-dispatch {
+  text-align: center;
+  width: 100%;
+  border-bottom: 2px solid black;
+}

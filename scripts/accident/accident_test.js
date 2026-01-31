@@ -135,9 +135,6 @@ detailedReports.addEventListener('click', (e) => {
   detailedReports.innerHTML = '';
 });
 
-document.getElementById('accidentList').addEventListener('click', (e) => {
-  const item = e.target.closest('.accident-item');
-  if (!item) return;
-
+document.getElementById('modifyTicket').addEventListener('click', () => {
   detailedAccidentReport();
 });
