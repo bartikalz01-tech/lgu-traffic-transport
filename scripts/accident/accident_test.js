@@ -1,4 +1,4 @@
-import { dateFilter, toggleBtn, fromInput, toInput, applyBtn, clearBtn, getQuickReportOverlay, accidentItems, getDetailedReports } from '../global_variables.js';
+import { dateFilter, toggleBtn, fromInput, toInput, applyBtn, clearBtn, getQuickReportOverlay, accidentItems, getDetailedReports, accidentList } from '../global_variables.js';
 import { renderQuickReport } from './quick_reports.js';
 import { detailedAccidentReport } from './detailed_accident.js';
 
@@ -135,6 +135,14 @@ detailedReports.addEventListener('click', (e) => {
   detailedReports.innerHTML = '';
 });
 
-document.getElementById('modifyTicket').addEventListener('click', () => {
+accidentList.addEventListener('click', (e) => {
+  const modifyBtn = e.target.closest('.js-modify-report');
+  if(!modifyBtn) return;
+
+  const accidentItem = modifyBtn.closest('.accident-item');
+  const accidentId = accidentItem.querySelector('.accident-id')?.textContent;
+
+  console.log('Opening report for:', accidentId);
+
   detailedAccidentReport();
 });

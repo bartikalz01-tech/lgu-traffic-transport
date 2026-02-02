@@ -90,12 +90,13 @@
               <div class="status-and-action">
                 <span class="status-badge status-investigation">Under Investigation</span>
                 <div class="all-about-ticket-buttons">
-                  <button id="modifyTicket" class="btn btn-info">Moodfiy Report</button>
+                  <button class="btn btn-info js-modify-report">Moodfiy Report</button>
                 </div>
               </div>
             </div>
           </div>
 
+          
           <div class="accident-item">
             <div class="accident-header">
               <span class="accident-id">ACC-20260114-003</span>
@@ -111,7 +112,7 @@
               <div class="status-and-action">
                 <span class="status-badge status-resolved">Resolved</span>
                 <div class="all-about-ticket-buttons">
-                  <button id="modifyTicket" class="btn btn-info">Moodfiy Report</button>
+                  <button class="btn btn-info js-modify-report">Moodfiy Report</button>
                 </div>
               </div>
             </div>
@@ -132,12 +133,12 @@
               <div class="status-and-action">
                 <span class="status-badge status-critical">Critical</span>
                 <div class="all-about-ticket-buttons">
-                  <button id="modifyTicket" class="btn btn-info">Moodfiy Report</button>
+                  <button class="btn btn-info js-modify-report">Moodfiy Report</button>
                 </div>
               </div>
             </div>
           </div>
-
+          <
           <div class="accident-item">
             <div class="accident-header">
               <span class="accident-id">ACC-20260113-001</span>
@@ -153,7 +154,7 @@
               <div class="status-and-action">
                 <span class="status-badge status-resolved">Resolved</span>
                 <div class="all-about-ticket-buttons">
-                  <button id="modifyTicket" class="btn btn-info">Moodfiy Report</button>
+                  <button class="btn btn-info js-modify-report">Moodfiy Report</button>
                 </div>
               </div>
             </div>

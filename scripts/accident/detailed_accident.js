@@ -158,11 +158,11 @@ export function detailedAccidentReport() {
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <button class="btn btn-secondary" id="printReportBtn">
+          <!--<button class="btn btn-secondary" id="printReportBtn">
             <i class="fas fa-print"></i> Print Report
-          </button>
-          <button class="btn btn-primary" id="saveReportBtn">
-            <i class="fas fa-save"></i> Save Changes
+          </button>-->
+          <button class="btn btn-primary" id="seeTicketBtn">
+            <i class="fas fa-save"></i> Ticket
           </button>
           <button class="btn btn-success" id="markResolvedBtn">
             <i class="fas fa-check-circle"></i> Mark as Resolved

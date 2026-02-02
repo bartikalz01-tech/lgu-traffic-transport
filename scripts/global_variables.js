@@ -14,6 +14,7 @@ export const clearBtn = document.querySelector('.date-filter-actions .btn-second
 export const accidentItems = document.querySelectorAll('.accident-item');
 export const trafficTbody = document.querySelector('#traffic-table-body');
 export const brgyTrafficStatus = document.querySelector('.js-traffic-status-indicator');
+export const accidentList = document.getElementById('accidentList');
 
 export function getQuickReportOverlay() {
   return document.querySelector('.quick-report-overlay');
