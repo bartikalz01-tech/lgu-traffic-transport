@@ -1,7 +1,8 @@
 import { dateFilter, toggleBtn, fromInput, toInput, applyBtn, clearBtn, getQuickReportOverlay, accidentItems, getDetailedReports, accidentList } from '../global_variables.js';
 import { renderQuickReport } from './quick_reports.js';
 import { detailedAccidentReport } from './detailed_accident.js';
-import { getAccidentCases } from '../data/accident_cases.js'; 
+//import { getAccidentCases } from '../data/accident_cases.js';
+import { renderAccidentItem } from './accident_item.js';
 
 document.addEventListener('DOMContentLoaded', function () {
   const openSidebarBtn = document.querySelector('.hamburger-menu-btn');
@@ -148,6 +149,6 @@ accidentList.addEventListener('click', (e) => {
   detailedAccidentReport();
 });
 
-getAccidentCases().then(data => {
-  console.log(data);
-});
+setInterval(() => {
+  renderAccidentItem();
+}, 500);
