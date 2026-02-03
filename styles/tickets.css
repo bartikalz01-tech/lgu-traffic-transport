@@ -15,6 +15,7 @@
 }
 
 .ticket-header {
+  color:white;
   display: flex;
   flex-direction: column;
   gap: 10px;
