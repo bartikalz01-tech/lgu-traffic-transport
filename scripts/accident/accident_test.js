@@ -142,13 +142,20 @@ accidentList.addEventListener('click', (e) => {
   if(!modifyBtn) return;
 
   const accidentItem = modifyBtn.closest('.accident-item');
-  const accidentId = accidentItem.querySelector('.accident-id')?.textContent;
+  //const accidentId = accidentItem.querySelector('.accident-id')?.textContent;
+  const accidentId = modifyBtn.dataset.accidentId;
+
+  console.log(accidentItem.innerHTML);
 
   console.log('Opening report for:', accidentId);
 
-  detailedAccidentReport();
+  detailedAccidentReport(accidentId);
 });
 
-setInterval(() => {
+/*setInterval(() => {
   renderAccidentItem();
-}, 500);
+}, 500);*/
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await renderAccidentItem();
+});

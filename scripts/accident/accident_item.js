@@ -31,12 +31,15 @@ export async function renderAccidentItem() {
           <div class="status-and-action">
             <span class="status-badge status-resolved">Resolved</span>
             <div class="all-about-ticket-buttons">
-              <button class="btn btn-info js-modify-report" data-accident-id="${data.accident_id}">Moodfiy Report</button>
+              <button class="btn btn-info js-modify-report" data-accident-id="${data.accident_id}">Modfiy Report</button>
             </div>
           </div>
         </div>
       </div>
     `;
+
+    console.log(data);
+    console.log('accident_id:', data.accident_id);
   });
 }
 

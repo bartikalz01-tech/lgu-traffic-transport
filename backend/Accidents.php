@@ -1,14 +1,13 @@
 <?php
 require_once 'config.php';
 
-class Accidents extends config
-{
+class Accidents extends config {
 
   public function getAccidentCases(){
     $conn = $this->conn();
     $sql = "
       SELECT
-        a.accident_id,
+          a.accident_id,
           a.public_accident_id,
           r.road_name,
           a.accident_type,
@@ -24,5 +23,32 @@ class Accidents extends config
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function headerAccidentDetails($accidentId) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT 
+        a.accident_id,
+        a.public_accident_id,
+        r.road_name,
+        a.accident_type,
+        a.accident_description,
+        a.status_of_accident,
+        COUNT(DISTINCT ap.accident_ppl_id) AS total_people,
+        COUNT(DISTINCT av.accident_vehicle_id) AS total_vehicles
+      FROM accident_cases a
+      LEFT JOIN roads r ON a.road_id = r.road_id
+      LEFT JOIN accident_peoples ap ON a.accident_id = ap.accident_id
+      LEFT JOIN accident_vehicles av ON a.accident_id = av.accident_id
+      WHERE a.accident_id = :accident_id
+      GROUP BY a.accident_id;
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':accident_id', $accidentId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 }
