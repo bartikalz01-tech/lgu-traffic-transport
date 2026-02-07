@@ -35,6 +35,9 @@ class Accidents extends config {
         a.accident_type,
         a.accident_description,
         a.status_of_accident,
+        a.status_of_investigation,
+        a.time_of_accident,
+        a.date_of_accident,
         COUNT(DISTINCT ap.accident_ppl_id) AS total_people,
         COUNT(DISTINCT av.accident_vehicle_id) AS total_vehicles
       FROM accident_cases a

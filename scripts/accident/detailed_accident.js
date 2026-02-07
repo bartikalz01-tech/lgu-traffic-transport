@@ -1,8 +1,15 @@
 import { getDetailedReports } from "../global_variables.js";
-import { getHeaderAccidentDetails } from "../data/accident_cases.js";
+import { getHeaderAccidentDetails, getAccidentPeopleDetails } from "../data/accident_cases.js";
+import { formatAccidentDateTime } from "../utils/dateFormatter.js";
+import { renderPeople, peopleInvolved } from "./accidentUtils/render_accident_people.js"; 
 
 export async function detailedAccidentReport(accidentId) {
   const detailedReports = getDetailedReports();
+
+  const personModal = document.getElementById('personModal');
+  const personForm = document.getElementById('personForm');
+  const addPersonBtn = document.getElementById('addPersonBtn');
+
 
   if (!detailedReports) {
     console.error('Detail overlay not found');
@@ -25,6 +32,11 @@ export async function detailedAccidentReport(accidentId) {
   };
 
   const accidentTypeLabel = accident_type_labels[data.accident_type] ?? data.accident_type
+
+  const formattedDateTime = formatAccidentDateTime(
+    data.date_of_accident,
+    data.time_of_accident
+  );
 
   detailedReports.innerHTML = `
         <section class="detailed-reports-overlay">
@@ -57,7 +69,7 @@ export async function detailedAccidentReport(accidentId) {
               </div>
               <div class="accident-data">
                 <p class="description">Date & Time:</p>
-                <p class="data" id="accidentDateTime">Jan 15, 2025 · 10:15 AM</p>
+                <p class="data" id="accidentDateTime">${formattedDateTime}</p>
               </div>
             </div>
 
@@ -67,27 +79,27 @@ export async function detailedAccidentReport(accidentId) {
                 <p class="description">Status:</p>
                 <div class="status-control">
                   <select class="status-select" id="statusSelect">
-                    <option value="investigation">Under Investigation</option>
+                    <option value="investigation">${data.status_of_investigation}</option>
                     <option value="resolved">Resolved</option>
                     <option value="critical">Critical</option>
                     <option value="pending">Pending Review</option>
                     <option value="closed">Case Closed</option>
                   </select>
-                  <span class="status-badge" id="statusBadge">Under Investigation</span>
+                  <span class="status-badge" id="statusBadge">${data.status_of_investigation}</span>
                 </div>
               </div>
               
               <div class="accident-data">
                 <p class="description">People Involved:</p>
-                <p class="data"><span id="peopleCount">3</span> people</p>
+                <p class="data"><span id="peopleCount">${data.total_people}</span> people</p>
               </div>
               <div class="accident-data">
                 <p class="description">Vehicles Involved:</p>
-                <p class="data"><span id="vehiclesCount">2</span> vehicles</p>
+                <p class="data"><span id="vehiclesCount">${data.total_vehicles}</span> vehicles</p>
               </div>
               <div class="accident-data">
                 <p class="description">Severity:</p>
-                <p class="data" id="severityLevel">Moderate</p>
+                <p class="data" id="severityLevel">${data.status_of_accident}</p>
               </div>
             </div>
           </div>
@@ -95,10 +107,8 @@ export async function detailedAccidentReport(accidentId) {
           <!-- Notes Section -->
           <div class="notes-section">
             <h4><i class="fas fa-sticky-note"></i> Investigation Notes</h4>
-            <textarea class="notes-textarea" id="investigationNotes" 
-                      placeholder="Add investigation notes, observations, or updates...">
-    Initial investigation shows both vehicles were speeding. Traffic cameras captured the incident.
-    Witness statements have been collected. Police report pending.
+            <textarea class="notes-textarea" id="investigationNotes" placeholder="Add investigation notes, observations, or updates...">
+              ${data.accident_description}
             </textarea>
             <div class="timestamp">Last updated: <span id="notesTimestamp">Jan 15, 2025 2:30 PM</span></div>
           </div>
@@ -106,7 +116,8 @@ export async function detailedAccidentReport(accidentId) {
           <!-- People Involved Section -->
           <div class="report-table-section">
             <div class="table-header-actions">
-              <h3><i class="fas fa-users"></i> People Involved <span class="section-badge"><span id="peopleCountBadge">3</span> Persons</span></h3>
+              <!-- HERE NEXUS THE People Involved -->
+              <h3><i class="fas fa-users"></i> People Involved <span class="section-badge"><span id="peopleCountBadge">${data.total_people}</span> Persons</span></h3>
               <button class="btn btn-primary" id="addPersonBtn">
                 <i class="fas fa-user-plus"></i> Add Person
               </button>
@@ -315,6 +326,16 @@ export async function detailedAccidentReport(accidentId) {
       </div>`
 
   detailedReports.classList.remove('detailed-reports-hidden');
+
+  const accidentPeoples = await getAccidentPeopleDetails(accidentId);
+
+  if(!accidentPeoples) {
+    console.error('No accident people data returned');
+  }
+
+  peopleInvolved = accidentPeoples;
+
+  renderPeople();
 
   addPersonBtn.addEventListener('click', () => {
     personModal.style.display = 'flex';
