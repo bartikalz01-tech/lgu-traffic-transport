@@ -94,3 +94,27 @@ export async function getAccidentPeopleDetails(accidentId) {
     return[];
   }
 }
+
+export async function getAccidentVehicleDetails(accidentId) {
+  try {
+    const response = await fetch(
+      `../api/get_accident_vehicles_details.php?accident_id=${accidentId}`
+    );
+
+    if(!response) {
+      throw new Error('Failed to fetch accident people');
+    }
+
+    const result = await response.json();
+
+    if(!result.success) {
+      throw new Error(result.message || 'API returned failure');
+    }
+
+    return result.data;
+
+  } catch(error) {
+    console.error('Error loading people involved:', error);
+    return[];
+  } 
+}

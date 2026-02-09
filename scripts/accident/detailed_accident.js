@@ -1,15 +1,11 @@
 import { getDetailedReports } from "../global_variables.js";
-import { getHeaderAccidentDetails, getAccidentPeopleDetails } from "../data/accident_cases.js";
+import { getHeaderAccidentDetails, getAccidentPeopleDetails, getAccidentVehicleDetails } from "../data/accident_cases.js";
 import { formatAccidentDateTime } from "../utils/dateFormatter.js";
 import { renderPeople, peopleInvolved } from "./accidentUtils/render_accident_people.js"; 
+import { renderAccidentVehicles, vehicleAccidentInvolved } from "./accidentUtils/render_accident_vehicles.js";
 
 export async function detailedAccidentReport(accidentId) {
   const detailedReports = getDetailedReports();
-
-  const personModal = document.getElementById('personModal');
-  const personForm = document.getElementById('personForm');
-  const addPersonBtn = document.getElementById('addPersonBtn');
-
 
   if (!detailedReports) {
     console.error('Detail overlay not found');
@@ -177,7 +173,7 @@ export async function detailedAccidentReport(accidentId) {
           <!-- Vehicles Involved Section -->
           <div class="report-table-section">
             <div class="table-header-actions">
-              <h3><i class="fas fa-car"></i> Vehicles Involved <span class="section-badge"><span id="vehiclesCountBadge">2</span> Vehicles</span></h3>
+              <h3><i class="fas fa-car"></i> Vehicles Involved <span class="section-badge"><span id="vehiclesCountBadge">${data.total_vehicles}</span> Vehicles</span></h3>
               <button class="btn btn-primary" id="addVehicleBtn">
                 <i class="fas fa-car-side"></i> Add Vehicle
               </button>
@@ -190,9 +186,8 @@ export async function detailedAccidentReport(accidentId) {
                     <th>Driver</th>
                     <th>Plate No.</th>
                     <th>Vehicle Type</th>
-                    <th>Model</th>
+                    <th>Vehicle Name</th>
                     <th>Damage Level</th>
-                    <th>Insurance</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -328,14 +323,29 @@ export async function detailedAccidentReport(accidentId) {
   detailedReports.classList.remove('detailed-reports-hidden');
 
   const accidentPeoples = await getAccidentPeopleDetails(accidentId);
+  const accidentVehicles = await getAccidentVehicleDetails(accidentId);
 
   if(!accidentPeoples) {
     console.error('No accident people data returned');
   }
 
-  peopleInvolved = accidentPeoples;
+  if(!accidentVehicles) {
+    console.error('No accident vehicle data returned');
+  }
+
+  //peopleInvolved = accidentPeoples;
+  peopleInvolved.length = 0;
+  peopleInvolved.push(...accidentPeoples);
+
+  vehicleAccidentInvolved.length = 0;
+  vehicleAccidentInvolved.push(...accidentVehicles);
 
   renderPeople();
+  renderAccidentVehicles();
+
+  const personModal = document.getElementById('personModal');
+  const personForm = document.getElementById('personForm');
+  const addPersonBtn = document.getElementById('addPersonBtn');
 
   addPersonBtn.addEventListener('click', () => {
     personModal.style.display = 'flex';

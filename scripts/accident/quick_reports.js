@@ -303,7 +303,7 @@ document.addEventListener('click', (e) => {
 
   const driver = document.getElementById('vehicleDriver').value.trim();
   const plate = document.getElementById('vehiclePlate').value.trim();
-  const type = document.getElementById('vehicleType').value;
+  const type = document.getElementById('vehicleType').value.trim();
   const vehicleName = document.getElementById('vehicleName').value.trim();
   const damage = document.getElementById('damageLevel').value;
 
@@ -317,6 +317,7 @@ document.addEventListener('click', (e) => {
   const tr = document.createElement('tr');
   tr.dataset.driver = driver;
   tr.dataset.vehicle = vehicleName;
+  tr.dataset.vehicleType = type;
   tr.dataset.plate = plate;
   tr.dataset.damage = damage;
 
@@ -390,6 +391,7 @@ document.addEventListener('click', async (e) => {
     payLoad.vehicles.push({
       driver_name: row.dataset.driver,
       vehicle_name: row.dataset.vehicle,
+      vehicle_type: row.dataset.vehicleType,
       plate_number: row.dataset.plate,
       damage_level: row.dataset.damage
     });

@@ -71,6 +71,7 @@ try {
 
     $vehicle_id = $vehiclesObj->insertVehicles(
       $v['vehicle_name'],
+      $v['vehicle_type'],
       $v['plate_number']
     );
 
