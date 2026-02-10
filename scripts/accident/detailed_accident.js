@@ -1,7 +1,7 @@
 import { getDetailedReports } from "../global_variables.js";
 import { getHeaderAccidentDetails, getAccidentPeopleDetails, getAccidentVehicleDetails } from "../data/accident_cases.js";
 import { formatAccidentDateTime } from "../utils/dateFormatter.js";
-import { renderPeople, peopleInvolved } from "./accidentUtils/render_accident_people.js"; 
+import { renderPeople, peopleInvolved } from "./accidentUtils/render_accident_people.js";
 import { renderAccidentVehicles, vehicleAccidentInvolved } from "./accidentUtils/render_accident_vehicles.js";
 
 export async function detailedAccidentReport(accidentId) {
@@ -66,6 +66,16 @@ export async function detailedAccidentReport(accidentId) {
               <div class="accident-data">
                 <p class="description">Date & Time:</p>
                 <p class="data" id="accidentDateTime">${formattedDateTime}</p>
+              </div>
+              <div class="accident-data">
+                <p class="description">Assigned Barangay Officer:</p>
+                <div class="status-control">
+                  <select class="status-select" id="dispatchedOfficerSelect">
+                    <option value="kamado">Kamado Tanjiro</option>
+                    <option value="tomioka">Giyu Tomioka</option>
+                    <option value="rengoku">Rengoku Kyojuro</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -323,11 +333,11 @@ export async function detailedAccidentReport(accidentId) {
   const accidentPeoples = await getAccidentPeopleDetails(accidentId);
   const accidentVehicles = await getAccidentVehicleDetails(accidentId);
 
-  if(!accidentPeoples) {
+  if (!accidentPeoples) {
     console.error('No accident people data returned');
   }
 
-  if(!accidentVehicles) {
+  if (!accidentVehicles) {
     console.error('No accident vehicle data returned');
   }
 
