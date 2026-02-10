@@ -1,5 +1,6 @@
 import { getDetailedReports } from "../global_variables.js";
 import { getHeaderAccidentDetails, getAccidentPeopleDetails, getAccidentVehicleDetails } from "../data/accident_cases.js";
+import { loadOfficers } from "../data/fetch_officers.js";
 import { formatAccidentDateTime } from "../utils/dateFormatter.js";
 import { renderPeople, peopleInvolved } from "./accidentUtils/render_accident_people.js";
 import { renderAccidentVehicles, vehicleAccidentInvolved } from "./accidentUtils/render_accident_vehicles.js";
@@ -71,9 +72,7 @@ export async function detailedAccidentReport(accidentId) {
                 <p class="description">Assigned Barangay Officer:</p>
                 <div class="status-control">
                   <select class="status-select" id="dispatchedOfficerSelect">
-                    <option value="kamado">Kamado Tanjiro</option>
-                    <option value="tomioka">Giyu Tomioka</option>
-                    <option value="rengoku">Rengoku Kyojuro</option>
+                    
                   </select>
                 </div>
               </div>
@@ -332,6 +331,7 @@ export async function detailedAccidentReport(accidentId) {
 
   const accidentPeoples = await getAccidentPeopleDetails(accidentId);
   const accidentVehicles = await getAccidentVehicleDetails(accidentId);
+  await loadOfficers(data.officer_id);
 
   if (!accidentPeoples) {
     console.error('No accident people data returned');
@@ -367,5 +367,25 @@ export async function detailedAccidentReport(accidentId) {
   document.getElementById('cancelPersonBtn').addEventListener('click', () => {
     personModal.style.display = 'none';
     personForm.reset();
+  });
+
+  document.getElementById("dispatchedOfficerSelect").addEventListener('change', async (e) => {
+    const officerId = e.target.value;
+    if(!officerId) return;
+
+    try {
+      const response = await fetch("../api/assign_officer.php", {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({
+          accident_id: accidentId,
+          officer_id: officerId
+        })
+      });
+
+      const data = await response.json();
+    } catch(error) {
+      console.error("Invalid data", error);
+    }
   });
 }

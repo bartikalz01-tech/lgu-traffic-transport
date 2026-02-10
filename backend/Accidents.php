@@ -30,6 +30,7 @@ class Accidents extends config {
     $sql = "
       SELECT 
         a.accident_id,
+        ao.officer_id,
         a.public_accident_id,
         r.road_name,
         a.accident_type,
@@ -42,6 +43,7 @@ class Accidents extends config {
         COUNT(DISTINCT av.accident_vehicle_id) AS total_vehicles
       FROM accident_cases a
       LEFT JOIN roads r ON a.road_id = r.road_id
+      LEFT JOIN officers ao ON a.officer_id = ao.officer_id
       LEFT JOIN accident_peoples ap ON a.accident_id = ap.accident_id
       LEFT JOIN accident_vehicles av ON a.accident_id = av.accident_id
       WHERE a.accident_id = :accident_id
