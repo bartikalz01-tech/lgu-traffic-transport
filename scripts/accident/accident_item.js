@@ -14,7 +14,15 @@ export async function renderAccidentItem() {
     other: 'Other'
   };
 
+  const statusClassMap = {
+    'Open Case': 'status-open',
+    'Under Investigation': 'status-investigation',
+    'Resolved': 'status-resolved'
+  };
+
   accidentData.forEach(data => {
+    const statusClass = statusClassMap[data.status_of_investigation] || 'status-open';
+
     accidentList.innerHTML += `
       <div class="accident-item">
         <div class="accident-header">
@@ -29,7 +37,7 @@ export async function renderAccidentItem() {
             <span><i class="fas fa-car"></i> ${data.total_vehicles} Vehicles</span>
           </div>
           <div class="status-and-action">
-            <span class="status-badge status-resolved">Resolved</span>
+            <span class="status-badge ${statusClass}">${data.status_of_investigation}</span>
             <div class="all-about-ticket-buttons">
               <button class="btn btn-info js-modify-report" data-accident-id="${data.accident_id}">Modfiy Report</button>
             </div>

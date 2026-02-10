@@ -11,6 +11,7 @@ class Accidents extends config {
           a.public_accident_id,
           r.road_name,
           a.accident_type,
+          a.status_of_investigation,
           a.date_of_accident,
           a.time_of_accident
       FROM accident_cases a
