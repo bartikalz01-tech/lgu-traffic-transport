@@ -76,10 +76,8 @@ export async function detailedAccidentReport(accidentId) {
                 <div class="status-control">
                   <select class="status-select" id="statusSelect">
                     <option value="investigation">${data.status_of_investigation}</option>
+                    <option value="critical">Under Investigation</option>
                     <option value="resolved">Resolved</option>
-                    <option value="critical">Critical</option>
-                    <option value="pending">Pending Review</option>
-                    <option value="closed">Case Closed</option>
                   </select>
                   <span class="status-badge" id="statusBadge">${data.status_of_investigation}</span>
                 </div>
