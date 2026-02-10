@@ -1,6 +1,17 @@
 import { getQuickReportOverlay } from "../global_variables.js";
+import { renderAccidentItem } from "./accident_item.js";
+
 
 let accidentId = null;
+
+function closeQuickReport() {
+  const quickReportOverlay = getQuickReportOverlay();
+
+  if(!quickReportOverlay) return;
+
+  quickReportOverlay.classList.add('hidden');
+  quickReportOverlay.innerHTML = '';
+}
 
 export function renderQuickReport() {
   accidentId = `ACC-${Date.now()}`;
@@ -410,6 +421,8 @@ document.addEventListener('click', async (e) => {
 
     if (data.success) {
       alert("Accident report submitted successfully");
+      await renderAccidentItem();
+      closeQuickReport();
     } else {
       alert("Error " + data.message);
     }
