@@ -21,12 +21,12 @@ export async function loadReportStatus(selectedStatusId = null) {
 
   selectStatus.value = selectedStatusId;
 
-  const badge = document.getElementById('statusBadge');
+  /*const badge = document.getElementById('statusBadge');
 
   if(badge && selectStatus.selectedIndex >= 0) {
     const selectedOption = selectStatus.options[selectStatus.selectedIndex];
     badge.textContent = selectedOption.textContent;
-  }
+  }*/
 
   console.log("SELECTED STATUS ID RECEIVED:", selectedStatusId);
 }

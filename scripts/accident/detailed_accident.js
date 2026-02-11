@@ -87,7 +87,7 @@ export async function detailedAccidentReport(accidentId) {
                   <select class="status-select" id="statusSelect">
                     
                   </select>
-                  <span class="status-badge" id="statusBadge">${data.status_definition}</span>
+                  <span class="status-badge" id="statusBadge"></span>
                 </div>
               </div>
               
@@ -391,15 +391,19 @@ export async function detailedAccidentReport(accidentId) {
     }
   });
 
-  document.getElementById("statusSelect").addEventListener('change', async (e) => {
+  const statusSelect = document.getElementById('statusSelect');
+  const badge = document.getElementById('statusBadge');
+
+  const initialOption = statusSelect.options[statusSelect.selectedIndex];
+  badge.textContent = initialOption.textContent;
+
+  statusSelect.addEventListener('change', async (e) => {
     const statusId = e.target.value;
     const selectedOption = e.target.options[e.target.selectedIndex];
     const statusText = selectedOption.textContent;
+    badge.textContent = selectedOption.textContent;
 
     if(!statusId) return;
-
-    const badge = document.getElementById('statusBadge');
-    badge.textContent = statusText;
 
     try {
       const response = await fetch("../api/assign_status.php", {
