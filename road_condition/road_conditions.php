@@ -27,7 +27,7 @@
       <p class="sub-module-description">Real-time surveillance and predictive analytics<span class="streetName remove"></span></p>
     </div>
 
-    <section class="charts-container">
+    <!--<section class="charts-container">
       <div class="chart">
         <div class="chart-title">
           <h2>Traffic Conditions</h2>
@@ -43,7 +43,7 @@
       <div class="chart">
         <canvas id="congestedGauge"></canvas>
       </div>
-    </section>
+    </section>-->
 
     <section class="cctv-grid js-cctv-grid"></section>
 
