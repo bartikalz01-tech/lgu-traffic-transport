@@ -21,7 +21,7 @@ export async function renderAccidentItem() {
   };
 
   accidentData.forEach(data => {
-    const statusClass = statusClassMap[data.status_of_investigation] || 'status-open';
+    const statusClass = statusClassMap[data.status_definition] || 'status-open';
 
     accidentList.innerHTML += `
       <div class="accident-item">
@@ -37,17 +37,14 @@ export async function renderAccidentItem() {
             <span><i class="fas fa-car"></i> ${data.total_vehicles} Vehicles</span>
           </div>
           <div class="status-and-action">
-            <span class="status-badge ${statusClass}">${data.status_of_investigation}</span>
+            <span class="status-badge ${statusClass}">${data.status_definition}</span>
             <div class="all-about-ticket-buttons">
               <button class="btn btn-info js-modify-report" data-accident-id="${data.accident_id}">Modfiy Report</button>
             </div>
           </div>
         </div>
       </div>
-    `;
-
-    console.log(data);
-    console.log('accident_id:', data.accident_id);
+    `;  
   });
 }
 

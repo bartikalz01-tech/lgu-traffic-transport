@@ -1,6 +1,7 @@
 import { getDetailedReports } from "../global_variables.js";
 import { getHeaderAccidentDetails, getAccidentPeopleDetails, getAccidentVehicleDetails } from "../data/accident_cases.js";
 import { loadOfficers } from "../data/fetch_officers.js";
+import { loadReportStatus } from "../data/fetch_status_reports.js";
 import { formatAccidentDateTime } from "../utils/dateFormatter.js";
 import { renderPeople, peopleInvolved } from "./accidentUtils/render_accident_people.js";
 import { renderAccidentVehicles, vehicleAccidentInvolved } from "./accidentUtils/render_accident_vehicles.js";
@@ -84,11 +85,9 @@ export async function detailedAccidentReport(accidentId) {
                 <p class="description">Status:</p>
                 <div class="status-control">
                   <select class="status-select" id="statusSelect">
-                    <option value="investigation">${data.status_of_investigation}</option>
-                    <option value="critical">Under Investigation</option>
-                    <option value="resolved">Resolved</option>
+                    
                   </select>
-                  <span class="status-badge" id="statusBadge">${data.status_of_investigation}</span>
+                  <span class="status-badge" id="statusBadge">${data.status_definition}</span>
                 </div>
               </div>
               
@@ -332,6 +331,8 @@ export async function detailedAccidentReport(accidentId) {
   const accidentPeoples = await getAccidentPeopleDetails(accidentId);
   const accidentVehicles = await getAccidentVehicleDetails(accidentId);
   await loadOfficers(data.officer_id);
+  console.log("STATUS ID FROM HEADER:", data.status_id);
+  await loadReportStatus(data.status_id);
 
   if (!accidentPeoples) {
     console.error('No accident people data returned');
@@ -384,8 +385,39 @@ export async function detailedAccidentReport(accidentId) {
       });
 
       const data = await response.json();
+
     } catch(error) {
       console.error("Invalid data", error);
+    }
+  });
+
+  document.getElementById("statusSelect").addEventListener('change', async (e) => {
+    const statusId = e.target.value;
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    const statusText = selectedOption.textContent;
+
+    if(!statusId) return;
+
+    const badge = document.getElementById('statusBadge');
+    badge.textContent = statusText;
+
+    try {
+      const response = await fetch("../api/assign_status.php", {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({
+          accident_id: accidentId,
+          status_id: statusId 
+        })
+      });
+
+      const data = await response.json();
+
+      if(data.success) {
+        
+      }
+    } catch(error) {
+      console.error("Status data did not send", error);
     }
   });
 }

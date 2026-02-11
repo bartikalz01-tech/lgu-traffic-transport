@@ -11,12 +11,14 @@ class Accidents extends config {
           a.public_accident_id,
           r.road_name,
           a.accident_type,
-          a.status_of_investigation,
+          sr.status_definition,
           a.date_of_accident,
           a.time_of_accident
       FROM accident_cases a
       JOIN roads r
         ON a.road_id = r.road_id
+      LEFT JOIN status_of_reports sr
+        ON a.status_id = sr.status_id
       ORDER BY a.accident_id DESC
     ";
 
@@ -37,12 +39,14 @@ class Accidents extends config {
         a.accident_type,
         a.accident_description,
         a.status_of_accident,
-        a.status_of_investigation,
+        a.status_id,
+        sr.status_definition,
         a.time_of_accident,
         a.date_of_accident,
         COUNT(DISTINCT ap.accident_ppl_id) AS total_people,
         COUNT(DISTINCT av.accident_vehicle_id) AS total_vehicles
       FROM accident_cases a
+      LEFT JOIN status_of_reports sr ON a.status_id = sr.status_id
       LEFT JOIN roads r ON a.road_id = r.road_id
       LEFT JOIN officers ao ON a.officer_id = ao.officer_id
       LEFT JOIN accident_peoples ap ON a.accident_id = ap.accident_id

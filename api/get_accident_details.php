@@ -25,7 +25,7 @@ foreach($accidentCases as $accident) {
     'public_accident_id' => $accident['public_accident_id'],
     'road_name' => $accident['road_name'],
     'accident_type' => $accident['accident_type'],
-    'status_of_investigation' => $accident['status_of_investigation'],
+    'status_definition' => $accident['status_definition'],
     'date_of_accident' => $accident['date_of_accident'],
     'time_of_accident' => $accident['time_of_accident'],
     'total_people' => (int) ($peopleData['total_people'] ?? 0),
