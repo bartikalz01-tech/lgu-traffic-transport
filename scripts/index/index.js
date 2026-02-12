@@ -199,3 +199,38 @@ signUpForm.addEventListener("submit", async (e) => {
   }
 
 });
+
+const loginForm = document.getElementById("loginForm");
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = loginForm.querySelector('input[name="email"]').value;
+  const password = loginForm.querySelector('input[name="password"]').value;
+
+  try {
+    const response = await fetch('api/login.php', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        email: email,
+        password: password
+      })
+    });
+
+    const data = await response.json();
+
+    if(data.status === "success") {
+      alert("Login Successful!");
+
+      window.location.href = "road_condition/road_conditions.php";
+    } else {
+      alert(data.message);
+    }
+  } catch(error) {
+    console.error("Login error", error);
+    alert("Something went wrong in login process");
+  }
+});
