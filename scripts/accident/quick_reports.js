@@ -66,6 +66,8 @@ export function renderQuickReport() {
               <option value="property">Property Damage</option>
               <option value="other">Other</option>
             </select>
+
+            <input type="text" placeholder="Input Accident Type" class="form-control" id="customAccidentType" style="display: none; margin-top: 0.5rem;">
           </div>
           <div class="form-group">
             <label class="form-label">Severity Level <span class="required">*</span></label>
@@ -267,6 +269,21 @@ export function renderQuickReport() {
   dateInput.value = new Date().toISOString().split('T')[0];
 }
 
+document.addEventListener('change', (e) => {
+  if(e.target.id !== 'accidentType') return;
+
+  const customAccidentTypeInput = document.getElementById('customAccidentType');
+
+  if(e.target.value === 'other') {
+    customAccidentTypeInput.style.display = 'block';
+    customAccidentTypeInput.required = true;
+  } else {
+    customAccidentTypeInput.style.display = 'none';
+    customAccidentTypeInput.required = false;
+    customAccidentTypeInput.value = '';
+  }
+});
+
 document.addEventListener('click', (e) => {
   if(!e.target.closest('#addPersonBtn')) return ;
 
@@ -374,11 +391,26 @@ document.addEventListener('click', (e) => {
 document.addEventListener('click', async (e) => {
   if (!e.target.closest('#submitReportBtn')) return;
 
+  const selectedType = document.getElementById('accidentType').value;
+  const customType = document.getElementById('customAccidentType').value.trim();
+
+  let finalAccidentType = selectedType
+
+  if(selectedType === 'other') {
+    if(!customType) {
+      alert("Please specify the accident type.");
+      return;
+    }
+
+    finalAccidentType = customType;
+  }
+
   const payLoad = {
     accident: {
       public_accident_id: accidentId,
       road_id: document.getElementById('roadId').value,
-      accident_type: document.getElementById('accidentType').value,
+      //accident_type: document.getElementById('accidentType').value,
+      accident_type: finalAccidentType,
       accident_description: document.getElementById('description').value,
       status_of_accident: document.getElementById('severityLevel').value,
       date_of_accident: document.getElementById('accidentDate').value,
