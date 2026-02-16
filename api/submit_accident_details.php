@@ -37,7 +37,7 @@ try {
     $data['accident']['date_of_accident']
   );
 
-  $peopleObj = new InsertPeopleInvolved();
+  /*$peopleObj = new InsertPeopleInvolved();
   $accidentPeopleObj = new InsertAccidentPeoples();
 
   $peopleMap = [];
@@ -81,7 +81,7 @@ try {
       $vehicle_id,
       $v['damage_level']
     );
-  }
+  }*/
 
   $conn->commit();
 
