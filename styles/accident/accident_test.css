@@ -195,7 +195,7 @@
 
 .accident-time {
   font-size: 0.75rem;
-  color: var(--text-secondary-1);
+  color: var(--text-secondary);
 }
 
 .accident-details h4 {

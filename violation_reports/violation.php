@@ -39,17 +39,17 @@
             <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
             <div class="action-buttons">
               <button class="btn btn-primary action-btn" id="quickIssueBtn">
-                <i class="fas fa-ticket-alt"></i> Issue Quick Ticket
+                <i class="fas fa-ticket-alt"></i> Issue Violation Reports
               </button>
-              <button class="btn btn-secondary action-btn" id="processPaymentBtn">
-                <i class="fas fa-money-bill"></i> Process Payment
+              <button class="btn btn-secondary action-btn" id="barangayReportsBtn">
+                <i class="fas fa-money-bill"></i> Barangay Reports
               </button>
-              <button class="btn btn-secondary action-btn" id="generateReportBtn">
-                <i class="fas fa-chart-bar"></i> Generate Report
+              <button class="btn btn-secondary action-btn" id="escalatedReportsBtn">
+                <i class="fas fa-chart-bar"></i> Escalated Reports <!-- To create violatios based on barangay ordinance -->
               </button>
-              <button class="btn btn-secondary action-btn" id="sendRemindersBtn">
-                <i class="fas fa-bell"></i> Send Reminders
-              </button>
+              <!--<button class="btn btn-secondary action-btn" id="sendRemindersBtn">
+                <i class="fas fa-user-group"></i> Dispatch Officers
+              </button>-->
             </div>
           </div>
 
@@ -76,10 +76,10 @@
           </div>
 
           <div class="quick-action-card">
-            <h4><i class="fas fa-exclamation-circle"></i> Top Violations</h4>
+            <h4><i class="fas fa-exclamation-circle"></i> Barangay Violations</h4>
             <div style="margin-top: 1rem;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span>Speeding</span>
+                <span>Obstruction of Roads</span>
                 <span class="stat-value">45</span>
               </div>
               <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
@@ -87,17 +87,17 @@
                 <span class="stat-value">38</span>
               </div>
               <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span>No Helmet</span>
+                <span>Route Violations</span>
                 <span class="stat-value">32</span>
               </div>
-              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <!--<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                 <span>Red Light</span>
                 <span class="stat-value">24</span>
               </div>
               <div style="display: flex; justify-content: space-between;">
                 <span>No License</span>
                 <span class="stat-value">18</span>
-              </div>
+              </div>-->
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@
           </div>
 
           <div class="violations-container">
-            <div class="violations-table-wrapper">
+            <!--<div class="violations-table-wrapper">
               <table class="violations-table">
                 <thead>
                   <tr>
@@ -136,7 +136,7 @@
                   </tr>
                 </thead>
                 <tbody id="violationsTableBody">
-                  <!-- Sample Data - Will be populated dynamically -->
+                  
                   <tr>
                     <td>VIO-20240115-001</td>
                     <td>ABC-1234 (Toyota)</td>
@@ -234,6 +234,28 @@
                   </tr>
                 </tbody>
               </table>
+            </div>-->
+            <div class="list-body" id="violationList">
+              <div class="violation-item active">
+                <div class="violation-header">
+                  <span class="violation-id">VIOLATION-20240115-001</span>
+                  <span class="violation-time">Today, 10:15 AM</span>
+                </div>
+                <div class="violation-details">
+                  <h4>Vehicle Collision at Road 123</h4>
+                  <div class="violation-meta">
+                    <span><i class="fas fa-road"></i> Road 123</span>
+                    <span><i class="fas fa-users"></i> 3 People</span>
+                    <span><i class="fas fa-car"></i> 2 Vehicles</span>
+                  </div>
+                  <div class="status-and-action">
+                    <span class="status-badge status-investigation">Under Investigation</span>
+                    <div class="all-about-ticket-buttons">
+                      <button class="btn btn-info js-modify-report" data-accident-id="">Modfiy Report</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="pagination">

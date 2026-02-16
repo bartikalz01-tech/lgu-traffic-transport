@@ -191,12 +191,26 @@
   gap: 1rem;
 }
 
+.violation-statistics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
 .stat-item {
   text-align: center;
   padding: 0.75rem;
   border-radius: 8px;
   background: var(--sidebar-hover-bg-1);
 }
+
+/*.violation-item {
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: var(--card-bg-1);
+  border: 2px solid var(--border-color-1);
+}*/
 
 .stat-value {
   font-size: 1.5rem;
@@ -249,4 +263,113 @@
 .page-info {
   color: var(--text-secondary-1);
   font-size: 0.875rem;
+}
+
+.list-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.violation-item {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color-1);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.violation-item:hover {
+  background: var(--sidebar-hover-bg-1);
+}
+
+.violation-item:hover .all-about-ticket-buttons {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.violation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.violation-id {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 0.875rem;
+}
+
+.violation-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.violation-details h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: var(--text-color-1);
+}
+
+.violation-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.violation-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.violation-meta i {
+  font-size: 0.75rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-info {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.status-investigation {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.status-resolved {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.status-open {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.status-and-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.all-about-ticket-buttons {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
