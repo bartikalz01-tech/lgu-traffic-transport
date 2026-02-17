@@ -22,6 +22,7 @@ class AccidentPeoples extends config {
     $conn = $this->conn();
     $sql = "
       SELECT
+        p.people_id,
         a.accident_id,
         p.full_name,
         p.contact_num,

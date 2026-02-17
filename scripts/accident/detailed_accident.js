@@ -5,6 +5,7 @@ import { loadReportStatus } from "../data/fetch_status_reports.js";
 import { formatAccidentDateTime } from "../utils/dateFormatter.js";
 import { renderPeople, peopleInvolved } from "./accidentUtils/render_accident_people.js";
 import { renderAccidentVehicles, vehicleAccidentInvolved } from "./accidentUtils/render_accident_vehicles.js";
+import { renderAccidentItem } from "./accident_item.js";
 
 export async function detailedAccidentReport(accidentId) {
   const detailedReports = getDetailedReports();
@@ -283,8 +284,11 @@ export async function detailedAccidentReport(accidentId) {
           </div>
           <form class="vehicle-form" id="vehicleForm">
             <div class="form-group">
-              <label for="vehicleDriver">Driver Name *</label>
-              <input type="text" id="vehicleDriver" required>
+              <!--<label for="vehicleDriver">Driver Name *</label>
+              <input type="text" id="vehicleDriver" required>-->
+              <select id="vehicleDriverSelect">
+                <option value="">Select Driver</option>
+              </select>
             </div>
             <div class="form-group">
               <label for="vehiclePlate">Plate Number *</label>
@@ -313,10 +317,6 @@ export async function detailedAccidentReport(accidentId) {
                 <option value="severe">Severe</option>
                 <option value="totaled">Totaled</option>
               </select>
-            </div>
-            <div class="form-group">
-              <label for="vehicleInsurance">Insurance Company</label>
-              <input type="text" id="vehicleInsurance" placeholder="Insurance Company">
             </div>
             <div class="form-actions">
               <button type="button" class="btn btn-secondary" id="cancelVehicleBtn">Cancel</button>
@@ -352,6 +352,21 @@ export async function detailedAccidentReport(accidentId) {
   renderPeople();
   renderAccidentVehicles();
 
+  const driverSelect = document.getElementById("vehicleDriverSelect");
+
+  function populateDriverDropdown() {
+    driverSelect.innerHTML = '<option value="">Select Driver</option>';
+
+    peopleInvolved.forEach(person => {
+      if(person.role === 'driver') {
+        const option = document.createElement("option");
+        option.value = person.people_id;
+        option.textContent = person.full_name;
+        driverSelect.appendChild(option);
+      }
+    });
+  }
+
   const personModal = document.getElementById('personModal');
   const personForm = document.getElementById('personForm');
   const addPersonBtn = document.getElementById('addPersonBtn');
@@ -360,14 +375,97 @@ export async function detailedAccidentReport(accidentId) {
     personModal.style.display = 'flex';
   });
 
-  document.getElementById('closePersonModal').addEventListener('click', () => {
-    personModal.style.display = 'none';
-    personForm.reset();
+  personForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const response = await fetch("../api/add_person_to_accident.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        accident_id: accidentId,
+        full_name: document.getElementById("personName").value,
+        contact_num: document.getElementById("personContact").value,
+        address: document.getElementById("personAddress").value,
+        role: document.getElementById("personRole").value,
+        status_level: document.getElementById("personInjury").value
+      })
+    });
+
+    const result = await response.json();
+
+    if(result.success) {
+      personModal.style.display = "none";
+      personForm.reset();
+
+      const updatedPeople = await getAccidentPeopleDetails(accidentId);
+      peopleInvolved.length = 0;
+      peopleInvolved.push(...updatedPeople);
+
+      renderPeople();
+      console.log(peopleInvolved);
+    }
   });
 
   document.getElementById('cancelPersonBtn').addEventListener('click', () => {
     personModal.style.display = 'none';
     personForm.reset();
+  });
+
+  const vehicleModal = document.getElementById('vehicleModal');
+  const vehicleForm = document.getElementById('vehicleForm');
+  const addVehicleBtn = document.getElementById('addVehicleBtn');
+
+  addVehicleBtn.addEventListener('click', () => {
+    populateDriverDropdown();
+    vehicleModal.style.display = 'flex';
+  });
+
+  vehicleForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const selectedPeopleId = document.getElementById("vehicleDriverSelect").value;
+
+    if(!selectedPeopleId) {
+      alert("Please select a driver");
+      return;
+    }
+
+    try {
+      const response = await fetch("../api/add_vehicles_to_accident.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({
+          accident_id: accidentId,
+          people_id: selectedPeopleId,
+          vehicle_name: document.getElementById("vehicleModel").value,
+          vehicle_type: document.getElementById("vehicleType").value,
+          plate_number: document.getElementById("vehiclePlate").value,
+          damage_level: document.getElementById("vehicleDamage").value
+        })
+      });
+
+      const result = await response.json();
+
+      if(result.success) {
+        vehicleModal.style.display = "none";
+        vehicleForm.reset();
+
+        const updateVehicles = await getAccidentVehicleDetails(accidentId);
+        vehicleAccidentInvolved.length = 0;
+        vehicleAccidentInvolved.push(...updateVehicles);
+        renderAccidentVehicles();
+      } else {
+        alert(result.messge || "Failed to add vehicle");
+        console.log("Server response:", result);
+      }
+    } catch(error) {
+      console.error("Vehicle insert failed:", error);
+    }
+  });
+
+  document.getElementById('cancelVehicleBtn').addEventListener('click', () => {
+    vehicleModal.style.display = 'none';
+    vehicleForm.reset();
   });
 
   document.getElementById("dispatchedOfficerSelect").addEventListener('change', async (e) => {
@@ -418,7 +516,7 @@ export async function detailedAccidentReport(accidentId) {
       const data = await response.json();
 
       if(data.success) {
-        
+        renderAccidentItem(accidentId);
       }
     } catch(error) {
       console.error("Status data did not send", error);
