@@ -139,32 +139,7 @@ export async function detailedAccidentReport(accidentId) {
                   </tr>
                 </thead>
                 <tbody id="peopleTableBody">
-                  <td><span class="editable-field" data-id="" data-field="name">John Doe</span></td>
-                  <td>
-                    <select class="editable-field" data-id="" data-field="role" style="border: 1px solid var(--border-color-1); padding: 0.25rem;">
-                      <option value="driver">Driver</option>
-                      <option value="passenger">Passenger</option>
-                      <option value="pedestrian">Pedestrian</option>
-                      <option value="witness">Witness</option>
-                      <option value="responder">First Responder</option>
-                    </select>
-                  </td>
-                  <td>
-                    <select class="editable-field" data-id="" data-field="injury" style="border: 1px solid var(--border-color-1); padding: 0.25rem;">
-                      <option value="uninjured">Uninjured</option>
-                      <option value="minor">Minor Injuries</option>
-                      <option value="moderate">Moderate Injuries</option>
-                      <option value="severe">Severe Injuries</option>
-                      <option value="fatal">Fatal</option>
-                    </select>
-                  </td>
-                  <td><span class="editable-field" data-id="" data-field="contact">09251245312</span></td>
-                  <td><span class="editable-field" data-id="" data-field="address"></span></td>
-                  <td>
-                    <button class="btn btn-danger btn-sm delete-person" data-id="">
-                      <i class="fas fa-trash"></i> Delete
-                    </button>
-                  </td>
+                  
                 </tbody>
               </table>
             </div>
@@ -352,6 +327,44 @@ export async function detailedAccidentReport(accidentId) {
   renderPeople();
   renderAccidentVehicles();
 
+  document.getElementById('peopleTableBody').addEventListener('click', async (e) => {
+    const deleteBtn = e.target.closest('.delete-person');
+    
+    if(!deleteBtn) return;
+
+    const accidentPeopleId = deleteBtn.dataset.id;
+
+    if(!confirm("Are you sure you want to delete this person?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch("../api/delete_person_to_accident.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          accident_ppl_id: accidentPeopleId
+        })
+      });
+
+      const result = await response.json();
+
+      if(result.success) {
+        const index = peopleInvolved.findIndex(
+          p => p.accident_ppl_id == accidentPeopleId
+        );
+
+        if(index !== -1) {
+          peopleInvolved.splice(index, 1);
+        }
+
+        renderPeople();
+      }
+    } catch(error) {
+      console.error("Delete failed:", error);
+    }
+  });
+
   const driverSelect = document.getElementById("vehicleDriverSelect");
 
   function populateDriverDropdown() {
@@ -418,6 +431,45 @@ export async function detailedAccidentReport(accidentId) {
   addVehicleBtn.addEventListener('click', () => {
     populateDriverDropdown();
     vehicleModal.style.display = 'flex';
+  });
+
+  document.getElementById('vehiclesTableBody').addEventListener('click', async (e) => {
+    const deleteVehicleBtn = e.target.closest('.delete-vehicle');
+
+    if(!deleteVehicleBtn) return;
+
+    const accidentVehicleId = deleteVehicleBtn.dataset.id;
+
+    if(!confirm("Are you sure you want to delete this vehicle?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch("../api/delete_vehicle_to_accident.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          accident_vehicle_id: accidentVehicleId
+        })
+      });
+
+      const result = await response.json();
+      console.log("Delete vehicle result", result);
+
+      if(result.success) {
+        const index = vehicleAccidentInvolved.findIndex(
+          v => v.accident_vehicle_id == accidentVehicleId
+        );
+
+        if(index !== -1) {
+          vehicleAccidentInvolved.splice(index, 1);
+        }
+
+        renderAccidentVehicles();
+      }
+    } catch(error) {
+      console.error("Delete vehicle failed:", error);
+    }
   });
 
   vehicleForm.addEventListener('submit', async (e) => {

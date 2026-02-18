@@ -22,6 +22,7 @@ class AccidentPeoples extends config {
     $conn = $this->conn();
     $sql = "
       SELECT
+        ap.accident_ppl_id,
         p.people_id,
         a.accident_id,
         p.full_name,
@@ -40,6 +41,63 @@ class AccidentPeoples extends config {
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function deleteAccidentPeople($accidentPplId) {
+    $conn = $this->conn();
+    
+    $conn->beginTransaction();
+
+    try {
+      $getSql = "
+        SELECT people_id
+        FROM accident_peoples
+        WHERE accident_ppl_id = :accident_ppl_id
+      ";
+
+      $stmt = $conn->prepare($getSql);
+      $stmt->execute([
+        ':accident_ppl_id' => $accidentPplId
+      ]);
+
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if(!$row) {
+        $conn->rollBack();
+        return false;
+      }
+
+      $peopleId = $row['people_id'];
+
+      $deleteAccidentSql = "
+        DELETE FROM accident_peoples
+        WHERE accident_ppl_id = :accident_ppl_id
+      ";
+
+      $stmt = $conn->prepare($deleteAccidentSql);
+      $stmt->execute([
+        ':accident_ppl_id' => $accidentPplId
+      ]);
+
+      $deletePeopleSql = "
+        DELETE FROM people_involved
+        WHERE people_id = :people_id
+      ";
+
+      $stmt = $conn->prepare($deletePeopleSql);
+      $stmt->execute([
+        ':people_id' => $peopleId
+      ]);
+
+      $conn->commit();
+
+      return true;
+
+    } catch(Exception $e) {
+      $conn->rollBack();
+      throw $e;
+      return false;
+    }
   }
 }
 ?>

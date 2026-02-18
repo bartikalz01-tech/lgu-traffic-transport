@@ -22,6 +22,7 @@ class AccidentVehicles extends config {
     $conn = $this->conn();
     $sql = "
       SELECT
+          av.accident_vehicle_id,
           a.accident_id,
           p.full_name,
           v.plate_number,
@@ -40,6 +41,61 @@ class AccidentVehicles extends config {
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function deleteAccidentVehicles($accidentVehicleId) {
+    $conn = $this->conn();
+    $conn->beginTransaction();
+
+    try {
+      $getSql = "
+        SELECT vehicle_id
+        FROM accident_vehicles
+        WHERE accident_vehicle_id = :accident_vehicle_id
+      ";
+
+      $stmt = $conn->prepare($getSql);
+      $stmt->execute([
+        ':accident_vehicle_id' => $accidentVehicleId
+      ]);
+
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if(!$row) {
+        $conn->rollBack();
+        return false;
+      }
+
+      $vehicleId = $row['vehicle_id'];
+
+      $deleteAccidentVehicleSql = "
+        DELETE FROM accident_vehicles
+        WHERE accident_vehicle_id = :accident_vehicle_id
+      ";
+
+      $stmt = $conn->prepare($deleteAccidentVehicleSql);
+      $stmt->execute([
+        ':accident_vehicle_id' => $accidentVehicleId
+      ]);
+
+      $deleteVehicleSql = "
+        DELETE FROM vehicle_reported
+        WHERE vehicle_id = :vehicle_id
+      ";
+
+      $stmt = $conn->prepare($deleteVehicleSql);
+      $stmt->execute([
+        'vehicle_id' => $vehicleId
+      ]);
+
+      $conn->commit();
+
+      return true;
+    } catch(Exception $e) {
+      $conn->rollBack();
+      throw $e;
+      return false;
+    }
   }
 }
 ?>

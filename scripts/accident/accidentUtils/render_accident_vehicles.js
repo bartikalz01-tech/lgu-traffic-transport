@@ -6,7 +6,9 @@ export function renderAccidentVehicles() {
 
   if(!vehicleTableBody) return;
 
-  if(vehicleAccidentInvolved === 0) {
+  vehicleTableBody.innerHTML = '';
+
+  if(vehicleAccidentInvolved.length === 0) {
     vehiclesEmptyState.style.display = 'block';
     return;
   }
@@ -23,7 +25,7 @@ export function renderAccidentVehicles() {
       <td>${vehicle.vehicle_name}</td>
       <td>${vehicle.damage_level}</td>
       <td>
-        <button class="btn btn-danger btn-sm delete-person" data-id="${vehicle.accident_vehicle_id}">
+        <button class="btn btn-danger btn-sm delete-vehicle" data-id="${vehicle.accident_vehicle_id}">
           <i class="fas fa-trash"></i>
           Delete
         </button>
