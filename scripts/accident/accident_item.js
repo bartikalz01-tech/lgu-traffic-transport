@@ -6,19 +6,21 @@ export async function renderAccidentItem() {
 
   accidentList.innerHTML = ``;
 
-  const accident_type_labels = {
+  /*const accident_type_labels = {
     collision: 'Vehicle Collision',
     single: 'Single Vehicle',
     pedestrian: 'Pedestrian Accident',
     property: 'Property Damage',
     other: 'Other'
-  };
+  };*/
 
   const statusClassMap = {
     'Open Case': 'status-open',
     'Under Investigation': 'status-investigation',
     'Resolved': 'status-resolved'
   };
+
+  //<h4>${accident_type_labels[data.accident_type]} at ${data.road_name}</h4>
 
   accidentData.forEach(data => {
     const statusClass = statusClassMap[data.status_definition] || 'status-open';
@@ -30,7 +32,7 @@ export async function renderAccidentItem() {
           <span class="accident-time">${formatDateTime(data.date_of_accident, data.time_of_accident)}</span>
         </div>
         <div class="accident-details">
-          <h4>${accident_type_labels[data.accident_type]} at ${data.road_name}</h4>
+          <h4>${data.accident_type} at ${data.road_name}</h4>
           <div class="accident-meta">
             <span><i class="fas fa-road"></i> ${data.road_name}</span>
             <span><i class="fas fa-users"></i> ${data.total_people} People</span>

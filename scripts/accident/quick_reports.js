@@ -423,10 +423,13 @@ document.addEventListener('click', async (e) => {
     vehicles: []
   };*/
 
+  const publicTicketNum = `TCK-${Math.random() * 1000}`;
+
   const payLoad = {
     accident: {
       public_accident_id: accidentId,
       road_id: document.getElementById('roadId').value,
+      public_ticket_id: publicTicketNum,
       //accident_type: document.getElementById('accidentType').value,
       accident_type: finalAccidentType,
       accident_description: document.getElementById('description').value,
@@ -456,7 +459,7 @@ document.addEventListener('click', async (e) => {
     });
   });*/
 
-  console.log(payLoad);
+  console.log(payLoad);  
 
   try {
     const response = await fetch("../api/submit_accident_details.php", {

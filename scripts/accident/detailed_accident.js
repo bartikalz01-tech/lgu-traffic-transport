@@ -192,7 +192,7 @@ export async function detailedAccidentReport(accidentId) {
             <!--<button class="btn btn-secondary" id="printReportBtn">
               <i class="fas fa-print"></i> Print Report
             </button>-->
-            <button class="btn btn-primary" id="seeTicketBtn">
+            <button class="btn btn-primary" id="seeTicketBtn" data-accident-id="${data.accident_id}">
               <i class="fas fa-save"></i> Ticket
             </button>
             <button class="btn btn-success" id="updateBtn">

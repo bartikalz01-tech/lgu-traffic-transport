@@ -5,6 +5,7 @@ require_once '../backend/InsertPeopleInvolved.php';
 require_once '../backend/InsertVehicles.php';
 require_once '../backend/InsertAccidentPeoples.php';
 require_once '../backend/InsertAccidentVehicles.php';
+require_once '../backend/InsertTicket.php';
 
 header("Content-Type: application/json");
 
@@ -82,6 +83,13 @@ try {
       $v['damage_level']
     );
   }*/
+
+  $ticketObj = new InsertTicket();
+  $ticketId = $ticketObj->insertTicket(
+    $data['accident']['public_ticket_id'],
+    $accident_id,
+    1
+  );
 
   $conn->commit();
 

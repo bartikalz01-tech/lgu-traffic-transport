@@ -8,9 +8,11 @@
   <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
+  <link rel="stylesheet" href="../styles/cards.css">
   <link rel="stylesheet" href="../styles/accident/accident_test.css">
   <link rel="stylesheet" href="../styles/accident/quick_report.css">
   <link rel="stylesheet" href="../styles/accident/detailed_report.css">
+  <link rel="stylesheet" href="../styles/ticket1.css">
   <link rel="stylesheet" href="../styles/tickets.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
