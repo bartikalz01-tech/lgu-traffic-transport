@@ -1,395 +1,403 @@
-   .ticket-container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    .ticket-header-card {
-      margin-bottom: 1.5rem;
-    }
-
-    .logo-container {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .logo-container img {
-      height: 80px;
-      margin-bottom: 1rem;
-    }
-
-    .ticket-title {
-      color: var(--primary-color);
-      margin-bottom: 0.5rem;
-      font-size: 1.75rem;
-    }
-
-    .ticket-meta-info {
-      background: var(--header-bg-1);
-      padding: 1.5rem;
-      border-radius: 8px;
-      border: 1px solid var(--border-color-1);
-    }
-
-    .badge-primary {
-      background: var(--primary-color);
-      color: white;
-      padding: 0.25rem 0.75rem;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    .badge-warning {
-      background: #ffc107;
-      color: #212529;
-      padding: 0.25rem 0.75rem;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    .status-badge {
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      display: inline-block;
-    }
-
-    .status-under-investigation {
-      background: #fff3cd;
-      color: #856404;
-      border: 1px solid #ffeaa7;
-    }
-
-    .status-resolved {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .status-closed {
-      background: #d1ecf1;
-      color: #0c5460;
-      border: 1px solid #bee5eb;
-    }
-
-    .status-archived {
-      background: #e2e3e5;
-      color: #383d41;
-      border: 1px solid #d6d8db;
-    }
-
-    .report-details-card,
-    .people-involved-card,
-    .payment-section-card,
-    .officer-section-card {
-      margin-bottom: 1.5rem;
-    }
-
-    .details-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-    }
-
-    .detail-item {
-      background: var(--header-bg-1);
-      padding: 1rem;
-      border-radius: 6px;
-      border: 1px solid var(--border-color-1);
-    }
-
-    .detail-label {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text-secondary-1);
-      font-size: 0.875rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .detail-value {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-color-1);
-    }
-
-    .people-details {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .people-details th {
-      background: var(--header-bg-1);
-      color: var(--text-color-1);
-      font-weight: 600;
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 2px solid var(--border-color-1);
-    }
-
-    .people-details td {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border-color-1);
-    }
-
-    .people-details tbody tr:hover {
-      background: var(--sidebar-hover-bg-1);
-    }
-
-    .person-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .person-avatar {
-      width: 36px;
-      height: 36px;
-      background: var(--primary-color);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .person-name {
-      font-weight: 600;
-      color: var(--text-color-1);
-    }
-
-    .person-contact {
-      font-size: 0.75rem;
-      color: var(--text-secondary-1);
-    }
-
-    .vehicle-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .plate-number {
-      background: var(--header-bg-1);
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      font-weight: 600;
-    }
-
-    .role-badge {
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .role-driver {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .role-passenger {
-      background: #d1ecf1;
-      color: #0c5460;
-    }
-
-    .role-witness {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .payment-details {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .payment-summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-
-    .payment-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .payment-label {
-      color: var(--text-secondary-1);
-      font-size: 0.875rem;
-    }
-
-    .payment-value {
-      font-weight: 600;
-      color: var(--text-color-1);
-    }
-
-    .payment-value.amount {
-      color: #28a745;
-      font-size: 1.25rem;
-    }
-
-    .payment-status-badge {
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-weight: 600;
-    }
-
-    .status-unpaid {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-
-    .status-paid {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .payment-actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .officer-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 2rem;
-    }
-
-    .officer-signature {
-      text-align: center;
-      min-width: 200px;
-    }
-
-    .signature-line {
-      width: 200px;
-      height: 1px;
-      background: var(--text-color-1);
-      margin: 1rem auto;
-    }
-
-    .officer-name {
-      color: var(--text-color-1);
-      margin-bottom: 0.25rem;
-    }
-
-    .officer-role {
-      color: var(--text-secondary-1);
-      margin-bottom: 0.25rem;
-    }
-
-    .officer-id {
-      color: var(--text-secondary-1);
-      font-size: 0.875rem;
-    }
-
-    .ticket-actions {
-      flex: 1;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .ticket-footer-info {
-      border-top: 1px solid var(--border-color-1);
-      padding-top: 1rem;
-      font-size: 0.875rem;
-    }
-
-    .toggle-section {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: var(--header-bg-1);
-      border-radius: 8px;
-      border: 1px solid var(--border-color-1);
-    }
-
-    .toggle-label {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      cursor: pointer;
-    }
-
-    .toggle-input {
-      display: none;
-    }
-
-    .toggle-slider {
-      width: 50px;
-      height: 25px;
-      background: var(--border-color-1);
-      border-radius: 25px;
-      position: relative;
-      transition: background 0.3s ease;
-    }
-
-    .toggle-slider::before {
-      content: '';
-      position: absolute;
-      width: 21px;
-      height: 21px;
-      background: white;
-      border-radius: 50%;
-      top: 2px;
-      left: 2px;
-      transition: transform 0.3s ease;
-    }
-
-    .toggle-input:checked + .toggle-slider {
-      background: var(--primary-color);
-    }
-
-    .toggle-input:checked + .toggle-slider::before {
-      transform: translateX(25px);
-    }
-
-    .toggle-text {
-      color: var(--text-color-1);
-      font-weight: 500;
-    }
-
-    @media (max-width: 768px) {
-      .details-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .payment-summary {
-        grid-template-columns: 1fr;
-      }
-
-      .officer-info {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .action-buttons {
-        justify-content: center;
-      }
-
-      .people-details {
-        display: block;
-        overflow-x: auto;
-      }
-    }
-
-    @media print {
-      .action-buttons,
-      .toggle-section,
-      .payment-actions {
-        display: none !important;
-      }
-    }
+.ticket-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.ticket-header-card {
+  margin-bottom: 1.5rem;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo-container img {
+  height: 80px;
+  margin-bottom: 1rem;
+}
+
+.ticket-title {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.ticket-meta-info {
+  background: var(--header-bg-1);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color-1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.badge-primary {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge-warning {
+  background: #ffc107;
+  color: #212529;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: inline-block;
+}
+
+.status-under-investigation {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-resolved {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-closed {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.status-archived {
+  background: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
+.report-details-card,
+.people-involved-card,
+.payment-section-card,
+.officer-section-card {
+  margin-bottom: 1.5rem;
+}
+
+.report-details-card {
+  margin-top: -5px;
+}
+
+.details-grid {
+  display: grid;
+  /*grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));*/
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.detail-item {
+  background: var(--header-bg-1);
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color-1);
+}
+
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary-1);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.detail-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-color-1);
+}
+
+.people-details {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.people-details th {
+  background: var(--header-bg-1);
+  color: var(--text-color-1);
+  font-weight: 600;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border-color-1);
+}
+
+.people-details td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color-1);
+}
+
+.people-details tbody tr:hover {
+  background: var(--sidebar-hover-bg-1);
+}
+
+.person-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.person-avatar {
+  width: 36px;
+  height: 36px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-name {
+  font-weight: 600;
+  color: var(--text-color-1);
+}
+
+.person-contact {
+  font-size: 0.75rem;
+  color: var(--text-secondary-1);
+}
+
+.vehicle-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.plate-number {
+  background: var(--header-bg-1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+.role-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.role-driver {
+  background: #d4edda;
+  color: #155724;
+}
+
+.role-passenger {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.role-witness {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.payment-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.payment-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.payment-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.payment-label {
+  color: var(--text-secondary-1);
+  font-size: 0.875rem;
+}
+
+.payment-value {
+  font-weight: 600;
+  color: var(--text-color-1);
+}
+
+.payment-value.amount {
+  color: #28a745;
+  font-size: 1.25rem;
+}
+
+.payment-status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.status-unpaid {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.status-paid {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.payment-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.officer-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.officer-signature {
+  text-align: center;
+  min-width: 200px;
+}
+
+.signature-line {
+  width: 200px;
+  height: 1px;
+  background: var(--text-color-1);
+  margin: 1rem auto;
+}
+
+.officer-name {
+  color: var(--text-color-1);
+  margin-bottom: 0.25rem;
+}
+
+.officer-role {
+  color: var(--text-secondary-1);
+  margin-bottom: 0.25rem;
+}
+
+.officer-id {
+  color: var(--text-secondary-1);
+  font-size: 0.875rem;
+}
+
+.ticket-actions {
+  flex: 1;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.ticket-footer-info {
+  border-top: 1px solid var(--border-color-1);
+  padding-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.toggle-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: var(--header-bg-1);
+  border-radius: 8px;
+  border: 1px solid var(--border-color-1);
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.toggle-input {
+  display: none;
+}
+
+.toggle-slider {
+  width: 50px;
+  height: 25px;
+  background: var(--border-color-1);
+  border-radius: 25px;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease;
+}
+
+.toggle-input:checked + .toggle-slider {
+  background: var(--primary-color);
+}
+
+.toggle-input:checked + .toggle-slider::before {
+  transform: translateX(25px);
+}
+
+.toggle-text {
+  color: var(--text-color-1);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .officer-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .action-buttons {
+    justify-content: center;
+  }
+
+  .people-details {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+@media print {
+  .action-buttons,
+  .toggle-section,
+  .payment-actions {
+    display: none !important;
+  }
+}

@@ -1,8 +1,8 @@
- document.addEventListener('DOMContentLoaded', function() {
-      // Toggle payment section
-      const toggleCheckbox = document.getElementById('showPaymentSection');
-      const paymentSection = document.createElement('div');
-      paymentSection.innerHTML = `
+document.addEventListener('DOMContentLoaded', function () {
+  // Toggle payment section
+  const toggleCheckbox = document.getElementById('showPaymentSection');
+  const paymentSection = document.createElement('div');
+  paymentSection.innerHTML = `
         <div class="card payment-section-card">
           <div class="card-header">
             <h3><i class="fas fa-money-bill-wave"></i> Payment Information</h3>
@@ -43,34 +43,34 @@
         </div>
       `;
 
-      toggleCheckbox.addEventListener('change', function() {
-        if (this.checked) {
-          // Insert payment section before the officer section
-          const officerSection = document.querySelector('.officer-section-card');
-          officerSection.parentNode.insertBefore(paymentSection, officerSection);
-        } else {
-          // Remove payment section if it exists
-          if (document.querySelector('.payment-section-card')) {
-            paymentSection.remove();
-          }
-        }
-      });
-
-      // Update status badges
-      const statusBadge = document.querySelector('.status-badge');
-      if (statusBadge) {
-        statusBadge.addEventListener('click', function() {
-          const statuses = ['Under Investigation', 'Resolved', 'Closed', 'Archived'];
-          const currentStatus = this.textContent;
-          const currentIndex = statuses.indexOf(currentStatus);
-          const nextIndex = (currentIndex + 1) % statuses.length;
-          this.textContent = statuses[nextIndex];
-          this.className = `status-badge status-${statuses[nextIndex].toLowerCase().replace(' ', '-')}`;
-        });
+  toggleCheckbox.addEventListener('change', function () {
+    if (this.checked) {
+      // Insert payment section before the officer section
+      const officerSection = document.querySelector('.officer-section-card');
+      officerSection.parentNode.insertBefore(paymentSection, officerSection);
+    } else {
+      // Remove payment section if it exists
+      if (document.querySelector('.payment-section-card')) {
+        paymentSection.remove();
       }
+    }
+  });
 
-      // Print functionality
-      document.querySelector('.btn-primary').addEventListener('click', function() {
-        window.print();
-      });
+  // Update status badges
+  const statusBadge = document.querySelector('.status-badge');
+  if (statusBadge) {
+    statusBadge.addEventListener('click', function () {
+      const statuses = ['Under Investigation', 'Resolved', 'Closed', 'Archived'];
+      const currentStatus = this.textContent;
+      const currentIndex = statuses.indexOf(currentStatus);
+      const nextIndex = (currentIndex + 1) % statuses.length;
+      this.textContent = statuses[nextIndex];
+      this.className = `status-badge status-${statuses[nextIndex].toLowerCase().replace(' ', '-')}`;
     });
+  }
+
+  // Print functionality
+  document.querySelector('.btn-primary').addEventListener('click', function () {
+    window.print();
+  });
+});
