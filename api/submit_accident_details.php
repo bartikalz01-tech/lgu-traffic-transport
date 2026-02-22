@@ -88,7 +88,8 @@ try {
   $ticketId = $ticketObj->insertTicket(
     $data['accident']['public_ticket_id'],
     $accident_id,
-    1
+    1,
+    $data['accident']['reported_by']
   );
 
   $conn->commit();

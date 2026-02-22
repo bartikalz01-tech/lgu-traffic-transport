@@ -63,7 +63,7 @@ class GetTicket extends config {
     $stmt->bindValue(':accident_id', $accidentId, PDO::PARAM_INT);
     $stmt->execute();
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public function getFullTicketData($accidentId) {

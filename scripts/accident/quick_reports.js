@@ -38,6 +38,11 @@ export function renderQuickReport() {
           <span class="section-count">1</span>
         </div>
 
+        <div class="form-group">
+          <label class="form-label">Name of Reporter</label>
+          <input type="text" class="form-control" id="reportedBy">
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Accident ID <span class="required">*</span></label>
@@ -432,6 +437,7 @@ document.addEventListener('click', async (e) => {
       public_accident_id: accidentId,
       road_id: document.getElementById('roadId').value,
       public_ticket_id: publicTicketNum,
+      reported_by: document.getElementById('reportedBy').value,
       //accident_type: document.getElementById('accidentType').value,
       accident_type: finalAccidentType,
       accident_description: document.getElementById('description').value,

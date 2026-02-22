@@ -2,7 +2,67 @@ import { accidentTckDetails, getTicketAccidentHeaderTck } from "../data/get_acci
 
 export async function renderAccidentTicket(accidentId) {
 
-  const data = await getTicketAccidentHeaderTck(accidentId);
+  const fullData = await accidentTckDetails(accidentId);
+
+  const data = fullData.ticket;
+  //const people = fullData.entities;
+  const people = (fullData.entities || []).filter(person => 
+    person.full_name && person.full_name.trim() !== ''
+  );
+
+  let peopleSectionHTML = '';
+
+  if(people && people.length > 0) {
+    const peopleRows = people.map(person => `
+      <tr>
+        <td>
+          <div class="person-info">
+            <div class="person-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="person-details">
+              <div class="person-name">${person.full_name}</div>
+              <div class="person-address">${person.address}</div>
+              <div class="person-contact">${person.contact_num}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="role-badge role-driver">${person.role}</span></td>
+        <td>
+          <div class="vehicle-info">
+            <i class="fas fa-car-side"></i>
+            <span>${person.vehicle_name}</span>
+          </div>
+        </td>
+        <td><span class="plate-number">${person.plate_number}</span></td>
+      </tr>
+    `).join('');
+
+    peopleSectionHTML = `
+      <div class="card people-involved-card">
+        <div class="card-header">
+          <h3><i class="fas fa-user-friends"></i> People & Vehicles Involved</h3>
+        </div>
+        <div class="card-body">
+          <div class="people-table-container">
+            <table class="people-details">
+              <thead>
+                <tr>
+                  <th><i class="fas fa-user"></i> People Involved Details</th>
+                  <th><i class="fas fa-car"></i> Role</th>
+                  <th><i class="fas fa-id-card"></i> Vehicle</th>
+                  <th><i class="fas fa-user-tag"></i> Plate Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${peopleRows}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+  }
 
   const statusMap = {
     'Open Case': 'status-open-case',
@@ -122,93 +182,7 @@ export async function renderAccidentTicket(accidentId) {
       </div>
 
       <!-- People Involved Card -->
-      <div class="card people-involved-card">
-        <div class="card-header">
-          <h3><i class="fas fa-user-friends"></i> People & Vehicles Involved</h3>
-        </div>
-        <div class="card-body">
-          <div class="people-table-container">
-            <table class="people-details">
-              <thead>
-                <tr>
-                  <th><i class="fas fa-user"></i> People Involved Details</th>
-                  <th><i class="fas fa-car"></i> Role</th>
-                  <th><i class="fas fa-id-card"></i> Vehicle</th>
-                  <th><i class="fas fa-user-tag"></i> Plate Number</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="person-info">
-                      <div class="person-avatar">
-                        <i class="fas fa-user"></i>
-                      </div>
-                      <div class="person-details">
-                        <div class="person-name">Juan Dela Cruz</div>
-                        <div class="person-address">632 Tagaytay Street Caloocan City</div>
-                        <div class="person-contact">+63 912 345 6789</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="role-badge role-driver">Driver</span></td>
-                  <td>
-                    <div class="vehicle-info">
-                      <i class="fas fa-car-side"></i>
-                      <span>Toyota Vios</span>
-                    </div>
-                  </td>
-                  <td><span class="plate-number">ABC-123</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="person-info">
-                      <div class="person-avatar">
-                        <i class="fas fa-user"></i>
-                      </div>
-                      <div class="person-details">
-                        <div class="person-name">Maria Santos</div>
-                        <div class="person-address">632 Tagaytay Street Caloocan City</div>
-                        <div class="person-contact">+63 917 890 1234</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="role-badge role-passenger">Passenger</span></td>
-                  <td>
-                    <div class="vehicle-info">
-                      <i class="fas fa-motorcycle"></i>
-                      <span>Honda Wave</span>
-                    </div>
-                  </td>
-                  <td><span class="plate-number">XYZ-789</span></td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="person-info">
-                      <div class="person-avatar">
-                        <i class="fas fa-user"></i>
-                      </div>
-                      <div class="person-details">
-                        <div class="person-name">Pedro Reyes</div>
-                        <div class="person-address">632 Tagaytay Street Caloocan City</div>
-                        <div class="person-contact">+63 918 567 8901</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="role-badge role-driver">Driver</span></td>
-                  <td>
-                    <div class="vehicle-info">
-                      <i class="fas fa-truck-pickup"></i>
-                      <span>Ford Ranger</span>
-                    </div>
-                  </td>
-                  <td><span class="plate-number">DEF-456</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      ${peopleSectionHTML}
 
       <!-- Violation Payment Section (Conditional) -->
       <!--Tanggalin mo tong comment para makita yung payment info -->
