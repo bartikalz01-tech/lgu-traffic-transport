@@ -4,37 +4,56 @@ require_once 'config.php';
 class GetTicket extends config {
 
   public function getAccidentTicketDetails($accidentId) {
-  $conn = $this->conn();
+    $conn = $this->conn();
 
-  $sql = "
-    SELECT
-      t.ticket_id,
-      t.public_ticket_id,
-      t.reported_by,
-      t.issued_date,
-      a.accident_id,
-      a.public_accident_id,
-      a.accident_description,
-      a.date_of_accident,
-      sr.status_id,
-      sr.status_definition,
-      r.road_name
-    FROM tickets t
-    INNER JOIN accident_cases a
-      ON t.accident_id = a.accident_id
-    LEFT JOIN status_of_reports sr
-      ON a.status_id = sr.status_id
-    LEFT JOIN roads r
-      ON a.road_id = r.road_id
-    WHERE a.accident_id = :accident_id
-  ";
+    $sql = "
+      SELECT
+        t.ticket_id,
+        t.public_ticket_id,
+        t.reported_by,
+        t.issued_date,
+        a.accident_id,
+        a.public_accident_id,
+        a.accident_description,
+        a.date_of_accident,
+        sr.status_id,
+        sr.status_definition,
+        r.road_name
+      FROM tickets t
+      INNER JOIN accident_cases a
+        ON t.accident_id = a.accident_id
+      LEFT JOIN status_of_reports sr
+        ON a.status_id = sr.status_id
+      LEFT JOIN roads r
+        ON a.road_id = r.road_id
+      WHERE a.accident_id = :accident_id
+    ";
 
-  $stmt = $conn->prepare($sql);
-  $stmt->bindValue(':accident_id', $accidentId, PDO::PARAM_INT);
-  $stmt->execute();
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':accident_id', $accidentId, PDO::PARAM_INT);
+    $stmt->execute();
 
-  return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function getTimeAndSeverityLevel($accidentId) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        a.accident_id,
+        a.accident_type,
+        a.time_of_accident,
+        a.status_of_accident
+      FROM accident_cases a
+      WHERE accident_id = :accident_id
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':accident_id', $accidentId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
 
   public function entitiesInvolvedAccident($accidentId) {
     $conn = $this->conn();
@@ -66,13 +85,31 @@ class GetTicket extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function getAssignedOfficer($accidentId) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        o.officer_id,
+        o.officer_name
+      FROM accident_cases a
+      LEFT JOIN officers o
+        ON o.officer_id = a.officer_id
+      WHERE accident_id = :accident_id
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':accident_id', $accidentId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
   public function getFullTicketData($accidentId) {
     return [
       'ticket' => $this->getAccidentTicketDetails($accidentId),
-      'entities' => $this->entitiesInvolvedAccident($accidentId)
+      'time_and_severity' => $this->getTimeAndSeverityLevel($accidentId),
+      'entities' => $this->entitiesInvolvedAccident($accidentId),
+      'officer' => $this->getAssignedOfficer($accidentId)
     ];
   }
-
 }
-
-?>

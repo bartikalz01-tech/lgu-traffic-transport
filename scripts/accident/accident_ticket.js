@@ -1,4 +1,4 @@
-import { accidentTckDetails, getTicketAccidentHeaderTck } from "../data/get_accident_tck.js";
+import { accidentTckDetails } from "../data/get_accident_tck.js";
 
 export async function renderAccidentTicket(accidentId) {
 
@@ -9,8 +9,20 @@ export async function renderAccidentTicket(accidentId) {
   const people = (fullData.entities || []).filter(person => 
     person.full_name && person.full_name.trim() !== ''
   );
+  const assignedOfficer = fullData.officer;
+  const timeData = fullData.time_and_severity || null;
+  const severityData = fullData.time_and_severity || null;
+  //const timeOfAccident = timeData.time_of_accident || '';
+
+  const hasOfficer = assignedOfficer && assignedOfficer.officer_name && assignedOfficer.officer_name.trim() !== '';
+  const hasTime = timeData && timeData.time_of_accident && timeData.time_of_accident.trim() !== '';
+  const hasSeverity = severityData && severityData.status_of_accident && severityData.status_of_accident.trim() !== '';
 
   let peopleSectionHTML = '';
+  let officerSectionHTML = '';
+  let timeSectionHTML = '';
+  let severitySectionHTML = '';
+  // FINISH THE ACCIDENT TYPE
 
   if(people && people.length > 0) {
     const peopleRows = people.map(person => `
@@ -60,6 +72,74 @@ export async function renderAccidentTicket(accidentId) {
             </table>
           </div>
         </div>
+      </div>
+    `;
+  }
+
+  if(hasOfficer) {
+    officerSectionHTML = `
+      <div class="card officer-section-card">
+        <div class="card-body">
+          <div class="officer-info">
+            <div class="officer-signature">
+              <div class="signature-line"></div>
+              <div class="officer-details">
+                <h4 class="officer-name">${assignedOfficer.officer_name}</h4>
+                <p class="officer-role">Assigned Officer</p>
+                <p class="officer-id">ID: DISP-${assignedOfficer.officer_id}</p>
+              </div>
+            </div>
+            <div class="ticket-actions">
+              <div class="action-buttons">
+                <button class="btn btn-primary">
+                  <i class="fas fa-print"></i> Print Ticket
+                </button>
+                <button class="btn btn-success">
+                  <i class="fas fa-download"></i> Download PDF
+                </button>
+                <button class="btn btn-info">
+                  <i class="fas fa-share-alt"></i> Share Report
+                </button>
+                <button class="btn btn-outline-secondary">
+                  <i class="fas fa-edit"></i> Edit Details
+                </button>
+              </div>
+              <div class="ticket-footer-info">
+                <p class="text-muted">
+                  <i class="fas fa-info-circle"></i>
+                  This is an official document. Please keep it for your records.
+                </p>
+                <p class="text-muted">
+                  Generated on: 2026-01-01 13:30 | System Version: 2.4.1
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if(hasTime) {
+    timeSectionHTML = `
+      <div class="detail-item">
+        <div class="detail-label">
+          <i class="fas fa-clock"></i>
+          <span>Time of Accident</span>
+        </div>
+        <div class="detail-value">${timeData.time_of_accident}</div>
+      </div>
+    `;
+  }
+
+  if(hasSeverity) {
+    severitySectionHTML = `
+      <div class="detail-item">
+        <div class="detail-label">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Severity</span>
+        </div>
+        <div class="detail-value badge-warning">${severityData.status_of_accident}</div>
       </div>
     `;
   }
@@ -121,13 +201,7 @@ export async function renderAccidentTicket(accidentId) {
         </div>
         <div class="card-body">
           <div class="details-grid">
-            <div class="detail-item">
-              <div class="detail-label">
-                <i class="fas fa-clock"></i>
-                <span>Time of Accident</span>
-              </div>
-              <div class="detail-value">12:00 PM</div>
-            </div>
+            ${timeSectionHTML}
             <div class="detail-item">
               <div class="detail-label">
                 <i class="fas fa-calendar-days"></i>
@@ -149,20 +223,14 @@ export async function renderAccidentTicket(accidentId) {
               </div>
               <div class="detail-value">${data.accident_description}</div>
             </div>
-            <div class="detail-item">
+            <!--<div class="detail-item">
               <div class="detail-label">
                 <i class="fas fa-users"></i>
                 <span>People Involved</span>
               </div>
               <div class="detail-value">3</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>Severity</span>
-              </div>
-              <div class="detail-value badge-warning">Moderate</div>
-            </div>
+            </div>-->
+            ${severitySectionHTML}
             <div class="detail-item">
               <div class="detail-label">
                 <i class="fas fa-car-side"></i>
@@ -226,45 +294,7 @@ export async function renderAccidentTicket(accidentId) {
       </div>-->
 
       <!-- Officer & Actions Section -->
-      <div class="card officer-section-card">
-        <div class="card-body">
-          <div class="officer-info">
-            <div class="officer-signature">
-              <div class="signature-line"></div>
-              <div class="officer-details">
-                <h4 class="officer-name">John Doe</h4>
-                <p class="officer-role">Dispatch Officer</p>
-                <p class="officer-id">ID: DISP-2024-001</p>
-              </div>
-            </div>
-            <div class="ticket-actions">
-              <div class="action-buttons">
-                <button class="btn btn-primary">
-                  <i class="fas fa-print"></i> Print Ticket
-                </button>
-                <button class="btn btn-success">
-                  <i class="fas fa-download"></i> Download PDF
-                </button>
-                <button class="btn btn-info">
-                  <i class="fas fa-share-alt"></i> Share Report
-                </button>
-                <button class="btn btn-outline-secondary">
-                  <i class="fas fa-edit"></i> Edit Details
-                </button>
-              </div>
-              <div class="ticket-footer-info">
-                <p class="text-muted">
-                  <i class="fas fa-info-circle"></i>
-                  This is an official document. Please keep it for your records.
-                </p>
-                <p class="text-muted">
-                  Generated on: 2026-01-01 13:30 | System Version: 2.4.1
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      ${officerSectionHTML}
 
       <!-- Toggle for Violation Payment Section -->
       <div class="toggle-section">
