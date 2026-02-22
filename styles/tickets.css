@@ -1,7 +1,7 @@
-.ticket-container {
+/*.ticket-container {
   margin-left: 20px;
   margin-right: 20px;
-}
+}*/
 
 .logo-container {
   display: flex;
@@ -29,11 +29,6 @@
   align-items: center;
   gap: 20px;
 }
-
-/*.ticket-number h3 {
-  margin: 0;
-  line-height: 1;
-}*/
 
 .ticket-container {
   margin-left: 20px;

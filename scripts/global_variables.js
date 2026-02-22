@@ -28,3 +28,7 @@ export function getDetailedReports() {
 export function getReportTicket() {
   return document.querySelector();
 }
+
+export function getAccidentTck() {
+  return document.querySelector
+}

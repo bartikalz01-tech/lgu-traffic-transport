@@ -423,7 +423,9 @@ document.addEventListener('click', async (e) => {
     vehicles: []
   };*/
 
-  const publicTicketNum = `TCK-${Math.random() * 1000}`;
+  const randomPin = Math.floor(1000 + Math.random() * 9000);
+
+  const publicTicketNum = `TCK-${randomPin}`;
 
   const payLoad = {
     accident: {

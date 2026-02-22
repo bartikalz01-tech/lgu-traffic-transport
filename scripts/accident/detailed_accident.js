@@ -6,6 +6,7 @@ import { formatAccidentDateTime } from "../utils/dateFormatter.js";
 import { renderPeople, peopleInvolved } from "./accidentUtils/render_accident_people.js";
 import { renderAccidentVehicles, vehicleAccidentInvolved } from "./accidentUtils/render_accident_vehicles.js";
 import { renderAccidentItem } from "./accident_item.js";
+import { renderAccidentTicket } from "./accident_ticket.js";
 
 export async function detailedAccidentReport(accidentId) {
   const detailedReports = getDetailedReports();
@@ -200,6 +201,8 @@ export async function detailedAccidentReport(accidentId) {
             </button>
           </div>
         </div>
+
+        <div class="ticket-overlay ticket-overlay-hidden"></div>
       </section>
 
       <!-- Add Person Modal -->
@@ -329,12 +332,12 @@ export async function detailedAccidentReport(accidentId) {
 
   document.getElementById('peopleTableBody').addEventListener('click', async (e) => {
     const deleteBtn = e.target.closest('.delete-person');
-    
-    if(!deleteBtn) return;
+
+    if (!deleteBtn) return;
 
     const accidentPeopleId = deleteBtn.dataset.id;
 
-    if(!confirm("Are you sure you want to delete this person?")) {
+    if (!confirm("Are you sure you want to delete this person?")) {
       return;
     }
 
@@ -349,18 +352,18 @@ export async function detailedAccidentReport(accidentId) {
 
       const result = await response.json();
 
-      if(result.success) {
+      if (result.success) {
         const index = peopleInvolved.findIndex(
           p => p.accident_ppl_id == accidentPeopleId
         );
 
-        if(index !== -1) {
+        if (index !== -1) {
           peopleInvolved.splice(index, 1);
         }
 
         renderPeople();
       }
-    } catch(error) {
+    } catch (error) {
       console.error("Delete failed:", error);
     }
   });
@@ -371,7 +374,7 @@ export async function detailedAccidentReport(accidentId) {
     driverSelect.innerHTML = '<option value="">Select Driver</option>';
 
     peopleInvolved.forEach(person => {
-      if(person.role === 'driver') {
+      if (person.role === 'driver') {
         const option = document.createElement("option");
         option.value = person.people_id;
         option.textContent = person.full_name;
@@ -406,7 +409,7 @@ export async function detailedAccidentReport(accidentId) {
 
     const result = await response.json();
 
-    if(result.success) {
+    if (result.success) {
       personModal.style.display = "none";
       personForm.reset();
 
@@ -436,11 +439,11 @@ export async function detailedAccidentReport(accidentId) {
   document.getElementById('vehiclesTableBody').addEventListener('click', async (e) => {
     const deleteVehicleBtn = e.target.closest('.delete-vehicle');
 
-    if(!deleteVehicleBtn) return;
+    if (!deleteVehicleBtn) return;
 
     const accidentVehicleId = deleteVehicleBtn.dataset.id;
 
-    if(!confirm("Are you sure you want to delete this vehicle?")) {
+    if (!confirm("Are you sure you want to delete this vehicle?")) {
       return;
     }
 
@@ -456,18 +459,18 @@ export async function detailedAccidentReport(accidentId) {
       const result = await response.json();
       console.log("Delete vehicle result", result);
 
-      if(result.success) {
+      if (result.success) {
         const index = vehicleAccidentInvolved.findIndex(
           v => v.accident_vehicle_id == accidentVehicleId
         );
 
-        if(index !== -1) {
+        if (index !== -1) {
           vehicleAccidentInvolved.splice(index, 1);
         }
 
         renderAccidentVehicles();
       }
-    } catch(error) {
+    } catch (error) {
       console.error("Delete vehicle failed:", error);
     }
   });
@@ -477,7 +480,7 @@ export async function detailedAccidentReport(accidentId) {
 
     const selectedPeopleId = document.getElementById("vehicleDriverSelect").value;
 
-    if(!selectedPeopleId) {
+    if (!selectedPeopleId) {
       alert("Please select a driver");
       return;
     }
@@ -485,7 +488,7 @@ export async function detailedAccidentReport(accidentId) {
     try {
       const response = await fetch("../api/add_vehicles_to_accident.php", {
         method: "POST",
-        headers: { "Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           accident_id: accidentId,
           people_id: selectedPeopleId,
@@ -498,7 +501,7 @@ export async function detailedAccidentReport(accidentId) {
 
       const result = await response.json();
 
-      if(result.success) {
+      if (result.success) {
         vehicleModal.style.display = "none";
         vehicleForm.reset();
 
@@ -510,7 +513,7 @@ export async function detailedAccidentReport(accidentId) {
         alert(result.messge || "Failed to add vehicle");
         console.log("Server response:", result);
       }
-    } catch(error) {
+    } catch (error) {
       console.error("Vehicle insert failed:", error);
     }
   });
@@ -522,7 +525,7 @@ export async function detailedAccidentReport(accidentId) {
 
   document.getElementById("dispatchedOfficerSelect").addEventListener('change', async (e) => {
     const officerId = e.target.value;
-    if(!officerId) return;
+    if (!officerId) return;
 
     try {
       const response = await fetch("../api/assign_officer.php", {
@@ -536,7 +539,7 @@ export async function detailedAccidentReport(accidentId) {
 
       const data = await response.json();
 
-    } catch(error) {
+    } catch (error) {
       console.error("Invalid data", error);
     }
   });
@@ -553,7 +556,7 @@ export async function detailedAccidentReport(accidentId) {
     const statusText = selectedOption.textContent;
     badge.textContent = selectedOption.textContent;
 
-    if(!statusId) return;
+    if (!statusId) return;
 
     try {
       const response = await fetch("../api/assign_status.php", {
@@ -561,17 +564,47 @@ export async function detailedAccidentReport(accidentId) {
         headers: { 'Content-type': 'application/json' },
         body: JSON.stringify({
           accident_id: accidentId,
-          status_id: statusId 
+          status_id: statusId
         })
       });
 
       const data = await response.json();
 
-      if(data.success) {
+      if (data.success) {
         renderAccidentItem(accidentId);
       }
-    } catch(error) {
+    } catch (error) {
       console.error("Status data did not send", error);
+    }
+  });
+
+  const tckBtn = document.getElementById('seeTicketBtn');
+  const ticketOverlay = document.querySelector('.ticket-overlay');
+  let removeExitArgs = false
+
+  tckBtn.addEventListener('click', async () => {
+    const tckAccidentId = tckBtn.dataset.accidentId
+    const ticketSection = await renderAccidentTicket(tckAccidentId);
+
+    ticketOverlay.classList.remove('ticket-overlay-hidden');
+    ticketOverlay.innerHTML = ticketSection;
+    
+    const exitDetailBtn = document.querySelector('.js-exit-accident-details');
+    
+    exitDetailBtn.style.display = 'none';
+
+    const backBtn = document.querySelector('.js-back-to-detail-btn');
+
+    if(backBtn) {
+      backBtn.addEventListener('click', () => {
+        ticketOverlay.classList.add('ticket-overlay-hidden');
+        ticketOverlay.innerHTML = '';
+        
+        const exitBtn = document.querySelector('.js-exit-accident-details');
+        if (exitBtn) {
+          exitBtn.style.display = 'block';
+        }
+      });
     }
   });
 }
