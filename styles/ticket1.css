@@ -38,6 +38,7 @@
   margin: 2rem auto;
   padding: 0 1rem;
   background: var(--light-color);
+  width: 1000px;
   /*position: fixed;
   inset: 0;
   display: flex;
@@ -104,6 +105,11 @@
   font-weight: 600;
   font-size: 0.875rem;
   display: inline-block;
+}
+
+.status-open-case {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .status-under-investigation {
