@@ -61,4 +61,30 @@ class Accidents extends config {
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
+
+  public function deleteAccidentitem($accidentId) {
+    $conn = $this->conn();
+    $conn->beginTransaction();
+
+    try {
+      $deleteSql = "
+        DELETE FROM accident_cases
+        WHERE accident_id = :accident_id
+      ";
+
+      $stmt = $conn->prepare($deleteSql);
+      $stmt->execute([
+        ':accident_id' => $accidentId
+      ]);
+
+      $conn->commit();
+
+      return true;
+      
+    } catch(Exception $e) {
+      $conn->rollBack();
+      throw $e;
+      return false;
+    }
+  } 
 }

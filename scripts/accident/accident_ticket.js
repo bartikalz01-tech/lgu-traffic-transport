@@ -1,6 +1,10 @@
-
+import { accidentTckDetails, getTicketAccidentHeaderTck } from "../data/get_accident_tck.js";
 
 export async function renderAccidentTicket(accidentId) {
+
+  const data = await getTicketAccidentHeaderTck(accidentId);
+
+  console.log('FULL DATA:', data);
 
   const accidentTicket = `
     <button class="back-to-detail-btn js-back-to-detail-btn">
@@ -19,7 +23,7 @@ export async function renderAccidentTicket(accidentId) {
               <div class="ticket-row-date">
                 <div class="ticket-row">
                   <span class="label">TICKET NO:</span>
-                  <span class="value badge-primary">TCK-2026-0001</span>
+                  <span class="value badge-primary">${data.public_ticket_id}</span>
                 </div>
                 <div class="date">
                   <span class="label">Date Issued:</span>

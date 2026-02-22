@@ -26,7 +26,7 @@ export async function renderAccidentItem() {
     const statusClass = statusClassMap[data.status_definition] || 'status-open';
 
     accidentList.innerHTML += `
-      <div class="accident-item">
+      <div class="accident-item js-accident-item">
         <div class="accident-header">
           <span class="accident-id">${data.public_accident_id}</span>
           <span class="accident-time">${formatDateTime(data.date_of_accident, data.time_of_accident)}</span>
@@ -42,13 +42,52 @@ export async function renderAccidentItem() {
             <span class="status-badge ${statusClass}">${data.status_definition}</span>
             <div class="all-about-ticket-buttons">
               <button class="btn btn-info js-modify-report" data-accident-id="${data.accident_id}">Modfiy Report</button>
+              <button class="btn btn-danger js-delete-accident-item" data-accident-id="${data.accident_id}">Delete</button>
             </div>
           </div>
         </div>
       </div>
-    `;  
+    `;
   });
 }
+
+accidentList.addEventListener('click', async (e) => {
+  const deleteAccidentItem = e.target.closest(".js-delete-accident-item");
+
+  if (!deleteAccidentItem) return;
+
+  const accidentId = Number(deleteAccidentItem.dataset.accidentId);
+
+  try {
+    const response = await fetch('../api/delete_accident_item.php', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        accident_id: accidentId
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      const index = accidentData.findIndex(
+        accident => accident.accident_id === accidentId
+      );
+
+      if (index !== -1) {
+        accidentData.splice(index, 1);
+      }
+
+      console.log("Deleted ID:", accidentId);
+      console.log("Accident Data:", accidentData);
+
+      renderAccidentItem();
+    }
+
+  } catch (error) {
+    console.error('Error in deletion of accident item', error);
+  }
+});
 
 function formatDateTime(date, time) {
   if (!date || !time) return '—';
