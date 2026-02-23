@@ -1,8 +1,8 @@
 import { roads, fetchRoads } from '../data/fetch_roads.js';
-import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
-import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
+/*import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
+import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";*/
 import { openRoadCondition } from './road_details.js';
-import { renderTrafficConditionChart, renderTopRoadsChart, renderTrafficTrendChart } from './road_charts.js';
+//import { renderTrafficConditionChart, renderTopRoadsChart, renderTrafficTrendChart } from './road_charts.js';
 import { openSidebarBtn, closeSidebarBtn, sidebar, sidebarOverlay, cctvGrid, roadOverlay } from '../global_variables.js';
 
 /*export function initSidebar(openBtn, closeBtn, sidebar, overlay) {
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-document.addEventListener('DOMContentLoaded', async () => {
+/*document.addEventListener('DOMContentLoaded', async () => {
   await fetchTrafficPercent();
   renderTrafficConditionChart(trafficPercent);
 });
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await fetchTrafficData();
   renderTopRoadsChart(trafficData);
   renderTrafficTrendChart(trafficData);
-});
+});*/
 
 export function renderCctvFeed() {
   let cctvs = '';
@@ -66,14 +66,19 @@ export function renderCctvFeed() {
             <i class='fas fa-video'></i>
             <p>${road.road_name}</p>
           </div>
-          <div class="details-right-arrow" href="cctv-details.php" data-road-name="${road.road_name}">
+          <div class="details-right-arrow" data-road-id="${road.road_id}">
             <p>View Details</p>
             <i class="fas fa-list"></i>
           </div>
         </div>
 
         <div class="cctv-video">
-          <i class="fas fa-video"></i>
+          <iframe 
+            src="https://www.youtube.com/embed/${road.video_id}?autoplay=1&mute=1&controls=0&rel=0"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+          </iframe>
         </div>
       </div>
     `;
@@ -96,9 +101,12 @@ cctvGrid.addEventListener('click', (e) => {
 
   if (!detailsBtn) return;
 
-  const roadName = detailsBtn.dataset.roadName;
+  const roadId = detailsBtn.dataset.roadId;
+  const selectedRoad = roads.find(r => String(r.road_id) === String(roadId));
 
-  openRoadCondition(roadName)
+  if(!selectedRoad) return;
+
+  openRoadCondition(selectedRoad)
 });
 
 fetchRoads();

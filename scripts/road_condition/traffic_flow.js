@@ -1,4 +1,4 @@
-import { trafficTbody, brgyTrafficStatus  } from "../global_variables.js";
+/*import { trafficTbody, brgyTrafficStatus  } from "../global_variables.js";
 import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
 import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
 
@@ -86,6 +86,6 @@ export function renderTrafficPercentage() {
 
 fetchTrafficPercent();
 
-setInterval(() => {
+/*setInterval(() => {
   fetchTrafficPercent();
-}, 300000); // every 5 minutes
+}, 300000);*/ // every 5 minutes

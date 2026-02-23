@@ -1,7 +1,36 @@
 import { roadOverlay } from '../global_variables.js';
 
+async function fetchPrediction() {
 
-export function openRoadCondition(roadName) {
+  try {
+
+    const response = await fetch("http://localhost:5000/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        vehicles_per_min: 140,
+        pedestrians: 20,
+        avg_speed: 30,
+        lane_usage: 65,
+        avg_wait_time: 40,
+        time_of_day: 18,
+        day_of_week: 2
+      })
+    });
+
+    const data = await response.json();
+
+    updatePredictionUI(data);
+
+  } catch(err) {
+    console.error(err);
+  }
+
+}
+
+export function openRoadCondition(road) {
   roadOverlay.innerHTML = `
     <div class="road-condition-content">
 
@@ -12,7 +41,7 @@ export function openRoadCondition(roadName) {
         </button>
         <p class="module-title">Real Time Road Condition Updates</p>
         <h1 class="sub-module-title">CCTV Monitoring</h1>
-        <p class="sub-module-description">Real-time surveillance and predictive analytics of ${roadName}</p>
+        <p class="sub-module-description">Real-time surveillance and predictive analytics of ${road.road_name}</p>
       </div>
       <button class="btn btn-primary" id="fullscreenBtn">
         <i class="fas fa-expand"></i> Full Screen
@@ -35,7 +64,12 @@ export function openRoadCondition(roadName) {
           </div>
 
           <div class="cctv-video-display">
-            <i class="fas fa-video"></i>
+            <iframe
+              src="https://www.youtube.com/embed/${road.video_id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${road.video_id}"
+              frameborder="0"
+              allow="autoplay; encrypted-media"
+              allowfullscreen>
+            </iframe>
           </div>
 
           <div class="video-controls">
@@ -71,11 +105,11 @@ export function openRoadCondition(roadName) {
             <div class="details-grid">
               <div class="detail-item">
                 <span class="detail-label">Camera ID</span>
-                <span class="detail-value">CAM-${roadName}-001</span>
+                <span class="detail-value">CAM-${road.road_name}-001</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Location</span>
-                <span class="detail-value">${roadName} Street Intersection</span>
+                <span class="detail-value">${road.road_name} Street Intersection</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Type</span>
@@ -124,7 +158,7 @@ export function openRoadCondition(roadName) {
           </div>
 
           <!-- Camera List Card -->
-          <div class="camera-list-card">
+          <!--<div class="camera-list-card">
             <h4><i class="fas fa-list"></i> Available Cameras</h4>
             <div class="camera-list">
               <div class="camera-list-item active" data-camera="cam1">
@@ -133,7 +167,7 @@ export function openRoadCondition(roadName) {
                 </div>
                 <div class="camera-info">
                   <div class="camera-name">Camera 1 - Main View</div>
-                  <div class="camera-location">${roadName} Street Intersection</div>
+                  <div class="camera-location">${road.road_name} Street Intersection</div>
                 </div>
                 <span class="live-status" style="font-size: 0.625rem;">LIVE</span>
               </div>
@@ -143,7 +177,7 @@ export function openRoadCondition(roadName) {
                 </div>
                 <div class="camera-info">
                   <div class="camera-name">Camera 2 - North View</div>
-                  <div class="camera-location">${roadName} Street North End</div>
+                  <div class="camera-location">${road.road_name} Street North End</div>
                 </div>
               </div>
               <div class="camera-list-item" data-camera="cam3">
@@ -152,7 +186,7 @@ export function openRoadCondition(roadName) {
                 </div>
                 <div class="camera-info">
                   <div class="camera-name">Camera 3 - South View</div>
-                  <div class="camera-location">${roadName} Street South End</div>
+                  <div class="camera-location">${road.road_name} Street South End</div>
                 </div>
               </div>
               <div class="camera-list-item" data-camera="cam4">
@@ -165,7 +199,7 @@ export function openRoadCondition(roadName) {
                 </div>
               </div>
             </div>
-          </div>
+          </div>-->
 
           <!-- Traffic Statistics -->
           <div class="camera-details-card">
@@ -199,7 +233,7 @@ export function openRoadCondition(roadName) {
       <div class="video-placeholder">
         <i class="fas fa-video" style="font-size: 5rem;"></i>
         <p style="font-size: 1.5rem;">Full Screen CCTV View</p>
-        <p>${roadName} Street Intersection - Live Feed</p>
+        <p>${road.road_name} Street Intersection - Live Feed</p>
       </div>
       <button class="close-fullscreen" id="closeFullscreen">
         <i class="fas fa-times"></i>
@@ -220,4 +254,23 @@ export function openRoadCondition(roadName) {
   `;
 
   roadOverlay.classList.remove('hidden');
+
+  fetchPrediction();
+}
+
+function updatePredictionUI(data){
+
+  const trafficCard = document.querySelector(".prediction-item.traffic .prediction-value");
+
+  if(!trafficCard) return;
+
+  const low = (data.low * 100).toFixed(1);
+  const medium = (data.medium * 100).toFixed(1);
+  const high = (data.high * 100).toFixed(1);
+
+  trafficCard.innerHTML = `
+    Low ${low}% |
+    Medium ${medium}% |
+    High ${high}%
+  `;
 }

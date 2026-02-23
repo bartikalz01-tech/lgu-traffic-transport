@@ -95,7 +95,7 @@
   line-height: 30px;
 }
 
-.cctv-video {
+/*.cctv-video {
   background-color: #000;
   height: 300px;
   border-bottom-left-radius: 5px;
@@ -104,6 +104,25 @@
   justify-content: center;
   align-items: center;
   border: 1px solid rgba(0, 0, 0, 0.1);
+}*/
+
+.cctv-video {
+  position: relative;
+  background-color: #000;
+  height: 300px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.cctv-video iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .cctv-video i {
