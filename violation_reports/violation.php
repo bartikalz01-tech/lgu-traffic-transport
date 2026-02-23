@@ -281,6 +281,8 @@
 
     <div class="quick-report-overlay hidden"></div>
 
+    <div class="detailed-reports-overlay detailed-reports-hidden"></div>
+
     <?php include '../includes/admin-footer.php'; ?>
   </main>
 

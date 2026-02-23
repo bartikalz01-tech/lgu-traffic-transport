@@ -1,4 +1,4 @@
-import { getQuickReportOverlay } from "../global_variables.js";
+import { getQuickReportOverlay, getDetailedReports } from "../global_variables.js";
 import { renderViolationQuickReport } from "./quick_violation_report.js";
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -45,4 +45,15 @@ quickReportOverlay.addEventListener('click', (e) => {
 
 document.getElementById('quickIssueBtn').addEventListener('click', () => {
   renderViolationQuickReport();
+});
+
+const detailedReports = getDetailedReports();
+
+detailedReports.addEventListener('click', (e) => {
+  const closeDetailReport = e.target.closest('.js-exit-accident-details');
+
+  if(!closeDetailReport) return;
+
+  detailedReports.classList.add('detailed-reports-hidden');
+  detailedReports.innerHTML = '';
 });
