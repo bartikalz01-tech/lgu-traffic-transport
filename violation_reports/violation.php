@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <link rel="stylesheet" href="../styles//violations/violation.css">
+  <link rel="stylesheet" href="../styles/violations/quick_report.css">
   <title>Violations and Ticketing</title>
 </head>
 
@@ -39,13 +40,16 @@
             <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
             <div class="action-buttons">
               <button class="btn btn-primary action-btn" id="quickIssueBtn">
-                <i class="fas fa-ticket-alt"></i> Issue Violation Reports
+                <i class="fas fa-ticket-alt"></i> Issue Violation Report
               </button>
-              <button class="btn btn-secondary action-btn" id="barangayReportsBtn">
-                <i class="fas fa-money-bill"></i> Barangay Reports
+              <button class="btn btn-secondary action-btn" id="openCasesReports">
+                <i class="fa-solid fa-magnifying-glass"></i> Open Cases Reports
               </button>
               <button class="btn btn-secondary action-btn" id="escalatedReportsBtn">
                 <i class="fas fa-chart-bar"></i> Escalated Reports <!-- To create violatios based on barangay ordinance -->
+              </button>
+              <button class="btn btn-secondary action-btn" id="resolvedCases">
+                <i class="fa-solid fa-lock"></i> Resolved Cases
               </button>
               <!--<button class="btn btn-secondary action-btn" id="sendRemindersBtn">
                 <i class="fas fa-user-group"></i> Dispatch Officers
@@ -274,6 +278,8 @@
         </div>
       </div>
     </section>
+
+    <div class="quick-report-overlay hidden"></div>
 
     <?php include '../includes/admin-footer.php'; ?>
   </main>

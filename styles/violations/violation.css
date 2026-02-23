@@ -185,6 +185,10 @@
   justify-content: center;
 }
 
+.action-btn:hover {
+  transform: translateY(-1px);
+}
+
 .statistics-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

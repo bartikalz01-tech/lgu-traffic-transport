@@ -1,3 +1,6 @@
+import { getQuickReportOverlay } from "../global_variables.js";
+import { renderViolationQuickReport } from "./quick_violation_report.js";
+
 document.addEventListener('DOMContentLoaded', function () {
   const openSidebarBtn = document.querySelector('.hamburger-menu-btn');
   const closeSidebarBtn = document.querySelector('.sidebar-close-btn');
@@ -27,4 +30,19 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
+});
+
+const quickReportOverlay = getQuickReportOverlay() ;
+
+quickReportOverlay.addEventListener('click', (e) => {
+  const closeQuickReportBtn = e.target.closest('.js-exit-quick-reports');
+
+  if(!closeQuickReportBtn) return;
+
+  quickReportOverlay.classList.add('hidden');
+  quickReportOverlay.innerHTML = '';
+});
+
+document.getElementById('quickIssueBtn').addEventListener('click', () => {
+  renderViolationQuickReport();
 });
