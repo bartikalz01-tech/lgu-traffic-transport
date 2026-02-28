@@ -1,0 +1,10 @@
+.dashboard-container {
+  margin-top: var(--header-h);
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.top-sections div {
+  width: 50px;
+  height: 70px;
+}

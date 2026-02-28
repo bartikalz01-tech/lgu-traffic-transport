@@ -66,6 +66,41 @@
   gap: 40px;
 }
 
+.header-right-section {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.notification-container {
+  display: flex;
+  align-items: center;
+  gap: 30px;  
+}
+
+.notif-bell,
+.email-notif {
+  cursor: pointer;
+  background-color: var(--primary-color);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.notif-bell i {
+  color: white;
+  font-size: 18px;
+}
+
+.email-notif i {
+  color: white;
+  font-size: 15px;
+}
+
 .user-profile {
   display: flex;
   align-items: center;

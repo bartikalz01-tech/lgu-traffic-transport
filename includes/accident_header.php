@@ -4,11 +4,20 @@
       <button class="hamburger-menu-btn"><i class="fas fa-bars"></i></button>
     </div>
 
-    <div class="header-middle-section">
+    <!--<div class="header-middle-section">
       <img src="../images/logo.svg" alt="Traffic Management System" class="logo-img">
-    </div>
+    </div>-->
 
     <div class="header-right-section">
+      <div class="notification-container">
+        <div class="notif-bell">
+          <i class="fas fa-bell"></i>
+        </div>  
+        <div class="email-notif">
+          <i class="fas fa-message"></i>
+        </div>
+      </div>
+
       <div class="user-profile" id="userProfileBtn">
         <div class="user-info">
           <div class="user-name">Admin User</div>
