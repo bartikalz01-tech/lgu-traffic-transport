@@ -9,12 +9,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
   <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/dashboard.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>Dashboard</title>
 </head>
 
@@ -65,11 +67,56 @@
         </div>
       </div>
 
-      <div class=""></div>
+      <div class="traffic-map-graph-container">
+        <div class="traffic-map">
+          <div id="map"></div>
+        </div>
+        <div class="traffic-vol-overtime-container">
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">
+                <h3>Traffic Volume Overtime</h3>
+                <p>Vehicles per minute</p>
+              </div>
+              <div class="chart-control">
+                <select id="roadFilter">
+                  <option value="all">All Roads</option>
+                  <option value="Dome">Dome</option>
+                  <option value="Mt. Natib">Mt. Natib</option>
+                  <option value="Klawit">Klawit</option>
+                  <option value="Kalandang">Kalandang</option>
+                  <option value="Mauban">Mauban</option>
+                  <option value="Tagaytay St">Tagaytay St</option>
+                </select>
+              </div>
+            </div>
+
+            <!--<div class="road-toggles">
+              <label><input type="checkbox" value="Dome" checked> Dome</label>
+              <label><input type="checkbox" value="Mt. Natib" checked> Mt. Natib</label>
+              <label><input type="checkbox" value="Klawit" checked> Klawit</label>
+              <label><input type="checkbox" value="Kalandang" checked> Kalandang</label>
+              <label><input type="checkbox" value="Mauban" checked> Mauban</label>
+              <label><input type="checkbox" value="Tagaytay St" checked> Tagaytay St</label>
+            </div>-->
+            <div class="chart-wrapper">
+              <canvas id="trafficVolumeChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
   <script src="../scripts/dashboard.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([14.6414, 120.9909], 18);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+  </script>
 </body>
 
 </html>
