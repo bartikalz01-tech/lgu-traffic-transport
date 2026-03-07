@@ -105,7 +105,7 @@
 .road-conditions-reports {
   margin-top: 25px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr;
+  grid-template-columns: 1fr 1fr 1fr;
   column-gap: 15px;
 }
 
@@ -157,8 +157,8 @@
   background: white;
   height: 100%;
   border-radius: 12px;
-  padding: 10px;
-  box-shadow: 4px 4px 3px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .chart-card h3 {
@@ -206,4 +206,45 @@
   gap: 10px;
   font-size: 13px;
   margin-bottom: 10px;
+}
+
+.congested-roads-list {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.road-data {
+  display: grid;
+  grid-template-columns: 30px 1fr 150px;
+  align-items: center;
+  padding: 12px;
+  background-color: #f8f9fa; /* Light subtle grey */
+  border-radius: 8px; 
+  border-left: 4px solid #ccc;
+}
+
+.road-data.high-traffic {
+  border-left-color: var(--danger-color); /* Visual indicator of congestion */
+}
+
+.road-data.moderate-traffic {
+  border-left-color: var(--warning-color);
+}
+
+.road-data p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-color-1);
+}
+
+.road-data .peak-time {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.road-data i {
+  font-size: 12px;
 }

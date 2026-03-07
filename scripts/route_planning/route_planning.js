@@ -1,24 +1,24 @@
 import { trafficTbody, brgyTrafficStatus } from "../global_variables.js";
-import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
-import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
+//import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
+//import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
 
-/*document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
   const openSidebarBtn = document.querySelector('.hamburger-menu-btn');
   const closeSidebarBtn = document.querySelector('.sidebar-close-btn');
   const sidebar = document.querySelector('.sidebar-container');
   const sidebarOverlay = document.querySelector('.sidebar-overlay');
 
-  if (openSidebarBtn && sidebar) {
+  if (openSidebarBtn && sidebar && sidebarOverlay) {
     openSidebarBtn.addEventListener('click', () => {
       sidebar.classList.toggle('open');
-      sidebarOverlay?.classList.toggle('visible');
+      sidebarOverlay.classList.toggle('visible');
     });
   }
 
-  if (closeSidebarBtn && sidebar) {
+  if (closeSidebarBtn && sidebar && sidebarOverlay) {
     closeSidebarBtn.addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      sidebarOverlay?.classList.remove('visible');
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('visible');
     });
   }
 
@@ -31,23 +31,9 @@ import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percen
       }
     });
   }
-});*/
+});
 
-/*if (openSidebarBtn && sidebar) {
-  openSidebarBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-    sidebarOverlay?.classList.toggle('visible');
-  });
-}
-
-if (closeSidebarBtn && sidebar) {
-  closeSidebarBtn.addEventListener('click', () => {
-    sidebar.classList.remove('open');
-    sidebarOverlay?.classList.remove('visible');
-  });
-}*/
-
-export function renderTrafficFlowTable() {
+/*export function renderTrafficFlowTable() {
   let trafficFlow = '';
 
   trafficData.forEach((data) => {
@@ -101,4 +87,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 setInterval(() => {
   fetchTrafficPercent();
-}, 300000); // every 5 minutes
+}, 300000);*/ // every 5 minutes

@@ -76,7 +76,7 @@
           <div class="chart-card">
             <div class="chart-header">
               <div class="chart-title">
-                <h3>Traffic Volume Overtime</h3>
+                <h3><i class="fa-solid fa-chart-line"></i> Traffic Volume Overtime</h3>
                 <p>Vehicles per minute</p>
               </div>
               <div class="chart-control">
@@ -103,7 +103,7 @@
           <div class="chart-card">
             <div class="chart-header" style="margin-bottom: -15px;">
               <div class="chart-title">
-                <h3>Barangay Traffic Update</h3>
+                <h3><i class="fa-solid fa-map-pin"></i> Barangay Traffic Update</h3>
                 <p>Traffic Congestion</p>
               </div>
             </div>
@@ -117,7 +117,7 @@
           <div class="chart-card">
             <div class="chart-header">
               <div class="chart-title">
-                <h3><i class="fa-solid fa-gauge-high"></i> Average speed by road</h3>
+                <h3><i class="fa-solid fa-bolt"></i> Average speed by road</h3>
                 <p>Traffic flow</p>
               </div>
             </div>
@@ -129,10 +129,25 @@
 
         <div class="congested-roads-card">
           <div class="title">
-            <h3>
-              <i class="fa-solid fa-business-time"></i>
-              Congested Roads with Peak Hours
-            </h3>
+            <h3><i class="fa-solid fa-business-time"></i> Congested Roads with Peak Hours</h3>
+          </div>
+
+          <div class="congested-roads-list">
+            <div class="road-data high-traffic">
+              <p><i class="fa-solid fa-circle" style="color: #db3d3d;"></i></p>
+              <p class="road-name" id="roadName">Tagaytay St</p>
+              <p class="peak-time" id="peakTime">8:00am - 10:00am</p>
+            </div>
+            <div class="road-data moderate-traffic">
+              <p><i class="fa-solid fa-circle" style="color: #f39c12"></i></p>
+              <p class="road-name" id="roadName">Mt. Natib</p>
+              <p class="peak-time" id="peakTime">8:00am - 11:00am</p>
+            </div>
+            <div class="road-data moderate-traffic">
+              <p><i class="fa-solid fa-circle" style="color: #f39c12"></i></p>
+              <p class="road-name" id="roadName">Mauban</p>
+              <p class="peak-time" id="peakTime">8:00am - 11:00am</p>
+            </div>
           </div>
         </div>
       </div>
