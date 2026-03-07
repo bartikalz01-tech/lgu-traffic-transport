@@ -2,6 +2,7 @@
   margin-top: calc(var(--header-h) + 20px);
   margin-left: 10px;
   margin-right: 10px;
+  margin-bottom: 20px;
 }
 
 .top-sections {
@@ -81,7 +82,7 @@
   background-color: var(--danger-color);
 }
 
-.active-incidents {
+.peak-hours {
   height: 100px;
   border: 3px solid var(--border-color-1);
   display: flex;
@@ -90,7 +91,7 @@
   padding: 0 1.95rem;
 }
 
-.incident-logo {
+.peak-hour-logo {
   background-color: var(--warning-color);
 }
 
@@ -98,9 +99,17 @@
   margin-top: 25px;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  row-gap: 15px;
 }
 
-.chart-header {
+.road-conditions-reports {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  column-gap: 15px;
+}
+
+.chart-header { 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -129,6 +138,11 @@
   padding-left: 20px;
 }
 
+.road-condition-chart-container {
+  height: 50vh;
+  
+}
+
 .chart-card {
   background: white;
   height: 100%;
@@ -137,6 +151,14 @@
   box-shadow: 4px 4px 3px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
+}
+
+.congested-roads-card {
+  background: white;
+  height: 100%;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 4px 4px 3px rgba(0, 0, 0, 0.2);
 }
 
 .chart-card h3 {
@@ -150,16 +172,28 @@
   font-size: 14px;
 }
 
+.chart-wrapper canvas,
+.pie-wrapper canvas {
+  width: 100%;
+  height: 100%;
+}
+
 .chart-wrapper {
   position: relative;
   flex: 1;
   width: 100%;
 }
 
-.chart-card canvas {
-  height: 100%;
+.pie-wrapper {
+  position: relative;
+  height: 260px;
   width: 100%;
 }
+
+/*.chart-card canvas {
+  height: 100%;
+  width: 100%;
+}*/
 
 .chart-control select {
   padding: 5px 8px;

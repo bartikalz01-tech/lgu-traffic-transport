@@ -79,8 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          //position: "bottom"
-          display: false
+          position: "bottom"
         }
       },
       scales: {
@@ -103,29 +102,98 @@ document.addEventListener("DOMContentLoaded", function () {
     if (selected === "all") {
       trafficVolumeChart.data.datasets = generateAllDatasets();
     } else {
-      trafficVolumeChart.data.datasets = [generateDataset(selected)]; 
+      trafficVolumeChart.data.datasets = [generateDataset(selected)];
     }
 
     trafficVolumeChart.update();
   });
 
-  // CHECKBOX TOGGLES
-  /*document.querySelectorAll(".road-toggles input").forEach(checkbox => {
+  const congestionCtx = document.getElementById("congestionPieChart");
 
-    checkbox.addEventListener("change", function () {
+  const congestionData = {
+    low: 37,
+    medium: 3,
+    high: 60
+  };
 
-      const activeRoads = [];
+  const congestionPieChart = new Chart(congestionCtx, {
+    type: "pie",
+    data: {
+      labels: ["Low", "Moderate", "High"],
+      datasets: [{
+        data: [
+          congestionData.low,
+          congestionData.medium,
+          congestionData.high
+        ],
+        backgroundColor: [
+          "#28a745", // green
+          "#ffc107", // yellow
+          "#dc3545"  // red
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "right"
+        }
+      }
+    }
+  });
 
-      document.querySelectorAll(".road-toggles input:checked")
-        .forEach(cb => activeRoads.push(cb.value));
+  const speedCtx = document.getElementById("averageSpeedChart");
 
-      trafficVolumeChart.data.datasets = activeRoads.map(road =>
-        generateDataset(road)
-      );
-
-      trafficVolumeChart.update();
-    });
-
-  });*/
-
+  const averageSpeedChart = new Chart(speedCtx, {
+    type: "bar",
+    data: {
+      labels: [
+        "Dome",
+        "Mt. Natib",
+        "Klawit",
+        "Kalandang",
+        "Mauban",
+        "Tagaytay St"
+      ],
+      datasets: [{
+        label: "Average Speed (km/h)",
+        data: [
+          32,
+          28,
+          35,
+          40,
+          30,
+          25
+        ],
+        backgroundColor: [
+          "#3498db",
+          "#ffc107",
+          "#3498db",
+          "#3498db",
+          "#ffc107",
+          "#dc3545"
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Speed (km/h)"
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  });
 });

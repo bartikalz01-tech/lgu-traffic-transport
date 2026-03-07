@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/dashboard.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+  <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>Dashboard</title>
 </head>
@@ -56,13 +57,13 @@
             <p class="top-section-label">Average City Speed</p>
           </div>
         </div>
-        <div class="active-incidents">
-          <div class="report-logo incident-logo">
-            <i class="fas fa-exclamation-triangle"></i>
+        <div class="peak-hours">
+          <div class="report-logo peak-hour-logo">
+            <i class="fas fa-clock"></i>
           </div>
           <div>
-            <h2 class="top-section-value" id="activeIncidents">7</h2>
-            <p class="top-section-label">Active Incidents</p>
+            <h2 class="top-section-value" id="peakHour">8 am</h2>
+            <p class="top-section-label">Peak Hour Traffic</p>
           </div>
         </div>
       </div>
@@ -90,23 +91,55 @@
                 </select>
               </div>
             </div>
-
-            <!--<div class="road-toggles">
-              <label><input type="checkbox" value="Dome" checked> Dome</label>
-              <label><input type="checkbox" value="Mt. Natib" checked> Mt. Natib</label>
-              <label><input type="checkbox" value="Klawit" checked> Klawit</label>
-              <label><input type="checkbox" value="Kalandang" checked> Kalandang</label>
-              <label><input type="checkbox" value="Mauban" checked> Mauban</label>
-              <label><input type="checkbox" value="Tagaytay St" checked> Tagaytay St</label>
-            </div>-->
             <div class="chart-wrapper">
               <canvas id="trafficVolumeChart"></canvas>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="road-conditions-reports">
+        <div class="road-condition-chart-container">
+          <div class="chart-card">
+            <div class="chart-header" style="margin-bottom: -15px;">
+              <div class="chart-title">
+                <h3>Barangay Traffic Update</h3>
+                <p>Traffic Congestion</p>
+              </div>
+            </div>
+            <div class="pie-wrapper">
+              <canvas id="congestionPieChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="road-condition-chart-container">
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">
+                <h3><i class="fa-solid fa-gauge-high"></i> Average speed by road</h3>
+                <p>Traffic flow</p>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="averageSpeedChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="congested-roads-card">
+          <div class="title">
+            <h3>
+              <i class="fa-solid fa-business-time"></i>
+              Congested Roads with Peak Hours
+            </h3>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
+
+  <?php include '../includes/admin-footer.php'; ?>
 
   <script src="../scripts/dashboard.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

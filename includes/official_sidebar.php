@@ -12,7 +12,7 @@
 
   <div class="menu-items">
     <h3 class="system-title">Traffic and Transport Management</h3>
-    <a href="../dashboard.php" class="sidebar-link">
+    <a href="../dashboard/dashboard.php" class="sidebar-link">
       <i class="fas fa-home"></i>
       <span>Dashboard</span>
       <span class="purpose">Summary</span>
@@ -21,11 +21,6 @@
       <i class="fas fa-road"></i>
       <span>Road Conditions</span>
       <span class="purpose">Real-Time</span>
-    </a>
-    <a href="../accident_reports/accident.php" class="sidebar-link">
-      <i class="fas fa-car-crash"></i>
-      <span>Accident Reports</span>
-      <span class="purpose">Violations</span>
     </a>
     <a href="../route_planning/route_planning.php" class="sidebar-link">
       <i class="fas fa-route"></i>
@@ -36,6 +31,11 @@
       <i class="fas fa-car"></i>
       <span>Public Transport</span>
       <span class="purpose">Coordination</span>
+    </a>
+    <a href="../accident_reports/accident.php" class="sidebar-link">
+      <i class="fas fa-car-crash"></i>
+      <span>Accident Reports</span>
+      <span class="purpose">Violations</span>
     </a>
     <a href="../violation_reports/violation.php" class="sidebar-link">
       <i class="fas fa-ticket-alt"></i>
