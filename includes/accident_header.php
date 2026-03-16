@@ -2,6 +2,7 @@
   <div class="road-ud-title-container">
     <div class="header-left-section">
       <button class="hamburger-menu-btn"><i class="fas fa-bars"></i></button>
+      <p class="current-time">12:00:00</p>
     </div>
 
     <!--<div class="header-middle-section">

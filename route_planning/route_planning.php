@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,11 +25,10 @@
 
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
       <div class="module-title-container">
-        <p class="module-title">Vehicle Routing Planning</p>
-        <h1 class="sub-module-title">Route Planning</h1>
-        <p class="sub-module-description">Planing the ways of transportations</p>
+        <p class="module-title">Vehicle Routing and Diversion Planning</p>
+        <h1 class="sub-module-title">Route and Diversion Planning</h1>
+        <p class="sub-module-description">Plan routes, Traffic Congestions</p>
       </div>
-      <p class="current-time">12:00:00</p>
     </div>
     <!-- For Cards Later
     <th>Average Traffic Speed</th>
@@ -174,5 +172,4 @@
     }).addTo(map);
   </script>
 </body>
-
 </html>

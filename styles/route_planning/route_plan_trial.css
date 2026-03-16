@@ -1,0 +1,401 @@
+.route-diversion-container {
+  margin-top: var(--header-h);
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.reports-and-actions-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  column-gap: 10px;
+}
+
+.officers-card {
+  background: rgba(52, 152, 219, 0.08);
+  border: 1px solid rgba(52, 152, 219, 0.2); 
+  border-top: 5px solid var(--accent-color); /* #3498db */
+  border-radius: 12px;
+  height: 250px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.officers-card h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.60rem;
+  color: #2980b9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+}
+
+.officer-arrival-data {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(52, 152, 219, 0.1);
+}
+
+.officer-arrival-data:last-of-type {
+  border-bottom: none;
+}
+
+.officer-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #34495e;
+}
+
+.officer-value {
+  font-size: 26px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  color: #2c3e50;
+}
+
+.emergency-card {
+  background: rgba(231, 76, 60, 0.05);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-top: 4px solid var(--danger-color);
+  border-radius: 12px;
+  height: 250px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.emergency-card h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.60rem;
+  color: #c0392b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  align-self: flex-start;
+}
+
+.emergency-arrival-data {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 0;
+  border-bottom: 1px dashed rgba(231, 76, 60, 0.2);
+}
+
+.emergency-arrival-data:last-of-type {
+  border-bottom: none;
+}
+
+.emergency-status {
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emergency-value {
+  font-size: 24px;
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  color: #2c3e50;
+}
+
+.diversion-card {
+  background: rgba(243, 156, 18, 0.05);
+  border: 1px solid rgba(243, 156, 18, 0.2);
+  border-top: 5px solid #f39c12;
+  border-radius: 12px;
+  height: 250px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0 ,0, 0, 0.05);
+}
+
+.diversion-card h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.60rem;
+  color: #d35400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+}
+
+.diversion-data {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(243, 156, 18, 0.1);
+}
+
+.diversion-data:last-of-type {
+  border-bottom: none;
+}
+
+.diversion-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #34495e;
+}
+
+.diversion-value {
+  font-size: 26px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  color: #2c3e50;
+}
+
+.actions-card {
+  background: rgba(26, 188, 156, 0.05);
+  border: 1px solid rgba(26, 188, 156, 0.2);
+  border-top: 5px solid #1abc9c;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.actions-card h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  color: #16a085;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.action-btn {
+  display: flex;
+  gap: 10px;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+  color: #2c3e50;
+  border: 1px solid #dcdde1;
+  text-align: left;
+}
+
+.action-btn i {
+  width: 20px;
+  text-align: center;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+}
+
+.assign-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.emergency-btn:hover {
+  border-color: var(--danger-color);
+  color: var(--danger-color);
+}
+
+.diversion-btn:hover {
+  border-color: #f39c12;
+  color: #f39c12;
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.map-status-container {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  column-gap: 15px;
+  margin-top: 15px;
+}
+
+.left-side {
+  height: 60vh;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+.right-side {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid var(--border-color-1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.status-panel-header {
+  padding: 15px 20px;
+  background: var(--secondary-color);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-panel-header h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.live-indicator {
+  font-size: 11px;
+  background: rgba(255, 255 ,255, 0.2);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.live-indicator i {
+  color: var(--success-color);
+  font-size: 8px;
+  margin-right: 5px;
+  animation: pulse 1.5s infinite;
+}
+
+.status-items-container {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: var(--light-color);
+  border-radius: 8px;
+  border-left: 4px solid #dcdde1;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.status-item:hover {
+  transform: translateX(5px);
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 600;
+  color: var(--secondary-color);
+}
+
+.status-count {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.road-closed {
+  border-left-color: var(--danger-color);
+}
+
+.road-closed i {
+  color: var(--danger-color);
+}
+
+.road-congestion {
+  border-left-color: var(--warning-color);
+}
+
+.road-congestion i {
+  color: var(--warning-color);
+}
+
+.road-maintenance {
+  border-left-color: var(--accent-color);
+}
+
+.road-maintenance i {
+  color: var(--accent-color);
+}
+
+.road-incidents {
+  border-left-color: #9b59b6;
+}
+
+.road-incidents i {
+  color: #9b59b6;
+}
+
+.incident-log-container {
+  margin-top: auto;
+  padding: 20px;
+  border-top: 1px solid var(--border-color-1);
+  background-color: #fafbfc;
+}
+
+.incident-log-container h4 {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.log-entry {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 5px;
+}
+
+.log-time {
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}

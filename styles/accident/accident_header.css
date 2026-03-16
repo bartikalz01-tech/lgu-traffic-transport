@@ -45,7 +45,7 @@
   margin-right: 15px;
 }
 
-.cctv-title-container {
+/*.cctv-title-container {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -56,7 +56,7 @@
   color: var(--dark-color);
   font-size: 17px;
   margin-right: 5px;
-}
+}*/
 
 .header-middle-section {
   display: flex;
