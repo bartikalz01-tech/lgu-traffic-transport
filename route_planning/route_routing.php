@@ -188,7 +188,7 @@
 
   <?php include '../includes/admin-footer.php'; ?>
 
-  <script type="module" src="../scripts/route_planning/route_planning_test.js"></script>
+  <script type="module" src="../scripts/route_planning/route_planning.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const map = L.map('map').setView([14.6414, 120.9909], 18);
