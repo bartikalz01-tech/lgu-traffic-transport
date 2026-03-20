@@ -1,4 +1,6 @@
 import { trafficTbody, brgyTrafficStatus } from "../global_variables.js";
+import { fetchRoadEvents, fetchRoadMap } from "../data/fetch_road_map.js";
+import { getEventMarker, getTrafficColor } from "../utils/traffic_and_events.js";
 //import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
 //import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
 
@@ -33,62 +35,44 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-// Mauban St. Polylines
-/*
-(14.64080, 120.98961)
-(14.64072, 120.98986)
-(14.64062, 120.99018)
-(14.64050, 120.99055)
-(14.64037, 120.99099)
-(14.64026, 120.99134)
-*/
+async function loadRoadEvents(map) {
+  const events = await fetchRoadEvents();
 
-//Tagaytay St. Polylines
-/*
-(14.64081, 120.98958)
-(14.64102, 120.98966)
-(14.64119, 120.98974)
-(14.64154, 120.98992)
-(14.64198, 120.99016)
-(14.64220, 120.99027)
-(14.64252, 120.99033)
-*/
+  events.forEach(event => {
+    const marker = L.marker(
+      [event.latitude, event.longitude],
+      { icon: getEventMarker(event.event_type, event.description) }
+    ).addTo(map);
 
-//Kalandang St. Polylines
-/*
-(14.64125, 120.98981)
-(14.64117, 120.99006)
-(14.64107, 120.99036)
-(14.64101, 120.99056)
-(14.64089, 120.99094)
-(14.64077, 120.99130)
-(14.64070, 120.99153)
-*/
+    marker.bindPopup(`
+      <b>${event.event_type.toUpperCase()}</b><br>
+      ${event.description}
+    `);
+  });
+}
 
-//Klawit St. Polylines
-/*
-(14.64167, 120.99005)
-(14.64151, 120.99056)
-(14.64138, 120.99096)
-(14.64125, 120.99140)
-(14.64115, 120.99172)
-*/
+document.addEventListener('DOMContentLoaded', async () => {
+  const map = L.map('map').setView([14.6414, 120.9909], 17.5);
 
-//Mt.Natib St. Polylines
-/*
-(14.64210, 120.99028)
-(14.64194, 120.99078)
-(14.64180, 120.99121)
-(14.64166, 120.99165)
-(14.64157, 120.99190)
-*/
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
 
-//Dome St. Polylines
-/*
-(14.64251, 120,99044)
-(14.64235, 120.99091)
-(14.64227, 120.99113)
-(14.64219, 120.99136)
-(14.64206, 120.99174)
-(14.64198, 120.99196)
-*/
+  const roads = await fetchRoadMap();
+
+  roads.forEach(road => {
+    const color = getTrafficColor(road.traffic_level);
+
+    const polyline = L.polyline(road.coordinates, {
+      color: color,
+      weight: 6
+    }).addTo(map);
+
+    polyline.bindPopup(`
+      <b>${road.road_name}</b><br>
+      Traffic: ${road.traffic_level}
+    `);
+  });
+
+  loadRoadEvents(map);
+});
