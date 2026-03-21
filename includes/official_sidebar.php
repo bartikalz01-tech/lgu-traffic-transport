@@ -22,7 +22,7 @@
       <span>Road Conditions</span>
       <span class="purpose">Real-Time</span>
     </a>
-    <a href="../route_planning/route_planning.php" class="sidebar-link">
+    <a href="../route_planning/route_routing.php" class="sidebar-link">
       <i class="fas fa-route"></i>
       <span>Route Planning</span>
       <span class="purpose">Diversion</span>
