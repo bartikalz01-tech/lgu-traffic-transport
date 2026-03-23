@@ -5,7 +5,7 @@ export function getTrafficColor(level) {
     case "moderate":
       return "#f39c12";
     case "low":
-      return "#2ecc71";
+      return "#4df091";
     case "close":
       return "#2c3e50";
   }

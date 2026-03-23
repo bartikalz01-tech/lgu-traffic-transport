@@ -191,5 +191,4 @@
   <script type="module" src="../scripts/route_planning/route_planning.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
-
 </html>
