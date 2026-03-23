@@ -32,3 +32,7 @@ export function getReportTicket() {
 export function getAccidentTck() {
   return document.querySelector
 }
+
+export function getDivesionPlan() {
+  return document.querySelector('.diversion-plan-overlay')
+}

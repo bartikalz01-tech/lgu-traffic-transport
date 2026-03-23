@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/route_planning/route_plan_trial.css">
+  <link rel="stylesheet" href="../styles/route_planning/diversion_plan.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Route Planning Test</title>
 </head>
@@ -184,6 +185,8 @@
         </div>
       </div>
     </section>
+
+    <div class="diversion-plan-overlay diversion-plan-hidden"></div>
   </main>
 
   <?php include '../includes/admin-footer.php'; ?>

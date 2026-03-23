@@ -1,24 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+import { getDivesionPlan } from "../global_variables.js";
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="./styles/global.css">
-  <link rel="stylesheet" href="./styles/route_planning/diversion_plan.css">
-  <title>Diversions UI with Overlay</title>
-</head>
+export async function renderDiversionPlan() {
+  const setDivesionPlan = getDivesionPlan();
 
-<body>
-  <section class="diversion-plan-overlay diversion-plan-hidden">
+  setDivesionPlan.innerHTML = `
     <button class="exit-diversion-plan js-exit-diversion-plan">
       <i class="fas fa-times"></i>
     </button>
 
     <div class="diversion-plan-container">
-      <h2>Diversion Routes</h2>
+      <h2><i class="fas fa-arrow-turn-up"></i> Diversion Routes</h2>
       <div class="setting-routes-container">
         <div class="map-container">
           <div id="diversion-map"></div>
@@ -59,16 +50,15 @@
         </div>
       </div>
     </div>
-  </section>
+  `;
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    const map = L.map('diversion-map').setView([14.6414, 120.9909], 17.5);
+  setDivesionPlan.classList.remove('diversion-plan-hidden');
+
+  setTimeout(() => {
+    const diversionMap = L.map('diversion-map').setView([14.6414, 120.9909], 17.5);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-  </script>
-</body>
-
-</html>
+    }).addTo(diversionMap);
+  }, 0);
+}

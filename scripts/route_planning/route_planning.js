@@ -1,6 +1,7 @@
-import { trafficTbody, brgyTrafficStatus } from "../global_variables.js";
+import { trafficTbody, brgyTrafficStatus, getDivesionPlan } from "../global_variables.js";
 import { fetchRoadEvents, fetchRoadMap } from "../data/fetch_road_map.js";
 import { getEventMarker, getTrafficColor } from "../utils/traffic_and_events.js";
+import { renderDiversionPlan } from "./set_diversion_plan.js";
 //import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
 //import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
 
@@ -75,4 +76,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   loadRoadEvents(map);
+});
+
+const diversionPlan = getDivesionPlan();
+
+diversionPlan.addEventListener('click', (e) => {
+  const closeDiversionPlan = e.target.closest('.js-exit-diversion-plan');
+
+  if(!closeDiversionPlan) return;
+
+  diversionPlan.classList.add('diversion-plan-hidden');
+  diversionPlan.innerHTML = '';
+});
+
+document.getElementById('diversionBtn').addEventListener('click', () => {
+  renderDiversionPlan();
 });
