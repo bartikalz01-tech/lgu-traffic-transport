@@ -192,6 +192,7 @@
 /* Ensure the select and button have the exact same height */
 .route-group select,
 .route-group input[type="date"],
+.route-group input[type="time"],
 #addRoadBtn {
   height: 42px;
   /* Fixed height for perfect alignment */

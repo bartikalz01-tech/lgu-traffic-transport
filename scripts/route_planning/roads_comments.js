@@ -57,3 +57,19 @@
 (14.64206, 120.99174)
 (14.64198, 120.99196)
 */
+
+
+/*
+
+FOR AI LATER ON DIVERSION PLAN
+
+CREATE TABLE road_connections (
+  connection_id INT PRIMARY KEY AUTO_INCREMENT,
+  from_road_id INT,
+  to_road_id INT,
+
+  FOREIGN KEY (from_road_id) REFERENCES roads(road_id),
+  FOREIGN KEY (to_road_id) REFERENCES roads(road_id)
+);
+
+*/

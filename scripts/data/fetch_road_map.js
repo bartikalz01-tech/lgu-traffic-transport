@@ -21,3 +21,27 @@ export async function fetchRoadEvents() {
     return [];
   }
 }
+
+export async function fetchRoadsDiversion() {
+  try {
+    const response = await fetch('../api/get_roads.php');
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error("Error fetching roads", error);
+    return [];
+  }
+}
+
+export async function fetchRoadDiversionCoord(road_id) {
+  try {
+    const response = await fetch(`../api/get_diversion.php?road_id=${road_id}`);
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error("Error fetching coordinates:", error);
+    return [];
+  }
+}

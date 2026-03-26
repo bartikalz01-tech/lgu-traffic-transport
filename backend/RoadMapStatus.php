@@ -24,6 +24,21 @@ class RoadMapStatus extends config{
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  public function roadDiversionCoordinates($road_id) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT latitude, longtitude FROM road_coordinates
+      WHERE road_id = :road_id
+      ORDER BY point_order;
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':road_id', $road_id);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }
 
 ?>
