@@ -1,18 +1,9 @@
 <?php
-require_once '../backend/RoadMapStatus.php';
-//require_once '../backend/Diversion.php';
+require_once '../backend/Diversion.php';
 
 header('Content-Type: application/json');
 
-$road_id = $_GET['road_id'];
-
-$diversion = new RoadMapStatus();
-
-$data = $diversion->roadDiversionCoordinates($road_id);
-
-echo json_encode($data);
-
-/*$data = json_decode(file_get_contents("php://input"), true);
+$data = json_decode(file_get_contents("php://input"), true);
 
 $start = $data['startRoad'];
 $end = $data['endRoad'];
@@ -28,5 +19,6 @@ $diversion->insertRouteDetails($diversion_id, $routes);
 echo json_encode([
   "status" => "success",
   "diversion_id" => $diversion_id
-]);*/
+]);
+
 ?>

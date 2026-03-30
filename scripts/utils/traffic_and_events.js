@@ -1,5 +1,5 @@
 export function getTrafficColor(level) {
-  switch(level) {
+  switch (level) {
     case "high":
       return "#e74c3c";
     case "moderate":
@@ -20,24 +20,24 @@ export function getEventMarker(type, description) {
   else if(type === "accident") iconClass = "fa-car-crash";
   else if(type === "closure") iconClass = "fa-ban";*/
 
-  if(type === "church") {
+  if (type === "church") {
     iconClass = "fa-church";
     bgColor = "#8e44ad";
-  } else if(type === "maintenance") {
+  } else if (type === "maintenance") {
     iconClass = "fa-hammer";
     bgColor = "#f39c12";
-  } else if(type === "accident") {
+  } else if (type === "accident") {
     iconClass = "fa-car-crash";
     bgColor = "#e74c3c";
-  } else if(type === "closure") {
+  } else if (type === "closure") {
     iconClass = "fa-ban";
     bgColor = "#2c3e50";
-  } else if(type === "restaurant") {
+  } else if (type === "restaurant") {
     iconClass = "fa-utensils";
     bgColor = "#27ae60"
-  } else if(type === "business") {
+  } else if (type === "business") {
     iconClass = "fa-city";
-  } else if(type === "hospital") {
+  } else if (type === "hospital") {
     iconClass = "fa-h-square";
     bgColor = "#e07367";
   }

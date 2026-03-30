@@ -73,3 +73,29 @@ CREATE TABLE road_connections (
 );
 
 */
+
+/* Diversion tables
+
+CREATE TABLE diversion_routes (
+  diversion_id INT PRIMARY KEY AUTO_INCREMENT,
+  start_road_id INT,
+  end_road_id INT,
+  schedule_date DATETIME,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  
+  FOREIGN KEY (start_road_id) REFERENCES roads(road_id),
+  FOREIGN KEY (end_road_id) REFERENCES roads(road_id)
+);
+
+
+CREATE TABLE diversion_routes_details (
+	diversion_detail_id INT PRIMARY KEY AUTO_INCREMENT,
+  diversion_id INT,
+  road_id INT,
+  sequence_order INT,
+  
+  FOREIGN KEY (diversion_id) REFERENCES diversion_routes(diversion_id),
+  FOREIGN KEY (road_id) REFERENCES roads(road_id)
+);
+
+*/
