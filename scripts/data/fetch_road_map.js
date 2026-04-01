@@ -45,3 +45,15 @@ export async function fetchRoadDiversionCoord(road_id) {
     return [];
   }
 }
+
+export async function fetchRoadConnection() {
+  try {
+    const response = await fetch('../api/get_road_connections.php');
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error("Error fetching road connections:", error);
+    return[];
+  }
+}

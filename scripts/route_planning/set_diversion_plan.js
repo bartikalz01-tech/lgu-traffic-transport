@@ -61,15 +61,80 @@ export async function renderDiversionPlan() {
   let routeLine = null;
   let diversionMap;
 
+  let clickedPoints = [];
+  let markers = [];
+
   setTimeout(() => {
     diversionMap = L.map('diversion-map').setView([14.6414, 120.9909], 17.5);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(diversionMap);
+
+    /*diversionMap.on('click', (e) => {
+      const {lat, lng} = e.latlng;
+
+      const nearest = getNearestRoad(lat, lng);
+
+      if(!nearest) return;
+
+      const last = selectedRoute[selectedRoute.length - 1];
+      if(last && last.road_id == nearest.road_id) return;
+
+      selectedRoute.push({
+        road_id: nearest.road_id,
+        road_name: nearest.road_name
+      });
+
+      renderRouteList();
+      drawRoute();
+    });*/
+
+    diversionMap.on('click', (e) => {
+      const {lat, lng} = e.latlng;
+
+      clickedPoints.push({lat, lng});
+
+      const marker = L.marker([lat, lng]).addTo(diversionMap);
+      markers.push(marker);
+
+      const nearest = getNearestRoad(lat, lng);
+
+      if(nearest) {
+        const last = selectedRoute[selectedRoute.length - 1];
+
+        if(!last || last.road_id != nearest.road_id) {
+          selectedRoute.push({
+            road_id: nearest.road_id,
+            road_name: nearest.road_name
+          });
+
+          renderRouteList();
+        }
+      }
+
+      if(clickedPoints.length >= 2) {
+        drawSimpleLine();
+      }
+    });
   }, 0);
 
   const roads = await fetchRoadsDiversion();
+
+  let allRoadCoordinates = [];
+
+  for (const road of roads) {
+    const coords = await fetchRoadDiversionCoord(road.road_id);
+
+    coords.forEach(point => {
+      allRoadCoordinates.push({
+        road_id: road.road_id,
+        road_name: road.road_name,
+        lat: point.latitude,
+        lng: point.longtitude
+      });
+    });
+  }
 
   const start = document.getElementById("startRoad");
   const end = document.getElementById("endRoad");
@@ -175,6 +240,10 @@ export async function renderDiversionPlan() {
         if(routeLine) {
           diversionMap.removeLayer(routeLine);
         }
+
+        markers.forEach(marker => diversionMap.removeLayer(marker));
+        markers = [];
+        clickedPoints = [];
       } else {
         alert("Failed to save diversion");
       }
@@ -194,10 +263,77 @@ export async function renderDiversionPlan() {
     });
   }
 
+  async function drawRoute() {
+    let fullCoordinates = [];
+
+    for(const road of selectedRoute) {
+      const coords = await fetchRoadDiversionCoord(road.road_id);
+
+      const roadCoords = coords.map(point => [point.latitude, point.longtitude]);
+
+      if(fullCoordinates.length === 0) {
+        fullCoordinates = roadCoords;
+      } else {
+        const lastPoint = fullCoordinates[fullCoordinates.length - 1];
+        const firstPoint = roadCoords[0];
+        const lastPointOfRoad = roadCoords[roadCoords.length - 1];
+
+        const distStart = distance(lastPoint, firstPoint);
+        const distEnd = distance(lastPoint, lastPointOfRoad);
+        if(distEnd < distStart) {
+          roadCoords.reverse();
+        }
+
+        roadCoords.shift();
+        fullCoordinates = fullCoordinates.concat(roadCoords)
+      }
+    }
+
+    if(routeLine) {
+      diversionMap.removeLayer(routeLine);
+    }
+
+    routeLine = L.polyline(fullCoordinates, {
+      color: "blue",
+      weight: 6
+    }).addTo(diversionMap);
+
+    diversionMap.fitBounds(routeLine.getBounds());
+  }
+
+  function drawSimpleLine() {
+    if(routeLine) {
+      diversionMap.removeLayer(routeLine);
+    }
+
+    routeLine = L.polyline(clickedPoints, {
+      color: "blue",
+      weight: 4
+    }).addTo(diversionMap);
+
+    diversionMap.fitBounds(routeLine.getBounds());
+  }
+
   function distance(a, b) {
     const dx = a[0] - b[0];
     const dy = a[1] - b[1];
     
     return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function getNearestRoad(lat, lng) {
+    let nearest = null;
+    let minDistance = Infinity;
+
+    allRoadCoordinates.forEach(point => {
+      const d = distance([lat, lng], [point.lat, point.lng]);
+
+      if(d < minDistance) {
+        minDistance = d;
+        nearest = point;
+      }
+    });
+
+    return nearest;
   }
 }
