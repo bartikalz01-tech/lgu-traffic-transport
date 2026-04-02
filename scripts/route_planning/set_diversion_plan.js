@@ -1,4 +1,4 @@
-import { fetchRoadsDiversion, fetchRoadDiversionCoord } from "../data/fetch_road_map.js";
+import { fetchRoadsDiversion, fetchRoadDiversionCoord, fetchSmartRoute } from "../data/fetch_road_map.js";
 //import { renderRouteList } from "../utils/traffic_and_events.js";
 import { getDivesionPlan } from "../global_variables.js";
 
@@ -162,23 +162,19 @@ export async function renderDiversionPlan() {
 
     for (const road of selectedRoute) {
       const coords = await fetchRoadDiversionCoord(road.road_id);
-
-      /*coords.forEach(point => {
-        fullCoordinates.push([point.latitude, point.longtitude]);
-      });*/
       const roadCoords = coords.map(point => [point.latitude, point.longtitude]);
 
-      if(fullCoordinates.length === 0) {
+      if (fullCoordinates.length === 0) {
         fullCoordinates = roadCoords;
       } else {
         const lastPoint = fullCoordinates[fullCoordinates.length - 1];
         const firstPoint = roadCoords[0];
         const lastPointOfView = roadCoords[roadCoords.length - 1];
-        
+
         const distStart = distance(lastPoint, firstPoint);
         const distEnd = distance(lastPoint, lastPointOfView);
 
-        if(distEnd < distStart) {
+        if (distEnd < distStart) {
           roadCoords.reverse();
         }
 
@@ -207,7 +203,7 @@ export async function renderDiversionPlan() {
     const date = document.getElementById("diversionDate").value;
     const time = document.getElementById("diversionTime").value;
 
-    if(!startRoad || !endRoad || selectedRoute.length === 0) {
+    if (!startRoad || !endRoad || selectedRoute.length === 0) {
       alert("Please complete the route before saving.");
       return;
     }
@@ -220,7 +216,7 @@ export async function renderDiversionPlan() {
       scheduleDate: scheduleDate,
       routes: selectedRoute
     };
-    
+
     try {
       const response = await fetch('../api/save_diversion.php', {
         method: "POST",
@@ -232,12 +228,12 @@ export async function renderDiversionPlan() {
 
       const result = await response.json();
 
-      if(result.status === "success") {
+      if (result.status === "success") {
         alert("Diversion saved successfuly");
         selectedRoute = [];
         renderRouteList();
 
-        if(routeLine) {
+        if (routeLine) {
           diversionMap.removeLayer(routeLine);
         }
 
@@ -247,9 +243,9 @@ export async function renderDiversionPlan() {
       } else {
         alert("Failed to save diversion");
       }
-    } catch(error) {
+    } catch (error) {
       console.error("Error saving diversion", error);
-    } 
+    }
   });
 
   function renderRouteList() {
@@ -266,12 +262,12 @@ export async function renderDiversionPlan() {
   async function drawRoute() {
     let fullCoordinates = [];
 
-    for(const road of selectedRoute) {
+    for (const road of selectedRoute) {
       const coords = await fetchRoadDiversionCoord(road.road_id);
 
       const roadCoords = coords.map(point => [point.latitude, point.longtitude]);
 
-      if(fullCoordinates.length === 0) {
+      if (fullCoordinates.length === 0) {
         fullCoordinates = roadCoords;
       } else {
         const lastPoint = fullCoordinates[fullCoordinates.length - 1];
@@ -280,7 +276,7 @@ export async function renderDiversionPlan() {
 
         const distStart = distance(lastPoint, firstPoint);
         const distEnd = distance(lastPoint, lastPointOfRoad);
-        if(distEnd < distStart) {
+        if (distEnd < distStart) {
           roadCoords.reverse();
         }
 
@@ -289,7 +285,7 @@ export async function renderDiversionPlan() {
       }
     }
 
-    if(routeLine) {
+    if (routeLine) {
       diversionMap.removeLayer(routeLine);
     }
 
@@ -302,7 +298,7 @@ export async function renderDiversionPlan() {
   }
 
   function drawSimpleLine() {
-    if(routeLine) {
+    if (routeLine) {
       diversionMap.removeLayer(routeLine);
     }
 
@@ -317,7 +313,7 @@ export async function renderDiversionPlan() {
   function distance(a, b) {
     const dx = a[0] - b[0];
     const dy = a[1] - b[1];
-    
+
     return Math.sqrt(dx * dx + dy * dy);
   }
 
@@ -328,12 +324,64 @@ export async function renderDiversionPlan() {
     allRoadCoordinates.forEach(point => {
       const d = distance([lat, lng], [point.lat, point.lng]);
 
-      if(d < minDistance) {
+      if (d < minDistance) {
         minDistance = d;
         nearest = point;
       }
     });
 
     return nearest;
+  }
+
+  async function drawPartialRoad(startPoint, endPoint) {
+    const coords = await fetchRoadDiversionCoord(startPoint.road_id);
+
+    const roadCoords = coords.map(p => [p.latitude, p.longtitude]);
+
+    let startIndex = 0;
+    let endIndex = 0;
+    let minStartDist = Infinity;
+    let minEndDist = Infinity;
+
+    roadCoords.forEach((coord, index) => {
+      const d1 = distance(coord, [startPoint.lat, startPoint.lng]);
+      const d2 = distance(coord, [endPoint.lat, endPoint.lng]);
+
+      if (d1 < minStartDist) {
+        minStartDist = d1;
+        startIndex = index;
+      }
+
+      if (d2 < minEndDist) {
+        minEndDist = d2;
+        endIndex = index;
+      }
+    });
+
+    let segment;
+
+    if (startIndex < endIndex) {
+      segment = roadCoords.slice(sliceIndex, endIndex + 1);
+    } else {
+      segment = roadCoords.slice(endIndex, startIndex + 1).reverse();
+    }
+
+    if (routeLine) {
+      diversionMap.removeLayer(routeLine);
+    }
+
+    routeLine = L.polyline(segment, {
+      color: "blue",
+      weight: 6
+    }).addTo(diversionMap);
+
+    diversionMap.fitBounds(routeLine.getBounds());
+
+    selectedRoute = [{
+      road_id: startPoint.road_id,
+      road_name: startPoint.road_name
+    }];
+
+    renderRouteList();
   }
 }

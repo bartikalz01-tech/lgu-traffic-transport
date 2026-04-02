@@ -39,19 +39,6 @@ class RoadMapStatus extends config{
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
-
-  public function getRoadConnection() {
-    $conn = $this->conn();
-    $sql = "
-      SELECT from_road_id, to_road_id
-      FROM road_connections
-    ";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-  }
 }
 
 ?>

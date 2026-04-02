@@ -46,7 +46,7 @@ export async function fetchRoadDiversionCoord(road_id) {
   }
 }
 
-export async function fetchRoadConnection() {
+/*export async function fetchRoadConnection() {
   try {
     const response = await fetch('../api/get_road_connections.php');
     const data = await response.json();
@@ -55,5 +55,17 @@ export async function fetchRoadConnection() {
   } catch(error) {
     console.error("Error fetching road connections:", error);
     return[];
+  }
+}*/
+
+export async function fetchSmartRoute(start, end) {
+  try {
+    const response = await fetch(`../api/get_smart_route.php?start=${start}&end=${end}`);
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error("Error fetching smart route", error);
+    return [];
   }
 }
