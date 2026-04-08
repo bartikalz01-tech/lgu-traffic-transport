@@ -19,22 +19,25 @@ class Diversion extends config {
     return $conn->lastInsertId();
   }
 
-  public function insertRouteDetails($diversion_id, $routes) {
+  public function insertRouteDetails($diversion_id, $points) {
     $conn = $this->conn();
     $sql = "
-      INSERT INTO diversion_routes_details (diversion_id, road_id, sequence_order)
-      VALUES (:diversion_id, :road_id, :sequence_order)
+      INSERT INTO diversion_routes_details (diversion_id, road_id, lat, lng, sequence_order)
+      VALUES (:diversion_id, :road_id, :lat, :lng, :sequence_order)
     ";
 
     $stmt = $conn->prepare($sql);
 
-    foreach($routes as $index => $road) {
+    foreach($points as $index => $point) {
       $order = $index + 1;
 
-      $stmt->bindParam(':diversion_id', $diversion_id);
-      $stmt->bindParam(':road_id', $road['road_id']);
-      $stmt->bindParam(':sequence_order', $order);
-      $stmt->execute();
+      $stmt->execute([
+        ':diversion_id' => $diversion_id,
+        ':road_id' => $point['road_id'],
+        ':lat' => $point['lat'],
+        ':lng' => $point['lng'],
+        ':sequence_order' => $order
+      ]);
     }
 
     return true;

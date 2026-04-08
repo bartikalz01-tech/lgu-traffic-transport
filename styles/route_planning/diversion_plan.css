@@ -101,7 +101,7 @@
   color: #7f8c8d;
 }
 
-.route-group select {
+.route-group input {
   padding: 10px;
   border: 3px solid #dccde1;
   border-radius: 6px;
@@ -149,10 +149,13 @@
 }
 
 .route-actions {
-  display: grid;
+  /*display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-top: auto;
+  margin-top: auto;*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .route-actions button {

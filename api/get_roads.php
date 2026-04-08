@@ -1,7 +1,7 @@
 <?php 
-require '../backend/Roads.php';
+require_once '../backend/Roads.php';
 
-header('Content-type: application/json');
+header('Content-Type: application/json');
 
 $roads = new Roads();
 $data= $roads->viewRoadsData();

@@ -1,5 +1,4 @@
 import { fetchRoadsDiversion, fetchRoadDiversionCoord, fetchSmartRoute } from "../data/fetch_road_map.js";
-//import { renderRouteList } from "../utils/traffic_and_events.js";
 import { getDivesionPlan } from "../global_variables.js";
 
 export async function renderDiversionPlan() {
@@ -19,21 +18,21 @@ export async function renderDiversionPlan() {
         <div class="set-routes">
           <div class="route-group">
             <label>Start Road</label>
-            <select id="startRoad"></select>
+            <input id="startRoad" placeholder="Starting Road" readonly>
           </div>
 
           <div class="route-group">
             <label>Destination Road</label>
-            <select id="endRoad"></select>
+            <input id="endRoad" placeholder="Destination" readonly>
           </div>
 
-          <div class="route-group route-group-row">
+          <!--<div class="route-group route-group-row">
             <div style="display: flex; flex-direction: column; gap: 6px;">
               <label>Build Route (Step by Step)</label>
               <select id="nextRoad"></select>
             </div>
             <button id="addRoadBtn">Add</button>
-          </div>
+          </div>-->
 
           <div class="route-preview">
             <h4>Selected Route</h4>
@@ -47,7 +46,7 @@ export async function renderDiversionPlan() {
           </div>
 
           <div class="route-actions">
-            <button class="generateRoute">Preview on Map</button>
+            <!--<button class="generateRoute">Preview on Map</button>-->
             <button id="saveRoute">Save Diversion</button>
           </div>
         </div>
@@ -57,67 +56,7 @@ export async function renderDiversionPlan() {
 
   setDivesionPlan.classList.remove('diversion-plan-hidden');
 
-  let selectedRoute = [];
-  let routeLine = null;
-  let diversionMap;
-
-  let clickedPoints = [];
-  let markers = [];
-
-  setTimeout(() => {
-    diversionMap = L.map('diversion-map').setView([14.6414, 120.9909], 17.5);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(diversionMap);
-
-    /*diversionMap.on('click', (e) => {
-      const {lat, lng} = e.latlng;
-
-      const nearest = getNearestRoad(lat, lng);
-
-      if(!nearest) return;
-
-      const last = selectedRoute[selectedRoute.length - 1];
-      if(last && last.road_id == nearest.road_id) return;
-
-      selectedRoute.push({
-        road_id: nearest.road_id,
-        road_name: nearest.road_name
-      });
-
-      renderRouteList();
-      drawRoute();
-    });*/
-
-    diversionMap.on('click', (e) => {
-      const {lat, lng} = e.latlng;
-
-      clickedPoints.push({lat, lng});
-
-      const marker = L.marker([lat, lng]).addTo(diversionMap);
-      markers.push(marker);
-
-      const nearest = getNearestRoad(lat, lng);
-
-      if(nearest) {
-        const last = selectedRoute[selectedRoute.length - 1];
-
-        if(!last || last.road_id != nearest.road_id) {
-          selectedRoute.push({
-            road_id: nearest.road_id,
-            road_name: nearest.road_name
-          });
-
-          renderRouteList();
-        }
-      }
-
-      if(clickedPoints.length >= 2) {
-        drawSimpleLine();
-      }
-    });
-  }, 0);
+  await new Promise(resolve => requestAnimationFrame(resolve));
 
   const roads = await fetchRoadsDiversion();
 
@@ -136,70 +75,72 @@ export async function renderDiversionPlan() {
     });
   }
 
-  const start = document.getElementById("startRoad");
-  const end = document.getElementById("endRoad");
-  const next = document.getElementById("nextRoad");
+  let selectedRoute = [];
+  let routeLine = null;
+  let diversionMap;
 
-  roads.forEach(road => {
-    start.add(new Option(road.road_name, road.road_id));
-    end.add(new Option(road.road_name, road.road_id));
-    next.add(new Option(road.road_name, road.road_id));
-  });
+  let clickedPoints = [];
+  let markers = [];
 
-  document.getElementById("addRoadBtn").addEventListener('click', () => {
-    const select = document.getElementById("nextRoad");
+  diversionMap = L.map('diversion-map').setView([14.6414, 120.9909], 18);
 
-    const road_id = select.value;
-    const road_name = select.options[select.selectedIndex].text;
+  const startInput = document.getElementById("startRoad");
+  const endInput = document.getElementById("endRoad");
+  let startRoadId = null;
+  let endRoadId = null;
 
-    selectedRoute.push({ road_id, road_name });
+  diversionMap.on('click', (e) => {
+    const { lat, lng } = e.latlng;
 
-    renderRouteList();
-  });
+    //clickedPoints.push({ lat, lng });
+    //console.log(clickedPoints);
 
-  document.querySelector(".generateRoute").addEventListener('click', async () => {
-    let fullCoordinates = [];
+    const marker = L.marker([lat, lng]).addTo(diversionMap);
+    markers.push(marker);
 
-    for (const road of selectedRoute) {
-      const coords = await fetchRoadDiversionCoord(road.road_id);
-      const roadCoords = coords.map(point => [point.latitude, point.longtitude]);
+    const nearest = getNearestRoad(lat, lng);
 
-      if (fullCoordinates.length === 0) {
-        fullCoordinates = roadCoords;
-      } else {
-        const lastPoint = fullCoordinates[fullCoordinates.length - 1];
-        const firstPoint = roadCoords[0];
-        const lastPointOfView = roadCoords[roadCoords.length - 1];
+    if (nearest) {
+      const last = selectedRoute[selectedRoute.length - 1];
 
-        const distStart = distance(lastPoint, firstPoint);
-        const distEnd = distance(lastPoint, lastPointOfView);
-
-        if (distEnd < distStart) {
-          roadCoords.reverse();
-        }
-
-        roadCoords.shift();
-
-        fullCoordinates = fullCoordinates.concat(roadCoords);
+      if(clickedPoints.length === 0) {
+        startInput.value = nearest.road_name;
+        startRoadId = nearest.road_id;
       }
+
+      endInput.value = nearest.road_name;
+      endRoadId = nearest.road_id;
+
+      if (!last || last.road_id != nearest.road_id) {
+        selectedRoute.push({
+          road_id: nearest.road_id,
+          road_name: nearest.road_name
+        });
+
+        renderRouteList();
+      }
+
+      clickedPoints.push({
+        road_id: nearest.road_id,
+        lat,
+        lng
+      });
+
+      console.log(clickedPoints);
     }
 
-    if (routeLine) {
-      diversionMap.removeLayer(routeLine);
+    if (clickedPoints.length >= 2) {
+      drawSimpleLine();
     }
-
-    routeLine = L.polyline(fullCoordinates, {
-      color: "blue",
-      weight: 6
-    }).addTo(diversionMap);
-
-    diversionMap.fitBounds(routeLine.getBounds());
-
   });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(diversionMap);
 
   document.getElementById("saveRoute").addEventListener("click", async () => {
-    const startRoad = document.getElementById("startRoad").value;
-    const endRoad = document.getElementById("endRoad").value;
+    const startRoad = startRoadId;
+    const endRoad = endRoadId;
     const date = document.getElementById("diversionDate").value;
     const time = document.getElementById("diversionTime").value;
 
@@ -214,8 +155,10 @@ export async function renderDiversionPlan() {
       startRoad: startRoad,
       endRoad: endRoad,
       scheduleDate: scheduleDate,
-      routes: selectedRoute
+      points: clickedPoints
     };
+
+    console.log(JSON.stringify(payload, null, 2));
 
     try {
       const response = await fetch('../api/save_diversion.php', {
@@ -259,44 +202,6 @@ export async function renderDiversionPlan() {
     });
   }
 
-  async function drawRoute() {
-    let fullCoordinates = [];
-
-    for (const road of selectedRoute) {
-      const coords = await fetchRoadDiversionCoord(road.road_id);
-
-      const roadCoords = coords.map(point => [point.latitude, point.longtitude]);
-
-      if (fullCoordinates.length === 0) {
-        fullCoordinates = roadCoords;
-      } else {
-        const lastPoint = fullCoordinates[fullCoordinates.length - 1];
-        const firstPoint = roadCoords[0];
-        const lastPointOfRoad = roadCoords[roadCoords.length - 1];
-
-        const distStart = distance(lastPoint, firstPoint);
-        const distEnd = distance(lastPoint, lastPointOfRoad);
-        if (distEnd < distStart) {
-          roadCoords.reverse();
-        }
-
-        roadCoords.shift();
-        fullCoordinates = fullCoordinates.concat(roadCoords)
-      }
-    }
-
-    if (routeLine) {
-      diversionMap.removeLayer(routeLine);
-    }
-
-    routeLine = L.polyline(fullCoordinates, {
-      color: "blue",
-      weight: 6
-    }).addTo(diversionMap);
-
-    diversionMap.fitBounds(routeLine.getBounds());
-  }
-
   function drawSimpleLine() {
     if (routeLine) {
       diversionMap.removeLayer(routeLine);
@@ -331,57 +236,5 @@ export async function renderDiversionPlan() {
     });
 
     return nearest;
-  }
-
-  async function drawPartialRoad(startPoint, endPoint) {
-    const coords = await fetchRoadDiversionCoord(startPoint.road_id);
-
-    const roadCoords = coords.map(p => [p.latitude, p.longtitude]);
-
-    let startIndex = 0;
-    let endIndex = 0;
-    let minStartDist = Infinity;
-    let minEndDist = Infinity;
-
-    roadCoords.forEach((coord, index) => {
-      const d1 = distance(coord, [startPoint.lat, startPoint.lng]);
-      const d2 = distance(coord, [endPoint.lat, endPoint.lng]);
-
-      if (d1 < minStartDist) {
-        minStartDist = d1;
-        startIndex = index;
-      }
-
-      if (d2 < minEndDist) {
-        minEndDist = d2;
-        endIndex = index;
-      }
-    });
-
-    let segment;
-
-    if (startIndex < endIndex) {
-      segment = roadCoords.slice(sliceIndex, endIndex + 1);
-    } else {
-      segment = roadCoords.slice(endIndex, startIndex + 1).reverse();
-    }
-
-    if (routeLine) {
-      diversionMap.removeLayer(routeLine);
-    }
-
-    routeLine = L.polyline(segment, {
-      color: "blue",
-      weight: 6
-    }).addTo(diversionMap);
-
-    diversionMap.fitBounds(routeLine.getBounds());
-
-    selectedRoute = [{
-      road_id: startPoint.road_id,
-      road_name: startPoint.road_name
-    }];
-
-    renderRouteList();
   }
 }
