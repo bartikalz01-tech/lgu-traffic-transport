@@ -40,9 +40,9 @@ export async function renderDiversionPlan() {
           </div>
 
           <div class="route-group">
-            <label><i class="fas fa-calendar-alt"></i> Set Schedule</label>
+            <!--<label><i class="fas fa-calendar-alt"></i> Set Schedule</label>
             <input type="date" id="diversionDate">
-            <input type="time" id="diversionTime">
+            <input type="time" id="diversionTime">-->
           </div>
 
           <div class="route-actions">
@@ -92,13 +92,39 @@ export async function renderDiversionPlan() {
   diversionMap.on('click', (e) => {
     const { lat, lng } = e.latlng;
 
-    //clickedPoints.push({ lat, lng });
-    //console.log(clickedPoints);
-
     const marker = L.marker([lat, lng]).addTo(diversionMap);
-    markers.push(marker);
 
     const nearest = getNearestRoad(lat, lng);
+    const isFirstPoint = clickedPoints.length === 0;
+
+    const pointData = {
+      road_id: nearest.road_id,
+      lat,
+      lng
+    };
+
+    markers.push(marker);
+    clickedPoints.push(pointData);
+
+    if(isFirstPoint) {
+      startInput.value = nearest.road_name;
+      startRoadId = nearest.road_id;
+    }
+
+    endInput.value = nearest.road_name;
+    endRoadId = nearest.road_id;
+
+    marker.on('click', () => {
+      diversionMap.removeLayer(marker);
+
+      const markerIndex = markers.indexOf(marker);
+      if(markerIndex !== -1) {
+        markers.splice(markerIndex, 1);
+        clickedPoints.splice(markerIndex, 1);
+      }
+      
+      updateRouteAfterDelete();
+    });
 
     if (nearest) {
       const last = selectedRoute[selectedRoute.length - 1];
@@ -119,14 +145,6 @@ export async function renderDiversionPlan() {
 
         renderRouteList();
       }
-
-      clickedPoints.push({
-        road_id: nearest.road_id,
-        lat,
-        lng
-      });
-
-      console.log(clickedPoints);
     }
 
     if (clickedPoints.length >= 2) {
@@ -141,24 +159,23 @@ export async function renderDiversionPlan() {
   document.getElementById("saveRoute").addEventListener("click", async () => {
     const startRoad = startRoadId;
     const endRoad = endRoadId;
-    const date = document.getElementById("diversionDate").value;
-    const time = document.getElementById("diversionTime").value;
+    //const date = document.getElementById("diversionDate").value;
+    //const time = document.getElementById("diversionTime").value;
 
     if (!startRoad || !endRoad || selectedRoute.length === 0) {
       alert("Please complete the route before saving.");
       return;
     }
 
-    const scheduleDate = `${date} ${time}`;
+    //const scheduleDate = `${date} ${time}`;
 
     const payload = {
       startRoad: startRoad,
       endRoad: endRoad,
-      scheduleDate: scheduleDate,
       points: clickedPoints
     };
 
-    console.log(JSON.stringify(payload, null, 2));
+    //console.log(JSON.stringify(payload, null, 2));
 
     try {
       const response = await fetch('../api/save_diversion.php', {
@@ -236,5 +253,60 @@ export async function renderDiversionPlan() {
     });
 
     return nearest;
+  }
+
+  function updateRouteAfterDelete() {
+    if(routeLine) {
+      diversionMap.removeLayer(routeLine);
+    }
+
+    if(clickedPoints.length >= 2) {
+      drawSimpleLine();
+    }
+
+    if(clickedPoints.length === 0) {
+      startInput.value = "";
+      endInput.value = "";
+      startRoadId = null;
+      endRoadId = null;
+      selectedRoute = [];
+      renderRouteList();
+      return;
+    }
+
+    const first = clickedPoints[0];
+    const last = clickedPoints[clickedPoints.length - 1];
+
+    const startRoad = allRoadCoordinates.find(r => r.road_id == first.road_id);
+    const endRoad = allRoadCoordinates.find(r => r.road_id == last.road_id);
+
+    if(startRoad) {
+      startInput.value = startRoad.road_name;
+      startRoadId = startRoad.road_id;
+    }
+
+    if(endRoad) {
+      endInput.value = endRoad.road_name;
+      endRoadId = endRoad.road_id;
+    }
+
+    selectedRoute = [];
+
+    clickedPoints.forEach(point => {
+      const road = allRoadCoordinates.find(r => r.road_id == point.road_id);
+
+      if(road) {
+        const last = selectedRoute[selectedRoute.length - 1];
+
+        if(!last || last.road_id != road.road_id) {
+          selectedRoute.push({
+            road_id: road.road_id,
+            road_name: road.road_name
+          });
+        }
+      }
+    });
+
+    renderRouteList();
   }
 }

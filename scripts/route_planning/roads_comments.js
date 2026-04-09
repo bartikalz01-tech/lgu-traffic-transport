@@ -89,13 +89,25 @@ CREATE TABLE diversion_routes (
 
 
 CREATE TABLE diversion_routes_details (
-	diversion_detail_id INT PRIMARY KEY AUTO_INCREMENT,
+  diversion_detail_id INT PRIMARY KEY AUTO_INCREMENT,
   diversion_id INT,
   road_id INT,
   sequence_order INT,
   
   FOREIGN KEY (diversion_id) REFERENCES diversion_routes(diversion_id),
   FOREIGN KEY (road_id) REFERENCES roads(road_id)
+);
+
+CREATE TABLE diversion_schedule (
+  d_schedule_id INT PRIMARY KEY AUTO_INCREMENT,
+  diversion_id INT NOT NULL,
+  start_datetime DATETIME NOT NULL,
+  end_datetime DATETIME NULL,
+  status ENUM('scheduled', 'active', 'resolved') DEFAULT 'scheduled',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  
+  FOREIGN KEY (diversion_id) REFERENCES diversion_routes (diversion_id)
+  ON DELETE CASCADE
 );
 
 */
