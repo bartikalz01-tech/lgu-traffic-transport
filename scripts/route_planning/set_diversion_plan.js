@@ -1,4 +1,5 @@
 import { fetchRoadsDiversion, fetchRoadDiversionCoord, fetchSmartRoute } from "../data/fetch_road_map.js";
+import { renderRouteList, drawSimpleLine, getNearestRoad } from "../utils/diversions.js";
 import { getDivesionPlan } from "../global_variables.js";
 
 export async function renderDiversionPlan() {
@@ -94,7 +95,7 @@ export async function renderDiversionPlan() {
 
     const marker = L.marker([lat, lng]).addTo(diversionMap);
 
-    const nearest = getNearestRoad(lat, lng);
+    const nearest = getNearestRoad(lat, lng, allRoadCoordinates);
     const isFirstPoint = clickedPoints.length === 0;
 
     const pointData = {
@@ -143,12 +144,12 @@ export async function renderDiversionPlan() {
           road_name: nearest.road_name
         });
 
-        renderRouteList();
+        renderRouteList(selectedRoute);
       }
     }
 
     if (clickedPoints.length >= 2) {
-      drawSimpleLine();
+      drawSimpleLine(diversionMap, clickedPoints, routeLine);
     }
   });
 
@@ -191,7 +192,7 @@ export async function renderDiversionPlan() {
       if (result.status === "success") {
         alert("Diversion saved successfuly");
         selectedRoute = [];
-        renderRouteList();
+        renderRouteList(selectedRoute);
 
         if (routeLine) {
           diversionMap.removeLayer(routeLine);
@@ -208,60 +209,13 @@ export async function renderDiversionPlan() {
     }
   });
 
-  function renderRouteList() {
-    const list = document.getElementById("routeList");
-    list.innerHTML = "";
-
-    selectedRoute.forEach((road, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${road.road_name}`;
-      list.appendChild(li);
-    });
-  }
-
-  function drawSimpleLine() {
-    if (routeLine) {
-      diversionMap.removeLayer(routeLine);
-    }
-
-    routeLine = L.polyline(clickedPoints, {
-      color: "blue",
-      weight: 4
-    }).addTo(diversionMap);
-
-    diversionMap.fitBounds(routeLine.getBounds());
-  }
-
-  function distance(a, b) {
-    const dx = a[0] - b[0];
-    const dy = a[1] - b[1];
-
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  function getNearestRoad(lat, lng) {
-    let nearest = null;
-    let minDistance = Infinity;
-
-    allRoadCoordinates.forEach(point => {
-      const d = distance([lat, lng], [point.lat, point.lng]);
-
-      if (d < minDistance) {
-        minDistance = d;
-        nearest = point;
-      }
-    });
-
-    return nearest;
-  }
-
   function updateRouteAfterDelete() {
     if(routeLine) {
       diversionMap.removeLayer(routeLine);
     }
 
     if(clickedPoints.length >= 2) {
-      drawSimpleLine();
+      drawSimpleLine(diversionMap, clickedPoints, routeLine);
     }
 
     if(clickedPoints.length === 0) {
@@ -270,7 +224,7 @@ export async function renderDiversionPlan() {
       startRoadId = null;
       endRoadId = null;
       selectedRoute = [];
-      renderRouteList();
+      renderRouteList(selectedRoute);
       return;
     }
 
@@ -307,6 +261,6 @@ export async function renderDiversionPlan() {
       }
     });
 
-    renderRouteList();
+    renderRouteList(selectedRoute);
   }
 }

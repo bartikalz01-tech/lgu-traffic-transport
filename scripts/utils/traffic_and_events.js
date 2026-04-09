@@ -63,12 +63,3 @@ export function getEventMarker(type, description) {
     iconAnchor: [16, 16]
   });
 }
-
-/*<div class="marker-container">
-        <div class="marker-icon">
-          <i class="fas ${iconClass}"></i>
-        </div>
-        <div class="marker-label">
-          ${description}
-        </div>
-      </div>*/
