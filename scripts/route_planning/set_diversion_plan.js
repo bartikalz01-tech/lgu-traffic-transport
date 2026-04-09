@@ -13,9 +13,17 @@ export async function renderDiversionPlan() {
     <div class="diversion-plan-container">
       <h2><i class="fas fa-arrow-turn-up"></i> Diversion Routes</h2>
       <div class="setting-routes-container">
-        <div class="map-container">
-          <div id="diversion-map"></div>
+        <div class="map-and-details">
+          <div class="map-container">
+            <div id="diversion-map"></div>
+          </div>
+
+          <div class="route-preview">
+            <h4><i class="fas fa-route"></i> Active Path Details</h4>
+            <ul id="routeList"></ul>
+          </div>
         </div>
+  
         <div class="set-routes">
           <div class="route-group">
             <label>Start Road</label>
@@ -27,27 +35,26 @@ export async function renderDiversionPlan() {
             <input id="endRoad" placeholder="Destination" readonly>
           </div>
 
-          <!--<div class="route-group route-group-row">
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              <label>Build Route (Step by Step)</label>
-              <select id="nextRoad"></select>
+          <div class="ai-suggestion-container">
+            <label><i class="fas fa-robot"></i> AI Recommended Diversions</label>
+            <div class="ai-cards" id="aiRouteSuggestions">
+              <div class="ai-route-card">
+                <div class="mini-map-container" id="miniMap1"></div>
+                <div class="card-details">
+                  <div class="route-meta"><span>Option 1</span> <span>1.2km</span></div>
+                  <div class="route-name">Tagaytay St Bypass</div>
+                  <button class="select-ai-btn">Apply Route</button>
+                </div>
+              </div>
+
+              <div class="ai-route-card loading">
+                <div class="loading-spinner"><i class="fas fa-circle-notch"></i></div>
+                <span>Awaiting points...</span>
+              </div>
             </div>
-            <button id="addRoadBtn">Add</button>
-          </div>-->
-
-          <div class="route-preview">
-            <h4>Selected Route</h4>
-            <ul id="routeList"></ul>
-          </div>
-
-          <div class="route-group">
-            <!--<label><i class="fas fa-calendar-alt"></i> Set Schedule</label>
-            <input type="date" id="diversionDate">
-            <input type="time" id="diversionTime">-->
           </div>
 
           <div class="route-actions">
-            <!--<button class="generateRoute">Preview on Map</button>-->
             <button id="saveRoute">Save Diversion</button>
           </div>
         </div>
