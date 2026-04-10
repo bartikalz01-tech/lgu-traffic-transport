@@ -1,0 +1,24 @@
+.diversion-plan-container {
+  margin-top: calc(var(--header-h) + 20px);
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
+.top-navbar {
+  background: var(--card-bg);
+  /* Match your container background */
+  padding: 10px;
+  border-radius: 12px;
+  display: inline-flex;
+  /* Keeps the nav from stretching full width if not needed */
+  gap: 8px;
+  border: 1px solid var(--border-color-1);
+  margin-bottom: 30px;
+}
+
+.top-navbar .btn {
+  border-radius: 8px; /* Slightly rounder for a modern "tab" feel */
+  border: none; /* Cleaner look for navigation */
+  padding: 8px 16px;
+}

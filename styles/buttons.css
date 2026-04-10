@@ -113,12 +113,12 @@
 
 .btn-outline-primary {
     background-color: transparent;
-    color: var(--primary-color-1);
-    border-color: var(--primary-color-1);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .btn-outline-primary:hover {
-    background-color: var(--primary-color-1);
+    background-color: var(--primary-color);
     color: white;
 }
 
