@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Diversion Routes</title>
 </head>
+
 <body>
   <main class="app">
     <?php include '../includes/official_sidebar.php' ?>
@@ -28,9 +29,70 @@
         <button class="btn btn-outline-primary"><i class="fas fa-route"></i> Resolved Routes</button>
       </div>
 
-      <div class="diverion-routes-container">
-        <h1>Diverion Routes</h1>
+      <div class="diversion-routes-container">
+        <div class="route-card">
+          <div class="left-part">
+            <div class="route-map-display" id="routeMap"></div>
+          </div>
+          <div class="right-part">
+            <div class="info-header">
+              <span class="status-badge">Pending</span>
+              <h3>Diversion Alpha</h3>
+            </div>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <label><i class="fas fa-play"></i> Start Route</label>
+                <p class="road-value">Mt.Natib</p>
+              </div>
+              <div class="info-item">
+                <label><i class="fas fa-location-dot"></i> Destination</label>
+                <p class="road-value">Kalandang</p>
+              </div>
+              <div class="info-item">
+                <label><i class="fas fa-road"></i> Distance</label>
+                <p class="kilometer-value">15 km</p>
+              </div>
+
+              <div class="card-actions">
+                <button class="btn btn-sm btn-info">Activate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="route-card">
+          <div class="left-part">
+            <div class="route-map-display" id="routeMap"></div>
+          </div>
+          <div class="right-part">
+            <div class="info-header">
+              <span class="status-badge">Pending</span>
+              <h3>Diversion Alpha</h3>
+            </div>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <label><i class="fas fa-play"></i> Start Route</label>
+                <p class="road-value">Mt.Natib</p>
+              </div>
+              <div class="info-item">
+                <label><i class="fas fa-location-dot"></i> Destination</label>
+                <p class="road-value">Kalandang</p>
+              </div>
+              <div class="info-item">
+                <label><i class="fas fa-road"></i> Distance</label>
+                <p class="kilometer-value">15 km</p>
+              </div>
+
+              <div class="card-actions">
+                <button class="btn btn-sm btn-info">Activate</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
     </section>
   </main>
 
