@@ -25,13 +25,19 @@
 
     <section class="diversion-plan-container">
       <div class="top-navbar">
-        <button class="btn btn-outline-primary"><i class="fas fa-arrow-turn-up"></i> Diversion Routes</button>
-        <button class="btn btn-outline-primary"><i class="fas fa-shuffle"></i> Active Routes</button>
-        <button class="btn btn-outline-primary"><i class="fas fa-route"></i> Resolved Routes</button>
+        <button class="btn btn-outline-primary" id="navDiversion">
+          <i class="fas fa-arrow-turn-up"></i> Diversion Routes
+        </button>
+        <button class="btn btn-outline-primary" id="navActive">
+          <i class="fas fa-shuffle"></i> Active Routes
+        </button>
+        <button class="btn btn-outline-primary" id="navResolved">
+          <i class="fas fa-route"></i> Resolved Routes
+        </button>
       </div>
 
       <div class="diversion-info-container">
-        <div class="diversion-routes-container">
+        <div class="diversion-routes-container" id="diversionContainer">
           <div class="route-card">
             <div class="left-part">
               <div class="route-map-display" id="routeMap"></div>
@@ -126,7 +132,7 @@
           </div>
         </div>
         
-        <div class="active-routes-container">
+        <div class="active-routes-container hidden" id="activeContainer">
           <div class="active-route-card">
             <div class="active-left-part">
               <div class="route-map-display" id="activeMap"></div>
@@ -216,7 +222,7 @@
           </div>
         </div>
         
-        <div class="resolved-routes-container">
+        <div class="resolved-routes-container hidden" id="resolvedContainer">
           <div class="resolved-route-card success-border">
             <div class="resolved-summary">
               <div class="mini-map-placeholder">
@@ -320,6 +326,7 @@
   <?php include '../includes/admin-footer.php'; ?>
 
   <script src="../scripts/sidebar.js"></script>
+  <script type="module" src="../scripts/route_planning/diversion_plans.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 

@@ -18,11 +18,18 @@
 }
 
 .top-navbar .btn {
-  border-radius: 8px;
-  /* Slightly rounder for a modern "tab" feel */
-  border: none;
-  /* Cleaner look for navigation */
+  border-radius: 8px; /* Slightly rounder for a modern "tab" feel */
+  border: none; /* Cleaner look for navigation */
   padding: 8px 16px;
+}
+
+.top-navbar button.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.hidden {
+  display: none !important;
 }
 
 .diversion-routes-container,
