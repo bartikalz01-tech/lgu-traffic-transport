@@ -22,11 +22,25 @@
       <span>Road Conditions</span>
       <!--<span class="purpose">Real-Time</span>-->
     </a>
-    <a href="../route_planning/route_routing.php" class="sidebar-link">
-      <i class="fas fa-route"></i>
-      <span>Route Planning</span>
-      <!--<span class="purpose">Diversion</span>-->
-    </a>
+    <div class="sidebar-item has-dropdown">
+      <a href="../route_planning/route_routing.php" class="sidebar-link">
+        <i class="fas fa-route"></i>
+        <span>Route Planning</span>
+        <!--<span class="purpose">Diversion</span>-->
+      </a>
+
+      <button class="dropdown-toggle">
+        <i class="fas fa-chevron-down"></i>
+      </button>
+
+      <div class="dropdown-menu">
+        <div class="dropdown-menu-inner">
+          <a href="../route_planning/diversions.php">Diversion Plans</a>
+          <a href="#">Test</a>
+          <a href="#">Test</a>
+        </div>
+      </div>
+    </div>
     <a href="../public_transport_coordination/public_transports.php" class="sidebar-link">
       <i class="fas fa-car"></i>
       <span>Public Transport</span>

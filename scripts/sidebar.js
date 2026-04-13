@@ -27,4 +27,14 @@ window.addEventListener('load', function () {
       }
     });
   }
+
+  document.querySelectorAll('.sidebar-item.has-dropdown').forEach(item => {
+    const toggleBtn = item.querySelector('.dropdown-toggle');
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      item.classList.toggle('open');
+    });
+  });
 });

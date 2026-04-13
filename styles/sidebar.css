@@ -80,7 +80,8 @@
   gap: 20px;
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 80px; /* reserve space for fixed footer */
+  padding-bottom: 80px;
+  /* reserve space for fixed footer */
 }
 
 /* Make header stick to top of the scrolling area and overlay links */
@@ -185,7 +186,94 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
+}
+
+/* Container for the link + the chevron button */
+.sidebar-item.has-dropdown {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure the main link doesn't overlap the chevron */
+.sidebar-item.has-dropdown .sidebar-link {
+  padding-right: 50px; /* Room for the absolute positioned button */
+}
+
+/* Position the chevron button perfectly inside the link area */
+.dropdown-toggle {
+  position: absolute;
+  right: 10px; /* Aligned to the right side of the container */
+  top: 24px; /* Half of the height of a standard sidebar-link (approx 48px) */
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--sidebar-text-1);
+  padding: 8px;
+  z-index: 5;
+  transition: transform 0.3s ease, color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-toggle:hover {
+  color: var(--primary-color);
+}
+
+/* Rotate chevron when open */
+.sidebar-item.open .dropdown-toggle {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--primary-color);
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out, opacity 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  flex-direction: column;
+  margin-left: 2.5rem;
+  gap: 4px;
+  border-left: 2px solid #eee;
+  overflow: hidden;
+}
+
+.dropdown-menu-inner {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+}
+
+.sidebar-item.open .dropdown-menu {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.dropdown-menu a {
+  text-decoration: none;
+  font-size: 0.85rem;
+  color: var(--sidebar-text-1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.dropdown-menu a:hover {
+  background: #f0f0f0;
+  color: var(--primary-color);
+  padding-left: 16px; /* Subtle "slide" effect on hover */
 }

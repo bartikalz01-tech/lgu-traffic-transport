@@ -31,7 +31,6 @@
       </div>
 
       <div class="diversion-info-container">
-        <!--
         <div class="diversion-routes-container">
           <div class="route-card">
             <div class="left-part">
@@ -126,9 +125,7 @@
             </div>
           </div>
         </div>
-        -->
-
-        <!--
+        
         <div class="active-routes-container">
           <div class="active-route-card">
             <div class="active-left-part">
@@ -218,8 +215,7 @@
             </div>
           </div>
         </div>
-        -->
-
+        
         <div class="resolved-routes-container">
           <div class="resolved-route-card success-border">
             <div class="resolved-summary">
