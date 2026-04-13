@@ -1,5 +1,5 @@
 import { fetchRoadsDiversion, fetchRoadDiversionCoord, fetchSmartRoute } from "../data/fetch_road_map.js";
-import { renderRouteList, drawSimpleLine, getNearestRoad } from "../utils/diversions.js";
+import { renderRouteList, drawSimpleLine, getNearestRoad, calculateDistanceKm } from "../utils/diversions.js";
 import { getDivesionPlan } from "../global_variables.js";
 
 export async function renderDiversionPlan() {
@@ -19,7 +19,10 @@ export async function renderDiversionPlan() {
           </div>
 
           <div class="route-preview">
-            <h4><i class="fas fa-route"></i> Active Path Details</h4>
+            <div class="route-distance" id="routeDistance">
+              <h4><i class="fas fa-route"></i> Active Path Details</h4>
+              <p class="distance-display">Distance: <strong id="distanceValue">0km</strong><p>
+            </div>
             <ul id="routeList"></ul>
           </div>
         </div>
@@ -113,6 +116,7 @@ export async function renderDiversionPlan() {
 
     markers.push(marker);
     clickedPoints.push(pointData);
+    updateDistanceDisplay();
 
     if(isFirstPoint) {
       startInput.value = nearest.road_name;
@@ -156,7 +160,7 @@ export async function renderDiversionPlan() {
     }
 
     if (clickedPoints.length >= 2) {
-      drawSimpleLine(diversionMap, clickedPoints, routeLine);
+      routeLine = drawSimpleLine(diversionMap, clickedPoints, routeLine);
     }
   });
 
@@ -175,11 +179,12 @@ export async function renderDiversionPlan() {
       return;
     }
 
-    //const scheduleDate = `${date} ${time}`;
+    const distanceKm = calculateDistanceKm(clickedPoints);
 
     const payload = {
       startRoad: startRoad,
       endRoad: endRoad,
+      distance: distanceKm,
       points: clickedPoints
     };
 
@@ -208,6 +213,7 @@ export async function renderDiversionPlan() {
         markers.forEach(marker => diversionMap.removeLayer(marker));
         markers = [];
         clickedPoints = [];
+        updateDistanceDisplay();
       } else {
         alert("Failed to save diversion");
       }
@@ -222,7 +228,7 @@ export async function renderDiversionPlan() {
     }
 
     if(clickedPoints.length >= 2) {
-      drawSimpleLine(diversionMap, clickedPoints, routeLine);
+      routeLine = drawSimpleLine(diversionMap, clickedPoints, routeLine);
     }
 
     if(clickedPoints.length === 0) {
@@ -269,5 +275,18 @@ export async function renderDiversionPlan() {
     });
 
     renderRouteList(selectedRoute);
+    updateDistanceDisplay();
+  }
+
+  function updateDistanceDisplay() {
+    const distanceValue = document.getElementById("distanceValue");
+    
+    if(clickedPoints.length < 2) {
+      distanceValue.textContent = "0km";
+      return;
+    }
+
+    const km = calculateDistanceKm(clickedPoints);
+    distanceValue.textContent = `${km} km`;
   }
 }

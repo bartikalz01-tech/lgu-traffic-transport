@@ -8,11 +8,12 @@ $data = json_decode(file_get_contents("php://input"), true);
 $start = $data['startRoad'];
 $end = $data['endRoad'];
 //$date = $data['scheduleDate'];
+$distance = $data['distance'];
 $points = $data['points'];
 
 $diversion = new Diversion();
 
-$diversion_id = $diversion->createDiversion($start, $end);
+$diversion_id = $diversion->createDiversion($start, $end, $distance);
 
 $diversion->insertRouteDetails($diversion_id, $points);
 
