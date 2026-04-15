@@ -37,6 +37,7 @@
       </div>
 
       <div class="diversion-info-container">
+        <!--
         <div class="diversion-routes-container" id="diversionContainer">
           <div class="route-card">
             <div class="left-part">
@@ -271,7 +272,6 @@
           </div>
 
           <div class="resolved-route-card failed-border">
-            <!-- The failed Diversion Plan will be based on avg speed (optional: vehicle count) -->
             <div class="resolved-summary">
               <div class="mini-map-placeholder">
                 <i class="fas fa-map"></i>
@@ -318,6 +318,11 @@
             </div>
           </div>
         </div>
+        -->
+
+        <div class="diversion-routes-container" id="diversionContainer"></div>
+        <div class="active-routes-container hidden" id="activeContainer"></div>
+        <div class="resolved-routes-container hidden" id="resolvedContainer"></div>
       </div>
 
     </section>
