@@ -69,3 +69,37 @@ export async function fetchSmartRoute(start, end) {
     return [];
   }
 }
+
+export async function fetchDiversions() {
+  try {
+    const resposne = await fetch("../api/get_diversion_start_end.php");
+    const result = await resposne.json();
+
+    if(result.status === "success") {
+      return result.data;
+    } else {
+      console.error(result.message);
+      return[];
+    }
+  } catch(error) {
+    console.error("Fetch error:", error);
+    return [];
+  }
+}
+
+export async function fetchDiversionDetails(diversionId) {
+  try {
+    const response = await fetch(`../api/get_diversion_routes.php?diversion_id=${diversionId}`);
+    const result = await response.json();
+
+    if(result.status === "success") {
+      return result.data;
+    } else {
+      console.error(result.message);
+      return[];
+    }
+  } catch(error) {
+    console.error("Fetch details error:", error);
+    return [];
+  }
+}

@@ -43,6 +43,44 @@ class Diversion extends config {
     return true;
   }
 
+  public function getPendingDiversion() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        dr.diversion_id,
+        dr.start_road_id,
+        dr.end_road_id,
+        dr.distance,
+        dr.created_at,
+        r1.road_name AS start_name,
+        r2.road_name AS end_name
+      FROM diversion_routes dr
+      LEFT JOIN roads r1 ON dr.start_road_id = r1.road_id
+      LEFT JOIN roads r2 ON dr.end_road_id = r2.road_id
+      ORDER BY dr.created_at DESC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getDiversionRoutesDetails($diversion_id) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT lat, lng, sequence_order
+      FROM diversion_routes_details
+      WHERE diversion_id = :diversion_id
+      ORDER BY sequence_order ASC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam('diversion_id', $diversion_id);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }
 
 ?>

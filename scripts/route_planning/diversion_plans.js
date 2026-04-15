@@ -2,7 +2,7 @@ import { renderDiversionRoutes } from "./render_diversion.js";
 import { renderActiveRoutes } from "./render_active.js";
 import { renderResolvedRoutes } from "./render_resolved.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const diversionBtn = document.getElementById("navDiversion");
   const activeBtn = document.getElementById("navActive");
   const resolvedBtn = document.getElementById("navResolved");
@@ -29,21 +29,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   showContainer(diversionContainer);
   setActiveBtn(diversionBtn);
-  renderDiversionRoutes(diversionContainer);
+  await renderDiversionRoutes(diversionContainer);
 
-  diversionBtn.addEventListener('click', () => {
+  diversionBtn.addEventListener('click', async () => {
     showContainer(diversionContainer);
     setActiveBtn(diversionBtn);
-    renderDiversionRoutes(diversionContainer);
+    await renderDiversionRoutes(diversionContainer);
   });
 
-  activeBtn.addEventListener('click', () => {
+  activeBtn.addEventListener('click', async () => {
     showContainer(activeContainer);
     setActiveBtn(activeBtn);
     renderActiveRoutes(activeContainer);
   });
 
-  resolvedBtn.addEventListener('click', () => {
+  resolvedBtn.addEventListener('click', async () => {
     showContainer(resolvedContainer);
     setActiveBtn(resolvedBtn);
     renderResolvedRoutes(resolvedContainer);

@@ -1,8 +1,10 @@
+import { initMap } from "../utils/diversions.js"; 
+
 export function renderActiveRoutes(contanier) {
   contanier.innerHTML = `
     <div class="active-route-card">
       <div class="active-left-part">
-        <div class="route-map-display" id="activeMap"></div>
+        <div class="route-map-display" id="active-map-1"></div>
       </div>
       <div class="active-right-part">
         <div class="active-info-header">
@@ -44,4 +46,6 @@ export function renderActiveRoutes(contanier) {
       </div>
     </div>
   `;
+
+  const map = initMap("active-map-1");
 }

@@ -81,3 +81,23 @@ function haversine(lat1, lon1, lat2, lon2) {
 function toRad(value) {
   return value * Math.PI / 180;
 }
+
+const maps = {};
+
+export function initMap(mapId) {
+
+  if(maps[mapId]) {
+    maps[mapId].remove();
+    delete maps[mapId]
+  }
+
+  const map = L.map(mapId).setView([14.6414, 120.9909], 16.5);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  maps[mapId] = map;
+
+  return map;
+}

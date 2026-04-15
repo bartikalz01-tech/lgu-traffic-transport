@@ -1,11 +1,11 @@
+import { initMap } from "../utils/diversions.js"; 
+
 export function renderResolvedRoutes(container) {
   container.innerHTML = `
     <div class="resolved-route-card failed-border">
       <!-- The failed Diversion Plan will be based on avg speed (optional: vehicle count) -->
       <div class="resolved-summary">
-        <div class="mini-map-placeholder">
-          <i class="fas fa-map"></i>
-        </div>
+        <div class="mini-map-placeholder" id="resolved-map-1"></div>
 
         <div class="resolved-main-info">
           <div class="resolved-header">
@@ -48,4 +48,6 @@ export function renderResolvedRoutes(container) {
       </div>
     </div>
   `;
+
+  const map = initMap("resolved-map-1");
 }
