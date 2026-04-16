@@ -38,4 +38,49 @@ export async function setScheduleDiversionRoute(container) {
       </div>
     </div>
   `;
+
+  const confirmBtn = container.querySelector("#confirmDiversionRoute");
+
+  confirmBtn.addEventListener("click", async () => {
+
+    const overlay = document.getElementById("scheduleOverlay");
+
+    const diversionId = overlay.dataset.diversionId;
+    const start = document.getElementById("startDate").value;
+    const end = document.getElementById("endDate").value;
+
+    if(!start || !end) {
+      alert("Please select start and end date");
+      return;
+    }
+
+    const payload = {
+      diversion_id: diversionId,
+      start_datetime: start,
+      end_datetime: end
+    };
+
+    try {
+      const response = await fetch("/lgu-traffic-transport/api/save_diversion_schedule.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if(result.status === "success") {
+        alert("Schedule saved!");
+
+        overlay.classList.add("schedule-hidden");
+        overlay.innerHTML = "";
+      } else {
+        alert("Failed to save schedule");
+      }
+    } catch(error) {
+      console.error("Error saving schedule:", error);
+    }
+  });
 }
