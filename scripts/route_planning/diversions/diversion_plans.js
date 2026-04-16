@@ -1,6 +1,6 @@
 import { renderDiversionRoutes } from "./render_diversion.js";
-import { renderActiveRoutes } from "./render_active.js";
-import { renderResolvedRoutes } from "./render_resolved.js";
+import { renderActiveRoutes } from "../render_active.js";
+import { renderResolvedRoutes } from "../render_resolved.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const diversionBtn = document.getElementById("navDiversion");

@@ -1,6 +1,6 @@
-import { fetchRoadsDiversion, fetchRoadDiversionCoord, fetchSmartRoute } from "../data/fetch_road_map.js";
-import { renderRouteList, drawSimpleLine, getNearestRoad, calculateDistanceKm } from "../utils/diversions.js";
-import { getDivesionPlan } from "../global_variables.js";
+import { fetchRoadsDiversion, fetchRoadDiversionCoord, fetchSmartRoute } from "../../data/fetch_road_map.js";
+import { renderRouteList, drawSimpleLine, getNearestRoad, calculateDistanceKm } from "../../utils/diversions.js";
+import { getDivesionPlan } from "../../global_variables.js";
 
 export async function renderDiversionPlan() {
   const setDivesionPlan = getDivesionPlan();

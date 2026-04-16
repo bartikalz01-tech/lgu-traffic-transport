@@ -1,7 +1,7 @@
 import { trafficTbody, brgyTrafficStatus, getDivesionPlan } from "../global_variables.js";
 import { fetchRoadEvents, fetchRoadMap } from "../data/fetch_road_map.js";
 import { getEventMarker, getTrafficColor } from "../utils/traffic_and_events.js";
-import { renderDiversionPlan } from "./set_diversion_plan.js";
+import { renderDiversionPlan } from "./diversions/set_diversion_plan.js";
 //import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
 //import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
 

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/route_planning/diversions.css">
+  <link rel="stylesheet" href="../styles/route_planning/diversion_schedule.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Diversion Routes</title>
 </head>
@@ -331,7 +332,7 @@
   <?php include '../includes/admin-footer.php'; ?>
 
   <script src="../scripts/sidebar.js"></script>
-  <script type="module" src="../scripts/route_planning/diversion_plans.js"></script>
+  <script type="module" src="../scripts/route_planning/diversions/diversion_plans.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 
