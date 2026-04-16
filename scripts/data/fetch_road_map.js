@@ -103,3 +103,20 @@ export async function fetchDiversionDetails(diversionId) {
     return [];
   }
 }
+
+export async function fetchActiveDiversion() {
+  try {
+    const response = await fetch("../api/get_active_diversion_details.php");
+    const result = await response.json();
+
+    if(result.status === "success") {
+      return result.data;
+    } else {
+      console.error(result.message);
+      return[];
+    }
+  } catch(error) {
+    console.error("Fetch details error:", error);
+    return [];
+  }
+}
