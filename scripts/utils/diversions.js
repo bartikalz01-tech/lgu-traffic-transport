@@ -1,3 +1,5 @@
+import { renderActiveRoutes } from "../route_planning/diversions/render_active.js";
+
 export function renderRouteList(selectedRoute) {
   const list = document.getElementById("routeList");
   list.innerHTML = "";
@@ -111,4 +113,12 @@ export function formatActiveDate(datetime) {
     hour: "numeric",
     minute: "2-digit"
   });
+}
+
+export function startActiveRoutesRefresh(container) {
+  renderActiveRoutes(container);
+
+  setInterval(() => {
+    renderActiveRoutes(container);
+  }, 60000);
 }

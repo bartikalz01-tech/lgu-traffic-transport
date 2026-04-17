@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 $diversion = new Diversion();
 
 try {
-  $data = $diversion->activeDiversions();
+  $data = $diversion->getAllDiversionsWithStatus();
 
   echo json_encode([
     "status" => "success",

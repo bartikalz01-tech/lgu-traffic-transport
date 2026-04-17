@@ -82,22 +82,28 @@ class Diversion extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function activeDiversions() {
+  public function getAllDiversionsWithStatus() {
     $conn = $this->conn();
     $sql = "
       SELECT
         ds.diversion_id,
-        ds.status,
         ds.start_datetime,
+        ds.end_datetime,
         dr.distance,
         r1.road_name AS start_name,
-        r2.road_name AS end_name
+        r2.road_name AS end_name,
+
+        CASE
+          WHEN NOW() >= ds.start_datetime AND NOW() <= ds.end_datetime THEN 'active'
+          WHEN NOW() < ds.start_datetime THEN 'scheduled'
+          ELSE 'resolved'
+        END as status
+
       FROM diversion_schedule ds
       JOIN diversion_routes dr ON ds.diversion_id = dr.diversion_id
       JOIN roads r1 ON dr.start_road_id = r1.road_id
       JOIN roads r2 ON dr.end_road_id = r2.road_id
-      WHERE ds.status = 'scheduled'
-      ORDER BY ds.start_datetime ASC
+      ORDER BY ds.start_datetime DESC
     ";
 
     $stmt = $conn->prepare($sql);

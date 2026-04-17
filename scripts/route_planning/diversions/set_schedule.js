@@ -54,6 +54,22 @@ export async function setScheduleDiversionRoute(container) {
       return;
     }
 
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    if(endDate <= startDate) {
+      alert("End time must be after start time");
+      return;
+    }
+
+    const diffMs = endDate - startDate;
+    const diffMinutes = diffMs / (1000 * 60);
+
+    if(diffMinutes < 15) {
+      alert("Minumum schedule duration is 15 minutes");
+      return;
+    }
+
     const payload = {
       diversion_id: diversionId,
       start_datetime: start,
