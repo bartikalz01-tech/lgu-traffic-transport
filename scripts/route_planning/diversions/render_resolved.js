@@ -1,4 +1,4 @@
-import { initMap, formatActiveDate, clearAllMaps } from "../../utils/diversions.js";
+import { initMap, formatDateOnly, formatTimeOnly, clearAllMaps } from "../../utils/diversions.js";
 import { fetchAllDiversionStatus, fetchDiversionDetails } from "../../data/fetch_road_map.js";
 import { drawSimpleLine } from "../../utils/diversions.js";
 
@@ -36,11 +36,11 @@ export async function renderResolvedRoutes(container) {
             <div class="resolved-schedule-info">
               <div class="schedule-item">
                 <label><i class="fas fa-calendar-days"></i> Project Duration</label>
-                <p>April 01, 2026 - April 12, 2026</p>
+                <p>${formatDateOnly(route.start_datetime)} - ${formatDateOnly(route.end_datetime)}</p>
               </div>
               <div class="schedule-item">
                 <label><i class="fas fa-clock"></i> Active Window</label>
-                <p>Daily at 6:00pm - 10:00pm</p>
+                <p>Daily at ${formatTimeOnly(route.start_datetime)} - ${formatTimeOnly(route.end_datetime)}</p>
               </div>
             </div>
           </div>

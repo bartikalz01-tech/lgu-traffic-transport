@@ -91,21 +91,21 @@
               <i class="fas fa-shuffle" style="color: #F39C12;"></i>
               <span>Active</span>
             </p>
-            <p class="diversion-value">3</p>
+            <p class="diversion-value" id="activeCount"></p>
           </div>
           <div class="diversion-data">
             <p class="diversion-status">
               <i class="fas fa-calendar-check" style="color: #e67e22;"></i>
               <span>Scheduled</span>
             </p>
-            <p class="diversion-value">1</p>
+            <p class="diversion-value" id="scheduledCount"></p>
           </div>
           <div class="diversion-data">
             <p class="diversion-status">
               <i class="fas fa-route" style="color: #27ae60;"></i>
               <span>Resolved</span>
             </p>
-            <p class="diversion-value">4</p>
+            <p class="diversion-value" id="resolvedCount"></p>
           </div>
         </div>
 

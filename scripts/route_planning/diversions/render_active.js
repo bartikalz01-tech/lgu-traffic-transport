@@ -17,7 +17,7 @@ export async function renderActiveRoutes(contanier, prefetchedData = null) {
 
   const now = new Date();
 
-  contanier.innerHTML = activeDetails.map(active => {
+  contanier.innerHTML = activeDetails.map((active, index) => {
     
     const isActive = active.status === "active";
 
@@ -30,7 +30,7 @@ export async function renderActiveRoutes(contanier, prefetchedData = null) {
     return `
       <div class="active-route-card">
         <div class="active-left-part">
-          <div class="route-map-display" id="active-map-${active.diversion_id}"></div>
+          <div class="route-map-display" id="active-map-${active.diversion_id}-${index}"></div>
         </div>
         <div class="active-right-part">
           <div class="active-info-header">
@@ -73,8 +73,8 @@ export async function renderActiveRoutes(contanier, prefetchedData = null) {
       </div>
     `});
 
-  for(const route of activeDetails) {
-    const mapId = `active-map-${route.diversion_id}`;
+  for(const [index, route] of activeDetails.entries()) {
+    const mapId = `active-map-${route.diversion_id}-${index}`;
     const map = initMap(mapId);
     
     const points = await fetchDiversionDetails(route.diversion_id);

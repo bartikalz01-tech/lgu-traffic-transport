@@ -115,8 +115,28 @@ export function formatActiveDate(datetime) {
   const d = new Date(datetime);
 
   return d.toLocaleString("en-US", {
+    year: "numeric",
     month: "long",
     day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+export function formatDateOnly(datetime) {
+  const d = new Date(datetime);
+
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+export function formatTimeOnly(datetime) {
+  const d = new Date(datetime);
+
+  return d.toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit"
   });

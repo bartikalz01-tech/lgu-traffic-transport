@@ -1,5 +1,5 @@
 import { trafficTbody, brgyTrafficStatus, getDivesionPlan } from "../global_variables.js";
-import { fetchRoadEvents, fetchRoadMap } from "../data/fetch_road_map.js";
+import { fetchRoadEvents, fetchRoadMap, fetchDiversionSummary } from "../data/fetch_road_map.js";
 import { getEventMarker, getTrafficColor } from "../utils/traffic_and_events.js";
 import { renderDiversionPlan } from "./diversions/set_diversion_plan.js";
 //import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
@@ -21,7 +21,37 @@ async function loadRoadEvents(map) {
   });
 }
 
+
 document.addEventListener('DOMContentLoaded', async () => {
+
+  const activeElSummary = document.getElementById('activeCount');
+  const scheduledElSummary = document.getElementById('scheduledCount');
+  const resolvedElSummary = document.getElementById('resolvedCount');
+
+  async function renderDiversionSummary() {
+    const data = await fetchDiversionSummary();
+
+    if(!data) return;
+
+    if(activeElSummary) {
+      activeElSummary.textContent = data.active ?? 0;
+    }
+
+    if(scheduledElSummary) {
+      scheduledElSummary.textContent = data.scheduled ?? 0;
+    }
+
+    if(resolvedElSummary) {
+      resolvedElSummary.textContent = data.resolved ?? 0;
+    }
+  }
+
+  await renderDiversionSummary();
+
+  setInterval(() => {
+    renderDiversionSummary();
+  }, 5000);
+
   const map = L.map('map').setView([14.6414, 120.9909], 17.5);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -52,7 +82,7 @@ const diversionPlan = getDivesionPlan();
 diversionPlan.addEventListener('click', (e) => {
   const closeDiversionPlan = e.target.closest('.js-exit-diversion-plan');
 
-  if(!closeDiversionPlan) return;
+  if (!closeDiversionPlan) return;
 
   diversionPlan.classList.add('diversion-plan-hidden');
   diversionPlan.innerHTML = '';

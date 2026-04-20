@@ -105,7 +105,6 @@ class Diversion extends config {
       JOIN roads r2 ON dr.end_road_id = r2.road_id
       ORDER BY ds.start_datetime DESC
     ";
-
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 

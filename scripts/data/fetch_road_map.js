@@ -120,3 +120,15 @@ export async function fetchAllDiversionStatus() {
     return [];
   }
 }
+
+export async function fetchDiversionSummary() {
+  try {
+    const response = await fetch("../api/get_diversion_summary.php");
+    const result = await response.json();
+
+    return result;
+  } catch(error) {
+    console.error("Fetch details error:", error);
+    return [];
+  }
+}
