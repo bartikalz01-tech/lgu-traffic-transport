@@ -137,6 +137,11 @@
   border: 1px solid #ffe3e3;
 }
 
+.status-badge.resolved {
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -233,6 +238,10 @@
 
 .resolved-route-card.failed-border {
   border-left-color: #fa5252;
+}
+
+.resolved-route-card.resolved-border {
+  border-left-color: var(--primary-color);
 }
 
 .resolved-route-card:hover {

@@ -331,9 +331,8 @@
 
   <?php include '../includes/admin-footer.php'; ?>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/route_planning/diversions/diversion_plans.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
-
 </html>

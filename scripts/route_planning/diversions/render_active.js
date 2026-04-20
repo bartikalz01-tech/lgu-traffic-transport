@@ -1,10 +1,10 @@
 import { drawSimpleLine, initMap } from "../../utils/diversions.js"; 
-import { fetchActiveDiversion, fetchDiversionDetails } from "../../data/fetch_road_map.js";
+import { fetchAllDiversionStatus, fetchDiversionDetails } from "../../data/fetch_road_map.js";
 import { formatActiveDate } from "../../utils/diversions.js";
 
 export async function renderActiveRoutes(contanier, prefetchedData = null) {
 
-  const activeDetailsRaw = await fetchActiveDiversion();
+  const activeDetailsRaw = await fetchAllDiversionStatus();
 
   const activeDetails = activeDetailsRaw.filter(route => 
     route.status === "active" || route.status === "scheduled"

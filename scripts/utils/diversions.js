@@ -104,6 +104,13 @@ export function initMap(mapId) {
   return map;
 }
 
+export function clearAllMaps() {
+  Object.keys(maps).forEach(id => {
+    maps[id].remove();
+    delete maps[id];
+  });
+}
+
 export function formatActiveDate(datetime) {
   const d = new Date(datetime);
 

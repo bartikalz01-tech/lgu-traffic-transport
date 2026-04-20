@@ -104,9 +104,9 @@ export async function fetchDiversionDetails(diversionId) {
   }
 }
 
-export async function fetchActiveDiversion() {
+export async function fetchAllDiversionStatus() {
   try {
-    const response = await fetch("../api/get_active_diversion_details.php");
+    const response = await fetch("../api/get_all_diversion_status.php");
     const result = await response.json();
 
     if(result.status === "success") {

@@ -1,8 +1,8 @@
 import { renderDiversionRoutes } from "./render_diversion.js";
 import { renderActiveRoutes } from "../diversions/render_active.js";
-import { renderResolvedRoutes } from "../render_resolved.js";
+import { renderResolvedRoutes } from "./render_resolved.js";
 import { startActiveRoutesRefresh } from "../../utils/diversions.js";
-import { fetchActiveDiversion } from "../../data/fetch_road_map.js";
+import { fetchAllDiversionStatus } from "../../data/fetch_road_map.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const diversionBtn = document.getElementById("navDiversion");
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     target.classList.remove("hidden");
   }
 
-  cachedActiveRoutes = await fetchActiveDiversion();
+  cachedActiveRoutes = await fetchAllDiversionStatus();
 
   showContainer(diversionContainer);
   setActiveBtn(diversionBtn);
@@ -58,6 +58,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   resolvedBtn.addEventListener('click', async () => {
     showContainer(resolvedContainer);
     setActiveBtn(resolvedBtn);
-    renderResolvedRoutes(resolvedContainer);
+
+    setTimeout(async () => {
+      renderResolvedRoutes(resolvedContainer);
+    }, 100);
   });
 });
