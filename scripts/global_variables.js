@@ -36,3 +36,7 @@ export function getAccidentTck() {
 export function getDivesionPlan() {
   return document.querySelector('.diversion-plan-overlay')
 }
+
+export function getEmergencyPlan() {
+  return document.getElementById("emergencyOverlay");
+}

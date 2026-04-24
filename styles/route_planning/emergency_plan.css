@@ -4,9 +4,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 2000;
   background-color: rgba(11, 19, 43, 0.7);
   backdrop-filter: blur(4px);
+}
+
+.emergency-hidden {
+  display: none;
 }
 
 .exit-emergency-plan {

@@ -14,8 +14,9 @@
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/route_planning/route_plan_trial.css">
   <link rel="stylesheet" href="../styles/route_planning/diversion_plan.css">
+  <link rel="stylesheet" href="../styles/route_planning/emergency_plan.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
-  <title>Route Planning Test</title>
+  <title>Route Routing and Diversion Planning</title>
 </head>
 
 <body>
@@ -115,7 +116,7 @@
             <button class="action-btn assign-btn" id="assignBtn">
               <i class="fas fa-user-plus"></i> Assign Officer
             </button>
-            <button class="action-btn emergency-btn" id="actionBtn">
+            <button class="action-btn emergency-btn" id="emergencyBtn">
               <i class="fas fa-tower-broadcast"></i> Set Emergency Routes
             </button>
             <button class="action-btn diversion-btn" id="diversionBtn">
@@ -195,12 +196,13 @@
     </section>
 
     <div class="diversion-plan-overlay diversion-plan-hidden"></div>
+    <div class="emergency-route-overlay emergency-hidden" id="emergencyOverlay"></div>
   </main>
 
   <?php include '../includes/admin-footer.php'; ?>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/route_planning/route_planning.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 </html>
