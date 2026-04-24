@@ -82,7 +82,7 @@ class Diversion extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function getAllDiversionsWithStatus() {
+  /*public function getAllDiversionsWithStatus() {
     $conn = $this->conn();
     $sql = "
       SELECT
@@ -109,6 +109,29 @@ class Diversion extends config {
     $stmt->execute();
 
     return $stmt->fetchALL(PDO::FETCH_ASSOC);
+  }*/
+
+  public function getDiversionActiveDetails($diversion_id) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        dr.diversion_id,
+        r1.road_name AS start_name,
+        r2.road_name AS end_name,
+        dr.distance,
+        dr.vehicle_per_min,
+        dr.avg_speed
+      FROM diversion_routes dr
+      JOIN roads r1 on dr.start_road_id = r1.road_id
+      JOIN roads r2 on dr.end_road_id = r2.road_id
+      WHERE dr.diversion_id = :diversion_id
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':diversion_id', $diversion_id);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 }
 

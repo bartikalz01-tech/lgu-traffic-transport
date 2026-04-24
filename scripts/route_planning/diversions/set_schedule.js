@@ -63,10 +63,16 @@ export async function setScheduleDiversionRoute(container) {
     }
 
     const diffMs = endDate - startDate;
-    const diffMinutes = diffMs / (1000 * 60);
+    //const diffMinutes = diffMs / (1000 * 60);
+    const MIN_DURATION = 5 * 1000;
 
-    if(diffMinutes < 15) {
+    /*if(diffMinutes < 15) {
       alert("Minumum schedule duration is 15 minutes");
+      return;
+    }*/
+
+    if(diffMs < MIN_DURATION) {
+      alert("Minumum schedule duration is 5 seconds");
       return;
     }
 

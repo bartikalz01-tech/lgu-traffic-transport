@@ -1,5 +1,5 @@
 import { trafficTbody, brgyTrafficStatus, getDivesionPlan } from "../global_variables.js";
-import { fetchRoadEvents, fetchRoadMap, fetchDiversionSummary } from "../data/fetch_road_map.js";
+import { fetchRoadEvents, fetchRoadMap, fetchDiversions, fetchDiversionDetails, fetchAllDiversionStatus } from "../data/fetch_road_map.js";
 import { getEventMarker, getTrafficColor } from "../utils/traffic_and_events.js";
 import { renderDiversionPlan } from "./diversions/set_diversion_plan.js";
 //import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
@@ -21,10 +21,46 @@ async function loadRoadEvents(map) {
   });
 }
 
+async function loadDiversionRoutes(map) {
+  const diversions = await fetchDiversions();
+
+  for(const diversion of diversions) {
+    const points = await fetchDiversionDetails(diversion.diversion_id);
+
+    if(!points.length) continue;
+
+    const coords = points.map(p => [p.lat, p.lng]);
+
+    const polyline = L.polyline(coords, {
+      color: "#7f8c8d",
+      weight: 6,
+      dashArray: "6, 6"
+    }).addTo(map);
+
+    polyline.bindPopup(`
+      <b>Diversion Route #${diversion.diversion_id}</b><br>
+      ${diversion.start_name} → ${diversion.end_name}
+    `);
+
+    polyline.on("click", async () => {
+      const details = await fetchAllDiversionStatus(diversion.diversion_id);
+
+      if(!details.length) return;
+
+      const d = details[0];
+
+      document.getElementById("startRoad").textContent = d.start_name;
+      document.getElementById("endRoad").textContent = d.end_name;
+      document.getElementById("routeDistance").textContent = d.distance;
+      document.getElementById("vehicleCount").textContent = d.vehicle_per_min ?? 0;
+      document.getElementById("avgSpeed").textContent = d.avg_speed ?? 0;
+    });
+  }
+} 
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-  const activeElSummary = document.getElementById('activeCount');
+  /*const activeElSummary = document.getElementById('activeCount');
   const scheduledElSummary = document.getElementById('scheduledCount');
   const resolvedElSummary = document.getElementById('resolvedCount');
 
@@ -46,11 +82,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  await renderDiversionSummary();
+  await renderDiversionSummary();*/
 
-  setInterval(() => {
+  /*setInterval(() => {
     renderDiversionSummary();
-  }, 5000);
+  }, 5000);*/
 
   const map = L.map('map').setView([14.6414, 120.9909], 17.5);
 
@@ -58,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
-  const roads = await fetchRoadMap();
+  /*const roads = await fetchRoadMap();
 
   roads.forEach(road => {
     const color = getTrafficColor(road.traffic_level);
@@ -72,12 +108,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       <b>${road.road_name}</b><br>
       Traffic: ${road.traffic_level}
     `);
-  });
+  });*/
 
-  loadRoadEvents(map);
+  //loadRoadEvents(map);
+  await loadDiversionRoutes(map);
 });
 
-const diversionPlan = getDivesionPlan();
+/*const diversionPlan = getDivesionPlan();
 
 diversionPlan.addEventListener('click', (e) => {
   const closeDiversionPlan = e.target.closest('.js-exit-diversion-plan');
@@ -90,4 +127,4 @@ diversionPlan.addEventListener('click', (e) => {
 
 document.getElementById('diversionBtn').addEventListener('click', () => {
   renderDiversionPlan();
-});
+});*/

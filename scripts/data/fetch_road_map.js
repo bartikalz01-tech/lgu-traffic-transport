@@ -104,9 +104,9 @@ export async function fetchDiversionDetails(diversionId) {
   }
 }
 
-export async function fetchAllDiversionStatus() {
+export async function fetchAllDiversionStatus(diversionId) {
   try {
-    const response = await fetch("../api/get_all_diversion_status.php");
+    const response = await fetch(`../api/get_all_diversion_status.php?diversion_id=${diversionId}`);
     const result = await response.json();
 
     if(result.status === "success") {
@@ -121,7 +121,7 @@ export async function fetchAllDiversionStatus() {
   }
 }
 
-export async function fetchDiversionSummary() {
+/*export async function fetchDiversionSummary() {
   try {
     const response = await fetch("../api/get_diversion_summary.php");
     const result = await response.json();
@@ -131,4 +131,4 @@ export async function fetchDiversionSummary() {
     console.error("Fetch details error:", error);
     return [];
   }
-}
+}*/

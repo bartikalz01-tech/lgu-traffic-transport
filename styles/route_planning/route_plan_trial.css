@@ -7,7 +7,7 @@
 
 .reports-and-actions-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   column-gap: 10px;
 }
 
@@ -265,7 +265,8 @@
 
 .status-panel-header {
   padding: 15px 20px;
-  background: var(--secondary-color);
+  /*background: #f39c12;*/
+  background: var(--warning-color);
   color: white;
   display: flex;
   justify-content: space-between;
@@ -329,35 +330,35 @@
   font-weight: 800;
 }
 
-.road-closed {
-  border-left-color: #252e37;
+.start-road {
+  border-left-color: #40c057;
 }
 
-.road-closed i {
-  color: #2c3e50;
+.start-road i {
+  color: #40c057;;
 }
 
-.road-congestion {
-  border-left-color: var(--warning-color);
+.end-road {
+  border-left-color: #fa5252;
 }
 
-.road-congestion i {
-  color: var(--warning-color);
+.end-road i {
+  color: #fa5252;
 }
 
-.road-maintenance {
+.vehicle-count {
   border-left-color: var(--accent-color);
 }
 
-.road-maintenance i {
+.vehicle-count i {
   color: var(--accent-color);
 }
 
-.road-incidents {
+.avg-speed {
   border-left-color: #9b59b6;
 }
 
-.road-incidents i {
+.avg-speed i {
   color: #9b59b6;
 }
 

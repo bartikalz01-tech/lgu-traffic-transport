@@ -84,7 +84,7 @@
           </div>
         </div>
 
-        <div class="diversion-card">
+        <!--<div class="diversion-card">
           <h2><i class="fas fa-road"></i> Diversion Plans</h2>
           <div class="diversion-data">
             <p class="diversion-status">
@@ -107,7 +107,7 @@
             </p>
             <p class="diversion-value" id="resolvedCount"></p>
           </div>
-        </div>
+        </div>-->
 
         <div class="actions-card">
           <h2><i class="fas fa-circle"></i> Actions</h2>
@@ -118,9 +118,9 @@
             <button class="action-btn emergency-btn" id="actionBtn">
               <i class="fas fa-tower-broadcast"></i> Set Emergency Routes
             </button>
-            <button class="action-btn diversion-btn" id="diversionBtn">
+            <!--<button class="action-btn diversion-btn" id="diversionBtn">
               <i class="fas fa-arrow-turn-up"></i> Set Diversion Plan
-            </button>
+            </button>-->
           </div>
         </div>
       </div>
@@ -132,41 +132,49 @@
 
         <div class="right-side">
           <div class="status-panel-header">
-            <h3><i class="fas fa-list-check"></i> Road Network Status</h3>
+            <h3><i class="fas fa-list-check"></i> Diversion Route Status</h3>
             <span class="live-indicator"><i class="fas fa-circle"></i> LIVE</span>
           </div>
 
           <div class="status-items-container">
-            <div class="status-item road-closed">
+            <div class="status-item start-road">
               <div class="status-info">
-                <i class="fas fa-ban"></i>
-                <span>Closed Roads</span>
+                <i class="fas fa-play"></i>
+                <span>Start Road</span>
               </div>
-              <span class="status-count">3</span>
+              <span class="status-count" id="startRoad"></span>
             </div>
 
-            <div class="status-item road-congestion">
+            <div class="status-item end-road">
               <div class="status-info">
-                <i class="fas fa-traffic-light"></i>
-                <span>Traffic Congestion roads</span>
+                <i class="fas fa-location-dot"></i>
+                <span>End Road</span>
               </div>
-              <span class="status-count">2</span>
+              <span class="status-count" id="endRoad"></span>
             </div>
 
-            <div class="status-item road-maintenance">
+            <div class="status-item distance">
               <div class="status-info">
-                <i class="fas fa-hammer"></i>
-                <span>Road Maintenance</span>
+                <i class="fas fa-road"></i>
+                <span>Distance</span>
               </div>
-              <span class="status-count">5</span>
+              <span class="status-count" id="routeDistance"></span>
             </div>
 
-            <div class="status-item road-incidents">
+            <div class="status-item vehicle-count">
               <div class="status-info">
-                <i class="fas fa-car-crash"></i>
-                <p>Active Incidents</p>
+                <i class="fas fa-car"></i>
+                <span>Vehicle per min</span>
               </div>
-              <span class="status-count">5</span>
+              <span class="status-count" id="vehicleCount"></span>
+            </div>
+
+            <div class="status-item avg-speed">
+              <div class="status-info">
+                <i class="fas fa-tachometer-alt"></i>
+                <p>Average Speed</p>
+              </div>
+              <span class="status-count" id="avgSpeed"></span>
             </div>
 
             <div class="incident-log-container">
