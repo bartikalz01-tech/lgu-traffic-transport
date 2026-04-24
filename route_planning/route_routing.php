@@ -118,9 +118,9 @@
             <button class="action-btn emergency-btn" id="actionBtn">
               <i class="fas fa-tower-broadcast"></i> Set Emergency Routes
             </button>
-            <!--<button class="action-btn diversion-btn" id="diversionBtn">
+            <button class="action-btn diversion-btn" id="diversionBtn">
               <i class="fas fa-arrow-turn-up"></i> Set Diversion Plan
-            </button>-->
+            </button>
           </div>
         </div>
       </div>

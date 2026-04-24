@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadDiversionRoutes(map);
 });
 
-/*const diversionPlan = getDivesionPlan();
+const diversionPlan = getDivesionPlan();
 
 diversionPlan.addEventListener('click', (e) => {
   const closeDiversionPlan = e.target.closest('.js-exit-diversion-plan');
@@ -127,4 +127,4 @@ diversionPlan.addEventListener('click', (e) => {
 
 document.getElementById('diversionBtn').addEventListener('click', () => {
   renderDiversionPlan();
-});*/
+});
