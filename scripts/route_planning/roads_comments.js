@@ -151,3 +151,48 @@ Tagaytay Street = {
   lng: 120.98999000000
 }
 */
+
+
+/*
+Algorithms to have a accurate location on emergencies
+
+(Put this on a php file)
+SELECT 
+  rc.road_id,
+  r.road_name,
+  MIN(
+    6371 * ACOS(
+      COS(RADIANS(:lat)) * COS(RADIANS(rc.latitude)) *
+      COS(RADIANS(rc.longtitude) - RADIANS(:lng)) +
+      SIN(RADIANS(:lat)) * SIN(RADIANS(rc.latitude))
+    )
+  ) AS distance
+FROM road_coordinates rc
+JOIN roads r ON rc.road_id = r.road_id
+GROUP BY rc.road_id
+ORDER BY distance ASC
+LIMIT 1;
+
+(Auto road detection)
+public function createEmergency($type, $lat, $lng) {
+  $conn = $this->conn();
+
+  // 🔥 find nearest road
+  $road = $this->findNearestRoad($lat, $lng); // This is on the top the query that will be put on php file
+  $road_id = $road['road_id'];
+
+  $sql = "
+    INSERT INTO emergencies (type, latitude, longitude, status, road_id)
+    VALUES (:type, :lat, :lng, 'active', :road_id)
+  ";
+
+  $stmt = $conn->prepare($sql);
+  $stmt->execute([
+    ':type' => $type,
+    ':lat' => $lat,
+    ':lng' => $lng,
+    ':road_id' => $road_id
+  ]);
+}
+
+*/

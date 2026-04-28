@@ -1,4 +1,6 @@
+import { getEmergenciesLocation } from "../../data/fetch_emergencies.js";
 import { getEmergencyPlan } from "../../global_variables.js";
+import { getEventMarker } from "../../utils/traffic_and_events.js";
 
 export async function renderEmergencyPlan() {
   const setEmergencyPlan = getEmergencyPlan();
@@ -78,6 +80,21 @@ export async function renderEmergencyPlan() {
   let emergencyMap;
 
   emergencyMap = L.map('emergency-map').setView([14.6414, 120.9909], 18);
+
+  const emergencies = await getEmergenciesLocation();
+
+  emergencies.forEach(emergency => {
+    const marker = L.marker([
+      emergency.latitude,
+      emergency.longitude
+    ], {icon: getEventMarker(emergency.type, emergency.road_name)}).addTo(emergencyMap);
+
+    marker.bindPopup(`
+      <b>${emergency.type.toUpperCase()}</b><br>
+      Road: ${emergency.road_name ?? 'Unknown'}<br>
+      Status: ${emergency.status}  
+    `);
+  });
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'

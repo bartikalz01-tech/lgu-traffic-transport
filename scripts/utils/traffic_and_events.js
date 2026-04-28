@@ -29,6 +29,12 @@ export function getEventMarker(type, description) {
   } else if (type === "accident") {
     iconClass = "fa-car-crash";
     bgColor = "#e74c3c";
+  } else if (type == "fire") {
+    iconClass = "fa-fire";
+    bgColor = "#f39c12";
+  } else if (type == "crime") {
+    iconClass = "fa-mask";
+    bgColor = "#8e44ad";
   } else if (type === "closure") {
     iconClass = "fa-ban";
     bgColor = "#2c3e50";

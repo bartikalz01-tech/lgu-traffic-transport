@@ -5,7 +5,17 @@ class Emergencies extends config {
 
   public function getEmergenciesLocation() {
     $conn = $this->conn();
-    $sql = "SELECT type, latitude, longitude FROM emergencies";
+    $sql = "
+      SELECT
+        e.emergency_id,
+        e.type,
+        e.latitude,
+        e.longitude,
+        e.status,
+        r.road_name
+      FROM emergencies e
+      LEFT JOIN roads r ON e.road_id = r.road_id
+    ";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute();
