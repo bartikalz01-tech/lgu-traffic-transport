@@ -50,7 +50,7 @@
 
 //Dome St. Polylines
 /*
-(14.64251, 120,99044)
+(14.64251, 120.99044)
 (14.64235, 120.99091)
 (14.64227, 120.99113)
 (14.64219, 120.99136)
@@ -110,4 +110,44 @@ CREATE TABLE diversion_schedule (
   ON DELETE CASCADE
 );
 
+*/
+
+
+/* 
+Results of this QUERY "
+  SELECT 
+    AVG(latitude) AS lat,
+    AVG(longtitude) AS lng
+  FROM road_coordinates
+  WHERE road_id = :road_id;
+"
+Dome = {
+  lat: 14.64222666667
+  lng: 120.99125666667
+}
+
+Mt.Natib = {
+  lat: 14.64181400000,
+  lng: 120.99116400000
+}
+
+Klawit = {
+  lat: 14.64139200000,
+  lng: 120.99093800000
+}
+
+Kalandang = {
+  lat: 14.64098000000,
+  lng: 120.99065142857
+}
+
+Mauban = {
+  lat: 14.64054500000,
+  lng: 120.99042166667
+}
+
+Tagaytay Street = {
+  lat: 14.64165600000,
+  lng: 120.98999000000
+}
 */
