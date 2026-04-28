@@ -58,6 +58,8 @@ export async function renderEmergencyPlan() {
   const respondersContainer = document.querySelector('.responder-list');
   const activeContainer = document.getElementById("activeContainer");
 
+  let responderMarkers = {};
+
   emergencies.forEach(emergency => {
     const marker = L.marker([
       emergency.latitude,
@@ -71,6 +73,10 @@ export async function renderEmergencyPlan() {
     `);
 
     marker.on("click", async () => {
+
+      Object.values(responderMarkers).forEach(m => emergencyMap.removeLayer());
+      responderMarkers = {};
+
       let responderType = "";
 
       if(emergency.type === "fire") {
@@ -92,6 +98,8 @@ export async function renderEmergencyPlan() {
           responder.latitude,
           responder.longitude
         ]).addTo(emergencyMap);
+
+        responderMarkers[responder.responder_id] = responderMarker;
 
         responderMarker.bindPopup(`
           <b>${responder.responder_name}</b><br>
@@ -128,6 +136,22 @@ export async function renderEmergencyPlan() {
       activeContainer.style.display = "flex";
 
       emergencyMap.setView([emergency.latitude, emergency.longitude], 15);
+
+      document.querySelectorAll('.responder-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const id = item.getAttribute('data-id');
+
+          const marker = responderMarkers[id];
+
+          if(marker) {
+            const latlng = marker.getLatLng();
+
+            emergencyMap.setView(latlng, 17);
+
+            marker.openPopup();
+          }
+        });
+      });
 
     });
   });
