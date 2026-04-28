@@ -9,3 +9,15 @@ export async function getEmergenciesLocation() {
     return [];
   }
 }
+
+export async function getRespondersByType(type) {
+  try {
+    const response = await fetch(`../api/emergencies/get_responders.php?type=${type}`);
+    const data = response.json();
+
+    return data;
+  } catch(error) {
+    console.error('Responders fetch error:', error);
+    return [];
+  }
+}

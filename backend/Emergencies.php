@@ -23,6 +23,19 @@ class Emergencies extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function getResponders($type) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT * FROM responders WHERE type = :type
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':type', $type);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 }
 
 ?>

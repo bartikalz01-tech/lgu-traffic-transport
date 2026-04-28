@@ -178,7 +178,7 @@ public function createEmergency($type, $lat, $lng) {
   $conn = $this->conn();
 
   // 🔥 find nearest road
-  $road = $this->findNearestRoad($lat, $lng); // This is on the top the query that will be put on php file
+  $road = $this->findNearestRoad($lat, $lng); //g This is on the top the query that will be put on php file
   $road_id = $road['road_id'];
 
   $sql = "

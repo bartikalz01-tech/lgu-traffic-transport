@@ -1,6 +1,16 @@
-import { getEmergenciesLocation } from "../../data/fetch_emergencies.js";
+import { getEmergenciesLocation, getRespondersByType } from "../../data/fetch_emergencies.js";
 import { getEmergencyPlan } from "../../global_variables.js";
 import { getEventMarker } from "../../utils/traffic_and_events.js";
+
+function getResponderIcon(type) {
+  if(type === "fire") {
+    return `<i class="fas fa-fire-extinguisher"></i>`;
+  } else if(type === "hospital") {
+    return `<i class="fas fa-hospital-user"></i>`
+  } else if(type === "police") {
+    return `<i class="fas fa-shield-halved"></i>`;
+  }
+}
 
 export async function renderEmergencyPlan() {
   const setEmergencyPlan = getEmergencyPlan();
@@ -24,51 +34,14 @@ export async function renderEmergencyPlan() {
           </div>
           
           <div class="responder-list">
-            <div class="responder-item fire-dept">
-              <div class="responder-icon">
-                <i class="fas fa-fire-extinguisher"></i>
-              </div>
-              <div class="responder-info">
-                <h4>Station 7 - Central Fire</h4>
-                <p><i class="fas fa-map-marker-alt"></i> Rizal Avenue North</p>
-              </div>
-              <div class="responder-distance">
-                <span class="dist-value">1.2</span>
-                <span class="dist-unit">km</span>
-              </div>
+            <div class="responder-placeholder">
+              <i class="fas fa-map-location-dot"></i>
+              <p>Select an incident marker on the map to view nearest responders</p>
             </div>
+          </div>
 
-            <div class="responder-item medical-dept">
-              <div class="responder-icon">
-                <i class="fas fa-hospital-user"></i>
-              </div>
-              <div class="responder-info">
-                <h4>General Hospital</h4>
-                <p><i class="fas fa-map-marker-alt"></i> Medical Heights Drive</p>
-              </div>
-              <div class="responder-distance">
-                <span class="dist-value">3.5</span>
-                <span class="dist-unit">km</span>
-              </div>
-            </div>
-
-            <div class="responder-item police-dept">
-              <div class="responder-icon">
-                <i class="fas fa-shield-halved"></i>
-              </div>
-              <div class="responder-info">
-                <h4>Precint 4 - Patrol Unit</h4>
-                <p><i class="fas fa-map-marker-alt"></i> Commercial District</p>
-              </div>
-              <div class="responder-distance">
-                <span class="dist-value">0.8</span>
-                <span class="dist-unit">km</span>
-              </div>
-            </div>
-
-            <div class="emergency-card-actions">
-              <button class="btn btn-info">Activate</button>
-            </div>
+          <div class="emergency-card-actions" id="activeContainer" style="display: none;">
+            <button class="btn btn-info">Activate</button>
           </div>
         </div>
       </div>
@@ -82,6 +55,8 @@ export async function renderEmergencyPlan() {
   emergencyMap = L.map('emergency-map').setView([14.6414, 120.9909], 18);
 
   const emergencies = await getEmergenciesLocation();
+  const respondersContainer = document.querySelector('.responder-list');
+  const activeContainer = document.getElementById("activeContainer");
 
   emergencies.forEach(emergency => {
     const marker = L.marker([
@@ -94,6 +69,67 @@ export async function renderEmergencyPlan() {
       Road: ${emergency.road_name ?? 'Unknown'}<br>
       Status: ${emergency.status}  
     `);
+
+    marker.on("click", async () => {
+      let responderType = "";
+
+      if(emergency.type === "fire") {
+        responderType = "fire";
+      } else if(emergency.type === "accident") {
+        responderType = "hospital";
+      } else if(emergency.type === "crime") {
+        responderType = "police";
+      }
+
+      const responders = await getRespondersByType(responderType);
+
+      respondersContainer.innerHTML = "";
+
+      activeContainer.style.display = "none";
+
+      responders.forEach(responder => {
+        const responderMarker = L.marker([
+          responder.latitude,
+          responder.longitude
+        ]).addTo(emergencyMap);
+
+        responderMarker.bindPopup(`
+          <b>${responder.responder_name}</b><br>
+          ${responder.responder_address}
+        `);
+
+        let typeClass = "";
+
+        if(responder.type === "fire") {
+          typeClass = "fire-dept";
+        } else if(responder.type === "hospital") {
+          typeClass = "medical-dept";
+        } else if(responder.type === "police") {
+          typeClass = "police-dept";
+        }
+
+        respondersContainer.innerHTML += `
+          <div class="responder-item ${typeClass}" data-id="${responder.responder_id}">
+            <div class="responder-icon">
+              ${getResponderIcon(responder.type)}
+            </div>
+            <div class="responder-info">
+              <h4>${responder.responder_name}</h4>
+              <p><i class="fas fa-map-marker-alt"></i> ${responder.responder_address}</p>
+            </div>
+            <div class="responder-distance">
+              <span class="dist-value">1.2</span>
+              <span class="dist-unit">km</span>
+            </div>
+          </div>
+        `
+      });
+
+      activeContainer.style.display = "flex";
+
+      emergencyMap.setView([emergency.latitude, emergency.longitude], 15);
+
+    });
   });
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
