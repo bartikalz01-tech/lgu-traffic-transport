@@ -36,6 +36,28 @@ class Emergencies extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function getEmergencyById($id) {
+    $conn = $this->conn();
+    $sql = "SELECT * FROM emergencies WHERE emergency_id = :id";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function getRespondersById($id) {
+    $conn = $this->conn();
+    $sql = "SELECT * FROM responders WHERE responder_id = :id";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
 }
 
 ?>

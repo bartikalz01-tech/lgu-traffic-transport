@@ -3,11 +3,11 @@ import { getEmergencyPlan } from "../../global_variables.js";
 import { getEventMarker } from "../../utils/traffic_and_events.js";
 
 function getResponderIcon(type) {
-  if(type === "fire") {
+  if (type === "fire") {
     return `<i class="fas fa-fire-extinguisher"></i>`;
-  } else if(type === "hospital") {
+  } else if (type === "hospital") {
     return `<i class="fas fa-hospital-user"></i>`
-  } else if(type === "police") {
+  } else if (type === "police") {
     return `<i class="fas fa-shield-halved"></i>`;
   }
 }
@@ -54,17 +54,37 @@ export async function renderEmergencyPlan() {
 
   emergencyMap = L.map('emergency-map').setView([14.6414, 120.9909], 18);
 
+  async function drawRoute(emergencyId, responderId) {
+    const response = await fetch(`../api/get_route.php?emergency_id=${emergencyId}&responder_id=${responderId}`);
+    const data = await response.json();
+
+    if (routeLine) {
+      emergencyMap.removeLayer(routeLine);
+    }
+
+    const latlngs = data.route.map(p => [p.lat, p.lng]);
+
+    routeLine = L.polyline(latlngs, {
+      color: "blue",
+      weight: 5
+    }).addTo(emergencyMap);
+
+    emergencyMap.fitBounds(routeLine.getBounds());
+  }
+
   const emergencies = await getEmergenciesLocation();
   const respondersContainer = document.querySelector('.responder-list');
   const activeContainer = document.getElementById("activeContainer");
 
   let responderMarkers = {};
+  let selectedEmergencyId = null;
+  let routeLine = null
 
   emergencies.forEach(emergency => {
     const marker = L.marker([
       emergency.latitude,
       emergency.longitude
-    ], {icon: getEventMarker(emergency.type, emergency.road_name)}).addTo(emergencyMap);
+    ], { icon: getEventMarker(emergency.type, emergency.road_name) }).addTo(emergencyMap);
 
     marker.bindPopup(`
       <b>${emergency.type.toUpperCase()}</b><br>
@@ -74,16 +94,18 @@ export async function renderEmergencyPlan() {
 
     marker.on("click", async () => {
 
-      Object.values(responderMarkers).forEach(m => emergencyMap.removeLayer());
+      Object.values(responderMarkers).forEach(m => emergencyMap.removeLayer(m));
       responderMarkers = {};
+      
+      selectedEmergencyId = emergency.emergency_id;
 
       let responderType = "";
 
-      if(emergency.type === "fire") {
+      if (emergency.type === "fire") {
         responderType = "fire";
-      } else if(emergency.type === "accident") {
+      } else if (emergency.type === "accident") {
         responderType = "hospital";
-      } else if(emergency.type === "crime") {
+      } else if (emergency.type === "crime") {
         responderType = "police";
       }
 
@@ -108,11 +130,11 @@ export async function renderEmergencyPlan() {
 
         let typeClass = "";
 
-        if(responder.type === "fire") {
+        if (responder.type === "fire") {
           typeClass = "fire-dept";
-        } else if(responder.type === "hospital") {
+        } else if (responder.type === "hospital") {
           typeClass = "medical-dept";
-        } else if(responder.type === "police") {
+        } else if (responder.type === "police") {
           typeClass = "police-dept";
         }
 
@@ -139,11 +161,14 @@ export async function renderEmergencyPlan() {
 
       document.querySelectorAll('.responder-item').forEach(item => {
         item.addEventListener('click', () => {
-          const id = item.getAttribute('data-id');
+          //const id = item.getAttribute('data-id');
+          const responderId = item.getAttribute('data-id');
 
-          const marker = responderMarkers[id];
+          const marker = responderMarkers[responderId];
 
-          if(marker) {
+          drawRoute(selectedEmergencyId, responderId);
+
+          if (marker) {
             const latlng = marker.getLatLng();
 
             emergencyMap.setView(latlng, 17);
