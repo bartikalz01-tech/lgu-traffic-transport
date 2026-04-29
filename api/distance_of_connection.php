@@ -15,11 +15,11 @@ function haversine($lat1, $lng1, $lat2, $lng2) {
   return $earth_radius * $c;
 }
 
-$roadALat = 14.64054500000; // road_id = 1
-$roadALng = 120.99042166667; // road_id = 1
+$roadALat = 14.64297500000; 
+$roadALng = 120.99167400000; 
 
-$roadBLat = 14.64165600000; // road_id = 6
-$roadBLng = 120.98999000000; // road_id = 6
+$roadBLat = 14.64054500000; 
+$roadBLng = 120.99042166667; 
 
 $distance = haversine(
   $roadALat, $roadALng,
