@@ -48,6 +48,11 @@ try {
     $selected
   );
 
+  $emergencies->updateEmergencyStatus(
+    $emergencyId,
+    'assigned'
+  );
+
   echo json_encode([
     "status" => "success",
     "message" => "Emergency route saved successfully",

@@ -21,3 +21,16 @@ export async function getRespondersByType(type) {
     return [];
   }
 }
+
+export async function getEmergencyRoute(emergencyId, responderId) {
+  try {
+    const response = await fetch(`../api/get_route.php?emergency_id=${emergencyId}&responder_id=${responderId}`);
+
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error('Emergency Route fetch error:', error);
+    return null;
+  }
+}

@@ -15,6 +15,7 @@ class Emergencies extends config {
         r.road_name
       FROM emergencies e
       LEFT JOIN roads r ON e.road_id = r.road_id
+      WHERE e.status = 'active'
     ";
 
     $stmt = $conn->prepare($sql);
@@ -91,6 +92,22 @@ class Emergencies extends config {
 
     return $conn->lastInsertId();
   }
+
+  public function updateEmergencyStatus($emergencyId, $status) {
+    $conn = $this->conn();
+    $sql = "
+      UPDATE emergencies
+      SET status = :status
+      WHERE emergency_id = :emergency_id 
+    ";
+
+    $stmt = $conn->prepare($sql);
+    
+    return $stmt->execute([
+      ':status' => $status,
+      ':emergency_id' => $emergencyId
+    ]);
+  } 
 
 }
 

@@ -1,4 +1,4 @@
-import { getEmergenciesLocation, getRespondersByType } from "../../data/fetch_emergencies.js";
+import { getEmergenciesLocation, getEmergencyRoute, getRespondersByType } from "../../data/fetch_emergencies.js";
 import { getEmergencyPlan } from "../../global_variables.js";
 import { getEventMarker } from "../../utils/traffic_and_events.js";
 
@@ -54,9 +54,8 @@ export async function renderEmergencyPlan() {
 
   emergencyMap = L.map('emergency-map').setView([14.6414, 120.9909], 18);
 
-  async function drawRoute(emergencyId, responderId) {
-    const response = await fetch(`../api/get_route.php?emergency_id=${emergencyId}&responder_id=${responderId}`);
-    const data = await response.json();
+  async function drawEmergencyRoute(emergencyId, responderId) { // put this later on the utils folder, file named emergencyUtils
+    const data = await getEmergencyRoute(emergencyId, responderId);
 
     if (routeLine) {
       emergencyMap.removeLayer(routeLine);
@@ -85,6 +84,7 @@ export async function renderEmergencyPlan() {
   const activeContainer = document.getElementById("activeContainer");
   const activeBtn = document.getElementById("activeEmergencyBtn");
 
+  let emergencyMarkers = {};
   let responderMarkers = {};
   let selectedEmergencyId = null;
   let routeLine = null;
@@ -101,6 +101,8 @@ export async function renderEmergencyPlan() {
       Road: ${emergency.road_name ?? 'Unknown'}<br>
       Status: ${emergency.status}  
     `);
+
+    emergencyMarkers[emergency.emergency_id] = marker;
 
     marker.on("click", async () => {
 
@@ -125,7 +127,7 @@ export async function renderEmergencyPlan() {
 
       activeContainer.style.display = "none";
 
-      responders.forEach(responder => {
+      responders.forEach(async (responder) => {
         const responderMarker = L.marker([
           responder.latitude,
           responder.longitude
@@ -148,37 +150,36 @@ export async function renderEmergencyPlan() {
           typeClass = "police-dept";
         }
 
-        respondersContainer.innerHTML += `
-          <div class="responder-item ${typeClass}" data-id="${responder.responder_id}">
-            <div class="responder-icon">
-              ${getResponderIcon(responder.type)}
-            </div>
-            <div class="responder-info">
-              <h4>${responder.responder_name}</h4>
-              <p><i class="fas fa-map-marker-alt"></i> ${responder.responder_address}</p>
-            </div>
-            <div class="responder-distance">
-              <span class="dist-value">1.2</span>
-              <span class="dist-unit">km</span>
-            </div>
+        const routeData = await getEmergencyRoute(selectedEmergencyId, responder.responder_id);
+
+        const distanceKm = routeData ? (routeData.distance / 1000).toFixed(2) : "0.00";
+
+        const responderItem = document.createElement('div');
+
+        responderItem.className = `responder-item ${typeClass}`;
+
+        responderItem.innerHTML = `
+          <div class="responder-icon">
+            ${getResponderIcon(responder.type)}
           </div>
-        `
-      });
+          <div class="responder-info">
+            <h4>${responder.responder_name}</h4>
+            <p><i class="fas fa-map-marker-alt"></i> ${responder.responder_address}</p>
+          </div>
+          <div class="responder-distance">
+            <span class="dist-value">${distanceKm}</span>
+            <span class="dist-unit">km</span>
+          </div>
+        `;
 
-      activeContainer.style.display = "flex";
-
-      emergencyMap.setView([emergency.latitude, emergency.longitude], 15);
-
-      document.querySelectorAll('.responder-item').forEach(item => {
-        item.addEventListener('click', () => {
-          //const id = item.getAttribute('data-id');
-          const responderId = item.getAttribute('data-id');
+        responderItem.addEventListener('click', () => {
+          const responderId = responder.responder_id;
 
           const marker = responderMarkers[responderId];
 
-          drawRoute(selectedEmergencyId, responderId);
+          drawEmergencyRoute(selectedEmergencyId, responderId);
 
-          if (marker) {
+          if(marker) {
             const latlng = marker.getLatLng();
 
             emergencyMap.setView(latlng, 17);
@@ -186,8 +187,13 @@ export async function renderEmergencyPlan() {
             marker.openPopup();
           }
         });
+
+        respondersContainer.appendChild(responderItem);
       });
 
+      activeContainer.style.display = "flex";
+
+      emergencyMap.setView([emergency.latitude, emergency.longitude], 15);
     });
   });
 
@@ -209,6 +215,34 @@ export async function renderEmergencyPlan() {
 
     if(result.status === "success") {
       alert("Emergency Route activated successfully");
+
+      const emergencyMarker = emergencyMarkers[selectedRouteData.emergency_id];
+
+      if(emergencyMarker) {
+        emergencyMap.removeLayer(emergencyMarker);
+      }
+
+      if(routeLine) {
+        emergencyMap.removeLayer(routeLine);
+        routeLine = null;
+      }
+
+      Object.values(responderMarkers).forEach(marker => {
+        emergencyMap.removeLayer(marker);
+      });
+
+      responderMarkers = {};
+
+      respondersContainer.innerHTML = `
+        <div class="responder-placeholder">
+          <i class="fas fa-map-location-dot"></i>
+          <p>Select an incident marker on the map to view nearest responders</p>
+        </div>
+      `;
+
+      activeContainer.style.display = "none";
+
+      selectedRouteData = null;
     } else {
       alert("Failed to activate route.");
     }
