@@ -58,6 +58,40 @@ class Emergencies extends config {
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  public function saveEmergencyRoutes($emergencyId, $responderId, $distance, $eta, $routeJson, $selected) {
+    $conn = $this->conn();
+    $sql = "
+      INSERT INTO emergency_routes (
+        emergency_id,
+        responder_id,
+        distance,
+        eta,
+        route_json,
+        selected
+      )
+      VALUES (
+        :emergency_id,
+        :responder_id,
+        :distance,
+        :eta,
+        :route_json,
+        :selected
+      )
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([
+      ':emergency_id' => $emergencyId,
+      ':responder_id' => $responderId,
+      ':distance' => $distance,
+      ':eta' => $eta,
+      ':route_json' => $routeJson,
+      ':selected' => $selected
+    ]);
+
+    return $conn->lastInsertId();
+  }
+
 }
 
 ?>

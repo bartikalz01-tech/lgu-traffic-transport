@@ -41,7 +41,7 @@ export async function renderEmergencyPlan() {
           </div>
 
           <div class="emergency-card-actions" id="activeContainer" style="display: none;">
-            <button class="btn btn-info">Activate</button>
+            <button class="btn btn-info" id="activeEmergencyBtn">Activate</button>
           </div>
         </div>
       </div>
@@ -70,15 +70,25 @@ export async function renderEmergencyPlan() {
     }).addTo(emergencyMap);
 
     emergencyMap.fitBounds(routeLine.getBounds());
+
+    selectedRouteData = {
+      emergency_id: emergencyId,
+      responder_id: responderId,
+      distance: data.distance,
+      eta: data.duration,
+      route: data.route
+    };
   }
 
   const emergencies = await getEmergenciesLocation();
   const respondersContainer = document.querySelector('.responder-list');
   const activeContainer = document.getElementById("activeContainer");
+  const activeBtn = document.getElementById("activeEmergencyBtn");
 
   let responderMarkers = {};
   let selectedEmergencyId = null;
-  let routeLine = null
+  let routeLine = null;
+  let selectedRouteData = null;
 
   emergencies.forEach(emergency => {
     const marker = L.marker([
@@ -179,6 +189,29 @@ export async function renderEmergencyPlan() {
       });
 
     });
+  });
+
+  activeBtn.addEventListener('click', async () => {
+    if(!selectedRouteData) {
+      alert("Please select a responder first.");
+      return;
+    }
+
+    const response = await fetch('../api/emergencies/save_emergency_routes.php', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(selectedRouteData)
+    });
+
+    const result = await response.json();
+
+    if(result.status === "success") {
+      alert("Emergency Route activated successfully");
+    } else {
+      alert("Failed to activate route.");
+    }
   });
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
