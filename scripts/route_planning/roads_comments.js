@@ -152,8 +152,8 @@ Tagaytay Street = {
 }
 
 Cabatuan Street = {
-  lat: 14.64297500000,
-  lng: 120.99167400000
+  lat: 14.64099666667,
+  lng: 120.99168333333
 }
 */
 
@@ -200,4 +200,19 @@ public function createEmergency($type, $lat, $lng) {
   ]);
 }
 
+*/
+
+/* 
+road_nodes data representation
+
+node_id = 1: connection of dome and tagaytay street
+node_id = 2: connection of dome and cabatuan street
+node_id = 3: connection of mt.natib and tagaytay street
+node_id = 4: connection of mt.natib and cabatuan street
+node_id = 5: connection of klawit and tagaytay street
+node_id = 6: connection of klawit and cabatuan street
+node_id = 7: connection of kalandang and tagaytay street
+node_id = 8: connection of kalandang and cabatuan street
+node_id = 9: connection of mauban and tagaytay street
+node_id = 10: connection of mauban and cabatuan street
 */

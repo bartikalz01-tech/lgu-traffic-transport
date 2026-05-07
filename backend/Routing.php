@@ -1,0 +1,304 @@
+<?php
+require_once 'config.php';
+
+class Routing extends config {
+
+  // 🔹 STEP 1: BUILD GRAPH
+  public function buildGraph($avoidHigh = false) {
+
+    $conn = $this->conn();
+
+    $sql = "
+      SELECT 
+        rs.road_id,
+        rs.start_node,
+        rs.end_node,
+        rn1.lat AS lat1, rn1.lng AS lng1,
+        rn2.lat AS lat2, rn2.lng AS lng2,
+        rts.traffic_level
+      FROM road_segments rs
+      JOIN road_nodes rn1 ON rs.start_node = rn1.node_id
+      JOIN road_nodes rn2 ON rs.end_node = rn2.node_id
+      LEFT JOIN road_traffic_status rts 
+        ON rs.road_id = rts.road_id
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    $graph = [];
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+      $from = (int)$row['start_node'];
+      $to   = (int)$row['end_node'];
+
+      // 📏 Distance (simple Euclidean)
+      $distance = sqrt(
+        pow($row['lat1'] - $row['lat2'], 2) +
+        pow($row['lng1'] - $row['lng2'], 2)
+      );
+
+      $traffic = $row['traffic_level'];
+
+      // 🚫 Avoid high traffic
+      /*if ($avoidHigh && $traffic === 'high') {
+        continue;
+      }*/
+
+      // 🚦 Traffic weight
+      switch ($traffic) {
+        case 'low': $multiplier = 1; break;
+        case 'moderate': $multiplier = 2; break;
+        case 'high': $multiplier = $avoidHigh ? 20 : 5; break;
+        default: $multiplier = 1;
+      }
+
+      $weight = $distance * $multiplier;
+
+      // Undirected graph
+      $graph[$from][$to] = $weight;
+      $graph[$to][$from] = $weight;
+    }
+
+    return $graph;
+  }
+
+  // 🔹 STEP 2: DIJKSTRA
+  public function dijkstra($graph, $start, $end) {
+
+    $dist = [];
+    $prev = [];
+    $queue = [];
+
+    foreach ($graph as $node => $edges) {
+      $dist[$node] = INF;
+      $prev[$node] = null;
+    }
+
+    // Ensure start exists
+    if (!isset($dist[$start])) {
+      $dist[$start] = INF;
+      $prev[$start] = null;
+    }
+
+    $dist[$start] = 0;
+    $queue[$start] = 0;
+
+    while (!empty($queue)) {
+
+      $current = array_keys($queue, min($queue))[0];
+      unset($queue[$current]);
+
+      if ($current == $end) break;
+
+      if (!isset($graph[$current])) continue;
+
+      foreach ($graph[$current] as $neighbor => $weight) {
+
+        $alt = $dist[$current] + $weight;
+
+        if (!isset($dist[$neighbor]) || $alt < $dist[$neighbor]) {
+          $dist[$neighbor] = $alt;
+          $prev[$neighbor] = $current;
+          $queue[$neighbor] = $alt;
+        }
+      }
+    }
+
+    // 🔁 Reconstruct path
+    $path = [];
+    $node = $end;
+
+    while ($node !== null) {
+      array_unshift($path, $node);
+      $node = $prev[$node] ?? null;
+    }
+
+    return [
+      "path" => $path,
+      "distance" => $dist[$end] ?? null
+    ];
+  }
+
+  // 🔹 STEP 3: PATH → COORDS
+  public function getCoordsFromPath($path) {
+
+    if (empty($path)) return [];
+
+    $conn = $this->conn();
+
+    $placeholders = implode(',', array_fill(0, count($path), '?'));
+
+    $sql = "
+      SELECT node_id, lat, lng 
+      FROM road_nodes 
+      WHERE node_id IN ($placeholders)
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($path);
+
+    $nodes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // 🔑 Preserve order
+    $nodeMap = [];
+    foreach ($nodes as $n) {
+      $nodeMap[$n['node_id']] = [$n['lng'], $n['lat']];
+    }
+
+    $coords = [];
+    foreach ($path as $id) {
+      if (isset($nodeMap[$id])) {
+        $coords[] = $nodeMap[$id];
+      }
+    }
+
+    return $coords;
+  }
+
+  public function getOSRMRoute($coords) {
+    
+    if(count($coords) < 2) return null;
+
+    $coordsString = implode(';', array_map(function($c) {
+      return $c[0] . ',' . $c[1];
+    }, $coords));
+
+    $url = "https://router.project-osrm.org/route/v1/driving/" . $coordsString . "?overview=full&geometries=geojson";
+
+    $response = file_get_contents($url);
+    
+    if(!$response) return null;
+
+    return json_decode($response, true);
+  }
+
+  public function formatOSRMToPoints($osrmData) {
+    if(!isset($osrmData['routes'][0])) return [];
+
+    $geometry = $osrmData['routes'][0]['geometry']['coordinates'];
+
+    $points = [];
+
+    foreach($geometry as $index => $coord) {
+
+      $lat = $coord[1];
+      $lng = $coord[0];
+
+      $road_id = $this->getNearestRoadId($lat, $lng);
+
+      $points[] = [
+        'road_id' => $road_id,
+        'lat' => $coord[1],
+        'lng' => $coord[0]
+      ];
+    }
+
+    return $points;
+  }
+
+  public function getHighTrafficRoads() {
+    $conn = $this->conn();
+    $sql = "SELECT road_id FROM road_traffic_status WHERE traffic_level = 'high'";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getConnectedRoads($node_id) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT COUNT(*) as total
+      FROM road_segments
+      WHERE start_node = :node OR end_node = :node
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([
+      ':node' => $node_id
+    ]);
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row ? (int)$row['total'] : 0;
+  }
+
+  public function getNodesFromRoad($road_id) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT start_node, end_node
+      FROM road_segments
+      WHERE road_id = :road_id
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':road_id' => $road_id]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getRoadFromNode($node_id) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT road_id
+      FROM road_segments
+      WHERE start_node = :node OR end_node = :node
+      LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':node' => $node_id]);
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row ? (int)$row['road_id'] : null;
+  }
+
+  public function getNearestRoadId($lat, $lng) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT road_id
+      FROM road_nodes rn
+      JOIN road_segments rs
+        ON rn.node_id = rs.start_node OR rn.node_id = rs.end_node
+      ORDER BY SQRT(
+        POW(rn.lat - :lat, 2) + POW(rn.lng - :lng, 2)
+      ) ASC
+      LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([
+      ':lat' => $lat,
+      ':lng' => $lng
+    ]);
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row ? $row['road_id'] : null;
+  }
+
+  public function getRoadBetweenNodes($nodeA, $nodeB) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT road_id
+      FROM road_segments
+      WHERE (start_node = :a AND end_node = :b) OR (start_node = :b AND end_node = :a)
+      LIMIT 1
+    ";
+
+     $stmt = $conn->prepare($sql);
+     $stmt->execute([
+      ':a' => $nodeA,
+      ':b' => $nodeB
+     ]);
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row ? (int)$row['road_id'] : null;
+  }
+}
+?>
