@@ -226,6 +226,20 @@ class Routing extends config {
     return $row ? (int)$row['total'] : 0;
   }
 
+  public function getRoadsConnectedToNode($node_id) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT DISTINCT road_id
+      FROM road_segments
+      WHERE start_node = :node OR end_node = :node
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':node' => $node_id]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function getNodesFromRoad($road_id) {
     $conn = $this->conn();
     $sql = "

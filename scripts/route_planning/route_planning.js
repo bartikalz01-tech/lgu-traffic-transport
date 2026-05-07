@@ -3,6 +3,7 @@ import { fetchRoadEvents, fetchRoadMap, fetchDiversions, fetchDiversionDetails, 
 import { getEventMarker, getTrafficColor } from "../utils/traffic_and_events.js";
 import { renderDiversionPlan } from "./diversions/set_diversion_plan.js";
 import { renderEmergencyPlan } from "./emergency/set_emergency_plan.js";
+import { renderDiversionMaps } from "./diversions/final_render_diversion.js";
 //import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
 //import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
 
@@ -89,6 +90,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderDiversionSummary();
   }, 5000);*/
 
+  const leftSide = document.querySelector(".left-side");
+  await renderDiversionMaps(leftSide);
+
   const map = L.map('map').setView([14.6414, 120.9909], 17.5);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -112,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });*/
 
   //loadRoadEvents(map);
-  await loadDiversionRoutes(map);
+  //await loadDiversionRoutes(map);
 });
 
 //const diversionPlan = getDivesionPlan();

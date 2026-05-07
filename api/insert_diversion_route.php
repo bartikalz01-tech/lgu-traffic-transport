@@ -66,6 +66,9 @@ foreach ($highTrafficRoads as $road) {
 
   $path = $result['path'];
 
+  $startNodeRoads = $routing->getRoadsConnectedToNode($start);
+  $endNodeRoads = $routing->getRoadsConnectedToNode($end);
+
   $startRoad = $routing->getRoadBetweenNodes(
     $path[0],
     $path[1]
@@ -82,6 +85,8 @@ foreach ($highTrafficRoads as $road) {
 
   $results[] = [
     "traffic_road_id" => $road_id,
+    "start_node_roads" => $startNodeRoads,
+    "end_node_roads" => $endNodeRoads,
     "start_road" => $startRoad,
     "end_road" => $endRoad,
     "path" => $result['path'],
