@@ -24,81 +24,83 @@ $diversion = new Diversion();
 
 $highTrafficRoads = $routing->getHighTrafficRoads();
 
-$results = [];
+// 🚫 true = avoid high traffic completely
+$graph = $routing->buildGraph(true);
 
-foreach ($highTrafficRoads as $road) {
-  $road_id = $road['road_id'];
+if (empty($graph)) {
+  echo json_encode([
+    "status" => "error",
+    "message" => "Graph is empty"
+  ]);
+  exit;
+}
 
-  // 🚫 true = avoid high traffic completely
-  $graph = $routing->buildGraph(true);
+$result = $routing->dijkstra($graph, $start, $end);
 
-  if (empty($graph)) {
-    echo json_encode([
-      "status" => "error",
-      "message" => "Graph is empty"
-    ]);
-    exit;
-  }
+if (empty($result['path']) || $result['distance'] === INF) {
+  echo json_encode([
+    "status" => "error",
+    "message" => "No route found"
+  ]);
+  exit;
+}
 
-  $result = $routing->dijkstra($graph, $start, $end);
+$coords = $routing->getCoordsFromPath($result['path']);
 
-  if (empty($result['path']) || $result['distance'] === INF) {
-    echo json_encode([
-      "status" => "error",
-      "message" => "No route found"
-    ]);
-    exit;
-  }
+$osrm = $routing->getOSRMRoute($coords);
 
-  $coords = $routing->getCoordsFromPath($result['path']);
+if (!$osrm || empty($osrm['routes'])) {
+  echo json_encode([
+    "status" => "error",
+    "message" => "OSRM Failed"
+  ]);
+  exit;
+}
 
-  $osrm = $routing->getOSRMRoute($coords);
+$path = $result['path'];
 
-  if (!$osrm || empty($osrm['routes'])) {
-    echo json_encode([
-      "status" => "error",
-      "message" => "OSRM Failed"
-    ]);
-    exit;
-  }
+//$points = $routing->formatOSRMToPoints($osrm);
+$points = $routing->formatCoordsWithRoads($path, $coords);
 
-  $points = $routing->formatOSRMToPoints($osrm);
+$startNodeRoads = $routing->getRoadsConnectedToNode($start);
+$endNodeRoads = $routing->getRoadsConnectedToNode($end);
 
-  $path = $result['path'];
+$startRoad = $routing->getRoadBetweenNodes(
+  $path[0],
+  $path[1]
+);
 
-  $startNodeRoads = $routing->getRoadsConnectedToNode($start);
-  $endNodeRoads = $routing->getRoadsConnectedToNode($end);
+$endRoad = $routing->getRoadBetweenNodes(
+  $path[count($path) - 2],
+  $path[count($path) - 1]
+);
 
-  $startRoad = $routing->getRoadBetweenNodes(
-    $path[0],
-    $path[1]
-  );
+if(!$startRoad || !$endRoad) {
+  echo json_encode([
+    "status" => "error",
+    "message" => "Invalid start/end roads"
+  ]);
+  exit;
+}
 
-  $endRoad = $routing->getRoadBetweenNodes(
-    $path[count($path) - 2],
-    $path[count($path) - 1]
-  );
+$highTrafficIds = [];
 
-  if(!$startRoad || !$endRoad) {
-    continue;
-  }
+foreach($highTrafficRoads as $road) {
+  $highTrafficIds[] = $road['road_id'];
+}
 
-  $results[] = [
-    "traffic_road_id" => $road_id,
+echo json_encode([
+  "status" => "success",
+  "data" => [
+    "high_traffic_roads" => $highTrafficIds,
     "start_node_roads" => $startNodeRoads,
     "end_node_roads" => $endNodeRoads,
     "start_road" => $startRoad,
     "end_road" => $endRoad,
     "path" => $result['path'],
     "distance" => $result['distance'],
-    //"coords" => $coords,
     "points" => $points
-  ];
-}
-
-echo json_encode([
-  "status" => "success",
-  "data" => $results
+  ]
 ]);
 
 /*echo json_encode([

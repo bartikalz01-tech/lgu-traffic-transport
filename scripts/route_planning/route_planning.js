@@ -93,11 +93,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const leftSide = document.querySelector(".left-side");
   await renderDiversionMaps(leftSide);
 
-  const map = L.map('map').setView([14.6414, 120.9909], 17.5);
+  /*const map = L.map('map').setView([14.6414, 120.9909], 17.5);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+  }).addTo(map);*/
 
   /*const roads = await fetchRoadMap();
 

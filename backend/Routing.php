@@ -229,9 +229,12 @@ class Routing extends config {
   public function getRoadsConnectedToNode($node_id) {
     $conn = $this->conn();
     $sql = "
-      SELECT DISTINCT road_id
-      FROM road_segments
-      WHERE start_node = :node OR end_node = :node
+      SELECT DISTINCT rs.road_id, r.road_name
+      FROM road_segments rs
+      JOIN roads r
+        ON rs.road_id = r.road_id
+      WHERE rs.start_node = :node 
+        OR rs.end_node = :node
     ";
 
     $stmt = $conn->prepare($sql);
@@ -313,6 +316,53 @@ class Routing extends config {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     return $row ? (int)$row['road_id'] : null;
+  }
+
+  public function formatCoordsWithRoads($path, $coords) {
+
+    $points = [];
+
+    for($i = 0; $i < count($coords); $i++) {
+      $roadId = null;
+      $roadName = null;
+
+      if($i < count($path) - 1) {
+        $roadId = $this->getRoadBetweenNodes($path[$i], $path[$i + 1]);
+
+        if($roadId) {
+          $roadName = $this->getRoadName($roadId);
+        }
+      } else if($i > 0) {
+        $roadId = $points[$i - 1]['road_id'];
+        $roadName = $points[$i - 1]['road_name'];
+      }
+
+      $points[] = [
+        "road_id" => $roadId,
+        "road_name" => $roadName,
+        "lng" => $coords[$i][0],
+        "lat" => $coords[$i][1]
+      ];
+    }
+
+    return $points;
+  }
+
+  public function getRoadName($road_id) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT road_name
+      FROM roads
+      WHERE road_id = :road_id
+      LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':road_id' => $road_id]);
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $row ? $row['road_name'] : null;
   }
 }
 ?>

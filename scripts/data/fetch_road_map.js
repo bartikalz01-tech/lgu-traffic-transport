@@ -121,6 +121,23 @@ export async function fetchAllDiversionStatus(diversionId) {
   }
 }
 
+export async function fetchGeneratedDiversion(startNode, endNode) {
+  try {
+    const response = await fetch(`../api/insert_diversion_route.php?start=${startNode}&end=${endNode}`);
+    const result = await response.json();
+
+    if(result.status !== "success") {
+      console.error(result.message);
+      return null;
+    }
+
+    return result.data;
+  } catch(error) {
+    console.error("Fetch diversion error", error);
+    return null;
+  }
+}
+
 /*export async function fetchDiversionSummary() {
   try {
     const response = await fetch("../api/get_diversion_summary.php");
