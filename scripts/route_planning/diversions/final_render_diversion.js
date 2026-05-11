@@ -23,6 +23,7 @@ export async function renderDiversionMaps(container) {
       <div class="diversion-map-header">
         <div class="header-content">
           <p id="routeDescription">Loading Route...</p>
+          <div id="headerIndicator"></div>
         </div>
       </div>
 
@@ -74,6 +75,10 @@ export async function renderDiversionMaps(container) {
       ${endRoads}
     `;
 
+    /*document.getElementById("headerIndicator").innerHTML = `
+      <span class="live-indicator"><i class="fas fa-circle"></i> LIVE</span>
+    `;*/
+
     currentIdx.textContent = index + 1;
 
     totalIdx.textContent = diversionData.length;
@@ -91,6 +96,14 @@ export async function renderDiversionMaps(container) {
       color: "#2980b9",
       weight: 5
     }).addTo(map);
+
+    /*currentPolyline.on("click", () => {
+      const details = route;
+
+      document.getElementById("startRoad").innerHTML = details.start_road;
+      document.getElementById("endRoad").innerHTML = details.end_road;
+      document.getElementById("routeDistance").innerHTML = details.distance;
+    });*/
 
     map.fitBounds(currentPolyline.getBounds());
   }

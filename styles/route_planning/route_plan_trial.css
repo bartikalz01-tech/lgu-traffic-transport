@@ -7,7 +7,7 @@
 
 .reports-and-actions-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   column-gap: 10px;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .officer-value {
-  font-size: 26px;
+  font-size: 18px;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
   color: #2c3e50;
@@ -107,7 +107,7 @@
 }
 
 .emergency-value {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 800;
   font-family: 'Inter', sans-serif;
   color: #2c3e50;
@@ -158,7 +158,7 @@
 }
 
 .diversion-value {
-  font-size: 26px;
+  font-size: 18px;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
   color: #2c3e50;
@@ -270,6 +270,28 @@
   align-items: center;
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+#routeDescription {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  flex: 1;
+}
+
+.header-content .live-indicator {
+  margin-left: auto;
+  white-space: nowrap;
+  background: rgba(46, 204, 113, 0.2);
+  border: 1px solid rgba(46, 204, 113, 0.4);
+}
+
 .diversion-map-header p {
   margin: 0;
   font-size: 15px;
@@ -279,7 +301,7 @@
 
 .diversion-map-header i {
   margin: 0 10px;
-  color: var(--light-color);
+  color: var(--lightF-color);
 }
 
 .map-container {
@@ -402,6 +424,53 @@
   color: var(--secondary-color);
 }
 
+.status-list {
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+  gap: 6px;
+  list-style-type: disc;
+}
+
+.status-list li {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2c3e50;
+  display: list-item;
+  list-style-position: outside;
+}
+
+.status-list li::marker {
+  color: #ff7f50;
+  font-size: 1.1rem;
+}
+
+.status-list span {
+  background: none;
+  padding: 0;
+}
+
+.status-info i {
+  font-size: 14px;
+  width: 18px;
+}
+
+.status-info span,
+.status-info p {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-list span {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2c3e50;
+  background: #f1f2f6;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 .status-count {
   font-size: 18px;
   font-weight: 800;
@@ -413,6 +482,23 @@
 
 .start-road i {
   color: #40c057;;
+}
+
+.roads-affected {
+  border-left-color: #6c5ce7;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.roads-affected .status-info {
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 5px;
+}
+
+.roads-affected i {
+  color: #6c5ce7;
 }
 
 .end-road {
@@ -437,6 +523,14 @@
 
 .avg-speed i {
   color: #9b59b6;
+}
+
+.congestion-reduced {
+  border-left-color: #27ae60;
+}
+
+.congestion-reduced i {
+  color: #27ae60;
 }
 
 .incident-log-container {

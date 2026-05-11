@@ -85,30 +85,30 @@
           </div>
         </div>
 
-        <!--<div class="diversion-card">
+        <div class="diversion-card">
           <h2><i class="fas fa-road"></i> Diversion Plans</h2>
           <div class="diversion-data">
             <p class="diversion-status">
               <i class="fas fa-shuffle" style="color: #F39C12;"></i>
-              <span>Active</span>
+              <span>Active Diversions</span>
             </p>
-            <p class="diversion-value" id="activeCount"></p>
+            <p class="diversion-value" id="activeCount">3</p>
           </div>
           <div class="diversion-data">
             <p class="diversion-status">
-              <i class="fas fa-calendar-check" style="color: #e67e22;"></i>
-              <span>Scheduled</span>
+              <i class="fas fa-route" style="color: #3498db;"></i>
+              <span>Overall Affected Roads</span>
             </p>
-            <p class="diversion-value" id="scheduledCount"></p>
+            <p class="diversion-value" id="routeCount">12</p>
           </div>
           <div class="diversion-data">
             <p class="diversion-status">
-              <i class="fas fa-route" style="color: #27ae60;"></i>
-              <span>Resolved</span>
+              <i class="fas fa-chart-line" style="color: #27ae60;"></i>
+              <span>Traffic Reduced</span>
             </p>
-            <p class="diversion-value" id="resolvedCount"></p>
+            <p class="diversion-value" id="reductionPercent">24%</p>
           </div>
-        </div>-->
+        </div>
 
         <div class="actions-card">
           <h2><i class="fas fa-circle"></i> Actions</h2>
@@ -119,65 +119,49 @@
             <button class="action-btn emergency-btn" id="emergencyBtn">
               <i class="fas fa-tower-broadcast"></i> Set Emergency Routes
             </button>
-            <!--<button class="action-btn diversion-btn" id="diversionBtn">
+            <button class="action-btn diversion-btn" id="diversionBtn">
               <i class="fas fa-arrow-turn-up"></i> Set Diversion Plan
-            </button>-->
+            </button>
           </div>
         </div>
       </div>
 
       <div class="map-status-container">
-        <div class="left-side">
-          <!--<div class="map-view-wrapper">
-            <div class="diversion-map-header">
-              <div class="header-content">
-                <p id="routeDescription">Enterting Tagaytay St Cor. Dome Street <i class="fas fa-arrow-right"></i> Exit in Cabatuan Cor. Mauban Street</p>
-              </div>
-            </div>
-
-            <div class="map-container">
-              <div id="map"></div>
-            </div>
-
-            <div class="map-navigation-bar">
-              <button class="nav-arrow prev" id="prevRoute">
-                <i class="fas fa-chevron-left"></i>
-                <span>Previous Plan</span>
-              </button>
-
-              <div class="route-pagination">
-                <span class="current-idx">1</span> / <span class="total-idx">3</span>
-              </div>
-
-              <button class="nav-arrow next" id="nextRoute">
-                <span>Next Plan</span>
-                <i class="fas fa-chevron-right"></i>
-              </button> 
-            </div>
-          </div>-->
-        </div>
+        <div class="left-side"></div>
 
         <div class="right-side">
           <div class="status-panel-header">
-            <h3><i class="fas fa-list-check"></i> Diversion Route Status</h3>
+            <h3><i class="fas fa-list-check"></i> Active Diversion Route Status</h3>
             <span class="live-indicator"><i class="fas fa-circle"></i> LIVE</span>
           </div>
 
           <div class="status-items-container">
-            <div class="status-item start-road">
+            <!--<div class="status-item start-road">
               <div class="status-info">
                 <i class="fas fa-play"></i>
                 <span>Start Road</span>
               </div>
               <span class="status-count" id="startRoad"></span>
-            </div>
+            </div>-->
 
-            <div class="status-item end-road">
+            <!--<div class="status-item end-road">
               <div class="status-info">
                 <i class="fas fa-location-dot"></i>
                 <span>End Road</span>
               </div>
               <span class="status-count" id="endRoad"></span>
+            </div>-->
+
+            <div class="status-item roads-affected">
+              <div class="status-info">
+                <i class="fas fa-map-signs"></i>
+                <span>Roads Affected</span>
+              </div>
+              <ul class="status-list" id="affectedRoads">
+                <li>Mauban St.</li>
+                <li>Tagaytay St.</li>
+                <li>Dome St.</li>
+              </ul>
             </div>
 
             <div class="status-item distance">
@@ -203,6 +187,14 @@
               </div>
               <span class="status-count" id="avgSpeed"></span>
             </div>
+
+            <!--<div class="status-item congestion-reduced">
+              <div class="status-info">
+                <i class="fas fa-chart-line"></i>
+                <span>Congestion Reduced</span>
+              </div>
+              <span class="status-count" id="congestionValue">24%</span>
+            </div>-->
 
             <div class="incident-log-container">
               <h4>Recent Activity Log</h4>
