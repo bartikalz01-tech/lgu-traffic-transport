@@ -364,5 +364,53 @@ class Routing extends config {
 
     return $row ? $row['road_name'] : null;
   }
+
+  public function generateAlternativeRoutes($start, $end, $limit = 3) {
+    $routes = [];
+
+    $usedEdges = [];
+
+    for($i = 0; $i < $limit; $i++) {
+      $graph = $this->buildGraphWithPenalties($usedEdges);
+
+      $result = $this->dijkstra($graph, $start, $end);
+
+      if(empty($result['path']) || $result['distance'] === INF) {
+        break;
+      }
+
+      $routes[] = $result;
+
+      $path = $result['path'];
+
+      for($j = 0; $j < count($path) - 1; $j++) {
+        $a = $path[$j];
+        $b = $path[$j + 1];
+
+        $usedEdges[] = [$a, $b];
+      }
+    }
+
+    return $routes;
+  }
+
+  public function buildGraphWithPenalties($usedEdges = []) {
+    $graph = $this->buildGraph(true);
+
+    foreach($usedEdges as $edge) {
+      $a = $edge[0];
+      $b = $edge[1];
+
+      if(isset($graph[$a][$b])) {
+        $graph[$a][$b] *= 100;
+      }
+
+      if(isset($graph[$b][$a])) {
+        $graph[$b][$a] *= 100;
+      }
+    }
+
+    return $graph;
+  }
 }
 ?>

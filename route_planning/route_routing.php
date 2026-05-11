@@ -29,7 +29,7 @@
       <div class="module-title-container">
         <p class="module-title">Vehicle Routing and Diversion Planning</p>
         <h1 class="sub-module-title">Route Planning</h1>
-        <p class="sub-module-description">Planing the ways of transportations</p>
+        <p class="sub-module-description">Overview of Route Status</p>
       </div>
     </div>
 
