@@ -155,11 +155,12 @@ foreach($routes as $index => $result) {
 
   $coords = $routing->getCoordsFromPath($path);
 
-  $osrm = $routing->getOSRMRoute($coords);
+  /*$osrm = $routing->getOSRMRoute($coords);
 
   if(!$osrm || empty($osrm['routes'])) {
     continue;
-  }
+  }*/
+  $osrmDistance = $result['distance'] * 111;
 
   $points = $routing->formatCoordsWithRoads($path, $coords);
 
@@ -192,9 +193,11 @@ foreach($routes as $index => $result) {
 
     "path" => $path,
 
-    "distance" => round($osrm['routes'][0]['distance'] / 1000, 2),
+    //"distance" => round($osrm['routes'][0]['distance'] / 1000, 2),
+    "distance" => round($osrmDistance, 2),
 
-    "estimated_time" => round($osrm['routes'][0]['duration'] / 60, 1),
+    //"estimated_time" => round($osrm['routes'][0]['duration'] / 60, 1),
+    "estimated_time" => round(($osrmDistance / 30) * 60, 1),
 
     "points" => $points
   ];

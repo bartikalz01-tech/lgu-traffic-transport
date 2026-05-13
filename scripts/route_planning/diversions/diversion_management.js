@@ -1,8 +1,9 @@
-import { fetchRoadNodes } from "../../data/fetch_road_map.js";
-import { initMap } from "../../utils/diversions.js";
+import { fetchRoadNodes, fetchGeneratedDiversion } from "../../data/fetch_road_map.js";
+import { drawSimpleLine, initMap } from "../../utils/diversions.js";
 
 let selectedStart = null;
 let selectedEnd = null;
+let routeLine = null;
 
 function renderRoadNodes(map, nodes) {
 
@@ -23,7 +24,7 @@ function renderRoadNodes(map, nodes) {
       ${node.roads}<br><br> 
     `);
 
-    marker.on("click", () => {
+    marker.on("click", async () => {
 
       if(selectedStart && selectedEnd) {
         selectedStart = null;
@@ -66,12 +67,103 @@ function renderRoadNodes(map, nodes) {
           fillColor: "#ef5350"
         });
 
+        const routes = await fetchGeneratedDiversion(selectedStart.node_id, selectedEnd.node_id);
+
+        if(!routes || routes.length === 0) {
+          return;
+        }
+
+        const fastestRoute = routes[0];
+
+        document.getElementById("calcDistance").textContent = `${fastestRoute.distance} km`;
+
+        renderSuggestions(routes, map);
+
+        const fastestRoutePoints = fastestRoute.points.map(point => ({
+          lat: parseFloat(point.lat),
+          lng: parseFloat(point.lng)
+        }));
+
+        routeLine = drawSimpleLine(map, fastestRoutePoints, routeLine); 
+
         return;
       }
 
     });
   });
 
+}
+
+function renderSuggestions(routes, map) {
+  const suggestionList = document.querySelector(".suggesstions-list");
+
+  let html = `
+    <label class="list-label">
+      Diversion Suggestions
+    </label>
+  `;
+
+  routes.forEach((route, index) => {
+    let badge = "alternative";
+
+    if(index === 0) {
+      badge = "fastest";
+    } else if(index === 1) {
+      badge = "shortest";
+    }
+
+    const uniqueRoads = [
+      ...new Set(
+        route.points.map(point => point.road_name).filter(Boolean)
+      )
+    ];
+
+    html += `
+      <div class="suggestion-card" data-route-index="${index}">
+        <div class="suggestion-meta">
+          <span class="badge ${badge}">
+            Route ${index + 1}
+          </span>
+          <span class="eta">${route.estimated_time}</span>
+        </div>
+
+        <ul class="affected-roads-list">
+          ${uniqueRoads.map(road => `
+            <li>${road}</li>
+          `).join("")}
+        </ul>
+      </div>
+    `;
+  });
+
+  suggestionList.innerHTML = html;
+
+  const cards = document.querySelectorAll(".suggestion-card");
+
+  cards.forEach(card => {
+
+    card.addEventListener("click", () => {
+      const index = parseInt(card.dataset.routeIndex);
+
+      const selectedRoute = routes[index];
+      
+      const clickedPoints = selectedRoute.points.map(point => ({
+        lat: parseFloat(point.lat),
+        lng: parseFloat(point.lng)
+      }));
+
+      routeLine = drawSimpleLine(map, clickedPoints, routeLine);
+
+      document.getElementById("calcDistance").textContent = `${selectedRoute.distance} km`;
+
+      cards.forEach(c => {
+        c.classList.remove("active-route");
+      });
+
+      card.classList.add("active-route");
+    });
+
+  });
 }
 
 async function renderDiversionManagement(container) {
