@@ -61,7 +61,6 @@
 
       <div class="diversion-main-content"></div>
     </section>
-
   </main>
 
   <?php include '../includes/admin-footer.php'; ?>

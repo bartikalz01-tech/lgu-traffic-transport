@@ -1,4 +1,78 @@
+import { fetchRoadNodes } from "../../data/fetch_road_map.js";
 import { initMap } from "../../utils/diversions.js";
+
+let selectedStart = null;
+let selectedEnd = null;
+
+function renderRoadNodes(map, nodes) {
+
+  nodes.forEach(node => {
+    const marker = L.circleMarker(
+      [node.lat, node.lng],
+      {
+        radius: 6,
+        color: "#1e88e5",
+        fillColor: "#42a5f5",
+        fillOpacity: 1,
+        weight: 2
+      }
+    ).addTo(map);
+
+    marker.bindPopup(`
+      <b>Intersection</b><br>
+      ${node.roads}<br><br> 
+    `);
+
+    marker.on("click", () => {
+
+      if(selectedStart && selectedEnd) {
+        selectedStart = null;
+        selectedEnd = null;
+
+        document.getElementById("startPointName").textContent = "Awaiting Selection...";
+
+        document.getElementById("endPointName").textContent = "Awaiting Selection";
+
+        map.eachLayer(layer => {
+          if(layer instanceof L.CircleMarker) {
+            layer.setStyle({
+              color: "#1e88e5",
+              fillColor: "#42a5f5"
+            });
+          }
+        });
+      }
+
+      if(!selectedStart) {
+        selectedStart = node;
+
+        document.getElementById("startPointName").textContent = node.roads;
+
+        marker.setStyle({
+          color: "#43a047",
+          fillColor: "#66bb6a"
+        });
+
+        return;
+      }
+
+      if(!selectedEnd && node.node_id !== selectedStart.node_id) {
+        selectedEnd = node;
+
+        document.getElementById("endPointName").textContent = node.roads;
+
+        marker.setStyle({
+          color: "#e53935",
+          fillColor: "#ef5350"
+        });
+
+        return;
+      }
+
+    });
+  });
+
+}
 
 async function renderDiversionManagement(container) {
   container.innerHTML = `
@@ -48,7 +122,11 @@ async function renderDiversionManagement(container) {
             <span class="badge fastest">Fastest</span>
             <span class="eta">10 mins</span>
           </div>
-          <p class="affected-roads">Via Mauban & Tagaytay St.</p>
+          <ul class="affected-roads-list" id="affectedRoads">
+            <li>Mauban St.</li>
+            <li>Tagaytay St.</li>
+            <li>A. Bonifacio Ave.</li>
+          </ul>
         </div>
 
         <div class="suggestion-card">
@@ -56,7 +134,11 @@ async function renderDiversionManagement(container) {
             <span class="badge shortest">Shortest</span>
             <span class="eta">14 min</span>
           </div>
-          <p class="affected-roads">Via Dome St. & G. Roxas</p>
+          <ul class="affected-roads-list" id="affectedRoads">
+            <li>Mauban St.</li>
+            <li>Tagaytay St.</li>
+            <li>A. Bonifacio Ave.</li>
+          </ul>
         </div>
 
         <div class="suggestion-card">
@@ -64,13 +146,21 @@ async function renderDiversionManagement(container) {
             <span class="badge alternative">Balanced</span>
             <span class="eta">12 min</span>
           </div>
-          <p class="affected-roads">Via Sgt. Rivera Ave.</p>
+          <ul class="affected-roads-list" id="affectedRoads">
+            <li>Mauban St.</li>
+            <li>Tagaytay St.</li>
+            <li>A. Bonifacio Ave.</li>
+          </ul>
         </div>
       </div>
     </aside>
   `;
 
   const diversionMap = initMap("map-placeholder");
+
+  const nodes = await fetchRoadNodes();
+
+  renderRoadNodes(diversionMap, nodes);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

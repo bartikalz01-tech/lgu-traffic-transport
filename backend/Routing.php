@@ -412,5 +412,38 @@ class Routing extends config {
 
     return $graph;
   }
+
+  public function getNodes() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        rn.node_id,
+        rn.lat,
+        rn.lng,
+
+        GROUP_CONCAT(
+          DISTINCT r.road_name
+          SEPARATOR ' / '
+        ) AS roads
+
+      FROM road_nodes rn
+
+      LEFT JOIN road_segments rs
+        ON rn.node_id = rs.start_node
+        OR rn.node_id = rs.end_node
+
+      LEFT JOIN roads r
+        ON rs.road_id = r.road_id
+      
+      GROUP BY rn.node_id
+
+      ORDER BY rn.node_id ASC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }
 ?>

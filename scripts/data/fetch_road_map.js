@@ -138,6 +138,14 @@ export async function fetchGeneratedDiversion(startNode, endNode) {
   }
 }
 
+export async function fetchRoadNodes() {
+  const response = await fetch("../api/get_road_nodes.php");
+
+  const result = await response.json();
+  
+  return result.data || [];
+}
+
 /*export async function fetchDiversionSummary() {
   try {
     const response = await fetch("../api/get_diversion_summary.php");
