@@ -1,9 +1,35 @@
-import { fetchRoadNodes, fetchGeneratedDiversion } from "../../data/fetch_road_map.js";
+import { fetchRoadNodes, fetchGeneratedDiversion, fetchRoadMap } from "../../data/fetch_road_map.js";
 import { drawSimpleLine, initMap } from "../../utils/diversions.js";
 
 let selectedStart = null;
 let selectedEnd = null;
 let routeLine = null;
+
+function renderHighTrafficRoads(map, roads) {
+  const highTrafficRoads = roads.filter(road => road.traffic_level === "high");
+
+  highTrafficRoads.forEach(road => {
+    L.polyline(road.coordinates, {
+      color: "#e53935",
+      weight: 7,
+      opacity: 0.80
+    }).addTo(map)
+    .bindPopup(`
+      <b>High Traffic</b>
+      ${road.road_name}
+    `);
+  });
+}
+
+function updateHighTrafficCount(roads) {
+
+  const highTrafficRoads = roads.filter(
+    road => road.traffic_level === "high"
+  );
+
+  document.getElementById("highTrafficCount").textContent =
+    highTrafficRoads.length;
+}
 
 function renderRoadNodes(map, nodes) {
 
@@ -206,53 +232,49 @@ async function renderDiversionManagement(container) {
         <strong id="calcDistance">0.00 km</strong>
       </div>
 
+      <div class="route-config">
+        <label class="list-label">Route Configuration</label>
+        <button class="toggle-btn" id="directionToggle" data-mode="two-way">
+          <i class="fas fa-arrows-left-right"></i>
+          <span>Two way route</span>
+        </button>
+      </div>
+
       <div class="suggesstions-list">
         <label class="list-label">Diversion Suggesstions</label>
+      </div>
 
-        <div class="suggestion-card">
-          <div class="suggestion-meta">
-            <span class="badge fastest">Fastest</span>
-            <span class="eta">10 mins</span>
-          </div>
-          <ul class="affected-roads-list" id="affectedRoads">
-            <li>Mauban St.</li>
-            <li>Tagaytay St.</li>
-            <li>A. Bonifacio Ave.</li>
-          </ul>
-        </div>
-
-        <div class="suggestion-card">
-          <div class="suggestion-meta">
-            <span class="badge shortest">Shortest</span>
-            <span class="eta">14 min</span>
-          </div>
-          <ul class="affected-roads-list" id="affectedRoads">
-            <li>Mauban St.</li>
-            <li>Tagaytay St.</li>
-            <li>A. Bonifacio Ave.</li>
-          </ul>
-        </div>
-
-        <div class="suggestion-card">
-          <div class="suggestion-meta">
-            <span class="badge alternative">Balanced</span>
-            <span class="eta">12 min</span>
-          </div>
-          <ul class="affected-roads-list" id="affectedRoads">
-            <li>Mauban St.</li>
-            <li>Tagaytay St.</li>
-            <li>A. Bonifacio Ave.</li>
-          </ul>
-        </div>
+      <div class="sidebar-actions">
+        <button class="btn btn-primary btn-full" id="activateDiversion">
+          <i class="fas fa-check-circle"></i>
+          Activate Diversion
+        </button>
       </div>
     </aside>
   `;
 
   const diversionMap = initMap("map-placeholder");
 
-  const nodes = await fetchRoadNodes();
+  const roadMap = await fetchRoadMap();
+  renderHighTrafficRoads(diversionMap, roadMap);
+  updateHighTrafficCount(roadMap);
 
+  const nodes = await fetchRoadNodes();
   renderRoadNodes(diversionMap, nodes);
+
+  const dirToggle = document.getElementById('directionToggle');
+  dirToggle.addEventListener('click', () => {
+    const isTwoWay = dirToggle.getAttribute('data-mode') === 'two-way';
+    if (isTwoWay) {
+      dirToggle.setAttribute('data-mode', 'one-way');
+      dirToggle.innerHTML = '<i class="fas fa-arrow-right"></i> <span>One-Way Only</span>';
+      dirToggle.classList.add('one-way-active');
+    } else {
+      dirToggle.setAttribute('data-mode', 'two-way');
+      dirToggle.innerHTML = '<i class="fas fa-arrows-left-right"></i> <span>Two-Way Route</span>';
+      dirToggle.classList.remove('one-way-active');
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

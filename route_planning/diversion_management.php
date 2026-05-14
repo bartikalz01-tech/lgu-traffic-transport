@@ -29,7 +29,7 @@
           </div>
           <div class="card-details">
             <span class="card-label">High Traffic Roads</span>
-            <h2 class="card-value">3</h2>
+            <h2 class="card-value" id="highTrafficCount"></h2>
           </div>
           <div class="card-trend down">
             <i class="fas fa-arrow-down"></i> 2%

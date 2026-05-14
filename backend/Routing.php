@@ -50,7 +50,7 @@ class Routing extends config {
       switch ($traffic) {
         case 'low': $multiplier = 1; break;
         case 'moderate': $multiplier = 2; break;
-        case 'high': $multiplier = $avoidHigh ? 20 : 5; break;
+        case 'high': $multiplier = $avoidHigh ? 1000 : 5; break;
         default: $multiplier = 1;
       }
 

@@ -3,17 +3,20 @@ require_once 'config.php';
 
 class Diversion extends config {
 
-  public function createDiversion($start_road_id, $end_road_id, $distance) {
+  public function createDiversion($start_road_id, $end_road_id, $route_config, $distance, $vehicle_per_min, $avg_speed) {
     $conn = $this->conn();
     $sql = "
-      INSERT INTO diversion_routes (start_road_id, end_road_id, distance)
-      VALUES (:start, :end, :distance)
+      INSERT INTO diversion_routes (start_road_id, end_road_id, route_config, distance, vehicle_per_min, avg_speed)
+      VALUES (:start, :end, :route_config, :distance, :vehicle_per_min, :avg_speed)
     ";
 
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':start', $start_road_id);
     $stmt->bindParam(':end', $end_road_id);
+    $stmt->bindParam(':route_config', $route_config);
     $stmt->bindParam(':distance', $distance);
+    $stmt->bindParam(':vehicle_per_min', $vehicle_per_min);
+    $stmt->bindParam(':avg_speed', $avg_speed);
     $stmt->execute();
 
     return $conn->lastInsertId();

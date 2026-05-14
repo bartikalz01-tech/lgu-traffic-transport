@@ -273,3 +273,37 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
+
+.route-config {
+  margin-bottom: 20px;
+}
+
+.toggle-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--light-color);
+  border: 1px solid var(--border-color-1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color-1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn i {
+  color: var(--primary-color);
+}
+
+.toggle-btn.one-way-active {
+  background: rgba(52, 152, 219, 0.1);
+  border-color: var(--accent-color);
+}
+.toggle-btn.one-way-active i {
+  color: var(--accent-color);
+}
+
