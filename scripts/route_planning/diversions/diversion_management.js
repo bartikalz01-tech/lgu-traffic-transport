@@ -1,4 +1,4 @@
-import { fetchRoadNodes, fetchGeneratedDiversion, fetchRoadMap, activateDiversionRoute } from "../../data/fetch_road_map.js";
+import { fetchRoadNodes, fetchGeneratedDiversion, fetchRoadMap, activateDiversionRoute, fetchDiversions } from "../../data/fetch_road_map.js";
 import { drawSimpleLine, initMap } from "../../utils/diversions.js";
 
 let selectedStart = null;
@@ -55,6 +55,12 @@ function updateHighTrafficCount(roads) {
 
   document.getElementById("highTrafficCount").textContent =
     highTrafficRoads.length;
+}
+
+function updateActiveDiversions(roads) {
+  const activeDiversionRoads = roads;
+
+  document.getElementById("activeDiversionCount").textContent = activeDiversionRoads.length;
 }
 
 function renderRoadNodes(map, nodes) {
@@ -319,8 +325,10 @@ async function renderDiversionManagement(container) {
   const diversionMap = initMap("map-placeholder");
 
   const roadMap = await fetchRoadMap();
+  const activeDiversions = await fetchDiversions();
   renderHighTrafficRoads(diversionMap, roadMap);
   updateHighTrafficCount(roadMap);
+  updateActiveDiversions(activeDiversions);
 
   const nodes = await fetchRoadNodes();
   renderRoadNodes(diversionMap, nodes);

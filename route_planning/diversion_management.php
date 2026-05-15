@@ -41,7 +41,7 @@
           </div>
           <div class="card-details">
             <span class="card-label">Active Diversions</span>
-            <h2 class="card-value">6</h2>
+            <h2 class="card-value" id="activeDiversionCount"></h2>
           </div>
           <div class="card-status live">LIVE</div>
         </div>

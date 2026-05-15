@@ -92,14 +92,14 @@
               <i class="fas fa-shuffle" style="color: #F39C12;"></i>
               <span>Active Diversions</span>
             </p>
-            <p class="diversion-value" id="activeCount">3</p>
+            <p class="diversion-value" id="activeCount"></p>
           </div>
           <div class="diversion-data">
             <p class="diversion-status">
               <i class="fas fa-route" style="color: #3498db;"></i>
               <span>Overall Affected Roads</span>
             </p>
-            <p class="diversion-value" id="routeCount">12</p>
+            <p class="diversion-value" id="routeCount"></p>
           </div>
           <div class="diversion-data">
             <p class="diversion-status">

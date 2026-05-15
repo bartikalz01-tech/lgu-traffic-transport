@@ -23,42 +23,29 @@ async function loadRoadEvents(map) {
   });
 }
 
-async function loadDiversionRoutes(map) {
+async function loadDiversionRoutes() {
   const diversions = await fetchDiversions();
+
+  const activeCountEl = document.getElementById("activeCount");
+  const routeCountEl = document.getElementById("routeCount");
+
+  activeCountEl.textContent = diversions.length;
+
+  const uniqueRoads = new Set();
 
   for(const diversion of diversions) {
     const points = await fetchDiversionDetails(diversion.diversion_id);
 
-    if(!points.length) continue;
+    points.forEach(point => {
 
-    const coords = points.map(p => [p.lat, p.lng]);
-
-    const polyline = L.polyline(coords, {
-      color: "#7f8c8d",
-      weight: 6,
-      dashArray: "6, 6"
-    }).addTo(map);
-
-    polyline.bindPopup(`
-      <b>Diversion Route #${diversion.diversion_id}</b><br>
-      ${diversion.start_name} → ${diversion.end_name}
-    `);
-
-    polyline.on("click", async () => {
-      const details = await fetchAllDiversionStatus(diversion.diversion_id);
-
-      if(!details.length) return;
-
-      const d = details[0];
-
-      document.getElementById("startRoad").textContent = d.start_name;
-      document.getElementById("endRoad").textContent = d.end_name;
-      document.getElementById("routeDistance").textContent = d.distance;
-      document.getElementById("vehicleCount").textContent = d.vehicle_per_min ?? 0;
-      document.getElementById("avgSpeed").textContent = d.avg_speed ?? 0;
+      if(point.road_name) {
+        uniqueRoads.add(point.road_name);
+      }
     });
   }
-} 
+
+  routeCountEl.textContent = uniqueRoads.size;
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -116,24 +103,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   });*/
 
   //loadRoadEvents(map);
-  //await loadDiversionRoutes(map);
+  await loadDiversionRoutes();
 });
 
 //const diversionPlan = getDivesionPlan();
 const emergencyPlan = getEmergencyPlan();
-
-/*diversionPlan.addEventListener('click', (e) => {
-  const closeDiversionPlan = e.target.closest('.js-exit-diversion-plan');
-
-  if (!closeDiversionPlan) return;
-
-  diversionPlan.classList.add('diversion-plan-hidden');
-  diversionPlan.innerHTML = '';
-});
-
-document.getElementById('diversionBtn').addEventListener('click', () => {
-  renderDiversionPlan();
-});*/
 
 emergencyPlan.addEventListener('click', (e) => {
   const closeEmergencyPlan = e.target.closest('.js-exit-emergency');
