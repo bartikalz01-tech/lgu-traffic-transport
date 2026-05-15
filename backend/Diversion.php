@@ -53,7 +53,10 @@ class Diversion extends config {
         dr.diversion_id,
         dr.start_road_id,
         dr.end_road_id,
+        dr.route_config,
         dr.distance,
+        dr.vehicle_per_min,
+        dr.avg_speed,
         dr.created_at,
         r1.road_name AS start_name,
         r2.road_name AS end_name
@@ -71,11 +74,24 @@ class Diversion extends config {
 
   public function getDiversionRoutesDetails($diversion_id) {
     $conn = $this->conn();
-    $sql = "
+    /*$sql = "
       SELECT lat, lng, sequence_order
       FROM diversion_routes_details
       WHERE diversion_id = :diversion_id
       ORDER BY sequence_order ASC
+    ";*/
+    $sql = "
+      SELECT
+        drd.lat,
+        drd.lng,
+        drd.sequence_order,
+        drd.road_id,
+        r.road_name
+      FROM diversion_routes_details drd
+      LEFT JOIN roads r
+        ON drd.road_id = r.road_id
+      WHERE drd.diversion_id = :diversion_id
+      ORDER BY drd.sequence_order ASC
     ";
 
     $stmt = $conn->prepare($sql);

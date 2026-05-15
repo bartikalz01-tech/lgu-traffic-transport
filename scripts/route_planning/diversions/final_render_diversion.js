@@ -1,22 +1,9 @@
-import { fetchGeneratedDiversion } from "../../data/fetch_road_map.js";
+import { fetchDiversions, fetchDiversionDetails } from "../../data/fetch_road_map.js";
 import { initMap } from "../../utils/diversions.js";
 
 export async function renderDiversionMaps(container) {
 
-  const routes = [
-    { start: 1, end: 10 },
-    { start: 1, end: 9 },
-    { start: 1, end: 2 },
-    { start: 2, end: 10 },
-    { start: 2, end: 9 },
-    { start: 9, end: 10 },
-  ];
-
-  const responses = await Promise.all(
-    routes.map(route => fetchGeneratedDiversion(route.start, route.end))
-  );
-
-  const diversionData = responses.filter(route => route);
+  const diversions = await fetchDiversions();
 
   container.innerHTML = `
     <div class="map-view-wrapper">
@@ -60,36 +47,37 @@ export async function renderDiversionMaps(container) {
   let currentIndex = 0;
   let currentPolyline = null;
 
-  function updateRoute(index) {
-    const route = diversionData[index];
+  async function updateRoute(index) {
+    const diversion = diversions[index];
 
-    if(!route) return;
+    if(!diversion) return;
 
-    const startRoads = route.start_node_roads.map(r => r.road_name).join(" Cor. ");
-    const endRoads = route.end_node_roads.map(r => r.road_name).join(" Cor. ");
+    const routeArrow = diversion.route_config === "one-way" 
+      ? '<i class="fas fa-arrow-right"></i>'
+      : '<i class="fas fa-arrows-left-right"></i>'
 
     routeDescription.innerHTML = `
-      ${startRoads}
-      <i class="fas fa-arrow-left"></i>
-      <i class="fas fa-arrow-right"></i>
-      ${endRoads}
+      ${diversion.start_name}
+      ${routeArrow}
+      ${diversion.end_name}
     `;
 
-    /*document.getElementById("headerIndicator").innerHTML = `
-      <span class="live-indicator"><i class="fas fa-circle"></i> LIVE</span>
-    `;*/
-
     currentIdx.textContent = index + 1;
+    totalIdx.textContent = diversions.length;
 
-    totalIdx.textContent = diversionData.length;
+    const points = await fetchDiversionDetails(diversion.diversion_id);
+
+    if(!points.length) {
+      return;
+    }
 
     if(currentPolyline) {
       map.removeLayer(currentPolyline);
     }
 
-    const coords = route.points.map(point => [
-      point.lat,
-      point.lng
+    const coords = points.map(point => [
+      parseFloat(point.lat),
+      parseFloat(point.lng)
     ]);
 
     currentPolyline = L.polyline(coords, {
@@ -97,36 +85,50 @@ export async function renderDiversionMaps(container) {
       weight: 5
     }).addTo(map);
 
-    /*currentPolyline.on("click", () => {
-      const details = route;
-
-      document.getElementById("startRoad").innerHTML = details.start_road;
-      document.getElementById("endRoad").innerHTML = details.end_road;
-      document.getElementById("routeDistance").innerHTML = details.distance;
-    });*/
-
     map.fitBounds(currentPolyline.getBounds());
+
+    loadDiversionStatus(diversion, points);
   }
 
-  updateRoute(0);
+  function loadDiversionStatus(diversion, points) {
+    document.getElementById("routeDistance").textContent = `${diversion.distance} km`;
 
-  nextBtn.addEventListener("click", () => {
+    document.getElementById("vehicleCount").textContent = diversion.vehicle_per_min ?? 0;
+
+    document.getElementById("avgSpeed").textContent = diversion.avg_speed ?? 0;
+
+    const affectedRoads = document.getElementById("affectedRoads");
+
+    const uniqueRoads = [
+      ...new Set(
+        points.map(point => point.road_name).filter(Boolean)
+      )
+    ];
+
+    affectedRoads.innerHTML = uniqueRoads.map(road => `
+      <li>${road}</li>
+    `).join("");
+  }
+
+  await updateRoute(0);
+
+  nextBtn.addEventListener("click", async () => {
     currentIndex++;
 
-    if(currentIndex >= diversionData.length) {
+    if(currentIndex >= diversions.length) {
       currentIndex = 0;
     }
 
-    updateRoute(currentIndex);
+    await updateRoute(currentIndex);
   });
 
-  prevBtn.addEventListener("click", () => {
+  prevBtn.addEventListener("click", async () => {
     currentIndex--;
 
     if(currentIndex < 0) {
-      currentIndex = diversionData.length - 1;
+      currentIndex = diversions.length - 1;
     }
 
-    updateRoute(currentIndex);
+    await updateRoute(currentIndex);
   });
 }
