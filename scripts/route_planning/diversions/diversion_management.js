@@ -1,9 +1,35 @@
-import { fetchRoadNodes, fetchGeneratedDiversion, fetchRoadMap } from "../../data/fetch_road_map.js";
+import { fetchRoadNodes, fetchGeneratedDiversion, fetchRoadMap, activateDiversionRoute } from "../../data/fetch_road_map.js";
 import { drawSimpleLine, initMap } from "../../utils/diversions.js";
 
 let selectedStart = null;
 let selectedEnd = null;
 let routeLine = null;
+let activeSelectedRoute = null;
+let activatedRouteIndex = null;
+
+function updateActivateButtonState() {
+  const activateBtn = document.getElementById("activateDiversion");
+
+  const currentActiveCard = document.querySelector(".active-route");
+
+  if(!currentActiveCard) return;
+
+  const currentIndex = parseInt(currentActiveCard.dataset.routeIndex);
+
+  if(currentIndex === activatedRouteIndex) {
+    activateBtn.innerHTML = `
+      <i class="fas fa-check"></i>
+      Diversion Activated
+    `;
+  } else {
+    activateBtn.innerHTML = `
+      <i class="fas fa-check-circle"></i>
+      Activate Diversion
+    `;
+  }
+
+  activateBtn.disabled = false;
+}
 
 function renderHighTrafficRoads(map, roads) {
   const highTrafficRoads = roads.filter(road => road.traffic_level === "high");
@@ -68,6 +94,14 @@ function renderRoadNodes(map, nodes) {
             });
           }
         });
+
+        document.querySelector(".suggestions-list").innerHTML = `
+          <label class="list-label">Diversion Suggestions</label>
+          <div id="suggestionsPlaceholder" class="suggestions-loading">
+            <div class="spinner"></div>
+            <p>Select start and end points to generate routes</p>
+          </div>
+        `;
       }
 
       if(!selectedStart) {
@@ -92,6 +126,17 @@ function renderRoadNodes(map, nodes) {
           color: "#e53935",
           fillColor: "#ef5350"
         });
+
+        if(selectedStart && selectedEnd) {
+          const suggestionList = document.querySelector(".suggestions-list");
+          suggestionList.innerHTML = `
+            <label class="list-label">Diversion Suggestions</label>
+            <div class="suggestions-loading active">
+              <div class="spinner"></div>
+              <p>Calculating optimal routes...</p>
+            </div>
+          `;
+        }
 
         const routes = await fetchGeneratedDiversion(selectedStart.node_id, selectedEnd.node_id);
 
@@ -121,7 +166,7 @@ function renderRoadNodes(map, nodes) {
 }
 
 function renderSuggestions(routes, map) {
-  const suggestionList = document.querySelector(".suggesstions-list");
+  const suggestionList = document.querySelector(".suggestions-list");
 
   let html = `
     <label class="list-label">
@@ -166,12 +211,24 @@ function renderSuggestions(routes, map) {
 
   const cards = document.querySelectorAll(".suggestion-card");
 
+  if(cards.length > 0) {
+    cards[0].classList.add("active-route");
+  }
+
+  activeSelectedRoute = routes[0];
+
   cards.forEach(card => {
 
     card.addEventListener("click", () => {
       const index = parseInt(card.dataset.routeIndex);
 
+      /*if(activatedRouteIndex !== null && index !== activatedRouteIndex) {
+        return;
+      }*/
+
       const selectedRoute = routes[index];
+
+      activeSelectedRoute = selectedRoute;
       
       const clickedPoints = selectedRoute.points.map(point => ({
         lat: parseFloat(point.lat),
@@ -187,6 +244,8 @@ function renderSuggestions(routes, map) {
       });
 
       card.classList.add("active-route");
+
+      updateActivateButtonState();
     });
 
   });
@@ -240,8 +299,12 @@ async function renderDiversionManagement(container) {
         </button>
       </div>
 
-      <div class="suggesstions-list">
+      <div class="suggestions-list">
         <label class="list-label">Diversion Suggesstions</label>
+        <div id="suggestionPlaceholder" class="sugestions-loading">
+          <div class="spinner"></div>
+          <p>Select start and end points to generate routes</p>
+        </div>
       </div>
 
       <div class="sidebar-actions">
@@ -274,6 +337,76 @@ async function renderDiversionManagement(container) {
       dirToggle.innerHTML = '<i class="fas fa-arrows-left-right"></i> <span>Two-Way Route</span>';
       dirToggle.classList.remove('one-way-active');
     }
+  });
+
+  const activateBtn = document.getElementById("activateDiversion"); 
+
+  activateBtn.addEventListener("click", async () => {
+    
+    if(!activeSelectedRoute) {
+      alert("Please select a route first");
+      return;
+    }
+
+    const routeMode = dirToggle.getAttribute("data-mode");
+
+    console.log(activeSelectedRoute);
+
+    const payload = {
+      start_road_id: activeSelectedRoute.start_road.road_id,
+      end_road_id: activeSelectedRoute.end_road.road_id,
+      route_config: routeMode,
+      distance: activeSelectedRoute.distance,
+      vehicle_per_min: 0,
+      avg_speed: 0,
+      points: activeSelectedRoute.points
+    };
+
+    activateBtn.disabled = true;
+    activateBtn.innerHTML = `
+      <i class="fas fa-spinner"></i>
+      Activating...
+    `;
+
+    const result = await activateDiversionRoute(payload);
+
+    if(result.status === "success") {
+
+      activatedRouteIndex = parseInt(document.querySelector(".active-route").dataset.routeIndex);
+
+      /*activateBtn.innerHTML = `
+        <i class="fas fa-check"></i>
+        Diversion Activated
+      `;*/
+
+      updateActivateButtonState();
+
+      const cards = document.querySelectorAll(".suggestion-card");
+
+      cards.forEach((card, index) => {
+        /*if(index !== activatedRouteIndex) {
+          card.classList.add("disabled-route");
+        } else {
+          card.classList.add("activated-route");
+        }*/
+        card.classList.remove("activated-route");
+
+        if(index === activatedRouteIndex) {
+          card.classList.add("activated-route");
+        }
+      });
+
+    } else {
+      activateBtn.disabled = false;
+
+      activateBtn.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        Activate Diversion
+      `;
+
+      alert(result.message || "Activation failed.");
+    }
+
   });
 }
 

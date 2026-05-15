@@ -127,7 +127,7 @@ $diversion = new Diversion();
 
 $highTrafficRoads = $routing->getHighTrafficRoads();
 
-$routes = $routing->generateAlternativeRoutes($start, $end, 3);
+$routes = $routing->generateAlternativeRoutes($start, $end);
 
 if (empty($routes)) {
   echo json_encode([

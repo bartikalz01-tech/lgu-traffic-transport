@@ -146,6 +146,29 @@ export async function fetchRoadNodes() {
   return result.data || [];
 }
 
+export async function activateDiversionRoute(payload) {
+  try {
+    const response = await fetch("../api/save_diversion.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    return result;
+  } catch(error) {
+    console.error("Activate Diversion error:", error);
+
+    return {
+      status: "error",
+      message: "Request Failed"
+    }
+  }
+}
+
 /*export async function fetchDiversionSummary() {
   try {
     const response = await fetch("../api/get_diversion_summary.php");

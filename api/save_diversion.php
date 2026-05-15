@@ -5,21 +5,39 @@ header('Content-Type: application/json');
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$start = $data['startRoad'];
-$end = $data['endRoad'];
-//$date = $data['scheduleDate'];
-$distance = $data['distance'];
-$points = $data['points'];
+if(!$data) {
+  echo json_encode([
+    "status" => "error",
+    "message" => "Invalid payload"
+  ]);
+}
 
 $diversion = new Diversion();
 
-$diversion_id = $diversion->createDiversion($start, $end, $distance);
+try {
+  $diversionId = $diversion->createDiversion(
+    $data['start_road_id'],
+    $data['end_road_id'],
+    $data['route_config'],
+    $data['distance'],
+    $data['vehicle_per_min'],
+    $data['avg_speed']
+  );
 
-$diversion->insertRouteDetails($diversion_id, $points);
+  $diversion->insertRouteDetails(
+    $diversionId,
+    $data['points']
+  );
 
-echo json_encode([
-  "status" => "success",
-  "diversion_id" => $diversion_id
-]);
+  echo json_encode([
+    "status" => "success",
+    "diversion_id" => $diversionId
+  ]);
+} catch(Exception $e) {
+  echo json_encode([
+    "status" => "error",
+    "message" => $e->getMessage()
+  ]);
+}
 
 ?>

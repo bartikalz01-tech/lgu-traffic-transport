@@ -50,7 +50,13 @@ class Routing extends config {
       switch ($traffic) {
         case 'low': $multiplier = 1; break;
         case 'moderate': $multiplier = 2; break;
-        case 'high': $multiplier = $avoidHigh ? 1000 : 5; break;
+        case 'high': 
+          if($avoidHigh) {
+            $multiplier = 50;
+          } else {
+            $multiplier = 5;
+          }
+          break;
         default: $multiplier = 1;
       }
 
@@ -403,19 +409,29 @@ class Routing extends config {
     return $row ? $row['road_name'] : null;
   }
 
-  public function generateAlternativeRoutes($start, $end, $limit = 3) {
+  public function generateAlternativeRoutes($start, $end, $maxAttempts = 50) {
     $routes = [];
 
     $usedEdges = [];
 
-    for($i = 0; $i < $limit; $i++) {
+    $usedPaths = [];
+
+    for($i = 0; $i < $maxAttempts; $i++) {
       $graph = $this->buildGraphWithPenalties($usedEdges);
 
       $result = $this->dijkstra($graph, $start, $end);
 
-      if(empty($result['path']) || $result['distance'] === INF) {
+      if(empty($result['path']) || count($result['path']) < 2 || $result['distance'] === INF) {
         break;
       }
+
+      $pathKey = implode('-', $result['path']);
+
+      if(in_array($pathKey, $usedPaths)) {
+        break;
+      }
+
+      $usedPaths[] = $pathKey;
 
       $routes[] = $result;
 
