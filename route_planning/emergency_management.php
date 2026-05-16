@@ -46,52 +46,25 @@
             </div>
 
             <div class="responder-list">
-              <!--<div class="responder-placeholder">
+              <div class="responder-placeholder">
                 <i class="fas fa-map-location-dot"></i>
                 <p>Select an incident marker on the map to query closest emergency responders</p>
-              </div>-->
-              <div class="responder-group-section">
+              </div>
+              <div class="responder-group-section" id="primaryGroupSection">
                 <div class="group-label">
                   <i class="fas fa-star"></i> Primary Emergency Responders
                 </div>
 
-                <div id="primaryResponderContainer">
-                  <div class="responder-item fire-dept project-allocated-active">
-                    <div class="responder-icon">
-                      <i class="fas fa-fire-extinguisher"></i>
-                    </div>
-                    <div class="responder-info">
-                      <h4>Station 9 Fire & Rescue</h4>
-                      <p><i class="fas fa-map-marker-alt"></i> 88 Flame Suppression</p>
-                    </div>
-                    <div class="responder-distance">
-                      <span class="dist-value">4.12</span>
-                      <span class="dist-unit">km</span>
-                    </div>
-                  </div>
-                  <div class="responder-item fire-dept project-allocated-active">
-                    <div class="responder-icon">
-                      <i class="fas fa-fire-extinguisher"></i>
-                    </div>
-                    <div class="responder-info">
-                      <h4>Station 9 Fire & Rescue</h4>
-                      <p><i class="fas fa-map-marker-alt"></i> 88 Flame Suppression</p>
-                    </div>
-                    <div class="responder-distance">
-                      <span class="dist-value">4.12</span>
-                      <span class="dist-unit">km</span>
-                    </div>
-                  </div>
-                </div>
+                <div id="primaryResponderContainer"></div>
               </div>
 
-              <div class="responder-group-section">
+              <div class="responder-group-section" id="supportiveGroupSection">
                 <div class="group-label">
                   <i class="fas fa-handshake"></i> Optional Support Units
                 </div>
 
-                <div id="supportiveRespondersContainer">
-                  <div class="responder-item medical-dept">
+                <div id="supportiveResponderContainer">
+                  <!--<div class="responder-item medical-dept">
                     <div class="responder-icon">
                       <i class="fas fa-hospital-user"></i>
                     </div>
@@ -103,9 +76,9 @@
                       <span class="dist-value">1.85</span>
                       <span class="dist-unit">km</span>
                     </div>
-                  </div>
+                  </div>-->
 
-                  <div class="responder-item police-dept">
+                  <!--<div class="responder-item police-dept">
                     <div class="responder-icon">
                       <i class="fas fa-shield-halved"></i>
                     </div>
@@ -117,54 +90,13 @@
                       <span class="dist-value">3.20</span>
                       <span class="dist-unit">km</span>
                     </div>
-                  </div>
+                  </div>-->
                 </div>
               </div>
-              <!--<div class="responder-item medical-dept">
-                <div class="responder-icon">
-                  <i class="fas fa-hospital-user"></i>
-                </div>
-                <div class="responder-info">
-                  <h4>Metro General Hospital</h4>
-                  <p><i class="fas fa-map-marker-alt"></i> 124 medical center blvd</p>
-                </div>
-                <div class="responder-distance">
-                  <span class="dist-value">1.85</span>
-                  <span class="dist-unit">km</span>
-                </div>
-              </div>
-
-              <div class="responder-item police-dept">
-                <div class="responder-icon">
-                  <i class="fas fa-shield-halved"></i>
-                </div>
-                <div class="responder-info">
-                  <h4>Central Police Precinct 3</h4>
-                  <p><i class="fas fa-map-marker-alt"></i> 404 Law Enforcement Rd</p>
-                </div>
-                <div class="responder-distance">
-                  <span class="dist-value">3.20</span>
-                  <span class="dist-unit">km</span>
-                </div>
-              </div>
-
-              <div class="responder-item fire-dept">
-                <div class="responder-icon">
-                  <i class="fas fa-fire-extinguisher"></i>
-                </div>
-                <div class="responder-info">
-                  <h4>Station 9 Fire & Rescue</h4>
-                  <p><i class="fas fa-map-marker-alt"></i> 88 Flame Suppression Way</p>
-                </div>
-                <div class="responder-distance">
-                  <span class="dist-value">4.12</span>
-                  <span class="dist-unit">km</span>
-                </div>
-              </div>-->
             </div>
 
-            <div class="emergency-card-actions" id="activeContainer"> <!-- Will add display: none; later -->
-              <button class="btn-primary-dispatch">
+            <div class="emergency-card-actions" id="activeBtnContainer" style="display: none;"> 
+              <button class="btn-primary-dispatch" id="activeBtn">
                 <i class="fas fa-bullhorn"></i> Deploy & Activate Route
               </button>
             </div>
@@ -178,6 +110,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../scripts/sidebar.js"></script>
+  <script type="module" src="../scripts/route_planning/emergency/emergency_management.js"></script>
 </body>
 
 </html>

@@ -114,7 +114,7 @@ export async function renderEmergencyPlan() {
       let responderType = "";
 
       if (emergency.type === "fire") {
-        responderType = "fire";
+        responderType = "fire"
       } else if (emergency.type === "accident") {
         responderType = "hospital";
       } else if (emergency.type === "crime") {
