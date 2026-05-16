@@ -35,73 +35,49 @@
           </div>
         </div>
 
-        <div class="setting-emergency-routes">
-          <div class="emergency-map-container">
-            <div id="emergency-map"></div>
+        <!-- This kpi card will handle the new table called emergency_dispatch_logs and emergency_route_updates -->
+        <div class="em-kpi-cards">
+          <div class="overview-card assigned-emergency">
+            <div class="card-icon">
+              <i class="fas fa-circle-exclamation"></i>
+            </div>
+            <div class="card-details">
+              <span class="card-label">Pending Emergencies</span>
+              <h2 class="card-value" id="pendingEmergencyRoutes">0</h2>
+            </div>
           </div>
 
-          <aside class="ai-routes-container">
-            <div class="ai-header">
-              <h3><i class="fas fa-satellite-dish"></i> Nearest Responders</h3>
+          <div class="overview-card emergency-arrival">
+            <div class="card-icon">
+              <i class="fas fa-circle-check"></i>
             </div>
-
-            <div class="responder-list">
-              <div class="responder-placeholder">
-                <i class="fas fa-map-location-dot"></i>
-                <p>Select an incident marker on the map to query closest emergency responders</p>
-              </div>
-              <div class="responder-group-section" id="primaryGroupSection">
-                <div class="group-label">
-                  <i class="fas fa-star"></i> Primary Emergency Responders
-                </div>
-
-                <div id="primaryResponderContainer"></div>
-              </div>
-
-              <div class="responder-group-section" id="supportiveGroupSection">
-                <div class="group-label">
-                  <i class="fas fa-handshake"></i> Optional Support Units
-                </div>
-
-                <div id="supportiveResponderContainer">
-                  <!--<div class="responder-item medical-dept">
-                    <div class="responder-icon">
-                      <i class="fas fa-hospital-user"></i>
-                    </div>
-                    <div class="responder-info">
-                      <h4>Metro General Hospital</h4>
-                      <p><i class="fas fa-map-marker-alt"></i> 124 medical center blvd</p>
-                    </div>
-                    <div class="responder-distance">
-                      <span class="dist-value">1.85</span>
-                      <span class="dist-unit">km</span>
-                    </div>
-                  </div>-->
-
-                  <!--<div class="responder-item police-dept">
-                    <div class="responder-icon">
-                      <i class="fas fa-shield-halved"></i>
-                    </div>
-                    <div class="responder-info">
-                      <h4>Central Police Precinct 3</h4>
-                      <p><i class="fas fa-map-marker-alt"></i> 404 Law Enforcement Rd</p>
-                    </div>
-                    <div class="responder-distance">
-                      <span class="dist-value">3.20</span>
-                      <span class="dist-unit">km</span>
-                    </div>
-                  </div>-->
-                </div>
-              </div>
+            <div class="card-details">
+              <span class="card-label">Active Emergencies</span>
+              <h2 class="card-value" id="totalActiveEmergencies">0</h2>
             </div>
+          </div>
 
-            <div class="emergency-card-actions" id="activeBtnContainer" style="display: none;"> 
-              <button class="btn-primary-dispatch" id="activeBtn">
-                <i class="fas fa-bullhorn"></i> Deploy & Activate Route
-              </button>
+          <div class="overview-card emergency-logs">
+            <div class="card-icon">
+              <i class="fas fa-clock-rotate-left"></i> 
             </div>
-          </aside>
+            <div class="card-details">
+              <span class="card-label">Emergency Activities</span>
+              <ul class="log-stream" id="emergencyLogs">
+                <li class="log-item priority-high">
+                  <span class="log-time">10:42</span>
+                  <span class="log-text">Station 9 dispatched to Fire Incident 204</span>
+                </li>
+                <li class="log-item priority-medium">
+                  <span class="log-time">10:42</span>
+                  <span class="log-text">Med Unit 3 arrived at Route Segment B</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
+
+        <div class="setting-emergency-routes js-setting-emergency-routes"></div>
       </section>
 
       <?php include '../includes/admin-footer.php'; ?>

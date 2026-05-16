@@ -1,8 +1,6 @@
 import { getEmergenciesLocation, getEmergencyRoute, getRespondersByType } from "../../data/fetch_emergencies.js";
 import { getEventMarker } from "../../utils/traffic_and_events.js";
 
-let emergencyMap;
-
 function getResponderIcon(type) {
   if (type === "fire") {
     return `<i class="fas fa-fire-extinguisher"></i>`;
@@ -13,137 +11,209 @@ function getResponderIcon(type) {
   }
 }
 
-async function drawEmergencyRoute(emergencyId, responderId) {
-  const data = await getEmergencyRoute(emergencyId, responderId);
+async function renderEmergencyPlan(container) {
 
-  if (routeLine) {
-    emergencyMap.removeLayer(routeLine);
+  container.innerHTML = `
+    <div class="emergency-map-container">
+      <div id="emergency-map"></div>
+    </div>
+
+    <aside class="ai-routes-container">
+      <div class="ai-header">
+        <h3><i class="fas fa-satellite-dish"></i> Nearest Responders</h3>
+      </div>
+
+      <div class="responder-list">
+        <div class="responder-placeholder">
+          <i class="fas fa-map-location-dot"></i>
+          <p>Select an incident marker on the map to query closest emergency responders</p>
+        </div>
+        <div class="responder-group-section" id="primaryGroupSection">
+          <div class="group-label">
+            <i class="fas fa-star"></i> Primary Emergency Responders
+          </div>
+
+          <div id="primaryResponderContainer"></div>
+        </div>
+
+        <div class="responder-group-section" id="supportiveGroupSection">
+          <div class="group-label">
+            <i class="fas fa-handshake"></i> Optional Support Units
+          </div>
+
+          <div id="supportiveResponderContainer">
+            <!--<div class="responder-item medical-dept">
+              <div class="responder-icon">
+                <i class="fas fa-hospital-user"></i>
+              </div>
+              <div class="responder-info">
+                <h4>Metro General Hospital</h4>
+                <p><i class="fas fa-map-marker-alt"></i> 124 medical center blvd</p>
+              </div>
+              <div class="responder-distance">
+                <span class="dist-value">1.85</span>
+                <span class="dist-unit">km</span>
+              </div>
+            </div>-->
+
+            <!--<div class="responder-item police-dept">
+              <div class="responder-icon">
+                <i class="fas fa-shield-halved"></i>
+              </div>
+              <div class="responder-info">
+                <h4>Central Police Precinct 3</h4>
+                <p><i class="fas fa-map-marker-alt"></i> 404 Law Enforcement Rd</p>
+              </div>
+              <div class="responder-distance">
+                <span class="dist-value">3.20</span>
+                <span class="dist-unit">km</span>
+              </div>
+            </div>-->
+          </div>
+        </div>
+      </div>
+
+      <div class="emergency-card-actions" id="activeBtnContainer" style="display: none;"> 
+        <button class="btn-primary-dispatch" id="activeBtn">
+          <i class="fas fa-bullhorn"></i> Deploy & Activate Route
+        </button>
+      </div>
+    </aside>
+  `;
+
+  let emergencyMap;
+
+  async function drawEmergencyRoute(emergencyId, responderId) {
+    const data = await getEmergencyRoute(emergencyId, responderId);
+
+    if (routeLine) {
+      emergencyMap.removeLayer(routeLine);
+    }
+
+    const latlngs = data.route.map(p => [p.lat, p.lng]);
+
+    routeLine = L.polyline(latlngs, {
+      color: "blue",
+      weight: 5
+    }).addTo(emergencyMap);
+
+    emergencyMap.fitBounds(routeLine.getBounds());
+
+    selectedRouteData = {
+      emergency_id: emergencyId,
+      responder_id: responderId,
+      distance: data.distance,
+      eta: data.duration,
+      route: data.route
+    };
   }
 
-  const latlngs = data.route.map(p => [p.lat, p.lng]);
+  let selectedEmergencyId = null;
+  let selectedRouteData = null;
+  let routeLine = null;
+  let emergencyMarkers = {};
+  let responderMarkers = {};
 
-  routeLine = L.polyline(latlngs, {
-    color: "blue",
-    weight: 5
-  }).addTo(emergencyMap);
+  const primaryResponderItems = document.getElementById("primaryResponderContainer");
+  const supportiveResponderItems = document.getElementById("supportiveResponderContainer");
+  const primaryGroupSection = document.getElementById("primaryGroupSection");
+  const supportiveGroupSection = document.getElementById("supportiveGroupSection");
+  const activeBtnContainer = document.getElementById("activeBtnContainer");
+  const activeBtn = document.getElementById("activeBtn");
+  const responderPlaceholder = document.querySelector(".responder-placeholder");
 
-  emergencyMap.fitBounds(routeLine.getBounds());
+  emergencyMap = L.map('emergency-map').setView([14.6414, 120.9909], 20);
 
-  selectedRouteData = {
-    emergency_id: emergencyId,
-    responder_id: responderId,
-    distance: data.distance,
-    eta: data.duration,
-    route: data.route
-  };
-}
+  const emergencies = await getEmergenciesLocation();
 
-let selectedEmergencyId = null;
-let selectedRouteData = null;
-let routeLine = null;
-let emergencyMarkers = {};
-let responderMarkers = {};
+  emergencies.forEach(emergency => {
+    const marker = L.marker([
+      emergency.latitude,
+      emergency.longitude
+    ], {
+      icon: getEventMarker(
+        emergency.type,
+        emergency.road_name
+      )
+    }).addTo(emergencyMap);
 
-const primaryResponderItems = document.getElementById("primaryResponderContainer");
-const supportiveResponderItems = document.getElementById("supportiveResponderContainer");
-const primaryGroupSection = document.getElementById("primaryGroupSection");
-const supportiveGroupSection = document.getElementById("supportiveGroupSection");
-const activeBtnContainer = document.getElementById("activeBtnContainer");
-const activeBtn = document.getElementById("activeBtn");
-const responderPlaceholder = document.querySelector(".responder-placeholder");
-
-emergencyMap = L.map('emergency-map').setView([14.6414, 120.9909], 20);
-
-const emergencies = await getEmergenciesLocation();
-
-emergencies.forEach(emergency => {
-  const marker = L.marker([
-    emergency.latitude,
-    emergency.longitude
-  ], {
-    icon: getEventMarker(
-      emergency.type,
-      emergency.road_name
-    )
-  }).addTo(emergencyMap);
-
-  marker.bindPopup(`
+    marker.bindPopup(`
     <b>${emergency.type.toUpperCase()}</b><br>
     Road: ${emergency.road_name ?? 'Unknown'}<br>
     Status: ${emergency.status}  
   `);
 
-  marker.on("click", async () => {
+    marker.on("click", async () => {
 
-    Object.values(responderMarkers).forEach(m => emergencyMap.removeLayer(m));
-    responderMarkers = {};
+      Object.values(responderMarkers).forEach(m => emergencyMap.removeLayer(m));
+      responderMarkers = {};
 
-    selectedEmergencyId = emergency.emergency_id;
+      selectedEmergencyId = emergency.emergency_id;
 
-    let responderType = "";
+      let responderType = "";
 
-    if (emergency.type === "fire") {
-      responderType = "fire";
-    } else if (emergency.type === "accident") {
-      responderType = "hospital";
-    } else if (emergency.type === "crime") {
-      responderType = "police";
-    }
+      if (emergency.type === "fire") {
+        responderType = "fire";
+      } else if (emergency.type === "accident") {
+        responderType = "hospital";
+      } else if (emergency.type === "crime") {
+        responderType = "police";
+      }
 
-    const responders = await getRespondersByType(responderType);
+      const responders = await getRespondersByType(responderType);
 
-    primaryResponderItems.innerHTML = "";
+      primaryResponderItems.innerHTML = "";
 
-    supportiveResponderItems.innerHTML = "";
+      supportiveResponderItems.innerHTML = "";
 
-    if(!responders || responders.length === 0) {
-      responderPlaceholder.style.display = "flex";
+      if (!responders || responders.length === 0) {
+        responderPlaceholder.style.display = "flex";
 
-      primaryGroupSection.style.display = "none";
-      supportiveGroupSection.style.display = "none";
+        primaryGroupSection.style.display = "none";
+        supportiveGroupSection.style.display = "none";
 
-      return;
-    } else {
-      responderPlaceholder.style.display = "none";
+        return;
+      } else {
+        responderPlaceholder.style.display = "none";
 
-      primaryGroupSection.style.display = "block";
-      supportiveGroupSection.style.display = "block";
-    }
+        primaryGroupSection.style.display = "block";
+        supportiveGroupSection.style.display = "block";
+      }
 
-    activeBtnContainer.style.display = "none";
+      activeBtnContainer.style.display = "none";
 
-    responders.forEach(async (responder) => {
-      const responderMarker = L.marker([
-        responder.latitude,
-        responder.longitude
-      ]).addTo(emergencyMap);
+      responders.forEach(async (responder) => {
+        const responderMarker = L.marker([
+          responder.latitude,
+          responder.longitude
+        ]).addTo(emergencyMap);
 
-      responderMarkers[responder.responder_id] = responderMarker;
+        responderMarkers[responder.responder_id] = responderMarker;
 
-      responderMarker.bindPopup(`
+        responderMarker.bindPopup(`
         <b>${responder.responder_name}</b><br>
         ${responder.responder_address}
       `);
 
-      let typeClass = "";
+        let typeClass = "";
 
-      if (responder.type === "fire") {
-        typeClass = "fire-dept";
-      } else if (responder.type === "hospital") {
-        typeClass = "medical-dept";
-      } else if (responder.type === "police") {
-        typeClass = "police-dept";
-      }
+        if (responder.type === "fire") {
+          typeClass = "fire-dept";
+        } else if (responder.type === "hospital") {
+          typeClass = "medical-dept";
+        } else if (responder.type === "police") {
+          typeClass = "police-dept";
+        }
 
-      const route = await getEmergencyRoute(selectedEmergencyId, responder.responder_id);
+        const route = await getEmergencyRoute(selectedEmergencyId, responder.responder_id);
 
-      const distanceKm = route ? (route.distance / 1000).toFixed(2) : "0.00";
+        const distanceKm = route ? (route.distance / 1000).toFixed(2) : "0.00";
 
-      const responderItem = document.createElement('div');
+        const responderItem = document.createElement('div');
 
-      responderItem.className = `responder-item ${typeClass}`;
+        responderItem.className = `responder-item ${typeClass}`;
 
-      responderItem.innerHTML = `
+        responderItem.innerHTML = `
         <div class="responder-icon">
           ${getResponderIcon(responder.type)}
         </div>
@@ -157,82 +227,89 @@ emergencies.forEach(emergency => {
         </div>
       `;
 
-      responderItem.addEventListener("click", () => {
-        const responderId = responder.responder_id;
+        responderItem.addEventListener("click", () => {
+          const responderId = responder.responder_id;
 
-        const marker = responderMarkers[responderId];
+          const marker = responderMarkers[responderId];
 
-        drawEmergencyRoute(selectedEmergencyId, responderId);
+          drawEmergencyRoute(selectedEmergencyId, responderId);
 
-        if (marker) {
-          const latlng = marker.getLatLng();
+          if (marker) {
+            const latlng = marker.getLatLng();
 
-          emergencyMap.setView(latlng, 17);
+            emergencyMap.setView(latlng, 17);
 
-          marker.openPopup();
-        }
+            marker.openPopup();
+          }
+        });
+
+        primaryResponderItems.appendChild(responderItem);
       });
 
-      primaryResponderItems.appendChild(responderItem);
+      activeBtnContainer.style.display = "flex";
+
+      emergencyMap.setView([emergency.latitude, emergency.longitude], 15);
     });
-
-    activeBtnContainer.style.display = "flex";
-
-    emergencyMap.setView([emergency.latitude, emergency.longitude], 15);
   });
-});
 
-activeBtn.addEventListener('click', async () => {
-  if (!selectedRouteData) {
-    alert("Please Select a responder first");
-    return;
-  }
-
-  const response = await fetch('../api/emergencies/save_emergency_routes.php', {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(selectedRouteData)
-  })
-
-  const result = await response.json();
-
-  if (result.status === "success") {
-    alert("Emergency Route activated successfully");
-
-    const emergencyMarker = emergencyMarkers[selectedRouteData.emergency_id];
-
-    if (emergencyMarker) {
-      emergencyMap.removeLayer(emergencyMarker);
+  activeBtn.addEventListener('click', async () => {
+    if (!selectedRouteData) {
+      alert("Please Select a responder first");
+      return;
     }
 
-    if (routeLine) {
-      emergencyMap.removeLayer(routeLine);
-      routeLine = null;
+    const response = await fetch('../api/emergencies/save_emergency_routes.php', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(selectedRouteData)
+    })
+
+    const result = await response.json();
+
+    if (result.status === "success") {
+      alert("Emergency Route activated successfully");
+
+      const emergencyMarker = emergencyMarkers[selectedRouteData.emergency_id];
+
+      if (emergencyMarker) {
+        emergencyMap.removeLayer(emergencyMarker);
+      }
+
+      if (routeLine) {
+        emergencyMap.removeLayer(routeLine);
+        routeLine = null;
+      }
+
+      Object.values(responderMarkers).forEach(marker => {
+        emergencyMap.removeLayer(marker);
+      });
+
+      responderMarkers = {};
+
+      primaryResponderItems.innerHTML = "";
+      supportiveResponderItems.innerHTML = "";
+
+      responderPlaceholder.style.display = "flex";
+
+      activeBtnContainer.style.display = "none";
+
+      primaryGroupSection.style.display = "none";
+      supportiveGroupSection.style.display = "none";
+
+      selectedRouteData = null;
+      selectedEmergencyId = null;
     }
+  });
 
-    Object.values(responderMarkers).forEach(marker => {
-      emergencyMap.removeLayer(marker);
-    });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(emergencyMap);
+}
 
-    responderMarkers = {};
+document.addEventListener("DOMContentLoaded", async () => {
+  const settingEmergencyRoutes = document.querySelector(".js-setting-emergency-routes");
 
-    primaryResponderItems.innerHTML = "";
-    supportiveResponderItems.innerHTML = "";
-
-    responderPlaceholder.style.display = "flex";
-
-    activeBtnContainer.style.display = "none";
-
-    primaryGroupSection.style.display = "none";
-    supportiveGroupSection.style.display = "none";
-
-    selectedRouteData = null;
-    selectedEmergencyId = null;
-  }
+  await renderEmergencyPlan(settingEmergencyRoutes);
 });
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(emergencyMap);
