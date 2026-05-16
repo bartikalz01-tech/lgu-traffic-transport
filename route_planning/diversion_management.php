@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
-  <link rel="stylesheet" href="../styles/route_planning//final_diversions.css">
+  <link rel="stylesheet" href="../styles/route_planning/final_diversions.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Diversion Routes</title>
 </head>

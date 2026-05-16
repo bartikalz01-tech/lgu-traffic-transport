@@ -13,7 +13,7 @@ export async function getEmergenciesLocation() {
 export async function getRespondersByType(type) {
   try {
     const response = await fetch(`../api/emergencies/get_responders.php?type=${type}`);
-    const data = response.json();
+    const data = await response.json();
 
     return data;
   } catch(error) {
@@ -24,7 +24,7 @@ export async function getRespondersByType(type) {
 
 export async function getEmergencyRoute(emergencyId, responderId) {
   try {
-    const response = await fetch(`../api/get_route.php?emergency_id=${emergencyId}&responder_id=${responderId}`);
+    const response = await fetch(`../api/emergencies/get_emergency_route.php?emergency_id=${emergencyId}&responder_id=${responderId}`);
 
     const data = await response.json();
 

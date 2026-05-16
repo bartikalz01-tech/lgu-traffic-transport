@@ -1,8 +1,8 @@
 <?php
-require_once '../backend/config.php';
-require_once '../backend/dijkstra.php';
-require_once '../backend/Emergencies.php';
-require_once '../backend/Roads.php';
+require_once '../../backend/config.php';
+//require_once '../backend/dijkstra.php';
+require_once '../../backend/Emergencies.php';
+require_once '../../backend/Roads.php';
 
 header("Content-Type: application/json");
 
