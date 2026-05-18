@@ -91,3 +91,40 @@ export async function loadAssingedRoutes(map, assignedRouteMemory) {
       `);*/
   });
 }
+
+export function getResponderMarkerIcon(type) {
+
+  let bgColor = "#ef4444";
+  let iconClass = "fa-fire-extinguisher";
+
+  if(type === "hospital") {
+    bgColor = "#22c55e";
+    iconClass = "fa-hospital-user";
+
+  } else if(type === "police") {
+    bgColor = "#3b82f6";
+    iconClass = "fa-shield-halved";
+  }
+
+  return L.divIcon({
+    className: "custom-responder-marker",
+    html: `
+      <div style="
+        background: ${bgColor};
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        border: 3px solid white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+      ">
+        <i class="fas ${iconClass}"></i>
+      </div>
+    `,
+    iconSize: [38, 38],
+    iconAnchor: [19, 19]
+  });
+}

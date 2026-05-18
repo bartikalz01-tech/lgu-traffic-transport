@@ -52,7 +52,7 @@
               <i class="fas fa-circle-check"></i>
             </div>
             <div class="card-details">
-              <span class="card-label">Active Emergencies</span>
+              <span class="card-label">Assigned Emergencies</span>
               <h2 class="card-value" id="totalActiveEmergencies">0</h2>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { getEmergenciesLocation, getEmergencyRoute, getRespondersByType } from "../../data/fetch_emergencies.js";
 import { getEventMarker } from "../../utils/traffic_and_events.js";
-import { getEmeregncyEventMarker, loadAssingedRoutes } from "../../utils/emergencyUtils.js";
+import { getEmeregncyEventMarker, getResponderMarkerIcon, loadAssingedRoutes } from "../../utils/emergencyUtils.js";
 
 function getResponderIcon(type) {
   if (type === "fire") {
@@ -130,6 +130,44 @@ async function renderEmergencyPlan(container) {
 
   const emergencies = await getEmergenciesLocation();
 
+  const pendingEmergencyRoutes = document.getElementById("pendingEmergencyRoutes");
+  const totalActiveEmergencies = document.getElementById("totalActiveEmergencies");
+
+  const pendingCount = emergencies.filter(emergency => emergency.status === "active").length;
+
+  const assignedCount = emergencies.filter(emergency => emergency.status === "assigned").length;
+
+  pendingEmergencyRoutes.textContent = pendingCount;
+  totalActiveEmergencies.textContent = assignedCount;
+
+  const pendingCard = document.querySelector(".assigned-emergency");
+  const assignedCard = document.querySelector(".emergency-arrival");
+
+  function filterEmergencyMarkers(status) {
+    // for em-kpi-cards
+    Object.values(emergencyMarkers).forEach(data => {
+      const marker = data.marker;
+
+      if(data.status === status) {
+        if(!emergencyMap.hasLayer(marker)) {
+          marker.addTo(emergencyMap);
+        }
+      } else {
+        if(emergencyMap.hasLayer(marker)) {
+          emergencyMap.removeLayer(marker);
+        }
+      }
+    });
+  }
+
+  pendingCard.addEventListener("click", () => {
+    filterEmergencyMarkers("active");
+  });
+
+  assignedCard.addEventListener("click", () => {
+    filterEmergencyMarkers("assigned");
+  });
+
   emergencies.forEach(emergency => {
     const marker = L.marker([
       emergency.latitude,
@@ -141,7 +179,7 @@ async function renderEmergencyPlan(container) {
       )
     }).addTo(emergencyMap);
 
-    emergencyMarkers[emergency.emergency_id] = marker;
+    emergencyMarkers[emergency.emergency_id] = { marker, status: emergency.status };
 
     marker.bindPopup(`
       <b>${emergency.type.toUpperCase()}</b><br>
@@ -183,7 +221,9 @@ async function renderEmergencyPlan(container) {
         const responderMarker = L.marker([
           assignedData.responder_lat,
           assignedData.responder_lng
-        ]).addTo(emergencyMap);
+        ], {
+          icon: getResponderMarkerIcon(assignedData.responder_type)
+        }).addTo(emergencyMap);
 
         responderMarker.bindPopup(`
           <b>${assignedData.responder_name}</b><br>
@@ -238,16 +278,26 @@ async function renderEmergencyPlan(container) {
       selectedEmergencyId = emergency.emergency_id;
 
       let responderType = "";
+      let supportResponderTypes = [];
 
       if (emergency.type === "fire") {
         responderType = "fire";
+        supportResponderTypes = ["hospital", "police"];
       } else if (emergency.type === "accident") {
         responderType = "hospital";
+        supportResponderTypes = ["police"];
       } else if (emergency.type === "crime") {
         responderType = "police";
+        supportResponderTypes = ["hospital"];
       }
 
       const responders = await getRespondersByType(responderType);
+
+      const supportRespondersResults = await Promise.all(
+        supportResponderTypes.map(type => getRespondersByType(type))
+      );
+
+      const supportResponders = supportRespondersResults.flat();
 
       primaryResponderItems.innerHTML = "";
 
@@ -273,14 +323,16 @@ async function renderEmergencyPlan(container) {
         const responderMarker = L.marker([
           responder.latitude,
           responder.longitude
-        ]).addTo(emergencyMap);
+        ], {
+          icon: getResponderMarkerIcon(responder.type)
+        }).addTo(emergencyMap);
 
         responderMarkers[responder.responder_id] = responderMarker;
 
         responderMarker.bindPopup(`
-        <b>${responder.responder_name}</b><br>
-        ${responder.responder_address}
-      `);
+          <b>${responder.responder_name}</b><br>
+          ${responder.responder_address}
+        `);
 
         let typeClass = "";
 
@@ -333,6 +385,85 @@ async function renderEmergencyPlan(container) {
         primaryResponderItems.appendChild(responderItem);
       });
 
+      supportResponders.forEach(async (supportResponder) => {
+
+        const supportMarker = L.marker([
+          supportResponder.latitude,
+          supportResponder.longitude
+        ], {
+          icon: getResponderMarkerIcon(supportResponder.type)
+        }).addTo(emergencyMap);
+
+        responderMarkers[supportResponder.responder_id] = supportMarker;
+
+        supportMarker.bindPopup(`
+          <b>${supportResponder.responder_name}</b><br>
+          ${supportResponder.responder_address}
+        `);
+
+        let supportClass = "";
+
+        if(supportResponder.type === "fire") {
+          supportClass = "fire-dept";
+        } else if(supportResponder.type === "hospital") {
+          supportClass = "medical-dept";
+        } else if(supportResponder.type === "police") {
+          supportClass = "police-dept"
+        }
+
+        const supportRoute = await getEmergencyRoute(
+          selectedEmergencyId,
+          supportResponder.responder_id
+        );
+
+        const supportDistanceKm = supportRoute ? (supportRoute.distance / 1000).toFixed(2) : "0.00";
+
+        const supportItem = document.createElement("div");
+
+        supportItem.className = `responder-item ${supportClass}`;
+
+        supportItem.innerHTML = `
+          <div class="responder-icon">
+            ${getResponderIcon(supportResponder.type)}
+          </div>
+
+          <div class="responder-info">
+            <h4>${supportResponder.responder_name}</h4>
+            <p>
+              <i class="fas fa-map-marker-alt"></i>
+              ${supportResponder.responder_address}
+            </p>
+          </div>
+
+          <div class="responder-distance">
+            <span class="dist-value">${supportDistanceKm}</span>
+            <span class="dist-unit">km</span>
+          </div>
+        `;
+
+        supportItem.addEventListener("click", () => {
+          const responderId = supportResponder.responder_id;
+
+          const marker = responderMarkers[responderId];
+
+          drawEmergencyRoute(
+            selectedEmergencyId,
+            responderId
+          );
+
+          if(marker) {
+            const latlng = marker.getLatLng();
+
+            emergencyMap.setView(latlng, 17);
+
+            marker.openPopup();
+          }
+        });
+
+        supportiveResponderItems.appendChild(supportItem);
+
+      });
+
       activeBtnContainer.style.display = "flex";
 
       emergencyMap.setView([emergency.latitude, emergency.longitude], 15);
@@ -364,7 +495,9 @@ async function renderEmergencyPlan(container) {
         emergencyMap.removeLayer(emergencyMarker);
       }*/
 
-      const emergencyMarker = emergencyMarkers[selectedRouteData.emergency_id];
+      const emergencyMarkerData = emergencyMarkers[selectedRouteData.emergency_id];
+
+      const emergencyMarker = emergencyMarkerData?.marker;
 
       if (emergencyMarker) {
         emergencyMarker.setPopupContent(`
