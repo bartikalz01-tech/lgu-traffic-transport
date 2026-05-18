@@ -15,7 +15,7 @@ class Emergencies extends config {
         r.road_name
       FROM emergencies e
       LEFT JOIN roads r ON e.road_id = r.road_id
-      WHERE e.status = 'active'
+      WHERE e.status IN ('active', 'assigned')
     ";
 
     $stmt = $conn->prepare($sql);
@@ -107,7 +107,34 @@ class Emergencies extends config {
       ':status' => $status,
       ':emergency_id' => $emergencyId
     ]);
-  } 
+  }
+  
+  public function getAssignedRoutes() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        er.*,
+        e.type,
+        e.latitude AS emergency_lat,
+        e.longitude AS emergency_lng,
+        r.responder_name,
+        r.responder_address,
+        r.type as responder_type,
+        r.latitude AS responder_lat,
+        r.longitude AS responder_lng
+      FROM emergency_routes er
+      INNER JOIN emergencies e
+        ON er.emergency_id = e.emergency_id
+      INNER JOIN responders r
+        ON er.responder_id = r.responder_id
+      WHERE e.status = 'assigned'
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 
 }
 

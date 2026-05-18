@@ -1,5 +1,6 @@
 import { getEmergenciesLocation, getEmergencyRoute, getRespondersByType } from "../../data/fetch_emergencies.js";
 import { getEventMarker } from "../../utils/traffic_and_events.js";
+import { getEmeregncyEventMarker, loadAssingedRoutes } from "../../utils/emergencyUtils.js";
 
 function getResponderIcon(type) {
   if (type === "fire") {
@@ -113,6 +114,7 @@ async function renderEmergencyPlan(container) {
   let routeLine = null;
   let emergencyMarkers = {};
   let responderMarkers = {};
+  let assignedRouteMemory = {};
 
   const primaryResponderItems = document.getElementById("primaryResponderContainer");
   const supportiveResponderItems = document.getElementById("supportiveResponderContainer");
@@ -124,6 +126,8 @@ async function renderEmergencyPlan(container) {
 
   emergencyMap = L.map('emergency-map').setView([14.6414, 120.9909], 20);
 
+  await loadAssingedRoutes(emergencyMap, assignedRouteMemory);
+
   const emergencies = await getEmergenciesLocation();
 
   emergencies.forEach(emergency => {
@@ -131,19 +135,102 @@ async function renderEmergencyPlan(container) {
       emergency.latitude,
       emergency.longitude
     ], {
-      icon: getEventMarker(
+      icon: getEmeregncyEventMarker(
         emergency.type,
-        emergency.road_name
+        emergency.status
       )
     }).addTo(emergencyMap);
 
-    marker.bindPopup(`
-    <b>${emergency.type.toUpperCase()}</b><br>
-    Road: ${emergency.road_name ?? 'Unknown'}<br>
-    Status: ${emergency.status}  
-  `);
+    emergencyMarkers[emergency.emergency_id] = marker;
 
+    marker.bindPopup(`
+      <b>${emergency.type.toUpperCase()}</b><br>
+      Road: ${emergency.road_name ?? 'Unknown'}<br>
+      Status: ${emergency.status}  
+    `);
+    
     marker.on("click", async () => {
+
+      if(emergency.status === "assigned") {
+
+        Object.values(responderMarkers).forEach(marker => {
+          emergencyMap.removeLayer(marker);
+        });
+
+        responderMarkers = {};
+
+        primaryResponderItems.innerHTML = "";
+        supportiveResponderItems.innerHTML = "";
+
+        responderPlaceholder.style.display = "none";
+
+        primaryGroupSection.style.display = "block";
+
+        supportiveGroupSection.style.display = "none";
+
+        activeBtnContainer.style.display = "none";
+
+        if(routeLine) {
+          emergencyMap.removeLayer(routeLine);
+        }
+
+        const assignedData = assignedRouteMemory[emergency.emergency_id];
+
+        if(!assignedData) return;
+
+        routeLine = assignedData.polyline.addTo(emergencyMap);
+
+        const responderMarker = L.marker([
+          assignedData.responder_lat,
+          assignedData.responder_lng
+        ]).addTo(emergencyMap);
+
+        responderMarker.bindPopup(`
+          <b>${assignedData.responder_name}</b><br>
+          Assigned Responder
+        `);
+
+        responderMarkers[assignedData.responder_id] = responderMarker
+
+        emergencyMap.fitBounds(routeLine.getBounds());
+
+        const responderItem = document.createElement("div");
+
+        let responderClass = "";
+
+        if(assignedData.responder_type === "fire") {
+          responderClass = "fire-dept";
+        } else if(assignedData.responder_type === "hospital") {
+          responderClass = "medical-dept";
+        } else if(assignedData.responder_type === "police") {
+          responderClass = "police-dept"
+        }
+
+        responderItem.className = `responder-item ${responderClass} assigned-active`;
+        responderItem.innerHTML = `
+          <div class="responder-icon">
+            ${getResponderIcon(assignedData.responder_type)}
+          </div>
+
+          <div class="responder-info">
+            <h4>${assignedData.responder_name}</h4>
+            <p>
+              <i class="fas fa-map-marker-alt"></i>
+              ${assignedData.responder_address ?? ''}
+            </p>
+          </div>
+
+          <div class="responder-distance">
+            <span class="dist-unit">
+              ASSIGNED
+            </span>
+          </div>
+        `;
+
+        primaryResponderItems.appendChild(responderItem);
+
+        return;
+      }
 
       Object.values(responderMarkers).forEach(m => emergencyMap.removeLayer(m));
       responderMarkers = {};
@@ -214,18 +301,18 @@ async function renderEmergencyPlan(container) {
         responderItem.className = `responder-item ${typeClass}`;
 
         responderItem.innerHTML = `
-        <div class="responder-icon">
-          ${getResponderIcon(responder.type)}
-        </div>
-        <div class="responder-info">
-          <h4>${responder.responder_name}</h4>
-          <p><i class="fas fa-map-marker-alt"></i> ${responder.responder_address}</p>
-        </div>
-        <div class="responder-distance">
-          <span class="dist-value">${distanceKm}</span>
-          <span class="dist-unit">km</span>
-        </div>
-      `;
+          <div class="responder-icon">
+            ${getResponderIcon(responder.type)}
+          </div>
+          <div class="responder-info">
+            <h4>${responder.responder_name}</h4>
+            <p><i class="fas fa-map-marker-alt"></i> ${responder.responder_address}</p>
+          </div>
+          <div class="responder-distance">
+            <span class="dist-value">${distanceKm}</span>
+            <span class="dist-unit">km</span>
+          </div>
+        `;
 
         responderItem.addEventListener("click", () => {
           const responderId = responder.responder_id;
@@ -271,20 +358,29 @@ async function renderEmergencyPlan(container) {
     if (result.status === "success") {
       alert("Emergency Route activated successfully");
 
-      const emergencyMarker = emergencyMarkers[selectedRouteData.emergency_id];
+      /*const emergencyMarker = emergencyMarkers[selectedRouteData.emergency_id];
 
       if (emergencyMarker) {
         emergencyMap.removeLayer(emergencyMarker);
+      }*/
+
+      const emergencyMarker = emergencyMarkers[selectedRouteData.emergency_id];
+
+      if (emergencyMarker) {
+        emergencyMarker.setPopupContent(`
+          <b>ASSIGNED ${selectedRouteData.emergency_id}</b><br>
+          Status: assigned
+        `);
       }
 
-      if (routeLine) {
+      /*if (routeLine) {
         emergencyMap.removeLayer(routeLine);
         routeLine = null;
       }
 
       Object.values(responderMarkers).forEach(marker => {
         emergencyMap.removeLayer(marker);
-      });
+      });*/
 
       responderMarkers = {};
 

@@ -34,3 +34,16 @@ export async function getEmergencyRoute(emergencyId, responderId) {
     return null;
   }
 }
+
+export async function getAssignedRoutes() {
+  try {
+    const response = await fetch('../api/emergencies/get_assigned_routes.php');
+
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error('Assigend Emergency Route error:', error);
+    return [];
+  }
+}
