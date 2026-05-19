@@ -1,5 +1,6 @@
 import { trafficTbody, brgyTrafficStatus, getDivesionPlan, getEmergencyPlan } from "../global_variables.js";
 import { fetchRoadEvents, fetchRoadMap, fetchDiversions, fetchDiversionDetails, fetchAllDiversionStatus } from "../data/fetch_road_map.js";
+import { getEmergenciesLocation } from "../data/fetch_emergencies.js";
 import { getEventMarker, getTrafficColor } from "../utils/traffic_and_events.js";
 import { renderDiversionPlan } from "./diversions/set_diversion_plan.js";
 import { renderEmergencyPlan } from "./emergency/set_emergency_plan.js";
@@ -45,6 +46,31 @@ async function loadDiversionRoutes() {
   }
 
   routeCountEl.textContent = uniqueRoads.size;
+}
+
+async function renderEmergencyCounts() {
+
+  const emergencies = await getEmergenciesLocation();
+
+  const pendingCount = emergencies.filter(
+    emergency => emergency.status === "active"
+  ).length;
+
+  const assignedCount = emergencies.filter(
+    emergency => emergency.status === "assigned"
+  ).length;
+
+  const pendingEl = document.getElementById(
+    "emergencyPendingCount"
+  );
+
+  const assignedEl = document.getElementById(
+    "emergencyAssignedCount"
+  );
+
+  pendingEl.textContent = pendingCount;
+
+  assignedEl.textContent = assignedCount;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -104,6 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   //loadRoadEvents(map);
   await loadDiversionRoutes();
+  await renderEmergencyCounts();
 });
 
 //const diversionPlan = getDivesionPlan();

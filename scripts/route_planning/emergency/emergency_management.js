@@ -124,7 +124,7 @@ async function renderEmergencyPlan(container) {
   let selectedEmergencyId = null;
   let selectedEmergencyType = null;
   //let selectedRouteData = null;
-  let selectedPrimaryResponder = null;
+  //let selectedPrimaryResponder = null;
   let selectedResponders = []; 
   let routeLine = null;
   let emergencyMarkers = {};
@@ -317,7 +317,7 @@ async function renderEmergencyPlan(container) {
       selectedEmergencyId = emergency.emergency_id;
       selectedEmergencyType = emergency.type;
       selectedResponders = [];
-      selectedPrimaryResponder = null;
+      //selectedPrimaryResponder = null;
 
       if(emergency.status === "assigned") {
 
@@ -421,7 +421,7 @@ async function renderEmergencyPlan(container) {
           if(assignedData.selected == 1) {
             primaryResponderItems.appendChild(responderItem);
 
-            selectedPrimaryResponder = {
+            /*selectedPrimaryResponder = {
               emergency_id: emergency.emergency_id,
               responder_id: assignedData.responder_id,
               responder_type: assignedData.responder_type,
@@ -432,7 +432,19 @@ async function renderEmergencyPlan(container) {
               is_primary: true
             };
 
-            selectedResponders = [selectedPrimaryResponder];
+            selectedResponders = [selectedPrimaryResponder];*/
+
+            addResponderSelection({
+              emergency_id: emergency.emergency_id,
+              responder_id: assignedData.responder_id,
+              responder_type: assignedData.responder_type,
+              responder_name: assignedData.responder_name,
+              distance: assignedData.distance,
+              eta: assignedData.eta,
+              route: assignedData.route_coords,
+              is_primary: true
+            });
+
           } else {
             supportiveResponderItems.appendChild(responderItem);
           }
@@ -446,7 +458,7 @@ async function renderEmergencyPlan(container) {
         let supportResponderTypes = [];
 
         if (emergency.type === "fire") {
-          supportResponderTypes = ["hospital", "police"];
+          supportResponderTypes = ["hospital", "police", "fire"];
         } else if (emergency.type === "accident") {
           supportResponderTypes = ["police"];
         } else if (emergency.type === "crime") {
@@ -480,7 +492,7 @@ async function renderEmergencyPlan(container) {
       selectedEmergencyId = emergency.emergency_id;
       selectedEmergencyType = emergency.type
 
-      selectedPrimaryResponder = null;
+      //selectedPrimaryResponder = null;
       selectedResponders = [];
 
       let responderType = "";
@@ -488,7 +500,7 @@ async function renderEmergencyPlan(container) {
 
       if (emergency.type === "fire") {
         responderType = "fire";
-        supportResponderTypes = ["hospital", "police"];
+        supportResponderTypes = ["hospital", "police", "fire"];
       } else if (emergency.type === "accident") {
         responderType = "hospital";
         supportResponderTypes = ["police"];
@@ -572,7 +584,7 @@ async function renderEmergencyPlan(container) {
           </div>
         `;
 
-        responderItem.addEventListener("click", () => {
+        /*responderItem.addEventListener("click", () => {
 
           primaryResponderItems.querySelectorAll(".responder-item")
             .forEach(item => item.classList.remove("selected-responder"));
@@ -602,6 +614,41 @@ async function renderEmergencyPlan(container) {
             const latlng = marker.getLatLng();
 
             emergencyMap.setView(latlng, 17);
+
+            marker.openPopup();
+          }
+        });*/
+
+        responderItem.addEventListener("click", () => {
+          const responderId = responder.responder_id
+
+          const alreadySelected = responderItem.classList.contains("selected-responder");
+
+          if(alreadySelected) {
+            responderItem.classList.remove("selected-responder");
+
+            removeResponderSelection(responderId);
+          } else {
+            responderItem.classList.add("selected-responder");
+
+            addResponderSelection({
+              emergency_id: selectedEmergencyId,
+              responder_id: responder.responder_id,
+              responder_type: responder.type,
+              responder_name: responder.responder_name,
+              distance: route.distance,
+              eta: route.duration,
+              route: route.route,
+              is_primary: true
+            });
+          }
+
+          drawEmergencyRoute(selectedEmergencyId, responderId);
+
+          const marker = responderMarkers[responderId];
+
+          if(marker) {
+            emergencyMap.setView(marker.getLatLng(), 17);
 
             marker.openPopup();
           }

@@ -65,16 +65,16 @@
           <div class="emergency-arrival-data">
             <p class="emergency-status">
               <i class="fas fa-circle-exclamation" style="color: #e74c3c;"></i>
-              <span>Active:</span>
+              <span>Pending Emergencies:</span>
             </p>
-            <p class="emergency-value">2</p>
+            <p class="emergency-value" id="emergencyPendingCount">2</p>
           </div>
           <div class="emergency-arrival-data">
             <p class="emergency-status">
               <i class="fas fa-circle-check" style="color: #27ae60;"></i>
-              <span>Completed Today:</span>
+              <span>Assigned Emergencies:</span>
             </p>
-            <p class="emergency-value">5</p>
+            <p class="emergency-value" id="emergencyAssignedCount">5</p>
           </div>
           <div class="emergency-arrival-data">
             <p class="emergency-status">
