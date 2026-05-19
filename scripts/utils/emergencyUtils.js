@@ -64,8 +64,18 @@ export async function loadAssingedRoutes(map, assignedRouteMemory) {
 
     const latlngs = routeCoords.map(p => [p.lat, p.lng]);
 
+    let routeColor = "#5fc8eb";
+
+    if(routeData.responder_type === "fire") {
+      routeColor = "#ef4444";
+    } else if(routeData.responder_type === "hospital") {
+      routeColor = "#22c55e";
+    } else if(routeData.responder_type === "police") {
+      routeColor = "#3b82f6";
+    }
+
     const polyline = L.polyline(latlngs, { 
-      color: "#5fc8eb",
+      color: routeColor,
       weight: 5,
       opacity: 0.8
     });
@@ -123,4 +133,24 @@ export function getResponderMarkerIcon(type) {
     iconSize: [38, 38],
     iconAnchor: [19, 19]
   });
+}
+
+export function clearAllRoutes(
+  emergencyMap,
+  routeLine,
+  activeAssignedPolylines
+) {
+
+  if(routeLine) {
+    emergencyMap.removeLayer(routeLine);
+  }
+
+  activeAssignedPolylines.forEach(polyline => {
+    emergencyMap.removeLayer(polyline);
+  });
+
+  return {
+    routeLine: null,
+    activeAssignedPolylines: []
+  };
 }

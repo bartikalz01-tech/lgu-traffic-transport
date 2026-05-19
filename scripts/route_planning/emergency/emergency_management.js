@@ -1,6 +1,6 @@
 import { getEmergenciesLocation, getEmergencyRoute, getRespondersByType } from "../../data/fetch_emergencies.js";
 import { getEventMarker } from "../../utils/traffic_and_events.js";
-import { getEmergencyMarker, getResponderMarkerIcon, loadAssingedRoutes } from "../../utils/emergencyUtils.js";
+import { clearAllRoutes, getEmergencyMarker, getResponderMarkerIcon, loadAssingedRoutes } from "../../utils/emergencyUtils.js";
 
 function getResponderIcon(type) {
   if (type === "fire") {
@@ -160,6 +160,12 @@ async function renderEmergencyPlan(container) {
   const assignedCard = document.querySelector(".emergency-arrival");
 
   function filterEmergencyMarkers(status) {
+
+    const clearedRoutes = clearAllRoutes(emergencyMap, routeLine, activeAssignedPolylines);
+
+    routeLine = clearedRoutes.routeLine;
+    activeAssignedPolylines = clearedRoutes.activeAssignedPolylines;
+
     // for em-kpi-cards
     Object.values(emergencyMarkers).forEach(data => {
       const marker = data.marker;

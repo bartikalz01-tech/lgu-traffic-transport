@@ -539,3 +539,36 @@
   transform: scale(1.02);
   transition: all 0.2s ease;
 }
+
+/* Fix heights and enable internal scrolling for dynamic units */
+#primaryResponderContainer,
+#supportiveResponderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 240px; /* Limits the list window size */
+  overflow-y: auto;  /* Triggers scrollbar when content exceeds max-height */
+  padding-right: 4px; /* Prevents layout shifting when scrollbars appear */
+}
+
+/* Elegant custom scrollbar for the responder containers */
+#primaryResponderContainer::-webkit-scrollbar,
+#supportiveResponderContainer::-webkit-scrollbar {
+  width: 5px;
+}
+
+#primaryResponderContainer::-webkit-scrollbar-track,
+#supportiveResponderContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#primaryResponderContainer::-webkit-scrollbar-thumb,
+#supportiveResponderContainer::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+#primaryResponderContainer::-webkit-scrollbar-thumb:hover,
+#supportiveResponderContainer::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
