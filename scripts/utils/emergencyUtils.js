@@ -70,7 +70,11 @@ export async function loadAssingedRoutes(map, assignedRouteMemory) {
       opacity: 0.8
     });
 
-    assignedRouteMemory[routeData.emergency_id] = {
+    if(!assignedRouteMemory[routeData.emergency_id]) {
+      assignedRouteMemory[routeData.emergency_id] = [];
+    }
+
+    assignedRouteMemory[routeData.emergency_id].push({
       polyline,
       responder_id: routeData.responder_id,
       responder_name: routeData.responder_name,
@@ -78,17 +82,9 @@ export async function loadAssingedRoutes(map, assignedRouteMemory) {
       responder_address: routeData.responder_address,
       responder_lat: routeData.responder_lat,
       responder_lng: routeData.responder_lng,
-      route_coords: routeCoords
-    }
-
-    /*L.marker([
-      routeData.responder_lat,
-      routeData.responder_lng
-    ]).addTo(map)
-      .bindPopup(`
-        <b>${routeData.responder_name}</b>
-        Assigend Responder
-      `);*/
+      route_coords: routeCoords,
+      selected: routeData.selected
+    })
   });
 }
 
