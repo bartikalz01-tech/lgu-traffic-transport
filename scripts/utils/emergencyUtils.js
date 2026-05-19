@@ -1,6 +1,6 @@
 import { getAssignedRoutes } from "../data/fetch_emergencies.js";
 
-export function getEmeregncyEventMarker(type, status = "active") {
+export function getEmergencyMarker(type, status = "active") {
 
   let iconClass = "fa-circle";
 

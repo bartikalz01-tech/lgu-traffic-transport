@@ -1,6 +1,6 @@
 import { getEmergenciesLocation, getEmergencyRoute, getRespondersByType } from "../../data/fetch_emergencies.js";
 import { getEventMarker } from "../../utils/traffic_and_events.js";
-import { getEmeregncyEventMarker, getResponderMarkerIcon, loadAssingedRoutes } from "../../utils/emergencyUtils.js";
+import { getEmergencyMarker, getResponderMarkerIcon, loadAssingedRoutes } from "../../utils/emergencyUtils.js";
 
 function getResponderIcon(type) {
   if (type === "fire") {
@@ -100,17 +100,32 @@ async function renderEmergencyPlan(container) {
 
     emergencyMap.fitBounds(routeLine.getBounds());
 
-    selectedRouteData = {
+    /*selectedRouteData = {
       emergency_id: emergencyId,
       responder_id: responderId,
       distance: data.distance,
       eta: data.duration,
       route: data.route
-    };
+    };*/
+  }
+
+  function addResponderSelection(responderData) {
+    const exists = selectedResponders.some(item => item.responder_id === responderData.responder_id);
+
+    if(!exists) {
+      selectedResponders.push(responderData);
+    } 
+  }
+
+  function removeResponderSelection(responderId) {
+    selectedResponders = selectedResponders.filter(item => item.responder_id !== responderId);
   }
 
   let selectedEmergencyId = null;
-  let selectedRouteData = null;
+  let selectedEmergencyType = null;
+  //let selectedRouteData = null;
+  let selectedPrimaryResponder = null;
+  let selectedResponders = []; 
   let routeLine = null;
   let emergencyMarkers = {};
   let responderMarkers = {};
@@ -173,7 +188,7 @@ async function renderEmergencyPlan(container) {
       emergency.latitude,
       emergency.longitude
     ], {
-      icon: getEmeregncyEventMarker(
+      icon: getEmergencyMarker(
         emergency.type,
         emergency.status
       )
@@ -276,6 +291,10 @@ async function renderEmergencyPlan(container) {
       responderMarkers = {};
 
       selectedEmergencyId = emergency.emergency_id;
+      selectedEmergencyType = emergency.type
+
+      selectedPrimaryResponder = null;
+      selectedResponders = [];
 
       let responderType = "";
       let supportResponderTypes = [];
@@ -319,7 +338,7 @@ async function renderEmergencyPlan(container) {
 
       activeBtnContainer.style.display = "none";
 
-      responders.forEach(async (responder) => {
+      for(const responder of responders) {
         const responderMarker = L.marker([
           responder.latitude,
           responder.longitude
@@ -367,11 +386,30 @@ async function renderEmergencyPlan(container) {
         `;
 
         responderItem.addEventListener("click", () => {
+
+          primaryResponderItems.querySelectorAll(".responder-item")
+            .forEach(item => item.classList.remove("selected-responder"));
+          
+          responderItem.classList.add("selected-responder");
+
           const responderId = responder.responder_id;
 
           const marker = responderMarkers[responderId];
 
           drawEmergencyRoute(selectedEmergencyId, responderId);
+
+          selectedPrimaryResponder = {
+            emergency_id: selectedEmergencyId,
+            responder_id: responder.responder_id,
+            responder_type: responder.type,
+            responder_name: responder.responder_name,
+            distance: route.distance,
+            eta: route.duration,
+            route: route.route,
+            is_primary: true
+          };
+
+          selectedResponders = [selectedPrimaryResponder];
 
           if (marker) {
             const latlng = marker.getLatLng();
@@ -383,9 +421,9 @@ async function renderEmergencyPlan(container) {
         });
 
         primaryResponderItems.appendChild(responderItem);
-      });
+      }
 
-      supportResponders.forEach(async (supportResponder) => {
+      for(const supportResponder of supportResponders) {
 
         const supportMarker = L.marker([
           supportResponder.latitude,
@@ -441,8 +479,40 @@ async function renderEmergencyPlan(container) {
           </div>
         `;
 
-        supportItem.addEventListener("click", () => {
+        supportItem.addEventListener("click", async () => {
+
+          if(!selectedPrimaryResponder) {
+            alert("Please select a primary responder first");
+            return;
+          }
+
           const responderId = supportResponder.responder_id;
+
+          const alreadySelected = supportItem.classList.contains("selected-responder");
+
+          if(alreadySelected) {
+            supportItem.classList.remove("selected-responder");
+
+            removeResponderSelection(responderId);
+          } else {
+            supportItem.classList.add("selected-responder");
+
+            const supportRoute = await getEmergencyRoute(
+              selectedEmergencyId,
+              responderId
+            );
+
+            addResponderSelection({
+              emergency_id: selectedEmergencyId,
+              responder_id: supportResponder.responder_id,
+              responder_type: supportResponder.type,
+              responder_name: supportResponder.responder_name,
+              distance: supportRoute.distance,
+              eta: supportRoute.duration,
+              route: supportRoute.route,
+              is_primary: false
+            });
+          }
 
           const marker = responderMarkers[responderId];
 
@@ -462,7 +532,7 @@ async function renderEmergencyPlan(container) {
 
         supportiveResponderItems.appendChild(supportItem);
 
-      });
+      }
 
       activeBtnContainer.style.display = "flex";
 
@@ -470,65 +540,85 @@ async function renderEmergencyPlan(container) {
     });
   });
 
+  
+
   activeBtn.addEventListener('click', async () => {
-    if (!selectedRouteData) {
-      alert("Please Select a responder first");
-      return;
-    }
 
-    const response = await fetch('../api/emergencies/save_emergency_routes.php', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(selectedRouteData)
-    })
+    try {
 
-    const result = await response.json();
-
-    if (result.status === "success") {
-      alert("Emergency Route activated successfully");
-
-      /*const emergencyMarker = emergencyMarkers[selectedRouteData.emergency_id];
-
-      if (emergencyMarker) {
-        emergencyMap.removeLayer(emergencyMarker);
-      }*/
-
-      const emergencyMarkerData = emergencyMarkers[selectedRouteData.emergency_id];
-
-      const emergencyMarker = emergencyMarkerData?.marker;
-
-      if (emergencyMarker) {
-        emergencyMarker.setPopupContent(`
-          <b>ASSIGNED ${selectedRouteData.emergency_id}</b><br>
-          Status: assigned
-        `);
+      if (selectedResponders.length === 0) {
+        alert("Please Select a responder first");
+        return;
       }
 
-      /*if (routeLine) {
-        emergencyMap.removeLayer(routeLine);
-        routeLine = null;
+      console.log("Sending responders:", selectedResponders);
+
+      const response = await fetch('../api/emergencies/save_emergency_routes.php', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          emergency_id: selectedEmergencyId,
+          responders: selectedResponders
+        })
+      });
+
+      console.log("Fetch response received");
+
+      const rawText = await response.text();
+
+      console.log("RAW PHP RESPONSE:");
+      console.log(rawText);
+
+      const result = JSON.parse(rawText);
+
+      console.log("Parsed result:", result);
+
+      if (result.status === "success") {
+
+        alert("Emergency Route activated successfully");
+
+        const emergencyMarkerData = emergencyMarkers[selectedEmergencyId];
+
+        const emergencyMarker = emergencyMarkerData?.marker;
+
+        if (emergencyMarker) {
+
+          emergencyMarker.setPopupContent(`
+            <b>ASSIGNED ${selectedEmergencyId}</b><br>
+            Status: assigned
+          `);
+
+          emergencyMarker.setIcon(
+            getEmergencyMarker(selectedEmergencyType, "assigned")
+          );
+        }
+
+        responderMarkers = {};
+
+        primaryResponderItems.innerHTML = "";
+        supportiveResponderItems.innerHTML = "";
+
+        responderPlaceholder.style.display = "flex";
+
+        activeBtnContainer.style.display = "none";
+
+        primaryGroupSection.style.display = "none";
+        supportiveGroupSection.style.display = "none";
+
+        selectedEmergencyId = null;
+      } else {
+
+        alert(result.message || "Failed to save route");
       }
 
-      Object.values(responderMarkers).forEach(marker => {
-        emergencyMap.removeLayer(marker);
-      });*/
+    } catch(error) {
 
-      responderMarkers = {};
+      console.error("ACTIVE BTN ERROR:");
+      console.error(error);
 
-      primaryResponderItems.innerHTML = "";
-      supportiveResponderItems.innerHTML = "";
-
-      responderPlaceholder.style.display = "flex";
-
-      activeBtnContainer.style.display = "none";
-
-      primaryGroupSection.style.display = "none";
-      supportiveGroupSection.style.display = "none";
-
-      selectedRouteData = null;
-      selectedEmergencyId = null;
+      alert("Something went wrong. Check console.");
     }
   });
 

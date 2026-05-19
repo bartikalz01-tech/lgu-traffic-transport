@@ -14,18 +14,11 @@ if(!$data) {
 }
 
 $emergencyId = $data['emergency_id'] ?? null;
-$responderId = $data['responder_id'] ?? null;
-$distance = $data['distance'] ?? null;
-$eta = $data['eta'] ?? null;
-$route = $data['route'] ?? [];
-$selected = 1;
+$responders = $data['responders'] ?? [];
 
 if(
   !$emergencyId ||
-  !$responderId ||
-  !$distance ||
-  !$eta ||
-  empty($route)
+  empty($responders)
 ) {
   echo json_encode([
     "status" => "error",
@@ -34,19 +27,38 @@ if(
   exit;
 }
 
-$routeJson = json_encode($route);
-
 try {
+
   $emergencies = new Emergencies();
 
-  $saveEmergencyRoute = $emergencies->saveEmergencyRoutes(
-    $emergencyId,
-    $responderId,
-    $distance,
-    $eta,
-    $routeJson,
-    $selected
-  );
+  foreach($responders as $responder) {
+
+    $responderId = $responder['responder_id'] ?? null;
+    $distance = $responder['distance'] ?? null;
+    $eta = $responder['eta'] ?? null;
+    $route = $responder['route'] ?? [];
+    $selected = 1;
+
+    if(
+      !$responderId ||
+      !$distance ||
+      !$eta ||
+      empty($route)
+    ) {
+      continue;
+    }
+
+    $routeJson = json_encode($route);
+
+    $emergencies->saveEmergencyRoutes(
+      $emergencyId,
+      $responderId,
+      $distance,
+      $eta,
+      $routeJson,
+      $selected
+    );
+  }
 
   $emergencies->updateEmergencyStatus(
     $emergencyId,
@@ -55,10 +67,11 @@ try {
 
   echo json_encode([
     "status" => "success",
-    "message" => "Emergency route saved successfully",
-    "emergency_route_id" => $saveEmergencyRoute
+    "message" => "Emergency routes saved successfully"
   ]);
+
 } catch(Exception $e) {
+
   echo json_encode([
     "status" => "error",
     "message" => $e->getMessage()
