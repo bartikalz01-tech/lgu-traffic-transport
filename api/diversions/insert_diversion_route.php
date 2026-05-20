@@ -106,8 +106,8 @@ echo json_encode([
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once '../backend/Routing.php';
-require_once '../backend/Diversion.php';
+require_once '../../backend/Routing.php';
+require_once '../../backend/Diversion.php';
 
 header('Content-Type: application/json');
 

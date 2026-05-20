@@ -1,5 +1,5 @@
 <?php
-require_once '../backend/Diversion.php';
+require_once '../../backend/Diversion.php';
 
 header('Content-Type: application/json');
 

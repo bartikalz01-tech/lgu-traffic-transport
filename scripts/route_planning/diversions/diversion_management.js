@@ -85,6 +85,9 @@ function renderRoadNodes(map, nodes) {
     marker.on("click", async () => {
 
       if(selectedStart && selectedEnd) {
+
+        document.getElementById("sidebarActions").classList.add("hidden");
+
         selectedStart = null;
         selectedEnd = null;
 
@@ -215,6 +218,12 @@ function renderSuggestions(routes, map) {
 
   suggestionList.innerHTML = html;
 
+  const sidebarActions = document.getElementById("sidebarActions");
+
+  if(sidebarActions) {
+    sidebarActions.classList.remove("hidden");
+  }
+
   const cards = document.querySelectorAll(".suggestion-card");
 
   if(cards.length > 0) {
@@ -278,7 +287,7 @@ async function renderDiversionManagement(container) {
         <div class="point-item start">
           <span class="dot"></span>
           <div class="point-info">
-            <label>Starting Point</label>
+            <label id="startPointLabel">Point A</label>
             <p id="startPointName">Awaiting Selection...</p>
           </div>
         </div>
@@ -286,7 +295,7 @@ async function renderDiversionManagement(container) {
         <div class="point-item end">
           <span class="dot"></span>
           <div class="point-info">
-            <label>End Point</label>
+            <label id="endPointLabel">Point B</label>
             <p id="endPointName">Awaiting Selection...</p>
           </div>
         </div>
@@ -307,13 +316,20 @@ async function renderDiversionManagement(container) {
 
       <div class="suggestions-list">
         <label class="list-label">Diversion Suggesstions</label>
-        <div id="suggestionPlaceholder" class="sugestions-loading">
+        <div id="suggestionPlaceholder" class="sugestions-loading suggestions-empty">
           <div class="spinner"></div>
-          <p>Select start and end points to generate routes</p>
+          
+          <div class="empty-state-icon">
+            <i class="fas fa-route"></i>
+          </div>
+
+          <h4>No Route Generated Yet</h4>
+
+          <p>Select two intersections on the map to generate diversion route suggestions</p>
         </div>
       </div>
 
-      <div class="sidebar-actions">
+      <div class="sidebar-actions hidden" id="sidebarActions">
         <button class="btn btn-primary btn-full" id="activateDiversion">
           <i class="fas fa-check-circle"></i>
           Activate Diversion
@@ -335,17 +351,42 @@ async function renderDiversionManagement(container) {
 
   const dirToggle = document.getElementById('directionToggle');
   dirToggle.addEventListener('click', () => {
+    const startLabel = document.getElementById("startPointLabel");
+    const endLabel = document.getElementById("endPointLabel");
+    const startItem = document.querySelector(".point-item.start");
+    const endItem = document.querySelector(".point-item.end");
+
     const isTwoWay = dirToggle.getAttribute('data-mode') === 'two-way';
     if (isTwoWay) {
       dirToggle.setAttribute('data-mode', 'one-way');
       dirToggle.innerHTML = '<i class="fas fa-arrow-right"></i> <span>One-Way Only</span>';
       dirToggle.classList.add('one-way-active');
+
+      startLabel.textContent = "Starting Point";
+      endLabel.textContent = "End Point";
+
+      startItem.classList.remove("two-way");
+      endItem.classList.remove("two-way");
     } else {
       dirToggle.setAttribute('data-mode', 'two-way');
       dirToggle.innerHTML = '<i class="fas fa-arrows-left-right"></i> <span>Two-Way Route</span>';
       dirToggle.classList.remove('one-way-active');
+
+      startLabel.textContent = "Point A";
+      endLabel.textContent = "Point B";
+
+      startItem.classList.add("two-way");
+      endItem.classList.add("two-way");
     }
   });
+
+  const startItem = document.querySelector(".point-item.start");
+  const endItem = document.querySelector(".point-item.end");
+
+  if(dirToggle.getAttribute("data-mode") === "two-way") {
+    startItem.classList.add("two-way");
+    endItem.classList.add("two-way");
+  }
 
   const activateBtn = document.getElementById("activateDiversion"); 
 

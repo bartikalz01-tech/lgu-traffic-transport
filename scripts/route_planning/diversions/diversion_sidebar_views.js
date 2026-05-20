@@ -1,0 +1,1 @@
+import { fetchDiversions, fetchDiversionDetails } from "../../data/fetch_road_map.js";

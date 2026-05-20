@@ -183,6 +183,10 @@
   background: var(--danger-color);
 }
 
+.point-item.two-way .dot {
+  background: var(--primary-color);
+}
+
 .point-info label {
   display: block;
   font-size: 10px;
@@ -240,6 +244,65 @@
   border: 1px dashed var(--border-color-1);
   border-radius: 12px;
   color: var(--text-secondary);
+}
+
+.suggestions-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  padding: 45px 20px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(52, 152, 219, 0.03),
+    rgba(52, 152, 219, 0.01)
+  );
+
+  border: 1px dashed var(--border-color-1);
+  border-radius: 14px;
+
+  min-height: 220px;
+}
+
+.empty-state-icon {
+  width: 70px;
+  height: 70px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 18px;
+
+  background: rgba(52, 152, 219, 0.08);
+}
+
+.empty-state-icon i {
+  font-size: 28px;
+  color: var(--primary-color);
+  opacity: 0.75;
+}
+
+.suggestions-empty h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-color-1);
+
+  margin-bottom: 8px;
+}
+
+.suggestions-empty p {
+  font-size: 12px;
+  line-height: 1.6;
+
+  color: var(--text-secondary);
+
+  max-width: 230px;
 }
 
 .suggestions-loading p {
@@ -388,4 +451,8 @@
 .activated-route {
   border: 2px solid #43a047;
   box-shadow: 0 0 12px rgba(67, 160, 71, 0.4);
+}
+
+.sidebar-actions.hidden {
+  display: none;
 }

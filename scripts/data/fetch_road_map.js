@@ -72,7 +72,7 @@ export async function fetchSmartRoute(start, end) {
 
 export async function fetchDiversions() {
   try {
-    const resposne = await fetch("../api/get_diversion_start_end.php");
+    const resposne = await fetch("../api/diversions/get_diversion_start_end.php");
     const result = await resposne.json();
 
     if(result.status === "success") {
@@ -89,7 +89,7 @@ export async function fetchDiversions() {
 
 export async function fetchDiversionDetails(diversionId) {
   try {
-    const response = await fetch(`../api/get_diversion_routes.php?diversion_id=${diversionId}`);
+    const response = await fetch(`../api/diversions/get_diversion_routes.php?diversion_id=${diversionId}`);
     const result = await response.json();
 
     if(result.status === "success") {
@@ -123,7 +123,7 @@ export async function fetchAllDiversionStatus(diversionId) {
 
 export async function fetchGeneratedDiversion(startNode, endNode) {
   try {
-    const response = await fetch(`../api/insert_diversion_route.php?start=${startNode}&end=${endNode}`);
+    const response = await fetch(`../api/diversions/insert_diversion_route.php?start=${startNode}&end=${endNode}`);
     const result = await response.json();
 
     if(result.status !== "success") {
@@ -139,7 +139,7 @@ export async function fetchGeneratedDiversion(startNode, endNode) {
 }
 
 export async function fetchRoadNodes() {
-  const response = await fetch("../api/get_road_nodes.php");
+  const response = await fetch("../api/diversions/get_road_nodes.php");
 
   const result = await response.json();
   
@@ -148,7 +148,7 @@ export async function fetchRoadNodes() {
 
 export async function activateDiversionRoute(payload) {
   try {
-    const response = await fetch("../api/save_diversion.php", {
+    const response = await fetch("../api/diversions/save_diversion.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

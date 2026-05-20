@@ -1,5 +1,5 @@
 <?php
-require_once '../backend/Routing.php';
+require_once '../../backend/Routing.php';
 
 header('Content-Type: application/json');
 
