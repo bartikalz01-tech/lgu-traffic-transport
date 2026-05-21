@@ -35,38 +35,53 @@
 
     <section class="puv-group-section" id="puvLayout">
       <div class="left-part">
-        <div class="title">
-          <h1>PUV Groups</h1>
+
+        <div class="sidebar-component active">
+          <div class="component-header">
+            <i class="fas fa-bus-alt"></i>
+            <span>PUV Groups</span>
+          </div>
+          <div class="component-links">
+            <div class="group active">
+              <i class="fas fa-circle"></i>
+              <p>Bataan Coordination</p>
+            </div>
+            <div class="group">
+              <i class="fas fa-circle"></i>
+              <p>Orion Coop</p>
+            </div>
+            <div class="group">
+              <i class="fas fa-circle"></i>
+              <p>Pilar Association</p>
+            </div>
+            <div class="group">
+              <i class="fas fa-circle"></i>
+              <p>Test</p>
+            </div>
+          </div>
         </div>
-        <button class="btn btn-primary" id="addGroup">
-          <i class="fas fa-plus"></i>
-          Add Group
-        </button>
-        <div class="group">
-          <i class="fas fa-circle"></i>
-          <p>Bataan Coordination</p>
+
+        <div class="sidebar-component">
+          <div class="component-header">
+            <i class="fas fa-route"></i>
+            <span>PUV Alternate Routes</span>
+          </div>
         </div>
-        <div class="group">
-          <i class="fas fa-circle"></i>
-          <p>Orion Coop</p>
-        </div>
-        <div class="group">
-          <i class="fas fa-circle"></i>
-          <p>Pilar Association</p>
-        </div>
-        <div class="group">
-          <i class="fas fa-circle"></i>
-          <p>Test</p>
-        </div>
+
       </div>
       <div class="right-part">
-        <button class="btn btn-outline-primary puv-toggle-btn" id="togglePuvSidebar">
-          <i class="fas fa-chevron-left"></i>
-        </button>
+        <div class="top-btns-container">
+          <button class="btn btn-outline-primary puv-toggle-btn" id="togglePuvSidebar">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="btn btn-primary" id="addGroup">
+            <i class="fas fa-plus"></i>
+            Add Group
+          </button>
+        </div>
         <div class="group-overview-container">
           <h1 class="group-overview-title">Group Overview</h1>
         </div>
-
         <div class="group-details">
           <div class="first-part">
             <h1>Group:</h1>
@@ -85,8 +100,8 @@
               <div class="stat-icon vehicle-types">
                 <i class="fas fa-truck-moving"></i>
               </div>
-              <h2 id="totalVehicleTypes">3</h2>
-              <p>Vehicle Types</p>
+              <h2 id="vehicleType">Trycicle</h2>
+              <p>Vehicle Type</p>
             </div>
 
             <div class="stat-card">
@@ -104,6 +119,7 @@
           <div id="map"></div>
         </div>
 
+        <!--
         <div class="different-vehicles-container" style="margin-top: 20px;">
           <h1 style="text-align: center;">Vehicle Types</h1>
           <div class="different-vehicles">
@@ -130,7 +146,7 @@
             </button>
           </div>
         </div>
-
+        -->
         <div class="members-container">
           <h1>PUV Group Members</h1>
           <div class="indicator-button">
@@ -150,7 +166,6 @@
               <thead>
                 <tr>
                   <th>Driver</th>
-                  <th>Vehicle Type</th>
                   <th>Position</th>
                   <th>PUV #</th>
                   <th>Status</th>
@@ -161,7 +176,6 @@
               <tbody>
                 <tr>
                   <td>Juan Dela Cruz</td>
-                  <td>Jeepney</td>
                   <td>Driver</td>
                   <td>JPN-102</td>
                   <td>
@@ -176,9 +190,8 @@
 
                 <tr>
                   <td>Pedro Santos</td>
-                  <td>Jeepney</td>
-                  <td>JPN-118</td>
                   <td>Conductor</td>
+                  <td>JPN-118</td>
                   <td><span class="status active">Inactive</span></td>
                   <td>
                     <button class="btn btn-sm btn-outline-info">
@@ -196,6 +209,7 @@
     <?php include '../includes/admin-footer.php' ?>
   </main>
 
+  <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/public_coordination/public_coordination.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>

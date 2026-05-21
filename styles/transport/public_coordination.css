@@ -19,20 +19,161 @@
   grid-template-columns: 0 1fr;
 }
 
-.left-part {
+/*.left-part {
   border: 1px solid var(--border-color-1);
   border-radius: 12px;
 
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  /* ⬅ reduced */
 
   padding: 1.25rem;
   background: var(--card-bg-1);
   box-shadow: 0 4px 12px var(--shadow-1);
   overflow: hidden;
   transition: opacity 0.2s ease, transform 0.3s ease;
+}*/
+
+.left-part {
+  background: var(--card-bg-1);
+  border: 1px solid var(--border-color-1);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Space between different components */
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+.left-part .title {
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid var(--border-color-1);
+  text-align: left; /* Better for sidebars */
+  margin-bottom: 0;
+}
+
+.left-part .title h1 {
+  font-size: 1.1rem; /* Slightly smaller for sidebar feel */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+}
+
+.component-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  /*background: var(--sidebar-hover-bg-1); 
+  color: var(--text-color-1);        
+  border: 1px solid var(--border-color-1);*/
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.component-header:hover {
+  background: var(--sidebar-hover-bg-1);
+  color: var(--text-color-1);
+}
+
+.sidebar-component.active .component-header {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.2);
+}
+
+.component-header i {
+  font-size: 1rem;
+}
+
+/* Container for the items inside the component */
+.component-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 10px;
+}
+
+/* The Scrollable List Area */
+.puv-groups-list {
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Individual Group Items */
+.group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.group i {
+  font-size: 5px; /* Bullet point look */
+  color: var(--text-secondary-1);
+}
+
+.group p {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-color-1);
+}
+
+/* Hover & Active States */
+.group:hover {
+  background: var(--sidebar-hover-bg-1);
+  transform: translateX(5px);
+}
+
+.group:hover p {
+  color: var(--primary-color);
+}
+
+.group:hover i {
+  color: var(--primary-color);
+}
+
+.group.active {
+  background: rgba(52, 152, 219, 0.1);
+  border-color: rgba(52, 152, 219, 0.2);
+}
+
+.group.active p {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.group.active i {
+  color: var(--primary-color);
+}
+
+/* Custom Scrollbar for the list */
+.puv-groups-list::-webkit-scrollbar {
+  width: 5px;
+}
+.puv-groups-list::-webkit-scrollbar-thumb {
+  background: var(--border-color-1);
+  border-radius: 10px;
 }
 
 .puv-group-section.collapsed .left-part {
@@ -81,7 +222,6 @@
 }
 
 #addGroup {
-  width: 100%;
   justify-content: center;
   margin-bottom: 0.5rem;
 }
@@ -97,24 +237,6 @@
   cursor: pointer;
 
   transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.group i {
-  width: 14px;
-  /* 🔑 fixed width */
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 10px;
-  color: var(--primary-color);
-}
-
-.group p {
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-color-1);
 }
 
 .group:hover {
@@ -133,6 +255,13 @@
   border-radius: 12px;
   padding: 1.25rem;
   box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+.top-btns-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 .group-overview-container {
