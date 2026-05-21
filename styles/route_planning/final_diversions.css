@@ -154,11 +154,51 @@
   box-shadow: var(--shadow-1);
 }
 
+.d-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
 .d-sidebar-header h3 {
   font-size: 16px;
   color: var(--secondary-color);
   margin-bottom: 20px;
-} 
+}
+
+.back-btn {
+    background: var(--light-color, #f8f9fa);
+    border: 1px solid var(--border-color-1);
+    color: var(--text-color-1);
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-btn i {
+    font-size: 14px;
+    color: var(--primary-color);
+}
+
+.back-btn:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateX(-3px); /* Subtle nudge to the left */
+}
+
+.back-btn:hover i {
+    color: white; /* Flip icon color on hover */
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+}
 
 .point-item {
   display: flex;
@@ -220,6 +260,7 @@
 }
 
 .suggestion-card {
+  flex-shrink: 0;
   background: white;
   border: 1px solid var(--border-color-1);
   padding: 12px;
@@ -244,6 +285,47 @@
   border: 1px dashed var(--border-color-1);
   border-radius: 12px;
   color: var(--text-secondary);
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 380px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.suggestions-list .suggestions-empty,
+.suggestions-list .suggestions-loading{
+  flex-shrink: 0;
+  min-height: 220px;
+  width: 100%;
+}
+
+.suggestions-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.suggestions-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.suggestions-list::-webkit-scrollbar-thumb {
+  background: var(--border-color-1, #e2e8f0);
+  border-radius: 10px;
+}
+
+.suggestions-list::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color, #3498db);
+}
+
+.live-affected-roads {
+  margin-top: 15px;
+  border-top: 1px solid var(--border-color-1);
+  padding-top: 15px;
 }
 
 .suggestions-empty {

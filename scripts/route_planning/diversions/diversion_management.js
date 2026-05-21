@@ -1,4 +1,5 @@
 import { fetchRoadNodes, fetchGeneratedDiversion, fetchRoadMap, activateDiversionRoute, fetchDiversions } from "../../data/fetch_road_map.js";
+import { renderRouteSelectionSidebar, renderActiveDiversionsSidebar, initRouteSelectionSidebar } from "./diversion_sidebar_views.js";
 import { drawSimpleLine, initMap } from "../../utils/diversions.js";
 
 let selectedStart = null;
@@ -279,64 +280,11 @@ async function renderDiversionManagement(container) {
     </div>
 
     <aside class="diversion-sidebar">
-      <div class="d-sidebar-header">
-        <h3>Route Selection</h3>
-      </div>
-
-      <div class="selection-group">
-        <div class="point-item start">
-          <span class="dot"></span>
-          <div class="point-info">
-            <label id="startPointLabel">Point A</label>
-            <p id="startPointName">Awaiting Selection...</p>
-          </div>
-        </div>
-
-        <div class="point-item end">
-          <span class="dot"></span>
-          <div class="point-info">
-            <label id="endPointLabel">Point B</label>
-            <p id="endPointName">Awaiting Selection...</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="distance-summary">
-        <span>Total Distance:</span>
-        <strong id="calcDistance">0.00 km</strong>
-      </div>
-
-      <div class="route-config">
-        <label class="list-label">Route Configuration</label>
-        <button class="toggle-btn" id="directionToggle" data-mode="two-way">
-          <i class="fas fa-arrows-left-right"></i>
-          <span>Two way route</span>
-        </button>
-      </div>
-
-      <div class="suggestions-list">
-        <label class="list-label">Diversion Suggesstions</label>
-        <div id="suggestionPlaceholder" class="sugestions-loading suggestions-empty">
-          <div class="spinner"></div>
-          
-          <div class="empty-state-icon">
-            <i class="fas fa-route"></i>
-          </div>
-
-          <h4>No Route Generated Yet</h4>
-
-          <p>Select two intersections on the map to generate diversion route suggestions</p>
-        </div>
-      </div>
-
-      <div class="sidebar-actions hidden" id="sidebarActions">
-        <button class="btn btn-primary btn-full" id="activateDiversion">
-          <i class="fas fa-check-circle"></i>
-          Activate Diversion
-        </button>
-      </div>
+      ${renderRouteSelectionSidebar()}
     </aside>
   `;
+
+  initRouteSelectionSidebar();
 
   const diversionMap = initMap("map-placeholder");
 
@@ -349,7 +297,7 @@ async function renderDiversionManagement(container) {
   const nodes = await fetchRoadNodes();
   renderRoadNodes(diversionMap, nodes);
 
-  const dirToggle = document.getElementById('directionToggle');
+  /*const dirToggle = document.getElementById('directionToggle');
   dirToggle.addEventListener('click', () => {
     const startLabel = document.getElementById("startPointLabel");
     const endLabel = document.getElementById("endPointLabel");
@@ -386,7 +334,7 @@ async function renderDiversionManagement(container) {
   if(dirToggle.getAttribute("data-mode") === "two-way") {
     startItem.classList.add("two-way");
     endItem.classList.add("two-way");
-  }
+  }*/
 
   const activateBtn = document.getElementById("activateDiversion"); 
 
@@ -457,6 +405,13 @@ async function renderDiversionManagement(container) {
     }
 
   });
+
+  const activeDiversionCard = document.querySelector(".overview-card.active-diversions");
+
+  activeDiversionCard.addEventListener("click", async () => {
+    await renderActiveDiversionsSidebar(diversionMap);
+  })
+
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
