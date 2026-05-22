@@ -17,3 +17,16 @@ export async function insertPuvGroup(payload) {
     }
   }
 }
+
+export async function getPuvGroup() {
+  try {
+    const response = await fetch("../api/puv_api/get_puv_groups.php");
+
+    const result = await response.json();
+
+    return result;
+  } catch(error) {
+    console.error("Failed to get puv groups data");
+    return [];
+  }
+}

@@ -43,7 +43,7 @@
             <span>PUV Groups</span>
           </div>
           <div class="component-links">
-            <div class="group active">
+            <!--<div class="group active">
               <i class="fas fa-circle"></i>
               <p>Bataan Coordination</p>
             </div>
@@ -58,7 +58,7 @@
             <div class="group">
               <i class="fas fa-circle"></i>
               <p>Test</p>
-            </div>
+            </div>-->
           </div>
         </div>
 
@@ -83,7 +83,7 @@
         <div class="group-overview-container">
           <h1 class="group-overview-title">Group Overview</h1>
         </div>
-        <div class="group-details">
+        <div class="group-details" id="groupDetailsContainer">
           <div class="first-part">
             <h1>Group:</h1>
             <p id="puvGroupName">Bataan Transport Cooperative</p>
@@ -113,11 +113,11 @@
               <p>Active PUVs</p>
             </div>
           </div>
-        </div>
 
-        <div class="map-container full-width-map">
-          <h1 style="text-align: center; margin-bottom: 20px;">Group Map</h1>
-          <div id="map"></div>
+          <div class="map-container full-width-map">
+            <h1 style="text-align: center; margin-bottom: 20px;">Group Map</h1>
+            <div id="map"></div>
+          </div>
         </div>
 
         <!--

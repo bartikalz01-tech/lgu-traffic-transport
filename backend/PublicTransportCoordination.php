@@ -26,6 +26,25 @@ class PublicTransportCoordination extends config {
     }
   }
 
+  public function getPuvGroups() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        puv_group_id,
+        puv_group_name,
+        puv_group_address,
+        puv_vehicle_type,
+        latitude,
+        longitude
+      FROM puv_groups
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  } 
+
 }
 
 ?>

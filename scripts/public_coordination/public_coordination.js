@@ -1,17 +1,14 @@
+import { getPuvGroup } from "../data/fetch_public_group_trans.js";
 import { renderAddGroup } from "./add_group.js";
+import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_groups.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  //const map = L.map('map').setView([14.6414, 120.9909], 18);
+document.addEventListener("DOMContentLoaded", async () => {
 
   const toggleBtn = document.getElementById('togglePuvSidebar');
   const layout = document.getElementById('puvLayout');
 
   toggleBtn.addEventListener('click', () => {
     layout.classList.toggle('collapsed');
-
-    /*setTimeout(() => {
-      map.invalidateSize({ animate: true });
-    }, 350);*/
   });
 
   const addGroupContainer = document.getElementById("addGroupOverlay");
@@ -23,7 +20,29 @@ document.addEventListener("DOMContentLoaded", () => {
     renderAddGroup(addGroupContainer);
   });
 
- /* L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributers'
-  }).addTo(map);*/
+  const puvGroups = await getPuvGroup();
+
+  if(puvGroups.status === "success") {
+
+    const groupsData = puvGroups.data
+
+    const componentLinks = document.querySelector(".component-links");
+    const groupDetailsContainer = document.getElementById("groupDetailsContainer");
+
+    renderSidebarPuvGroups(
+      componentLinks, 
+      groupsData,
+
+      (selectedGroup) => {
+        renderPuvGroupDetails(groupDetailsContainer, selectedGroup);
+
+        console.log("Selected Group:", selectedGroup)
+      }
+    );
+
+    if(groupsData.length > 0) {
+      renderPuvGroupDetails(groupDetailsContainer, groupsData[0]);
+    }
+  }
+
 });
