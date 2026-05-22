@@ -69,3 +69,21 @@ export function getEventMarker(type, description) {
     iconAnchor: [16, 16]
   });
 }
+
+export function initMap(mapId) {
+
+  if(maps[mapId]) {
+    maps[mapId].remove();
+    delete maps[mapId]
+  }
+
+  const map = L.map(mapId).setView([14.6414, 120.9909], 18);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  maps[mapId] = map;
+
+  return map;
+}

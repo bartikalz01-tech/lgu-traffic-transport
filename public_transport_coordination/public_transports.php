@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/transport/public_coordination.css">
+  <link rel="stylesheet" href="../styles/transport/add_group.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Public Transport Coordination</title>
 </head>
@@ -74,7 +75,7 @@
           <button class="btn btn-outline-primary puv-toggle-btn" id="togglePuvSidebar">
             <i class="fas fa-chevron-left"></i>
           </button>
-          <button class="btn btn-primary" id="addGroup">
+          <button class="btn btn-primary" id="addGroupBtn">
             <i class="fas fa-plus"></i>
             Add Group
           </button>
@@ -206,8 +207,10 @@
       </div>
     </section>
 
-    <?php include '../includes/admin-footer.php' ?>
+    <div class="add-puv-group-overlay add-puv-group-hidden" id="addGroupOverlay"></div>
   </main>
+
+  <?php include '../includes/admin-footer.php' ?>
 
   <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/public_coordination/public_coordination.js"></script>

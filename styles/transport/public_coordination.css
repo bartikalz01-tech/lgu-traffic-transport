@@ -1,14 +1,6 @@
-/*.puv-group-section {
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 20px;
-}*/
-
 .puv-group-section {
   margin-left: 20px;
+  margin-bottom: 15px;
   display: grid;
   grid-template-columns: 300px 1fr;
   column-gap: 20px;
@@ -18,21 +10,6 @@
 .puv-group-section.collapsed {
   grid-template-columns: 0 1fr;
 }
-
-/*.left-part {
-  border: 1px solid var(--border-color-1);
-  border-radius: 12px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  padding: 1.25rem;
-  background: var(--card-bg-1);
-  box-shadow: 0 4px 12px var(--shadow-1);
-  overflow: hidden;
-  transition: opacity 0.2s ease, transform 0.3s ease;
-}*/
 
 .left-part {
   background: var(--card-bg-1);
