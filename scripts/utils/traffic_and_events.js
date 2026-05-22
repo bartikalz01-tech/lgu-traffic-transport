@@ -70,6 +70,8 @@ export function getEventMarker(type, description) {
   });
 }
 
+const maps = {};
+
 export function initMap(mapId) {
 
   if(maps[mapId]) {
