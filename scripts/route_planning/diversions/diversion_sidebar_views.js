@@ -229,10 +229,15 @@ async function attachDiversionHistoryEvents(map) {
         lng: parseFloat(point.lng)
       }));
 
+      if(activeDiversionPolyline) {
+        map.removeLayer(activeDiversionPolyline);
+        activeDiversionPolyline = null
+      }
+
       activeDiversionPolyline = drawSimpleLine(
         map,
         points,
-        activeDiversionPolyline
+        null
       );
 
       map.fitBounds(
@@ -352,7 +357,7 @@ async function attachDiversionHistoryEvents(map) {
       const suggestionsList =
         document.querySelector(".suggestions-list");
 
-      suggestionsList.insertAdjacentHTML(
+      /*suggestionsList.insertAdjacentHTML(
         "beforeend",
         `
           <div class="live-affected-roads">
@@ -365,7 +370,7 @@ async function attachDiversionHistoryEvents(map) {
             </ul>
           </div>
         `
-      );
+      );*/
     });
 
   });
@@ -389,7 +394,7 @@ export function initRouteSelectionSidebar() {
   }
 
   dirToggle.addEventListener("click", () => {
-    const isTwoWay = document.getAttribute("data-mode") === "two-way";
+    const isTwoWay = dirToggle.getAttribute("data-mode") === "two-way";
 
     if(isTwoWay) {
       dirToggle.setAttribute("data-mode", "one-way");

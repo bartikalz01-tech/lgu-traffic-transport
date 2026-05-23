@@ -83,42 +83,8 @@
         <div class="group-overview-container">
           <h1 class="group-overview-title">Group Overview</h1>
         </div>
-        <div class="group-details" id="groupDetailsContainer">
-          <div class="first-part">
-            <h1>Group:</h1>
-            <p id="puvGroupName">Bataan Transport Cooperative</p>
-          </div>
-          <div class="statistics-container">
-            <div class="stat-card">
-              <div class="stat-icon users">
-                <i class="fas fa-users"></i>
-              </div>
-              <h2 id="puvTotalMembers">124</h2>
-              <p>Total Members</p>
-            </div>
-
-            <div class="stat-card">
-              <div class="stat-icon vehicle-types">
-                <i class="fas fa-truck-moving"></i>
-              </div>
-              <h2 id="vehicleTypeDescription">Tricycle</h2>
-              <p>Vehicle Type</p>
-            </div>
-
-            <div class="stat-card">
-              <div class="stat-icon active-puv">
-                <i class="fas fa-circle-check"></i>
-              </div>
-              <h2 id="activePuv">76</h2>
-              <p>Active PUVs</p>
-            </div>
-          </div>
-
-          <div class="map-container full-width-map">
-            <h1 style="text-align: center; margin-bottom: 20px;">Group Map</h1>
-            <div id="map"></div>
-          </div>
-        </div>
+        
+        <div class="group-details" id="groupDetailsContainer"></div>
 
         <!--
         <div class="different-vehicles-container" style="margin-top: 20px;">

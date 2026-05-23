@@ -158,7 +158,7 @@ function renderRoadNodes(map, nodes) {
 
         document.getElementById("calcDistance").textContent = `${fastestRoute.distance} km`;
 
-        renderSuggestions(routes, map);
+        await renderSuggestions(routes, map);
 
         const fastestRoutePoints = fastestRoute.points.map(point => ({
           lat: parseFloat(point.lat),
@@ -175,7 +175,7 @@ function renderRoadNodes(map, nodes) {
 
 }
 
-function renderSuggestions(routes, map) {
+async function renderSuggestions(routes, map) {
   const suggestionList = document.querySelector(".suggestions-list");
 
   let html = `
@@ -183,6 +183,8 @@ function renderSuggestions(routes, map) {
       Diversion Suggestions
     </label>
   `;
+
+  const activeDiversions = await fetchDiversions();
 
   routes.forEach((route, index) => {
     let badge = "alternative";
@@ -199,11 +201,18 @@ function renderSuggestions(routes, map) {
       )
     ];
 
+    const matchedDiversion = activeDiversions.find(diversion => 
+      parseInt(diversion.start_road_id) === parseInt(route.start_road?.road_id) &&
+      parseInt(diversion.end_road_id) === parseInt(route.end_road?.road_id)
+    );
+
+    const isActive = !!matchedDiversion;
+
     html += `
-      <div class="suggestion-card" data-route-index="${index}">
+      <div class="suggestion-card" data-route-index="${index}" data-is-active="${isActive}">
         <div class="suggestion-meta">
           <span class="badge ${badge}">
-            Route ${index + 1}
+            ${isActive ? 'ACTIVE' : `Route ${index + 1}`}
           </span>
           <span class="eta">${route.estimated_time}</span>
         </div>
@@ -227,16 +236,39 @@ function renderSuggestions(routes, map) {
 
   const cards = document.querySelectorAll(".suggestion-card");
 
-  if(cards.length > 0) {
-    cards[0].classList.add("active-route");
+  const activeCard = document.querySelector('.suggestion-card[data-is-active="true"]')
+
+  if(activeCard) {
+    cards.forEach(c => c.classList.remove("active-route"));
+
+    activeCard.classList.add("active-route");
+
+    activatedRouteIndex = parseInt(activeCard.dataset.routeIndex);
+
+    activeSelectedRoute = routes[activatedRouteIndex];
+
+    const activePoints = activeSelectedRoute.points.map(point => ({
+      lat: parseFloat(point.lat),
+      lng: parseFloat(point.lng)
+    }));
+
+    routeLine = drawSimpleLine(map, activePoints, routeLine);
+
+    updateActivateButtonState();
   }
 
-  activeSelectedRoute = routes[0];
+  if(cards.length > 0) {
+    cards[0].classList.add("active-route");
+
+    activeSelectedRoute = routes[0];
+  }
 
   cards.forEach(card => {
 
     card.addEventListener("click", () => {
       const index = parseInt(card.dataset.routeIndex);
+
+      const isAlreadyActive = card.dataset.isActive === "true";
 
       /*if(activatedRouteIndex !== null && index !== activatedRouteIndex) {
         return;
@@ -245,6 +277,10 @@ function renderSuggestions(routes, map) {
       const selectedRoute = routes[index];
 
       activeSelectedRoute = selectedRoute;
+
+      if(isAlreadyActive) {
+        activatedRouteIndex = index;
+      }
       
       const clickedPoints = selectedRoute.points.map(point => ({
         lat: parseFloat(point.lat),
@@ -345,7 +381,9 @@ async function renderDiversionManagement(container) {
       return;
     }
 
-    const routeMode = dirToggle.getAttribute("data-mode");
+    const dirToggle = document.getElementById("directionToggle");
+
+    const routeMode = dirToggle ? dirToggle.getAttribute("data-mode") : "two-way";
 
     console.log(activeSelectedRoute);
 
