@@ -19,6 +19,7 @@ try {
     $data['start_road_id'],
     $data['end_road_id'],
     $data['route_config'],
+    $data['route_signature'],
     $data['distance'],
     $data['vehicle_per_min'],
     $data['avg_speed']

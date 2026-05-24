@@ -201,9 +201,10 @@ async function renderSuggestions(routes, map) {
       )
     ];
 
+    const currentSignature = route.points.map(point => point.road_id).join("-");
+
     const matchedDiversion = activeDiversions.find(diversion => 
-      parseInt(diversion.start_road_id) === parseInt(route.start_road?.road_id) &&
-      parseInt(diversion.end_road_id) === parseInt(route.end_road?.road_id)
+      diversion.route_signature === currentSignature
     );
 
     const isActive = !!matchedDiversion;
@@ -270,10 +271,6 @@ async function renderSuggestions(routes, map) {
 
       const isAlreadyActive = card.dataset.isActive === "true";
 
-      /*if(activatedRouteIndex !== null && index !== activatedRouteIndex) {
-        return;
-      }*/
-
       const selectedRoute = routes[index];
 
       activeSelectedRoute = selectedRoute;
@@ -333,45 +330,6 @@ async function renderDiversionManagement(container) {
   const nodes = await fetchRoadNodes();
   renderRoadNodes(diversionMap, nodes);
 
-  /*const dirToggle = document.getElementById('directionToggle');
-  dirToggle.addEventListener('click', () => {
-    const startLabel = document.getElementById("startPointLabel");
-    const endLabel = document.getElementById("endPointLabel");
-    const startItem = document.querySelector(".point-item.start");
-    const endItem = document.querySelector(".point-item.end");
-
-    const isTwoWay = dirToggle.getAttribute('data-mode') === 'two-way';
-    if (isTwoWay) {
-      dirToggle.setAttribute('data-mode', 'one-way');
-      dirToggle.innerHTML = '<i class="fas fa-arrow-right"></i> <span>One-Way Only</span>';
-      dirToggle.classList.add('one-way-active');
-
-      startLabel.textContent = "Starting Point";
-      endLabel.textContent = "End Point";
-
-      startItem.classList.remove("two-way");
-      endItem.classList.remove("two-way");
-    } else {
-      dirToggle.setAttribute('data-mode', 'two-way');
-      dirToggle.innerHTML = '<i class="fas fa-arrows-left-right"></i> <span>Two-Way Route</span>';
-      dirToggle.classList.remove('one-way-active');
-
-      startLabel.textContent = "Point A";
-      endLabel.textContent = "Point B";
-
-      startItem.classList.add("two-way");
-      endItem.classList.add("two-way");
-    }
-  });
-
-  const startItem = document.querySelector(".point-item.start");
-  const endItem = document.querySelector(".point-item.end");
-
-  if(dirToggle.getAttribute("data-mode") === "two-way") {
-    startItem.classList.add("two-way");
-    endItem.classList.add("two-way");
-  }*/
-
   const activateBtn = document.getElementById("activateDiversion"); 
 
   activateBtn.addEventListener("click", async () => {
@@ -394,6 +352,11 @@ async function renderDiversionManagement(container) {
       distance: activeSelectedRoute.distance,
       vehicle_per_min: 0,
       avg_speed: 0,
+
+      route_signature: activeSelectedRoute.points.map(
+        point => point.road_id
+      ).join("-"),
+
       points: activeSelectedRoute.points
     };
 
@@ -413,6 +376,14 @@ async function renderDiversionManagement(container) {
         <i class="fas fa-check"></i>
         Diversion Activated
       `;*/
+
+      alert("Diversion route activated successfully!");
+
+      const activeCard = document.querySelector(".active-route");
+
+      if(activeCard) {
+        activeCard.dataset.isActive = "true";
+      }
 
       updateActivateButtonState();
 
@@ -447,6 +418,12 @@ async function renderDiversionManagement(container) {
   const activeDiversionCard = document.querySelector(".overview-card.active-diversions");
 
   activeDiversionCard.addEventListener("click", async () => {
+
+    if(routeLine) {
+      diversionMap.removeLayer(routeLine);
+      routeLine = null;
+    }
+
     await renderActiveDiversionsSidebar(diversionMap);
   })
 
