@@ -1,7 +1,10 @@
-import { fetchDiversions, fetchDiversionDetails } from "../../data/fetch_road_map.js";
+import { fetchDiversions, fetchDiversionDetails, fetchGeneratedDiversion } from "../../data/fetch_road_map.js";
 import { drawSimpleLine } from "../../utils/diversions.js";
 
 let activeDiversionPolyline = null;
+let editingDiversionId = null;
+let previewDiversionPolyline = null;
+let generatedPreviewRoutes = [];
 
 export function renderRouteSelectionSidebar() {
 
@@ -120,7 +123,7 @@ export async function renderActiveDiversionsSidebar(map) {
       </label>
   `;
 
-  if(diversions.length === 0) {
+  if (diversions.length === 0) {
 
     html += `
       <div class="no-route">
@@ -130,7 +133,7 @@ export async function renderActiveDiversionsSidebar(map) {
 
   } else {
 
-    for(const [index, diversion] of diversions.entries()) {
+    for (const [index, diversion] of diversions.entries()) {
 
       const details = await fetchDiversionDetails(diversion.diversion_id);
 
@@ -148,19 +151,31 @@ export async function renderActiveDiversionsSidebar(map) {
           data-start="${diversion.start_name}"
           data-end="${diversion.end_name}"
           data-config="${diversion.route_config}"
+          data-start-road-id="${diversion.start_road_id}"
+          data-end-road-id="${diversion.end_road_id}"
+          data-start-node-id="${diversion.start_node_id}"
+          data-end-node-id="${diversion.end_node_id}"
         >
 
           <div class="suggestion-meta">
 
-            <span class="badge ${
-              index === 0
-                ? "fastest"
-                : index === 1
-                ? "shortest"
-                : "alternative"
-            }">
+            <span class="badge ${index === 0
+          ? "fastest"
+          : index === 1
+            ? "shortest"
+            : "alternative"
+        }">
               Route ${index + 1}
             </span>
+
+            <div class="card-management-actions">
+              <button class="action-btn edit-btn js-update-diversion" title="Update Route">
+                <i class="fas fa-pen-to-square"></i>
+              </button>
+              <button class="action-btn delete-btn js-delete-diversion" title="Remove Diversion">
+                <i class="fas fa-trash-can"></i>
+              </button>
+            </div>
 
             <span class="eta">
               ${diversion.distance} km
@@ -189,7 +204,7 @@ export async function renderActiveDiversionsSidebar(map) {
   const backBtn = document.getElementById("backToPlanner");
 
   backBtn.addEventListener("click", async () => {
-    if(activeDiversionPolyline) {
+    if (activeDiversionPolyline) {
       map.removeLayer(activeDiversionPolyline);
       activeDiversionPolyline = null;
     }
@@ -214,7 +229,7 @@ async function attachDiversionHistoryEvents(map) {
 
       const details = await fetchDiversionDetails(diversionId);
 
-      if(!details || details.length === 0) {
+      if (!details || details.length === 0) {
         return;
       }
 
@@ -229,7 +244,7 @@ async function attachDiversionHistoryEvents(map) {
         lng: parseFloat(point.lng)
       }));
 
-      if(activeDiversionPolyline) {
+      if (activeDiversionPolyline) {
         map.removeLayer(activeDiversionPolyline);
         activeDiversionPolyline = null
       }
@@ -276,7 +291,7 @@ async function attachDiversionHistoryEvents(map) {
       const startItem = document.querySelector(".point-item.start");
       const endItem = document.querySelector(".point-item.end");
 
-      if(config === "one-way") {
+      if (config === "one-way") {
         startLabel.textContent = "Starting Point";
         endLabel.textContent = "End Point";
 
@@ -346,7 +361,7 @@ async function attachDiversionHistoryEvents(map) {
       const oldAffectedRoads =
         document.querySelector(".live-affected-roads");
 
-      if(oldAffectedRoads) {
+      if (oldAffectedRoads) {
         oldAffectedRoads.remove();
       }
 
@@ -375,12 +390,172 @@ async function attachDiversionHistoryEvents(map) {
 
   });
 
+  const editButtons = document.querySelectorAll('.js-update-diversion');
+  const deleteButtons = document.querySelectorAll('.js-delete-diversion');
+
+  editButtons.forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+
+      e.stopPropagation();
+
+      const card = e.target.closest(".suggestion-card");
+
+      const diversionId = card.dataset.diversionId;
+
+      editingDiversionId = diversionId;
+
+      const startNodeId = card.dataset.startNodeId;
+
+      const endNodeId = card.dataset.endNodeId;
+
+      const details = await fetchDiversionDetails(diversionId);
+
+      if(!details || details.length === 0) {
+        return;
+      }
+
+      const diversionSidebar = document.querySelector(".diversion-sidebar");
+
+      diversionSidebar.innerHTML = renderRouteSelectionSidebar();
+
+      initRouteSelectionSidebar(card.dataset.config);
+
+      document.getElementById("startPointName").textContent = card.dataset.start;
+
+      document.getElementById("endPointName").textContent = card.dataset.end;
+
+      document.getElementById("calcDistance").textContent = `${card.dataset.distance} km`;
+
+      const placeholder = document.getElementById("suggestionPlaceholder");
+
+      if(placeholder) {
+        placeholder.remove();
+      }
+
+      if(activeDiversionPolyline) {
+        map.removeLayer(activeDiversionPolyline);
+        activeDiversionPolyline = null;
+      }
+
+      if(previewDiversionPolyline) {
+        map.removeLayer(previewDiversionPolyline);
+        previewDiversionPolyline = null;
+      }
+
+      const generatedRoutes = await fetchGeneratedDiversion(startNodeId, endNodeId);
+
+      if(!generatedRoutes || generatedRoutes.length === 0) {
+        console.log("No generated routes");
+        return;
+      }
+
+      generatedPreviewRoutes = generatedRoutes;
+
+      const suggestionsList = document.querySelector(".suggestions-list");
+
+      generatedRoutes.forEach((route, index) => {
+        const roads = [
+          ...new Set(
+            route.points.map(p => p.road_name).filter(Boolean)
+          )
+        ];
+
+        suggestionsList.insertAdjacentHTML(
+          "beforeend",
+          `
+            <div class="suggestion-card generated-route-card" data-index="${index}">
+              <div class="suggestion-meta">
+                <span class="badge">Route ${index + 1}</span>
+
+                <span class="eta">${route.distance} km</span>
+              </div>
+
+              <ul class="affected-roads-list">
+                ${roads.map(road => `
+                  <li>${road}</li>  
+                `).join("")}
+              </ul>
+            </div>
+          `
+        );
+      });
+
+      const originalPoints = details.map(point => ({
+        lat: parseFloat(point.lat),
+        lng: parseFloat(point.lng)
+      }));
+
+      previewDiversionPolyline = drawSimpleLine(map, originalPoints, null);
+
+      map.fitBounds(
+        L.latLngBounds(
+          originalPoints.map(
+            p => [p.lat, p.lng]
+          )
+        ),
+        {
+          padding: [50, 50]
+        }
+      );
+
+      const generatedCards = document.querySelectorAll(".generated-route-card");
+
+      generatedCards.forEach(cardEl => {
+        cardEl.addEventListener("click", () => {
+          const route = generatedPreviewRoutes[parseInt(cardEl.dataset.index)];
+
+          if(!route) return;
+
+          if(previewDiversionPolyline) {
+            map.removeLayer(previewDiversionPolyline);
+          }
+
+          const routePoints = route.points.map(point => ({
+            lat: parseFloat(point.lat),
+            lng: parseFloat(point.lng)
+          }));
+
+          previewDiversionPolyline = drawSimpleLine(map, routePoints, null);
+
+          generatedCards.forEach(c => {
+            c.classList.remove("active-route");
+          });
+
+          cardEl.classList.add("active-route");
+
+          document.getElementById("calcDistance").textContent = `${route.distance} km`;
+        });
+      });
+
+      const activateBtn = document.getElementById("activateDiversion");
+
+      activateBtn.innerHTML = `
+        <i class="fas fa-pen"></i>
+        Update Diversion
+      `;
+
+      document.getElementById("sidebarActions").classList.remove("hidden");
+
+    });
+  });
+
+  deleteButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Stops the card click event
+      const id = e.target.closest('.suggestion-card').dataset.diversionId;
+      if (confirm("Are you sure you want to delete this active diversion?")) {
+        console.log("Delete requested for ID:", id);
+        // Add your fetch call to delete_diversion.php here
+      }
+    });
+  });
+
 }
 
-export function initRouteSelectionSidebar() {
+export function initRouteSelectionSidebar(initialMode = "two-way") {
   const dirToggle = document.getElementById("directionToggle");
 
-  if(!dirToggle) return;
+  if (!dirToggle) return;
 
   const startLabel = document.getElementById("startPointLabel");
   const endLabel = document.getElementById("endPointLabel");
@@ -388,7 +563,45 @@ export function initRouteSelectionSidebar() {
   const startItem = document.querySelector(".point-item.start");
   const endItem = document.querySelector(".point-item.end");
 
-  if(dirToggle.getAttribute("data-mode") === "two-way") {
+  /*if(dirToggle.getAttribute("data-mode") === "two-way") {
+    startItem.classList.add("two-way");
+    endItem.classList.add("two-way");
+  }*/
+
+  if (initialMode === "one-way") {
+    dirToggle.setAttribute(
+      "data-mode",
+      "one-way"
+    );
+
+    dirToggle.innerHTML = `
+      <i class="fas fa-arrow-right"></i>
+      <span>One-Way Only</span>
+    `;
+
+    dirToggle.classList.add("one-way-active");
+
+    startLabel.textContent = "Starting Point";
+    endLabel.textContent = "End Point";
+
+    startItem.classList.remove("two-way");
+    endItem.classList.remove("two-way")
+  } else {
+    dirToggle.setAttribute(
+      "data-mode",
+      "two-way"
+    );
+
+    dirToggle.innerHTML = `
+      <i class="fas fa-arrows-left-right"></i>
+      <span>Two-Way Route</span>
+    `;
+
+    dirToggle.classList.remove("one-way-active");
+
+    startLabel.textContent = "Point A";
+    endLabel.textContent = "Point B";
+
     startItem.classList.add("two-way");
     endItem.classList.add("two-way");
   }
@@ -396,7 +609,7 @@ export function initRouteSelectionSidebar() {
   dirToggle.addEventListener("click", () => {
     const isTwoWay = dirToggle.getAttribute("data-mode") === "two-way";
 
-    if(isTwoWay) {
+    if (isTwoWay) {
       dirToggle.setAttribute("data-mode", "one-way");
 
       dirToggle.innerHTML = `

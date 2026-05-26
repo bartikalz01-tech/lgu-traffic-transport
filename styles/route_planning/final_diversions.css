@@ -538,3 +538,49 @@
 .sidebar-actions.hidden {
   display: none;
 }
+
+.card-management-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  margin-right: 10px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.suggestion-card:hover .card-management-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 1px solid var(--border-color-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.edit-btn {
+  color: var(--accent-color);
+}
+
+.edit-btn:hover {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.delete-btn {
+  color: var(--danger-color);
+}
+
+.delete-btn:hover {
+  background: var(--danger-color);
+  color: white;
+  border-color: var(--danger-color);
+}

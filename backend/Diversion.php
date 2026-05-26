@@ -54,6 +54,8 @@ class Diversion extends config {
         dr.diversion_id,
         dr.start_road_id,
         dr.end_road_id,
+        dr.start_node_id,
+        dr.end_node_id,
         dr.route_config,
         dr.route_signature,
         dr.distance,
@@ -88,11 +90,19 @@ class Diversion extends config {
         drd.lng,
         drd.sequence_order,
         drd.road_id,
-        r.road_name
+        r.road_name,
+        rs.start_node,
+        rs.end_node
       FROM diversion_routes_details drd
+
       LEFT JOIN roads r
         ON drd.road_id = r.road_id
+
+      LEFT JOIN road_segments rs
+        ON drd.road_id = rs.road_id
+
       WHERE drd.diversion_id = :diversion_id
+      
       ORDER BY drd.sequence_order ASC
     ";
 
