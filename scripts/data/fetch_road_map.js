@@ -169,6 +169,29 @@ export async function activateDiversionRoute(payload) {
   }
 }
 
+export async function updateDiversionRoute(payload) {
+  try {
+    const response = await fetch("../api/diversions/update_diversion.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    return result;
+  } catch(error) {
+    console.error("Update Diversions Error:", error);
+
+    return {
+      status: "error",
+      message: "Request Failed"
+    }
+  }
+}
+
 /*export async function fetchDiversionSummary() {
   try {
     const response = await fetch("../api/get_diversion_summary.php");

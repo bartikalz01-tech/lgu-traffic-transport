@@ -1,4 +1,4 @@
-import { fetchDiversions, fetchDiversionDetails, fetchGeneratedDiversion } from "../../data/fetch_road_map.js";
+import { fetchDiversions, fetchDiversionDetails, fetchGeneratedDiversion, updateDiversionRoute } from "../../data/fetch_road_map.js";
 import { drawSimpleLine } from "../../utils/diversions.js";
 
 let activeDiversionPolyline = null;
@@ -535,6 +535,60 @@ async function attachDiversionHistoryEvents(map) {
       `;
 
       document.getElementById("sidebarActions").classList.remove("hidden");
+
+      activateBtn.addEventListener("click", async () => {
+        const selectedCard = document.querySelector(".generated-route-card.active-route");
+
+        if(!selectedCard) {
+          alert("Please Select a diversion route first.");
+          return;
+        }
+
+        const selectedIndex = parseInt(selectedCard.dataset.index);
+
+        const selectedRoute = generatedPreviewRoutes[selectedIndex];
+
+        if(!selectedRoute) {
+          alert("Invalid Route selected");
+          return;
+        }
+
+        const routeConfig = document.getElementById("directionToggle").dataset.mode;
+
+        const routeSignature = selectedRoute.points.map(point => point.road_id).join("-");
+
+        const payload = {
+          diversion_id: editingDiversionId,
+          route_config: routeConfig,
+          route_signature: routeSignature,
+          distance: selectedRoute.distance,
+          points: selectedRoute.points
+        };
+
+        console.log("UPDATE PAYLOAD:", payload);
+
+        const result = await updateDiversionRoute(payload);
+
+        console.log(result);
+
+        if(result.success) {
+          alert("Diversion updated successfully!");
+
+          if(previewDiversionPolyline) {
+            map.removeLayer(previewDiversionPolyline);
+            previewDiversionPolyline = null;
+          }
+
+          if(activeDiversionPolyline) {
+            map.removeLayer(activeDiversionPolyline);
+            activeDiversionPolyline = null;
+          }
+
+          renderActiveDiversionsSidebar(map);
+        } else {
+          alert(result.message || "Failed to update diversion.");
+        }
+      });
 
     });
   });
