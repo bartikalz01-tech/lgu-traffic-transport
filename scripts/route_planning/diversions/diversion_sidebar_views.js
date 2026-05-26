@@ -1,5 +1,6 @@
-import { fetchDiversions, fetchDiversionDetails, fetchGeneratedDiversion, updateDiversionRoute } from "../../data/fetch_road_map.js";
+import { fetchDiversions, fetchDiversionDetails, fetchGeneratedDiversion, updateDiversionRoute, deleteDiversionRoute } from "../../data/fetch_road_map.js";
 import { drawSimpleLine } from "../../utils/diversions.js";
+import { updateActiveDiversions } from "./diversion_management.js";
 
 let activeDiversionPolyline = null;
 let editingDiversionId = null;
@@ -354,10 +355,6 @@ async function attachDiversionHistoryEvents(map) {
         <li>${road}</li>
       `).join("");
 
-      /*
-      REMOVE OLD LIST IF EXISTS
-      */
-
       const oldAffectedRoads =
         document.querySelector(".live-affected-roads");
 
@@ -365,27 +362,7 @@ async function attachDiversionHistoryEvents(map) {
         oldAffectedRoads.remove();
       }
 
-      /*
-      CREATE NEW SECTION
-      */
-
-      const suggestionsList =
-        document.querySelector(".suggestions-list");
-
-      /*suggestionsList.insertAdjacentHTML(
-        "beforeend",
-        `
-          <div class="live-affected-roads">
-            <label class="list-label">
-              Affected Roads
-            </label>
-
-            <ul class="affected-roads-list">
-              ${affectedRoadsHTML}
-            </ul>
-          </div>
-        `
-      );*/
+      const suggestionsList = document.querySelector(".suggestions-list");
     });
 
   });
@@ -594,12 +571,42 @@ async function attachDiversionHistoryEvents(map) {
   });
 
   deleteButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', async (e) => {
       e.stopPropagation(); // Stops the card click event
-      const id = e.target.closest('.suggestion-card').dataset.diversionId;
-      if (confirm("Are you sure you want to delete this active diversion?")) {
-        console.log("Delete requested for ID:", id);
-        // Add your fetch call to delete_diversion.php here
+      
+      const card = e.target.closest('.suggestion-card');
+
+      const diversionId = card.dataset.diversionId;
+
+      const confirmed = confirm("Are you sure you wan to delete this diversion?");
+
+      if(!confirmed) {
+        return;
+      }
+
+      const result = await deleteDiversionRoute(diversionId);
+
+      if(result.success) {
+
+        const updateDiversionCount = await fetchDiversions();
+
+        if(activeDiversionPolyline) {
+          map.removeLayer(activeDiversionPolyline);
+          activeDiversionPolyline = null;
+        }
+
+        if(previewDiversionPolyline) {
+          map.removeLayer(previewDiversionPolyline);
+          previewDiversionPolyline = null;
+        }
+
+        renderActiveDiversionsSidebar(map);
+
+        updateActiveDiversions(updateDiversionCount);
+
+        alert("Diversion deleted successfully");
+      } else {
+        alert(result.message || "Failed to delete diversion.");
       }
     });
   });
@@ -616,11 +623,6 @@ export function initRouteSelectionSidebar(initialMode = "two-way") {
 
   const startItem = document.querySelector(".point-item.start");
   const endItem = document.querySelector(".point-item.end");
-
-  /*if(dirToggle.getAttribute("data-mode") === "two-way") {
-    startItem.classList.add("two-way");
-    endItem.classList.add("two-way");
-  }*/
 
   if (initialMode === "one-way") {
     dirToggle.setAttribute(

@@ -192,6 +192,31 @@ export async function updateDiversionRoute(payload) {
   }
 }
 
+export async function deleteDiversionRoute(diversionId) {
+  try {
+    const response = await fetch("../api/diversions/delete_diversion.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        diversion_id: diversionId
+      })
+    });
+
+    const result = await response.json();
+
+    return result;
+  } catch(error) {
+    console.error("Delete Diversion Error:", error);
+
+    return {
+      success: false,
+      message: "Request Deletion Failed"
+    }
+  }
+}
+
 /*export async function fetchDiversionSummary() {
   try {
     const response = await fetch("../api/get_diversion_summary.php");

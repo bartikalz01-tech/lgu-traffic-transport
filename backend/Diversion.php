@@ -91,6 +91,22 @@ class Diversion extends config {
     return true;
   }
 
+  public function deleteDiversion($diversion_id) {
+    $conn = $this->conn();
+    $sql = "
+      DELETE FROM diversion_routes
+      WHERE diversion_id = :diversion_id
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->execute([
+      ':diversion_id' => $diversion_id
+    ]);
+
+    return true;
+  }
+
   public function getPendingDiversion() {
     $conn = $this->conn();
     $sql = "

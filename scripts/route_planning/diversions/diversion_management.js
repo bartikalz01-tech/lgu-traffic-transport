@@ -58,7 +58,7 @@ function updateHighTrafficCount(roads) {
     highTrafficRoads.length;
 }
 
-function updateActiveDiversions(roads) {
+export function updateActiveDiversions(roads) {
   const activeDiversionRoads = roads;
 
   document.getElementById("activeDiversionCount").textContent = activeDiversionRoads.length;
@@ -372,11 +372,6 @@ async function renderDiversionManagement(container) {
 
       activatedRouteIndex = parseInt(document.querySelector(".active-route").dataset.routeIndex);
 
-      /*activateBtn.innerHTML = `
-        <i class="fas fa-check"></i>
-        Diversion Activated
-      `;*/
-
       alert("Diversion route activated successfully!");
 
       const activeCard = document.querySelector(".active-route");
@@ -390,11 +385,6 @@ async function renderDiversionManagement(container) {
       const cards = document.querySelectorAll(".suggestion-card");
 
       cards.forEach((card, index) => {
-        /*if(index !== activatedRouteIndex) {
-          card.classList.add("disabled-route");
-        } else {
-          card.classList.add("activated-route");
-        }*/
         card.classList.remove("activated-route");
 
         if(index === activatedRouteIndex) {
