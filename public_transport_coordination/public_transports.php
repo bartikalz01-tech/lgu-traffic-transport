@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/transport/public_coordination.css">
   <link rel="stylesheet" href="../styles/transport/add_group.css">
+  <link rel="stylesheet" href="../styles/transport/add_group_member.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Public Transport Coordination</title>
 </head>
@@ -152,6 +153,7 @@
     </section>
 
     <div class="add-puv-group-overlay add-puv-group-hidden" id="addGroupOverlay"></div>
+    <div class="add-member-overlay add-member-hidden" id="addGroupMemberOverlay"></div>
   </main>
 
   <?php include '../includes/admin-footer.php' ?>

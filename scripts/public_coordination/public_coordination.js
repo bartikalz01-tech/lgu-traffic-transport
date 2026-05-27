@@ -1,5 +1,6 @@
 import { getPuvGroup } from "../data/fetch_public_group_trans.js";
 import { renderAddGroup } from "./add_group.js";
+import { renderAddMember } from "./add_member.js";
 import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_groups.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -53,6 +54,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const addMemberBtn = document.getElementById("addMemberOption");
   const searchMemberBtn = document.getElementById("searchDriverOption");
 
+  const addMemberContainer = document.getElementById("addGroupMemberOverlay");
+
   dropdownBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     
@@ -67,6 +70,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   addMemberBtn.addEventListener("click", () => {
     dropdownMenu.classList.add("hidden");
+
+    addMemberContainer.classList.remove("add-member-hidden");
+
+    renderAddMember(addMemberContainer);
   });
 
   searchMemberBtn.addEventListener("click", () => {
