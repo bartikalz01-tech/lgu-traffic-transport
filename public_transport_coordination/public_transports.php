@@ -85,47 +85,25 @@
         </div>
         
         <div class="group-details" id="groupDetailsContainer"></div>
-
-        <!--
-        <div class="different-vehicles-container" style="margin-top: 20px;">
-          <h1 style="text-align: center;">Vehicle Types</h1>
-          <div class="different-vehicles">
-            <div class="vehicle-card">
-              <i class="fas fa-van-shuttle"></i>
-              <h3>Jeepneys</h3>
-              <p>45 Drivers</p>
-            </div>
-            <div class="vehicle-card">
-              <i class="fas fa-bus"></i>
-              <h3>Bus</h3>
-              <p>18 Drivers</p>
-            </div>
-            <div class="vehicle-card">
-              <i class="fas fa-van-shuttle"></i>
-              <h3>Modern Jeepneys</h3>
-              <p>50 Drivers</p>
-            </div>
-          </div>
-          <div class="add-btn-container">
-            <button class="btn btn-outline-primary btn-add-vehicle" id="addVehicle">
-              <i class="fas fa-plus"></i>
-              Add Vehicle Type
-            </button>
-          </div>
-        </div>
-        -->
+        
         <div class="members-container">
           <h1>PUV Group Members</h1>
-          <div class="indicator-button">
-            <div class="indicator">
-              <h3>Members on:</h3>
-              <p>Jeepney</p>
-            </div>
-            <button class="btn btn-info">
-              <i class="fas fa-car-side"></i>
-              Select Vehicle Driver
+          <div class="indicator-button dropdown-container">
+            <button class="btn btn-outline-primary" id="actionDropdownBtn">
+              Select Action
               <i class="fas fa-chevron-down"></i>
             </button>
+
+            <div class="action-dropdown hidden" id="actionDropdownMenu">
+              <button class="dropdown-item" id="addMemberOption">
+                <i class="fas fa-user-plus"></i>
+                Add Group Member
+              </button>
+              <button class="dropdown-item" id="searchDriverOption">
+                <i class="fas fa-magnifying-glass"></i>
+                Search Driver
+              </button>
+            </div>
           </div>
 
           <div class="members-table-container">

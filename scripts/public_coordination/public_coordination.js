@@ -45,4 +45,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // For dropdown on PUV Members Component
+  const dropdownBtn = document.getElementById("actionDropdownBtn");
+
+  const dropdownMenu = document.getElementById("actionDropdownMenu");
+
+  const addMemberBtn = document.getElementById("addMemberOption");
+  const searchMemberBtn = document.getElementById("searchDriverOption");
+
+  dropdownBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    
+    dropdownMenu.classList.toggle("hidden");
+  });
+
+  document.addEventListener("click", (e) => {
+    if(!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+      dropdownMenu.classList.add("hidden");
+    }
+  });
+
+  addMemberBtn.addEventListener("click", () => {
+    dropdownMenu.classList.add("hidden");
+  });
+
+  searchMemberBtn.addEventListener("click", () => {
+    dropdownMenu.classList.add("hidden");
+  });
+
+  // End of dropdown logic for PUV members components
+
 });
