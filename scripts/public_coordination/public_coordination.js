@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const puvGroups = await getPuvGroup();
 
+  let currentSelectedGroup = null;
+
   if(puvGroups.status === "success") {
 
     const groupsData = puvGroups.data
@@ -37,12 +39,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       (selectedGroup) => {
         renderPuvGroupDetails(groupDetailsContainer, selectedGroup);
 
-        console.log("Selected Group:", selectedGroup)
+        currentSelectedGroup = selectedGroup;
+
+        console.log("Selected Group:", selectedGroup);
       }
     );
 
     if(groupsData.length > 0) {
       renderPuvGroupDetails(groupDetailsContainer, groupsData[0]);
+
+      currentSelectedGroup = groupsData[0];
     }
   }
 
@@ -73,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     addMemberContainer.classList.remove("add-member-hidden");
 
-    renderAddMember(addMemberContainer);
+    renderAddMember(addMemberContainer, currentSelectedGroup.puv_group_id);
   });
 
   searchMemberBtn.addEventListener("click", () => {

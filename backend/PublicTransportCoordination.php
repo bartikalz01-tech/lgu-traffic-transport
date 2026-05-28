@@ -26,6 +26,78 @@ class PublicTransportCoordination extends config {
     }
   }
 
+  public function insertPuvMember(
+    $firstName, 
+    $middleName, 
+    $lastName, 
+    $birthDate, 
+    $contactNumber, 
+    $licenseNumber,
+    $licenseType,
+    $personnelType,
+    $verificationStatus
+  ) {
+
+    $conn = $this->conn();
+    $sql = "
+      INSERT INTO puv_personnel(
+        first_name, 
+        middle_name, 
+        last_name, 
+        birth_date, 
+        contact_number, 
+        license_number, 
+        license_type, 
+        personnel_type, 
+        verification_status
+      )
+      VALUES (
+        :first_name,
+        :middle_name,
+        :last_name,
+        :birth_date,
+        :contact_num,
+        :license_num,
+        :license_type,
+        :personnel_type,
+        :verification_status
+      )
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindParam(':first_name', $firstName);
+    $stmt->bindParam(':middle_name', $middleName);
+    $stmt->bindParam(':last_name', $lastName);
+    $stmt->bindParam(':birth_date', $birthDate);
+    $stmt->bindParam(':contact_num', $contactNumber);
+    $stmt->bindParam(':license_num', $licenseNumber);
+    $stmt->bindParam(':license_type', $licenseType);
+    $stmt->bindParam(':personnel_type', $personnelType);
+    $stmt->bindParam(':verification_status', $verificationStatus);
+
+    $stmt->execute();
+
+    return $conn->lastInsertId();
+  }
+
+  public function insertPuvGroupMember($puvGroupId, $personnelId) {
+    $conn = $this->conn();
+    $sql = "
+      INSERT INTO puv_group_members(puv_group_id, personnel_id)
+      VALUES (:puv_group_id, :personnel_id)
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindParam(':puv_group_id', $puvGroupId);
+    $stmt->bindParam(':personnel_id', $personnelId);
+
+    $stmt->execute();
+
+    return true;
+  }
+
   public function getPuvGroups() {
     $conn = $this->conn();
     $sql = "
