@@ -50,3 +50,21 @@ export async function getPuvGroup() {
     return [];
   }
 }
+
+export async function getPuvMembers(puvGroupId) {
+  try {
+    const response = await fetch(`../api/puv_api/get_puv_members.php?puv_group_id=${puvGroupId}`);
+
+    const result = await response.json();
+
+    return result;
+
+  } catch(error) {
+    console.error("Faile to fetch PUV members", error);
+
+    return {
+      status: "error",
+      message: "Request Failed"
+    }
+  }
+}

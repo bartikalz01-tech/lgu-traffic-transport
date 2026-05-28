@@ -18,7 +18,8 @@
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Space between different components */
+  gap: 15px;
+  /* Space between different components */
   height: fit-content;
   position: sticky;
   top: 100px;
@@ -29,12 +30,14 @@
   padding: 1.25rem;
   background: rgba(0, 0, 0, 0.02);
   border-bottom: 1px solid var(--border-color-1);
-  text-align: left; /* Better for sidebars */
+  text-align: left;
+  /* Better for sidebars */
   margin-bottom: 0;
 }
 
 .left-part .title h1 {
-  font-size: 1.1rem; /* Slightly smaller for sidebar feel */
+  font-size: 1.1rem;
+  /* Slightly smaller for sidebar feel */
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-secondary);
@@ -105,8 +108,9 @@
 }
 
 .group i {
-  font-size: 5px; /* Bullet point look */
-  color: var(--text-secondary-1);
+  font-size: 5px;
+  /* Bullet point look */
+  color: var(--text-secondary);
 }
 
 .group p {
@@ -148,6 +152,7 @@
 .puv-groups-list::-webkit-scrollbar {
   width: 5px;
 }
+
 .puv-groups-list::-webkit-scrollbar-thumb {
   background: var(--border-color-1);
   border-radius: 10px;
@@ -449,17 +454,18 @@
 
 .members-table-container {
   margin-top: 1rem;
-  border-radius: 12px;
-  overflow: hidden;
+  border-radius: 8px;
+  background: white;
   border: 1px solid var(--border-color-1);
-  box-shadow: 0 4px 12px var(--shadow-1);
+  box-shadow: 0 2px 8px var(--shadow-1);
 }
 
 .members-table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 10px;
-  background: var(--card-bg-1);
+  /*border-spacing: 0 10px;
+  background: var(--card-bg-1);*/
+  font-size: 0.85rem;
 }
 
 .members-table tbody tr {
@@ -468,19 +474,22 @@
 
 .members-table tbody td {
   padding: 14px 16px;
+  font-size: 15px;
+  text-align: left;
 }
 
 .members-table thead {
-  background: var(--header-bg-1);
+  background: #f8f9fa;
 }
 
 .members-table th {
-  padding: 14px;
-  text-align: center;
-  font-size: 1.05rem;
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text-secondary-1);
-  border-bottom: 1px solid var(--border-color-1);
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border-color-1);
+  letter-spacing: 0.5px;
 }
 
 .members-table tr {
@@ -491,8 +500,74 @@
   color: var(--text-color-1);
 }
 
+.members-table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--border-color-1);
+  color: var(--text-color-1);
+  vertical-align: middle;
+}
+
 .members-table tbody tr:hover {
-  background: var(--sidebar-hover-bg-1);
+  background: rgba(var(--sidebar-hover-bg-1), 0.03);
+}
+
+.puv-code {
+  background: #eef2f7;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: #fff;
+  border-top: 1px solid var(--border-color-1);
+}
+
+.pagination-info {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.page-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--border-color-1);
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.page-btn.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .status {

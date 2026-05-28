@@ -1,7 +1,8 @@
-import { getPuvGroup } from "../data/fetch_public_group_trans.js";
+import { getPuvGroup, getPuvMembers } from "../data/fetch_public_group_trans.js";
 import { renderAddGroup } from "./add_group.js";
 import { renderAddMember } from "./add_member.js";
 import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_groups.js";
+import { renderPuvMembersTable } from "./puv_members.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -36,12 +37,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       componentLinks, 
       groupsData,
 
-      (selectedGroup) => {
+      async (selectedGroup) => {
         renderPuvGroupDetails(groupDetailsContainer, selectedGroup);
 
         currentSelectedGroup = selectedGroup;
 
-        console.log("Selected Group:", selectedGroup);
+        const membersResult = await getPuvMembers(selectedGroup.puv_group_id);
+
+        if(membersResult.status === "success") {
+          renderPuvMembersTable(memberBody, membersResult.data);
+        }
       }
     );
 
@@ -61,6 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const searchMemberBtn = document.getElementById("searchDriverOption");
 
   const addMemberContainer = document.getElementById("addGroupMemberOverlay");
+  const memberBody = document.getElementById("memberBody");
 
   dropdownBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -85,6 +91,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   searchMemberBtn.addEventListener("click", () => {
     dropdownMenu.classList.add("hidden");
   });
+
+  if(currentSelectedGroup) {
+    const membersResult = await getPuvMembers(
+      currentSelectedGroup.puv_group_id
+    );
+
+    if(membersResult.status === "success") {
+      renderPuvMembersTable(memberBody, membersResult.data);
+    }
+  }
 
   // End of dropdown logic for PUV members components
 

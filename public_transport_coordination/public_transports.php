@@ -115,38 +115,23 @@
                   <th>Position</th>
                   <th>PUV #</th>
                   <th>Status</th>
-                  <th>Action</th>
+                  <th style="width: 80px;">Action</th>
                 </tr>
               </thead>
 
-              <tbody>
-                <tr>
-                  <td>Juan Dela Cruz</td>
-                  <td>Driver</td>
-                  <td>JPN-102</td>
-                  <td>
-                    <span class="status active">Active</span>
-                  </td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-info">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>Pedro Santos</td>
-                  <td>Conductor</td>
-                  <td>JPN-118</td>
-                  <td><span class="status active">Inactive</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-info">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
+              <tbody id="memberBody"></tbody>
             </table>
+
+            <div class="table-pagination">
+              <div class="pagination-info">Showing 1 to 2 of 15 members</div>
+              <div class="pagination-controls">
+                <button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
