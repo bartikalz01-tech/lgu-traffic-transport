@@ -1,21 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Document</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="styles/global.css">
-  <link rel="stylesheet" href="styles/sidebar.css">
-  <link rel="stylesheet" href="styles/buttons.css">
-  <link rel="stylesheet" href="styles/road_condition/road_condition_header.css">
-  <link rel="stylesheet" href="styles/transport/member_info_modal.css">
-  <link rel="stylesheet" href="styles/road_condition/detailed_cctv.css">
-</head>
-<body>
-  <div class="member-info-overlay member-info-hidden" id="memberInfoOverlay">
+
+export function assignVehicleMember(modal) {
+  modal.classList.remove("member-info-hidden");
+
+  modal.innerHTML = `
     <div class="member-info-modal">
       <div class="member-info-header">
         <h2><i class="fas fa-user-edit"></i> Member Information</h2>
@@ -88,6 +76,15 @@
         </div>
       </form>
     </div>
-  </div>
-</body>
-</html>
+  `;
+
+  const closeBtn = document.getElementById("closeEditModal");
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("member-info-hidden");
+
+    setTimeout(() => {
+      modal.innerHTML = '';
+    }, 200);
+  });
+}

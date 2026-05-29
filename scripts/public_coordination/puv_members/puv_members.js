@@ -1,3 +1,4 @@
+import { assignVehicleMember } from "./assign_vehicle.js";
 
 const ROWS_PER_PAGE = 5;
 
@@ -26,6 +27,8 @@ export function renderPuvMembersTable(table, members, page = 1) {
     return;
   }
 
+  const memberInfoOverlay = document.getElementById("memberInfoOverlay")
+
   table.innerHTML = paginatedMembers.map(member => {
     return `
       <tr>
@@ -34,11 +37,25 @@ export function renderPuvMembersTable(table, members, page = 1) {
         <td><code class="puv-code">N/A</code></td>
         <td><span class="status ${member.verification_status}">${member.verification_status}</span></td>
         <td>
-          <button class="btn btn-sm btn-outline-info">
+          <button class="btn btn-sm btn-outline-info js-view-member" data-member-id="${member.personnel_id}">
             <i class="fas fa-eye"></i>  
           </button>
         </td>
       </tr>
     `;
   }).join('');
+
+  const viewButtons = table.querySelectorAll(".js-view-member");
+
+  viewButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const personnelId = Number(button.dataset.memberId);
+
+      const selectMember = membersData.find(member => {
+        return member.personnel_id = personnelId
+      });
+
+      assignVehicleMember(memberInfoOverlay, selectMember);
+    });
+  });
 }

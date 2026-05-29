@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../styles/transport/public_coordination.css">
   <link rel="stylesheet" href="../styles/transport/add_group.css">
   <link rel="stylesheet" href="../styles/transport/add_group_member.css">
+  <link rel="stylesheet" href="../styles/transport/member_info_modal.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Public Transport Coordination</title>
 </head>
@@ -139,6 +140,7 @@
 
     <div class="add-puv-group-overlay add-puv-group-hidden" id="addGroupOverlay"></div>
     <div class="add-member-overlay add-member-hidden" id="addGroupMemberOverlay"></div>
+    <div class="member-info-overlay member-info-hidden" id="memberInfoOverlay"></div>
   </main>
 
   <?php include '../includes/admin-footer.php' ?>

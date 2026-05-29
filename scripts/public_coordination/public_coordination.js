@@ -2,7 +2,7 @@ import { getPuvGroup, getPuvMembers } from "../data/fetch_public_group_trans.js"
 import { renderAddGroup } from "./add_group.js";
 import { renderAddMember } from "./add_member.js";
 import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_groups.js";
-import { renderPuvMembersTable } from "./puv_members.js";
+import { renderPuvMembersTable } from "./puv_members/puv_members.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
