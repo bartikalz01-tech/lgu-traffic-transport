@@ -98,6 +98,98 @@ class PublicTransportCoordination extends config {
     return true;
   }
 
+  public function insertPuvVehicle($puvGroupId, $vehicleNumber, $plateNumber) {
+    $conn = $this->conn();
+    $sql = "
+      INSERT INTO puv_vehicles(puv_group_id, vehicle_number, plate_number)
+      VALUES (:puv_group_id, :vehicle_number, :plate_number)
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindParam(':puv_group_id', $puvGroupId);
+    $stmt->bindParam(':vehicle_number', $vehicleNumber);
+    $stmt->bindParam(':plate_number', $plateNumber);
+
+    $stmt->execute();
+
+    return $conn->lastInsertId();
+  }
+
+  public function assignVehicleToMember($personnelId, $vehicleId) {
+
+    $conn = $this->conn();
+
+    try {
+      $conn->beginTransaction();
+
+      $closeSql = "
+        UPDATE puv_vehicle_assignments
+        SET ended_at = NOW()
+        WHERE personnel_id = :personnel_id
+        AND ended_at IS NULL
+      ";
+
+      $closeStmt = $conn->prepare($closeSql);
+
+      $closeStmt->bindParam(':personnel_id', $personnelId);
+
+      $closeStmt->execute();
+
+
+      $assignSql = "
+        INSERT INTO puv_vehicle_assignments(
+          personnel_id,
+          vehicle_id,
+          assigned_at
+        )
+        VALUES (:personnel_id, :vehicle_id, NOW())
+      ";
+
+      $assignStmt = $conn->prepare($assignSql);
+
+      $assignStmt->bindParam(
+        ':personnel_id',
+        $personnelId
+      );
+
+      $assignStmt->bindParam(
+        ':vehicle_id',
+        $vehicleId
+      );
+
+      $assignStmt->execute();
+
+      $conn->commit();
+
+      return true;
+
+    } catch(Exception $e) {
+      $conn->rollBack();
+
+      throw $e;
+    }
+  }
+
+  public function getVehiclesByGroup($groupId) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        vehicle_id,
+        vehicle_number,
+        plate_number
+      FROM puv_vehicles
+      WHERE puv_group_id = :puv_group_id
+      ORDER BY vehicle_number
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':puv_group_id', $groupId);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function getPuvGroups() {
     $conn = $this->conn();
     $sql = "
@@ -121,19 +213,43 @@ class PublicTransportCoordination extends config {
     $conn = $this->conn();
     $sql = "
       SELECT
-        pgm.puv_member_id,
+        pgm.puv_group_id,
         pp.personnel_id,
+
+        pp.first_name,
+        pp.middle_name,
+        pp.last_name,
+
+        pp.birth_date,
+        pp.contact_number,
+
+        pp.license_number,
+        pp.license_type,
+
         CONCAT(
           pp.first_name, ' ',
           IFNULL(pp.middle_name, ''), ' ',
           pp.last_name
         ) AS full_name,
+
         pp.personnel_type,
-        pp.verification_status
+        pp.verification_status,
+
+        pv.vehicle_id,
+        pv.vehicle_number,
+        pv.plate_number
+
       FROM puv_group_members pgm
 
       INNER JOIN puv_personnel pp
       ON pgm.personnel_id = pp.personnel_id
+
+      LEFT JOIN puv_vehicle_assignments pva
+      ON pp.personnel_id = pva.personnel_id
+      AND pva.ended_at IS NULL
+
+      LEFT JOIN puv_vehicles pv
+      ON pva.vehicle_id = pv.vehicle_id
 
       WHERE pgm.puv_group_id = :puv_group_id
 
@@ -147,6 +263,29 @@ class PublicTransportCoordination extends config {
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getVehicleByNumberAndPlate($groupId, $vehicleNumber, $plateNumber) {
+    $conn = $this->conn();
+
+    $sql = "
+      SELECT vehicle_id
+      FROM puv_vehicles
+      WHERE puv_group_id = :group_id
+      AND vehicle_number = :vehicle_number
+      AND plate_number = :plate_number
+      LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindParam(':group_id', $groupId);
+    $stmt->bindParam(':vehicle_number', $vehicleNumber);
+    $stmt->bindParam(':plate_number', $plateNumber);
+
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
 }

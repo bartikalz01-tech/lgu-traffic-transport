@@ -1,6 +1,7 @@
+import { assignVehicle, getVehiclesByGroup } from "../../data/fetch_public_group_trans.js";
 
 
-export function assignVehicleMember(modal) {
+export async function assignVehicleMember(modal, member) {
   modal.classList.remove("member-info-hidden");
 
   modal.innerHTML = `
@@ -11,29 +12,32 @@ export function assignVehicleMember(modal) {
       </div>
 
       <form id="editMemberForm" class="member-info-body">
+        <input type="hidden" id="personnelId" value="${member.personnel_id}">
+        <input type="hidden" id="puvMemberId" value="${member.puv_member_id}">
+
         <div class="member-info-grid">
           <div class="member-info-group">
             <label>First Name</label>
-            <input type="text" id="editFirstName">
+            <input type="text" id="editFirstName" value="${member.first_name || ''}">
           </div>
           <div class="member-info-group">
             <label>Middle Name</label>
-            <input type="text" id="editMiddleName">
+            <input type="text" id="editMiddleName" value="${member.middle_name || ''}">
           </div>
           <div class="member-info-group">
             <label>Last Name</label>
-            <input type="text" id="editLastName">
+            <input type="text" id="editLastName" value="${member.last_name || ''}">
           </div>
         </div>
 
         <div class="member-info-grid info-two-cols">
           <div class="member-info-group">
             <label>Birthdate</label>
-            <input type="date" id="editBirthDate">
+            <input type="date" id="editBirthDate" value="${member.birth_date || ''}">
           </div>
           <div class="member-info-group">
             <label>Contact Number</label>
-            <input type="tel" id="editContactNum">
+            <input type="tel" id="editContactNum" value="${member.contact_number || ''}">
           </div>
         </div>
 
@@ -41,20 +45,33 @@ export function assignVehicleMember(modal) {
           <div class="member-info-group">
             <label>Personnel Type</label>
             <select id="editPersonnelType">
-              <option value="driver">Driver</option>
-              <option value="conductor">Conductor</option>
-              <option value="operator">Operator</option>
+              <option value="driver" ${member.personnel_type === "driver" ? "selected" : ""}>Driver</option>
+              <option value="conductor" ${member.personnel_type === "conductor" ? "selected" : ""}>Conductor</option>
+              <option value="operator" ${member.personnel_type === "operator" ? "selected" : ""}>Operator</option>
             </select>
           </div>
           <div class="member-info-group">
             <label>Verification Status</label>
             <select id="editVerificationStatus">
-              <option value="pending">Pending</option>
-              <option value="verified">Verified</option>
-              <option value="suspended">Suspended</option>
+              <option value="pending" ${member.verification_status === "pending" ? "selected" : ""}>Pending</option>
+              <option value="verified" ${member.verification_status === "verified" ? "selected" : ""}>Verified</option>
+              <option value="suspended" ${member.verification_status === "suspended" ? "selected" : ""}>Suspended</option>
             </select>
           </div>
         </div>
+
+        ${member.personnel_type === "driver" ? `
+          <div class="member-info-grid info-two-cols">
+            <div class="member-info-group">
+              <label>License Number</label>
+              <input type="text" id="editLicenseNum" value="${member.license_number ?? ""}">
+            </div>
+            <div class="member-info-group">
+              <label>License Type</label>
+              <input type="text" id="editLicenseType" value="${member.license_type ?? ""}"> 
+            </div>
+          </div>
+        ` : ''}
 
         <hr class="member-info-divider">
         <div class="member-info-selection-label"><i class="fas fa-bus"></i> Vehicle Assignment</div>
@@ -62,21 +79,84 @@ export function assignVehicleMember(modal) {
         <div class="member-info-grid info-two-cols">
           <div class="member-info-group">
             <label>PUV Number (Fleet #)</label>
-            <input type="text" id="editPuvNumber" placeholder="e.g. VCHL-101">
+            <input type="text" id="editPuvNumber" list="fleetListId" placeholder="e.g. VCHL-101" value="${member.vehicle_number ?? ''}">
+            <datalist id="fleetListId"></datalist>
           </div>
           <div class="member-info-group">
             <label>Plate Number</label>
-            <input type="text" id="editPlateNumber" placeholder="e.g. ABC-1234">
+            <input type="text" id="editPlateNumber" list="plateListId" placeholder="e.g. ABC-1234" value="${member.plate_number ?? ''}">
+            <datalist id="plateListId"></datalist>
           </div>
         </div>
 
         <div class="member-info-footer">
-          <button class="btn btn-outline-danger" id="closeEditModal">Cancel</button>
+          <button type="button" class="btn btn-outline-danger" id="closeEditModal">Cancel</button>
           <button type="submit" class="btn btn-success">Update Member</button>
         </div>
       </form>
     </div>
   `;
+
+  const fleetList = document.getElementById("fleetListId");
+  const plateList = document.getElementById("plateListId");
+
+  const vehicleResult = await getVehiclesByGroup(member.puv_group_id);
+
+  if(vehicleResult.status === "success") {
+    fleetList.innerHTML = vehicleResult.data.map(vehicle => `
+      <option value="${vehicle.vehicle_number}">
+    `).join("");
+
+    plateList.innerHTML = vehicleResult.data.map(vehicle => `
+      <option value="${vehicle.plate_number}">  
+    `);
+  }
+
+
+  const form = document.getElementById("editMemberForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    /*const payload = {
+      personnel_id: member.personnel_id,
+      puv_member_id: member.puv_member_id,
+
+      first_name: document.getElementById("editFirstName").value,
+      middle_name: document.getElementById("editMiddleName").value,
+      last_name: document.getElementById("editLastName").value,
+
+      birth_date: document.getElementById("editBirthDate").value,
+      contact_number: document.getElementById("editContactNum").value,
+
+      personnel_type: document.getElementById("editPersonnelType").value,
+      verification_status: document.getElementById("editVerificationStatus").value,
+
+      license_number: document.getElementById("editLicenseNum")?.value ?? "",
+      license_type: document.getElementById("editLicenseType")?.value ?? "",
+
+      puv_vehicle_number: document.getElementById("editPuvNumber").value,
+      puv_plate_number: document.getElementById("editPlateNumber").value
+    };*/
+
+    console.log("SUBMIT FIRED");
+
+    const vehiclePayload = {
+      personnel_id: member.personnel_id,
+      puv_group_id: member.puv_group_id,
+
+      vehicle_number: document.getElementById("editPuvNumber").value,
+      plate_number: document.getElementById("editPlateNumber").value
+    };
+
+    const result = await assignVehicle(vehiclePayload);
+
+    if(result.status === "success") {
+      alert("Vehicle assigned successfly");
+    }
+    
+  });
+
 
   const closeBtn = document.getElementById("closeEditModal");
 

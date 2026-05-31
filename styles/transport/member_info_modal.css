@@ -99,4 +99,16 @@
   display: flex;
   justify-content: center;
   gap: 10px;
-} 
+}
+
+/* Styling for inputs with datalists to make them look more like selectors */
+input[list]::-webkit-calendar-picker-indicator {
+  display: block !important;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+input[list]:focus::-webkit-calendar-picker-indicator {
+  transform: rotate(180deg);
+}

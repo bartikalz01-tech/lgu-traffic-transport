@@ -34,7 +34,7 @@ export function renderPuvMembersTable(table, members, page = 1) {
       <tr>
         <td>${member.full_name}</td>
         <td>${member.personnel_type}</td>
-        <td><code class="puv-code">N/A</code></td>
+        <td><code class="puv-code">${member.vehicle_number ?? "N/A"}</code></td>
         <td><span class="status ${member.verification_status}">${member.verification_status}</span></td>
         <td>
           <button class="btn btn-sm btn-outline-info js-view-member" data-member-id="${member.personnel_id}">
@@ -52,7 +52,7 @@ export function renderPuvMembersTable(table, members, page = 1) {
       const personnelId = Number(button.dataset.memberId);
 
       const selectMember = membersData.find(member => {
-        return member.personnel_id = personnelId
+        return member.personnel_id === personnelId
       });
 
       assignVehicleMember(memberInfoOverlay, selectMember);

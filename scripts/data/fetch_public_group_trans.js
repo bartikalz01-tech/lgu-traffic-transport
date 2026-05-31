@@ -38,6 +38,23 @@ export async function insertPuvMember(payload) {
   }
 }
 
+export async function assignVehicle(payload) {
+  try {
+    const response = await fetch("../api/puv_api/insert_puv_vehicle.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    return await response.json();
+  } catch(error) {
+    return {
+      status: "error",
+      message: "Request Failed"
+    }
+  }
+}
+
 export async function getPuvGroup() {
   try {
     const response = await fetch("../api/puv_api/get_puv_groups.php");
@@ -66,5 +83,21 @@ export async function getPuvMembers(puvGroupId) {
       status: "error",
       message: "Request Failed"
     }
+  }
+}
+
+export async function getVehiclesByGroup(groupId) {
+  try {
+    const response = await fetch(
+      `../api/puv_api/get_group_vehicles.php?group_id=${groupId}`
+    );
+
+    return await response.json();
+
+  } catch(error) {
+    return {
+      status: "error",
+      message: "Failed to fetch vehicles"
+    };
   }
 }
