@@ -1,7 +1,7 @@
 import { assignVehicle, getVehiclesByGroup } from "../../data/fetch_public_group_trans.js";
 
 
-export async function assignVehicleMember(modal, member) {
+export async function assignVehicleMember(modal, member, refreshMembers) {
   modal.classList.remove("member-info-hidden");
 
   modal.innerHTML = `
@@ -152,7 +152,20 @@ export async function assignVehicleMember(modal, member) {
     const result = await assignVehicle(vehiclePayload);
 
     if(result.status === "success") {
-      alert("Vehicle assigned successfly");
+      await refreshMembers();
+
+      await Swal.fire({
+        icon: "success",
+        title: "Vehicle Assigned",
+        text: result.message,
+        confirmButtonColor: "#2563eb"
+      });
+
+      modal.classList.add("member-info-hidden");
+
+      setTimeout(() => {
+        modal.innerHTML = '';
+      }, 200);
     }
     
   });

@@ -5,7 +5,7 @@ const ROWS_PER_PAGE = 5;
 let currentPage = 1;
 let membersData = []; 
 
-export function renderPuvMembersTable(table, members, page = 1) {
+export function renderPuvMembersTable(table, members, refreshMembers, page = 1) {
 
   membersData = members;
   currentPage = page;
@@ -55,7 +55,7 @@ export function renderPuvMembersTable(table, members, page = 1) {
         return member.personnel_id === personnelId
       });
 
-      assignVehicleMember(memberInfoOverlay, selectMember);
+      assignVehicleMember(memberInfoOverlay, selectMember, refreshMembers);
     });
   });
 }

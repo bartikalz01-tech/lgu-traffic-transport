@@ -194,17 +194,30 @@ class PublicTransportCoordination extends config {
     $conn = $this->conn();
     $sql = "
       SELECT
-        puv_group_id,
-        puv_group_name,
-        puv_group_address,
-        puv_vehicle_type,
-        latitude,
-        longitude
-      FROM puv_groups
+        pg.puv_group_id,
+        pg.puv_group_name,
+        pg.puv_group_address,
+        pg.puv_vehicle_type,
+        pg.latitude,
+        pg.longitude,
+        COUNT(pgm.puv_member_id) AS total_members
+
+      FROM puv_groups pg
+
+      LEFT JOIN puv_group_members pgm
+      ON pg.puv_group_id = pgm.puv_group_id
+
+      GROUP BY
+        pg.puv_group_id,
+        pg.puv_group_name,
+        pg.puv_group_address,
+        pg.puv_vehicle_type,
+        pg.latitude,
+        pg.longitude
     ";
 
     $stmt = $conn->prepare($sql);
-    $stmt->execute();
+    $stmt->execute(); 
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   } 

@@ -4,7 +4,29 @@ import { renderAddMember } from "./add_member.js";
 import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_groups.js";
 import { renderPuvMembersTable } from "./puv_members/puv_members.js";
 
+let currentSelectedGroup = null;
+let memberBody = null;
+
 document.addEventListener("DOMContentLoaded", async () => {
+
+  async function refreshMembers() {
+
+    if(!currentSelectedGroup) return;
+
+    const membersResult = await getPuvMembers(
+      currentSelectedGroup.puv_group_id
+    );
+
+    if(membersResult.status === "success") {
+
+      renderPuvMembersTable(
+        memberBody,
+        membersResult.data,
+        refreshMembers
+      );
+
+    }
+  }
 
   const toggleBtn = document.getElementById('togglePuvSidebar');
   const layout = document.getElementById('puvLayout');
@@ -23,8 +45,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   const puvGroups = await getPuvGroup();
-
-  let currentSelectedGroup = null;
 
   if(puvGroups.status === "success") {
 
@@ -45,7 +65,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const membersResult = await getPuvMembers(selectedGroup.puv_group_id);
 
         if(membersResult.status === "success") {
-          renderPuvMembersTable(memberBody, membersResult.data);
+          //renderPuvMembersTable(memberBody, membersResult.data);
+          await refreshMembers();
         }
       }
     );
@@ -66,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const searchMemberBtn = document.getElementById("searchDriverOption");
 
   const addMemberContainer = document.getElementById("addGroupMemberOverlay");
-  const memberBody = document.getElementById("memberBody");
+  memberBody = document.getElementById("memberBody");
 
   dropdownBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -85,7 +106,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     addMemberContainer.classList.remove("add-member-hidden");
 
-    renderAddMember(addMemberContainer, currentSelectedGroup.puv_group_id);
+    renderAddMember(
+      addMemberContainer, 
+      currentSelectedGroup.puv_group_id,
+
+      /*async () => {
+        const membersResult = await getPuvMembers(currentSelectedGroup.puv_group_id);
+
+        if(membersResult.status === "success") {
+          renderPuvMembersTable(
+            memberBody,
+            membersResult.data
+          );
+        }
+      }*/
+
+      refreshMembers
+    );
   });
 
   searchMemberBtn.addEventListener("click", () => {
@@ -93,13 +130,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   if(currentSelectedGroup) {
-    const membersResult = await getPuvMembers(
+    /*const membersResult = await getPuvMembers(
       currentSelectedGroup.puv_group_id
     );
 
     if(membersResult.status === "success") {
       renderPuvMembersTable(memberBody, membersResult.data);
-    }
+    }*/
+    await refreshMembers();
   }
 
   // End of dropdown logic for PUV members components

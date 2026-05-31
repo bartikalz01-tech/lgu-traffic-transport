@@ -49,7 +49,7 @@ export function renderPuvGroupDetails(container, group) {
         <div class="stat-icon users">
           <i class="fas fa-users"></i>
         </div>
-        <h2 id="puvTotalMembers">124</h2>
+        <h2 id="puvTotalMembers">${group.total_members}</h2>
         <p>Total Members</p>
       </div>
 

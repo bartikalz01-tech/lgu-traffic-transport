@@ -1,6 +1,6 @@
 import { insertPuvMember } from "../data/fetch_public_group_trans.js";
 
-export async function renderAddMember(container, selectedGroupId) {
+export async function renderAddMember(container, selectedGroupId, refreshMembers) {
   container.innerHTML = `
     <button class="exit-add-member-btn js-exit-add-member">
       <i class="fas fa-times"></i>
@@ -151,6 +151,8 @@ export async function renderAddMember(container, selectedGroupId) {
     const result = await insertPuvMember(payload);
 
     if(result.status === "success") {
+      await refreshMembers();
+
       Swal.fire({
         icon: "success",
         title: "Member Added",
