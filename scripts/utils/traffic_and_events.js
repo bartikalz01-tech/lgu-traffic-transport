@@ -89,3 +89,42 @@ export function initMap(mapId) {
 
   return map;
 }
+
+export function getCodingDay(plateNumber) {
+  
+  if(!plateNumber) {
+    return "N/A";
+  }
+
+  const digits = plateNumber.match(/\d/g);
+
+  if(!digits) return "N/A";
+
+  const lastDigit = digits[digits.length - 1];
+
+  switch(lastDigit) {
+    case "1":
+    case "2":
+      return "Monday";
+
+    case "3":
+    case "4":
+      return "Tuesday";
+
+    case "5":
+    case "6":
+      return "Wednesday";
+
+    case "7":
+    case "8":
+      return "Thursday";
+    
+    case "9":
+    case "0":
+      return "Friday";
+    
+    default:
+      return "N/A";
+  }
+
+}

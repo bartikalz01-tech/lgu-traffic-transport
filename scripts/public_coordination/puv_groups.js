@@ -37,7 +37,7 @@ export function renderSidebarPuvGroups(container, groupsData, onGroupClick) {
   });
 }
 
-export function renderPuvGroupDetails(container, group) {
+export function renderPuvGroupDetails(container, group, activePuvs = 0) {
 
   container.innerHTML = `
     <div class="first-part">
@@ -65,7 +65,7 @@ export function renderPuvGroupDetails(container, group) {
         <div class="stat-icon active-puv">
           <i class="fas fa-circle-check"></i>
         </div>
-        <h2 id="activePuv">76</h2>
+        <h2 id="activePuv">${activePuvs}</h2>
         <p>Active PUVs</p>
       </div>
     </div>

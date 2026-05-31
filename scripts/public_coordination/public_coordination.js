@@ -3,6 +3,7 @@ import { renderAddGroup } from "./add_group.js";
 import { renderAddMember } from "./add_member.js";
 import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_groups.js";
 import { renderPuvMembersTable } from "./puv_members/puv_members.js";
+import { getCodingDay } from "../utils/traffic_and_events.js";
 
 let currentSelectedGroup = null;
 let memberBody = null;
@@ -18,6 +19,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
 
     if(membersResult.status === "success") {
+
+      const activePuvs = countActivePuvs(membersResult.data);
+
+      const groupsDetailsContainer = document.getElementById("groupDetailsContainer");
+
+      renderPuvGroupDetails(groupsDetailsContainer, currentSelectedGroup, activePuvs);
 
       renderPuvMembersTable(
         memberBody,
@@ -143,3 +150,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   // End of dropdown logic for PUV members components
 
 });
+
+function countActivePuvs(members) {
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long"
+  });
+
+  const uniqueVehicles = new Set();
+
+  members.forEach(member => {
+
+    if(!member.plate_number) return;
+
+    const codingDay = getCodingDay(member.plate_number);
+
+    if(codingDay !== today) {
+      uniqueVehicles.add(member.vehicle_id);
+    }
+
+  });
+
+  return uniqueVehicles.size;
+}
