@@ -124,13 +124,13 @@
             </table>
 
             <div class="table-pagination">
-              <div class="pagination-info">Showing 1 to 2 of 15 members</div>
-              <div class="pagination-controls">
-                <button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+              <div class="pagination-info" id="paginationInfo"></div>
+              <div class="pagination-controls" id="paginationControls">
+                <!--<button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
                 <button class="page-btn active">1</button>
                 <button class="page-btn">2</button>
                 <button class="page-btn">3</button>
-                <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+                <button class="page-btn"><i class="fas fa-chevron-right"></i></button>-->
               </div>
             </div>
           </div>

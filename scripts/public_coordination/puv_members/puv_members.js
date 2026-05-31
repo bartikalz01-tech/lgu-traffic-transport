@@ -45,6 +45,70 @@ export function renderPuvMembersTable(table, members, refreshMembers, page = 1) 
     `;
   }).join('');
 
+  const paginationInfo = document.getElementById("paginationInfo");
+  const paginationControls = document.getElementById("paginationControls");
+
+  const totalPages = Math.ceil(members.length / ROWS_PER_PAGE);
+
+  paginationInfo.textContent = `Showing ${start + 1} to ${Math.min(end, members.length)} of ${members.length} members`;
+
+  paginationControls.innerHTML = "";
+
+  const prevBtn = document.createElement("button");
+
+  prevBtn.className = "page-btn";
+  prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+
+  prevBtn.disabled = page === 1;
+
+  prevBtn.addEventListener('click', () => {
+    renderPuvMembersTable(table, members, refreshMembers, page - 1);
+  });
+
+  paginationControls.appendChild(prevBtn);
+
+  for(let i = 1; i <= totalPages; i++) {
+
+    const pageBtn = document.createElement("button");
+
+    pageBtn.className =
+      i === page
+        ? "page-btn active"
+        : "page-btn";
+
+    pageBtn.textContent = i;
+
+    pageBtn.addEventListener("click", () => {
+      renderPuvMembersTable(
+        table,
+        members,
+        refreshMembers,
+        i
+      );
+    });
+
+    paginationControls.appendChild(pageBtn);
+  }
+
+  const nextBtn = document.createElement("button");
+
+  nextBtn.className = "page-btn";
+  nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+
+  nextBtn.disabled = page === totalPages;
+
+  nextBtn.addEventListener("click", () => {
+    renderPuvMembersTable(
+      table,
+      members,
+      refreshMembers,
+      page + 1
+    );
+  });
+
+  paginationControls.appendChild(nextBtn);
+
+
   const viewButtons = table.querySelectorAll(".js-view-member");
 
   viewButtons.forEach((button) => {
