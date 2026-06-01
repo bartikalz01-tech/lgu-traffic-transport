@@ -1,4 +1,4 @@
-import { getPuvGroup, getPuvMembers } from "../data/fetch_public_group_trans.js";
+import { getPuvGroup, getPuvMembers, getPuvRetiredMembers } from "../data/fetch_public_group_trans.js";
 import { renderAddGroup } from "./add_group.js";
 import { renderAddMember } from "./add_member.js";
 import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_groups.js";
@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const addMemberBtn = document.getElementById("addMemberOption");
   const searchMemberBtn = document.getElementById("searchDriverOption");
+  const retiredMembersBtn = document.getElementById("retiredMembersOption");
 
   const addMemberContainer = document.getElementById("addGroupMemberOverlay");
   memberBody = document.getElementById("memberBody");
@@ -139,6 +140,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   searchMemberBtn.addEventListener("click", () => {
     dropdownMenu.classList.add("hidden");
+  });
+
+  retiredMembersBtn.addEventListener("click", async () => {
+    dropdownMenu.classList.add("hidden");
+
+    console.log("Retired button clicked");
+
+    const result = await getPuvRetiredMembers(currentSelectedGroup.puv_group_id);
+
+    if(result.status === "success") {
+
+      renderPuvMembersTable(memberBody, result.data, refreshMembers);
+
+    }
+
   });
 
   if(currentSelectedGroup) {

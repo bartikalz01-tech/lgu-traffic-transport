@@ -117,6 +117,23 @@ export async function getPuvMembers(puvGroupId) {
   }
 }
 
+export async function getPuvRetiredMembers(puvGroupId) {
+  try {
+    const response = await fetch(`../api/puv_api/get_puv_retired_members.php?puv_group_id=${puvGroupId}`);
+
+    const result = await response.json();
+
+    return result;
+  } catch(error) {
+    console.error("Failed to fetch PUV retired members:", error);
+
+    return {
+      status: "error",
+      message: "Request Failed"
+    }
+  }
+}
+
 export async function getVehiclesByGroup(groupId) {
   try {
     const response = await fetch(

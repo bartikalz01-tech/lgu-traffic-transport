@@ -322,6 +322,59 @@ class PublicTransportCoordination extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function getRetiredPuvMembers($puvGroupId) {
+    $conn = $this->conn();
+
+    $sql = "
+      SELECT
+        pgm.puv_group_id,
+        pp.personnel_id,
+        pp.first_name,
+        pp.middle_name,
+        pp.last_name,
+        pp.birth_date,
+        pp.contact_number,
+        pp.license_number,
+        pp.license_type,
+
+        CONCAT(
+          pp.first_name, ' ',
+          IFNULL(pp.middle_name, ''), ' ',
+          pp.last_name
+        ) AS full_name,
+
+        pp.personnel_type,
+        pp.verification_status,
+
+        pv.vehicle_id,
+        pv.vehicle_number,
+        pv.plate_number
+      
+      FROM puv_group_members pgm
+
+      INNER JOIN puv_personnel pp
+        ON pgm.personnel_id = pp.personnel_id
+
+      LEFT JOIN puv_vehicle_assignments pva
+        ON pp.personnel_id = pva.personnel_id
+
+      LEFT JOIN puv_vehicles pv
+        ON pva.vehicle_id = pv.vehicle_id
+
+      WHERE
+        pgm.puv_group_id = :group_id
+        AND pp.verification_status = 'retired'
+
+      ORDER BY pp.last_name
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':group_id', $puvGroupId);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function getVehicleByNumberAndPlate($groupId, $vehicleNumber, $plateNumber) {
     $conn = $this->conn();
 

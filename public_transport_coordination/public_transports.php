@@ -105,6 +105,10 @@
                 <i class="fas fa-magnifying-glass"></i>
                 Search Driver
               </button>
+              <button class="dropdown-item" id="retiredMembersOption">
+                <i class="fas fa-user-clock"></i>
+                Retired Personnel
+              </button>
             </div>
           </div>
 
