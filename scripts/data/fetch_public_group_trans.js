@@ -55,6 +55,37 @@ export async function assignVehicle(payload) {
   }
 }
 
+export async function updateMemberStatus(payload) {
+  try {
+    const response = await fetch("../api/puv_api/update_verify_status.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    
+    return await response.json();
+  } catch(error) {
+    return {
+      status: "error",
+      message: `Request Failed: ${error}`
+    }
+  }
+}
+
+export async function retirePuvMember(payload) {
+  try {
+    const response = await fetch("../api/puv_api/update_retire_member.php", {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    return await response.json();
+  } catch(error) {
+    console.error("retired personnel error:", error);
+  }
+}
+
 export async function getPuvGroup() {
   try {
     const response = await fetch("../api/puv_api/get_puv_groups.php");

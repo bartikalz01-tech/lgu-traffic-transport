@@ -21,10 +21,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     if(membersResult.status === "success") {
 
       const activePuvs = countActivePuvs(membersResult.data);
+      const activePuvElement = document.getElementById("activePuv");
 
-      const groupsDetailsContainer = document.getElementById("groupDetailsContainer");
+      if(activePuvElement) {
+        activePuvElement.textContent = activePuvs;
+      }
 
-      renderPuvGroupDetails(groupsDetailsContainer, currentSelectedGroup, activePuvs);
+      //const groupsDetailsContainer = document.getElementById("groupDetailsContainer");
+
+      //renderPuvGroupDetails(groupsDetailsContainer, currentSelectedGroup, activePuvs);
 
       renderPuvMembersTable(
         memberBody,

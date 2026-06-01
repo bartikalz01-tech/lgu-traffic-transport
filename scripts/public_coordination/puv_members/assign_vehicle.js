@@ -1,4 +1,4 @@
-import { assignVehicle, getVehiclesByGroup } from "../../data/fetch_public_group_trans.js";
+import { assignVehicle, getVehiclesByGroup, retirePuvMember } from "../../data/fetch_public_group_trans.js";
 
 
 export async function assignVehicleMember(modal, member, refreshMembers) {
@@ -56,6 +56,7 @@ export async function assignVehicleMember(modal, member, refreshMembers) {
               <option value="pending" ${member.verification_status === "pending" ? "selected" : ""}>Pending</option>
               <option value="verified" ${member.verification_status === "verified" ? "selected" : ""}>Verified</option>
               <option value="suspended" ${member.verification_status === "suspended" ? "selected" : ""}>Suspended</option>
+              <option value="retired" ${member.verification_status === "retired" ? "selected" : ""}>Retired</option>
             </select>
           </div>
         </div>
@@ -100,17 +101,36 @@ export async function assignVehicleMember(modal, member, refreshMembers) {
   const fleetList = document.getElementById("fleetListId");
   const plateList = document.getElementById("plateListId");
 
+  const vehicleNumberInput = document.getElementById("editPuvNumber");
+  const plateNumberInput = document.getElementById("editPlateNumber");
+
   const vehicleResult = await getVehiclesByGroup(member.puv_group_id);
 
+  let vehicles = [];
+
   if(vehicleResult.status === "success") {
-    fleetList.innerHTML = vehicleResult.data.map(vehicle => `
+    vehicles = vehicleResult.data;
+
+    fleetList.innerHTML = vehicles.map(vehicle => `
       <option value="${vehicle.vehicle_number}">
     `).join("");
 
-    plateList.innerHTML = vehicleResult.data.map(vehicle => `
+    plateList.innerHTML = vehicles.map(vehicle => `
       <option value="${vehicle.plate_number}">  
     `);
   }
+
+  vehicleNumberInput.addEventListener("input", () => {
+    const selectedVehicle = vehicles.find(vehicle => 
+      vehicle.vehicle_number === vehicleNumberInput.value
+    );
+
+    if(selectedVehicle) {
+      plateNumberInput.value = selectedVehicle.plate_number;
+    } else {
+      plateNumberInput.value = "";
+    }
+  });
 
 
   const form = document.getElementById("editMemberForm");
@@ -139,7 +159,9 @@ export async function assignVehicleMember(modal, member, refreshMembers) {
       puv_plate_number: document.getElementById("editPlateNumber").value
     };*/
 
-    console.log("SUBMIT FIRED");
+    let operationSuccess = false;
+
+    const verificationStatus = document.getElementById("editVerificationStatus").value;
 
     const vehiclePayload = {
       personnel_id: member.personnel_id,
@@ -149,23 +171,38 @@ export async function assignVehicleMember(modal, member, refreshMembers) {
       plate_number: document.getElementById("editPlateNumber").value
     };
 
-    const result = await assignVehicle(vehiclePayload);
+    if(verificationStatus === "retired") {
+      const retireResult = await retirePuvMember({
+        personnel_id: member.personnel_id
+      })
 
-    if(result.status === "success") {
+      if(retireResult.status === "success") {
+        operationSuccess = true;
+      }
+
+    } else if(vehiclePayload.vehicle_number && vehiclePayload.plate_number) {
+      const assignVehicleResult = await assignVehicle(vehiclePayload);
+
+      if(assignVehicleResult.status === "success") {
+        operationSuccess = true;
+
+        await Swal.fire({
+          icon: "success",
+          title: "Vehicle Assigned",
+          text: assignVehicleResult.message,
+          confirmButtonColor: "#2563eb"
+        });
+
+        modal.classList.add("member-info-hidden");
+
+        setTimeout(() => {
+          modal.innerHTML = '';
+        }, 200);
+      }
+    }
+
+    if(operationSuccess) {
       await refreshMembers();
-
-      await Swal.fire({
-        icon: "success",
-        title: "Vehicle Assigned",
-        text: result.message,
-        confirmButtonColor: "#2563eb"
-      });
-
-      modal.classList.add("member-info-hidden");
-
-      setTimeout(() => {
-        modal.innerHTML = '';
-      }, 200);
     }
     
   });

@@ -79,6 +79,12 @@ export function initMap(mapId) {
     delete maps[mapId]
   }
 
+  const container = document.getElementById(mapId);
+
+  if(container && container._leaflet_id) {
+    container._leaflet_id = null;
+  }
+
   const map = L.map(mapId).setView([14.6414, 120.9909], 18);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

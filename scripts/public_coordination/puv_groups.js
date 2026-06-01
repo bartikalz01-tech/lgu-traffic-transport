@@ -1,5 +1,7 @@
 import { initMap } from "../utils/traffic_and_events.js";
 
+let groupMap = null;
+
 export function renderSidebarPuvGroups(container, groupsData, onGroupClick) {
 
   let html = '';
@@ -39,6 +41,11 @@ export function renderSidebarPuvGroups(container, groupsData, onGroupClick) {
 
 export function renderPuvGroupDetails(container, group, activePuvs = 0) {
 
+  /*if(groupMap) {
+    groupMap.remove();
+    groupMap = null;
+  }*/
+
   container.innerHTML = `
     <div class="first-part">
       <h1>Group:</h1>
@@ -76,18 +83,20 @@ export function renderPuvGroupDetails(container, group, activePuvs = 0) {
     </div>
   `;
 
-  const map = initMap("map");
+  groupMap = initMap("map");
 
   const lat = parseFloat(group.latitude);
   const lng = parseFloat(group.longitude);
 
-  map.setView([lat, lng], 16);
+  groupMap.setView([lat, lng], 16);
 
   L.marker([lat, lng])
-    .addTo(map)
+    .addTo(groupMap)
     .bindPopup(`
       <b>${group.puv_group_name}</b><br>
       ${group.puv_group_address}
     `)
     .openPopup();
+
+  console.log("Rendering map");
 }

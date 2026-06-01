@@ -171,6 +171,50 @@ class PublicTransportCoordination extends config {
     }
   }
 
+  public function updateRetireMember($personnelId) {
+
+    $conn = $this->conn();
+    
+    try {
+      $conn->beginTransaction();
+
+      $retireSql = "
+        UPDATE puv_personnel
+        SET verification_status = 'retired'
+        WHERE personnel_id = :personnel_id
+      ";
+
+      $retireStmt = $conn->prepare($retireSql);
+
+      $retireStmt->bindParam(':personnel_id', $personnelId);
+
+      $retireStmt->execute();
+
+      //End Active vehicle assignment
+      $assignmetnSql = "
+        UPDATE puv_vehicle_assignments
+        SET ended_at = NOW()
+        WHERE personnel_id = :personnel_id
+        AND ended_at IS NULL
+      ";
+
+      $assignmentStmt = $conn->prepare($assignmetnSql);
+      $assignmentStmt->bindParam(':personnel_id', $personnelId);
+      $assignmentStmt->execute();
+
+      $conn->commit();
+
+      return true;
+
+    } catch(Exception $e) {
+
+      $conn->rollBack();
+
+      throw $e;
+    }
+
+  }
+
   public function getVehiclesByGroup($groupId) {
     $conn = $this->conn();
     $sql = "
