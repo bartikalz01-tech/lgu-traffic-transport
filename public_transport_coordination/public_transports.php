@@ -37,7 +37,7 @@
     </div>
 
     <section class="puv-group-section" id="puvLayout">
-      <div class="left-part">
+      <div class="left-part" id="ptcNavbar">
 
         <div class="sidebar-component active">
           <div class="component-header">
@@ -72,73 +72,8 @@
         </div>
 
       </div>
-      <div class="right-part">
-        <div class="top-btns-container">
-          <button class="btn btn-outline-primary puv-toggle-btn" id="togglePuvSidebar">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <button class="btn btn-primary" id="addGroupBtn">
-            <i class="fas fa-plus"></i>
-            Add Group
-          </button>
-        </div>
-        <div class="group-overview-container">
-          <h1 class="group-overview-title">Group Overview</h1>
-        </div>
+      <div class="right-part" id="ptcContainers">
         
-        <div class="group-details" id="groupDetailsContainer"></div>
-        
-        <div class="members-container">
-          <h1 id="membersTitle">PUV Group Members</h1>
-          <div class="indicator-button dropdown-container">
-            <button class="btn btn-outline-primary" id="actionDropdownBtn">
-              Select Action
-              <i class="fas fa-chevron-down"></i>
-            </button>
-
-            <div class="action-dropdown hidden" id="actionDropdownMenu">
-              <button class="dropdown-item" id="addMemberOption">
-                <i class="fas fa-user-plus"></i>
-                Add Group Member
-              </button>
-              <button class="dropdown-item" id="searchDriverOption">
-                <i class="fas fa-magnifying-glass"></i>
-                Search Driver
-              </button>
-              <button class="dropdown-item" id="retiredMembersOption">
-                <i class="fas fa-user-clock"></i>
-                Retired Personnel
-              </button>
-            </div>
-          </div>
-
-          <div class="members-table-container">
-            <table class="members-table">
-              <thead>
-                <tr>
-                  <th>Driver</th>
-                  <th>Position</th>
-                  <th>PUV #</th>
-                  <th>Status</th>
-                  <th style="width: 80px;">Action</th>
-                </tr>
-              </thead>
-
-              <tbody id="memberBody"></tbody>
-            </table>
-
-            <div class="table-pagination">
-              <div class="pagination-info" id="paginationInfo"></div>
-              <div class="pagination-controls" id="paginationControls">
-                <!--<button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
-                <button class="page-btn active">1</button>
-                <button class="page-btn">2</button>
-                <button class="page-btn">3</button>
-                <button class="page-btn"><i class="fas fa-chevron-right"></i></button>-->
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
