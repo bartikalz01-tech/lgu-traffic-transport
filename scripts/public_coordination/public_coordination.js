@@ -95,6 +95,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const dropdownMenu = document.getElementById("actionDropdownMenu");
 
+  const membersTitle = document.getElementById("membersTitle");
   const addMemberBtn = document.getElementById("addMemberOption");
   const searchMemberBtn = document.getElementById("searchDriverOption");
   const retiredMembersBtn = document.getElementById("retiredMembersOption");
@@ -150,6 +151,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const result = await getPuvRetiredMembers(currentSelectedGroup.puv_group_id);
 
     if(result.status === "success") {
+
+      membersTitle.textContent = "PUV Retired Members";
 
       renderPuvMembersTable(memberBody, result.data, refreshMembers);
 

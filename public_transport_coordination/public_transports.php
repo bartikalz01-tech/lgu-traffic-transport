@@ -89,7 +89,7 @@
         <div class="group-details" id="groupDetailsContainer"></div>
         
         <div class="members-container">
-          <h1>PUV Group Members</h1>
+          <h1 id="membersTitle">PUV Group Members</h1>
           <div class="indicator-button dropdown-container">
             <button class="btn btn-outline-primary" id="actionDropdownBtn">
               Select Action
