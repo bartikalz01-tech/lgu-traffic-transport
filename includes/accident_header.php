@@ -2,7 +2,7 @@
   <div class="road-ud-title-container">
     <div class="header-left-section">
       <button class="hamburger-menu-btn"><i class="fas fa-bars"></i></button>
-      <p class="current-time">12:00:00</p>
+      <p class="current-time" id="liveClock">12:00:00 PM</p>
     </div>
 
     <!--<div class="header-middle-section">
@@ -12,10 +12,10 @@
     <div class="header-right-section">
       <div class="notification-container">
         <!-- Insert Time later -->
-        <div class="notif-bell">
+        <div class="notif-bell" title="Notifications">
           <i class="fas fa-bell"></i>
         </div>  
-        <div class="email-notif">
+        <div class="email-notif" title="Messages">
           <i class="fas fa-message"></i>
         </div>
       </div>

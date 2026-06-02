@@ -28,6 +28,30 @@ window.addEventListener('load', function () {
     });
   }
 
+  const currentPage = window.location.pathname.split('/').pop();
+  const sidebarLinks = document.querySelectorAll('.sidebar-link, .dropdown-menu a');
+
+  sidebarLinks.forEach(link => {
+
+    const href = link.getAttribute('href');
+
+    if(!href || href === "#") return;
+
+    const linkPage = href.split('/').pop();
+
+    if(currentPage === linkPage) {
+      link.classList.add('active');
+
+      const dropdownParent = link.closest('.sidebar-item.has-dropdown');
+
+      if(dropdownParent) {
+        dropdownParent.classList.add('open');
+      }
+    }
+
+  });
+
+
   document.querySelectorAll('.sidebar-item.has-dropdown').forEach(item => {
     const toggleBtn = item.querySelector('.dropdown-toggle');
 

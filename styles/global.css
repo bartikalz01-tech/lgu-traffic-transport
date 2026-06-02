@@ -28,8 +28,9 @@ body {
   --card-bg: #ffffff;
   --border-color-1: #e5e5e5;
   --shadow-1: rgba(0, 0, 0, 0.05);
-  --sidebar-hover-bg-1: rgba(76, 138, 137, 0.1);
+  --sidebar-hover-bg-1: #4c8a891a;
   --sidebar-active-bg-1: var(--primary-color);
+  --sidebar-transition: all 0.3s cubic-beizer(0.4, 0, 0.2 1);
   --sidebar-w: 250px;
   --header-h: 70px;
 }

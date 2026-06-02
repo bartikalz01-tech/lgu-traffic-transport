@@ -56,12 +56,12 @@
       <span>Violation Ticketing</span>
       <!--<span class="purpose">Permits</span>-->
     </a>
+  </div>
 
-    <div class="sidebar-footer">
-      <div class="online-status">
-        <div class="status-indicator"></div>
-        <div class="status-text">Online</div>
-      </div>
+  <div class="sidebar-footer">
+    <div class="online-status">
+      <div class="status-indicator"></div>
+      <div class="status-text">Online</div>
     </div>
   </div>
 </nav>
