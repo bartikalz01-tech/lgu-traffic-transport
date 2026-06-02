@@ -1,5 +1,5 @@
-import { insertPuvGroup } from "../data/fetch_public_group_trans.js";
-import { initMap } from "../utils/traffic_and_events.js";
+import { insertPuvGroup } from "../../../data/fetch_public_group_trans.js";
+import { initMap } from "../../../utils/traffic_and_events.js";
 
 export function renderAddGroup(container) {
 

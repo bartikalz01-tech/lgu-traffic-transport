@@ -1,4 +1,4 @@
-import { assignVehicle, getVehiclesByGroup, retirePuvMember } from "../../data/fetch_public_group_trans.js";
+import { assignVehicle, getVehiclesByGroup, retirePuvMember } from "../../../data/fetch_public_group_trans.js";
 
 
 export async function assignVehicleMember(modal, member, refreshMembers) {

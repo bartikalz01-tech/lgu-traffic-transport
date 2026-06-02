@@ -1,4 +1,4 @@
-import { initMap } from "../utils/traffic_and_events.js";
+import { initMap } from "../../../utils/traffic_and_events.js";
 
 let groupMap = null;
 

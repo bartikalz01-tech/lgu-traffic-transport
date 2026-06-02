@@ -1,8 +1,8 @@
 import { getPuvGroup, getPuvMembers, getPuvRetiredMembers } from "../data/fetch_public_group_trans.js";
-import { renderAddGroup } from "./add_group.js";
-import { renderAddMember } from "./add_member.js";
-import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_groups.js";
-import { renderPuvMembersTable } from "./puv_members/puv_members.js";
+import { renderAddGroup } from "./puv_management/puv_group/add_group.js";
+import { renderAddMember } from "./puv_management/puv_members/add_member.js";
+import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_management/puv_group/puv_groups.js";
+import { renderPuvMembersTable } from "./puv_management/puv_members/puv_members.js";
 import { getCodingDay } from "../utils/traffic_and_events.js";
 
 

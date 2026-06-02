@@ -1,4 +1,4 @@
-import { insertPuvMember } from "../data/fetch_public_group_trans.js";
+import { insertPuvMember } from "../../../data/fetch_public_group_trans.js";
 
 export async function renderAddMember(container, selectedGroupId, refreshMembers) {
   container.innerHTML = `
