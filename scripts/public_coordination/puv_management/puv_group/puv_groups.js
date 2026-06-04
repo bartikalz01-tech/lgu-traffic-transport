@@ -41,10 +41,10 @@ export function renderSidebarPuvGroups(container, groupsData, onGroupClick) {
 
 export function renderPuvGroupDetails(container, group, activePuvs = 0) {
 
-  /*if(groupMap) {
+  if(groupMap) {
     groupMap.remove();
     groupMap = null;
-  }*/
+  }
 
   container.innerHTML = `
     <div class="first-part">
@@ -83,12 +83,10 @@ export function renderPuvGroupDetails(container, group, activePuvs = 0) {
     </div>
   `;
 
-  groupMap = initMap("map");
-
   const lat = parseFloat(group.latitude);
   const lng = parseFloat(group.longitude);
 
-  groupMap.setView([lat, lng], 16);
+  groupMap = L.map("map").setView([lat, lng], 16);
 
   L.marker([lat, lng])
     .addTo(groupMap)
@@ -97,6 +95,10 @@ export function renderPuvGroupDetails(container, group, activePuvs = 0) {
       ${group.puv_group_address}
     `)
     .openPopup();
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(groupMap);
 
   console.log("Rendering map");
 }

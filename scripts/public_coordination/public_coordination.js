@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   puvManagementBtn.addEventListener("click", async () => {
     showContainer(puvManagementContainer);
     setActiveBtn(puvManagementBtn);
-    await renderPuvManagement(puvManagementContainer);
+    
   });
 
   puvDiversionBtn.addEventListener("click", async () => {
