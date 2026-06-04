@@ -11,6 +11,10 @@
   grid-template-columns: 0 1fr;
 }
 
+.hidden-container {
+  display: none;
+}
+
 .left-part {
   background: var(--card-bg-1);
   border: 1px solid var(--border-color-1);

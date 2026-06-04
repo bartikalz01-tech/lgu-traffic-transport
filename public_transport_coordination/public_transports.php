@@ -39,7 +39,7 @@
     <section class="puv-group-section" id="puvLayout">
       <div class="left-part" id="ptcNavbar">
 
-        <div class="sidebar-component active">
+        <div class="sidebar-component active" id="puvManagementBtn">
           <div class="component-header">
             <i class="fas fa-bus-alt"></i>
             <span>PUV Groups</span>
@@ -64,7 +64,7 @@
           </div>
         </div>
 
-        <div class="sidebar-component">
+        <div class="sidebar-component" id="puvDiversionBtn">
           <div class="component-header">
             <i class="fas fa-route"></i>
             <span>PUV Alternate Routes</span>
@@ -73,7 +73,8 @@
 
       </div>
       <div class="right-part" id="ptcContainers">
-        
+        <div id="puvManagementContainer"></div>
+        <div id="puvDiversionContainer"></div>
       </div>
     </section>
 

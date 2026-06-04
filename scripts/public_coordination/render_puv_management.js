@@ -12,9 +12,9 @@ export async function renderPuvManagement(container) {
 
   container.innerHTML = `
     <div class="top-btns-container">
-      <button class="btn btn-outline-primary puv-toggle-btn" id="togglePuvSidebar">
+      <!--<button class="btn btn-outline-primary puv-toggle-btn" id="togglePuvSidebar">
         <i class="fas fa-chevron-left"></i>
-      </button>
+      </button>-->
       <button class="btn btn-primary" id="addGroupBtn">
         <i class="fas fa-plus"></i>
         Add Group
@@ -74,12 +74,12 @@ export async function renderPuvManagement(container) {
   `;
 
   // Toggle for left-part and right-part grid
-  const toggleBtn = document.getElementById('togglePuvSidebar');
+  /*const toggleBtn = document.getElementById('togglePuvSidebar');
   const layout = document.getElementById('puvLayout');
 
   toggleBtn.addEventListener('click', () => {
     layout.classList.toggle('collapsed');
-  });
+  });*/
 
 
   const addGroupContainer = document.getElementById("addGroupOverlay");
