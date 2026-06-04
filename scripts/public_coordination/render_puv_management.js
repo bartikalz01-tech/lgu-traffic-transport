@@ -8,6 +8,8 @@ import { getCodingDay } from "../utils/traffic_and_events.js";
 
 export async function renderPuvManagement(container) {
 
+  console.log("renderPuvManagement started");
+
   let currentSelectedGroup = null;
 
   container.innerHTML = `
@@ -135,6 +137,8 @@ export async function renderPuvManagement(container) {
       groupsData,
 
       async (selectedGroup) => {
+        console.log("Selected Group:", selectedGroup.puv_group_name);
+
         renderPuvGroupDetails(groupDetailsContainer, selectedGroup);
 
         currentSelectedGroup = selectedGroup;

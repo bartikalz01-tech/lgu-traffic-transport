@@ -44,24 +44,7 @@
             <i class="fas fa-bus-alt"></i>
             <span>PUV Groups</span>
           </div>
-          <div class="component-links">
-            <!--<div class="group active">
-              <i class="fas fa-circle"></i>
-              <p>Bataan Coordination</p>
-            </div>
-            <div class="group">
-              <i class="fas fa-circle"></i>
-              <p>Orion Coop</p>
-            </div>
-            <div class="group">
-              <i class="fas fa-circle"></i>
-              <p>Pilar Association</p>
-            </div>
-            <div class="group">
-              <i class="fas fa-circle"></i>
-              <p>Test</p>
-            </div>-->
-          </div>
+          <div class="component-links"></div>
         </div>
 
         <div class="sidebar-component" id="puvDiversionBtn">
@@ -72,10 +55,7 @@
         </div>
 
       </div>
-      <div class="right-part" id="ptcContainers">
-        <div id="puvManagementContainer"></div>
-        <div id="puvDiversionContainer"></div>
-      </div>
+      <div class="right-part" id="ptcContainers"></div>
     </section>
 
     <div class="add-puv-group-overlay add-puv-group-hidden" id="addGroupOverlay"></div>

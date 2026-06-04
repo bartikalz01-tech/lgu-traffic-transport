@@ -6,8 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const puvManagementBtn = document.getElementById("puvManagementBtn");
   const puvDiversionBtn = document.getElementById("puvDiversionBtn");
 
-  const puvManagementContainer = document.getElementById("puvManagementContainer");
-  const puvDiversionContainer = document.getElementById("puvDiversionContainer");
+  const ptcContainers = document.getElementById("ptcContainers");
 
   function setActiveBtn(activeBtnClicked) {
     [puvManagementBtn, puvDiversionBtn].forEach(btn => {
@@ -17,27 +16,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     activeBtnClicked.classList.add("active");
   }
 
-  function showContainer(target) {
+  /*function showContainer(target) {
     puvManagementContainer.classList.add("hidden-container");
     puvDiversionContainer.classList.add("hidden-container");
 
     target.classList.remove("hidden-container");
-  }
+  }*/
 
-  showContainer(puvManagementContainer);
   setActiveBtn(puvManagementBtn);
-  await renderPuvManagement(puvManagementContainer);
+  await renderPuvManagement(ptcContainers);
 
   puvManagementBtn.addEventListener("click", async () => {
-    showContainer(puvManagementContainer);
     setActiveBtn(puvManagementBtn);
-    
+    await renderPuvManagement(ptcContainers);
   });
 
   puvDiversionBtn.addEventListener("click", async () => {
-    showContainer(puvDiversionContainer);
     setActiveBtn(puvDiversionBtn);
-    await renderPuvDiversion(puvDiversionContainer);
+    await renderPuvDiversion(ptcContainers);
   });
 
 });

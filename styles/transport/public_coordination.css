@@ -11,9 +11,9 @@
   grid-template-columns: 0 1fr;
 }
 
-.hidden-container {
+/*.hidden-container {
   display: none;
-}
+}*/
 
 .left-part {
   background: var(--card-bg-1);

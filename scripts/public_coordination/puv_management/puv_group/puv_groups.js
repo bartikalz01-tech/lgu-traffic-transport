@@ -21,7 +21,10 @@ export function renderSidebarPuvGroups(container, groupsData, onGroupClick) {
 
   groupElements.forEach(groupElement => {
 
-    groupElement.addEventListener("click", () => {
+    groupElement.addEventListener("click", (e) => {
+
+      e.stopPropagation();
+
       groupElements.forEach(el => {
         el.classList.remove("active");
       });
@@ -86,7 +89,13 @@ export function renderPuvGroupDetails(container, group, activePuvs = 0) {
   const lat = parseFloat(group.latitude);
   const lng = parseFloat(group.longitude);
 
-  groupMap = L.map("map").setView([lat, lng], 16);
+  const mapEl = document.getElementById("map");
+
+  if(mapEl._leaflet_id) {
+    mapEl._leaflet_id = null;
+  }
+
+  groupMap = L.map(mapEl).setView([lat, lng], 16);
 
   L.marker([lat, lng])
     .addTo(groupMap)
@@ -100,5 +109,5 @@ export function renderPuvGroupDetails(container, group, activePuvs = 0) {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(groupMap);
 
-  console.log("Rendering map");
+  //console.log("Rendering map");
 }
