@@ -1,7 +1,7 @@
 import { insertPuvGroup } from "../../../data/fetch_public_group_trans.js";
 import { initMap } from "../../../utils/traffic_and_events.js";
 
-export function renderAddGroup(container) {
+export function renderAddGroup(container, refreshGroups) {
 
   container.innerHTML = `
     <button class="exit-add-puv-group js-exit-puv-group">
@@ -159,6 +159,8 @@ export function renderAddGroup(container) {
       setTimeout(() => {
         container.innerHTML = '';
       }, 200);
+
+      await refreshGroups();
 
     } else {
       Swal.fire({

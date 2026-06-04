@@ -90,7 +90,12 @@ export async function renderPuvManagement(container) {
   addGroupBtn.addEventListener("click", () => {
     addGroupContainer.classList.remove("add-puv-group-hidden");
 
-    renderAddGroup(addGroupContainer);
+    renderAddGroup(
+      addGroupContainer,
+      async () => {
+        await renderPuvManagement(container);
+      }
+    );
   });
 
 
