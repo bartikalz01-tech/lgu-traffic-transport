@@ -55,9 +55,9 @@ export async function assignVehicle(payload) {
   }
 }
 
-export async function updateMemberStatus(payload) {
+export async function updateMemberDetails(payload) {
   try {
-    const response = await fetch("../api/puv_api/update_verify_status.php", {
+    const response = await fetch("../api/puv_api/update_member_details.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)

@@ -171,6 +171,46 @@ class PublicTransportCoordination extends config {
     }
   }
 
+  public function updateMemberDetails(
+    $personnelId, 
+    $firstName, 
+    $middleName, 
+    $lastName, 
+    $birthDate, 
+    $contactNum,
+    $licenseNumber,
+    $licenseType
+    ) {
+
+      $conn = $this->conn();
+
+      $sql = "
+        UPDATE puv_personnel
+        SET
+          first_name = :first_name,
+          middle_name = :middle_name,
+          last_name = :last_name,
+          birth_date = :birth_date,
+          contact_number = :contact_num,
+          license_number = :license_num,
+          license_type = :license_type
+        WHERE personnel_id = :personnel_id
+      ";
+
+      $stmt = $conn->prepare($sql);
+
+      $stmt->bindParam(':first_name', $firstName);
+      $stmt->bindParam(':middle_name', $middleName);
+      $stmt->bindParam(':last_name', $lastName);
+      $stmt->bindParam(':birth_date', $birthDate);
+      $stmt->bindParam(':contact_num', $contactNum);
+      $stmt->bindParam(':license_num', $licenseNumber);
+      $stmt->bindParam(':license_type', $licenseType);
+      $stmt->bindParam(':personnel_id', $personnelId);
+
+      return $stmt->execute();
+    }
+
   public function updateRetireMember($personnelId) {
 
     $conn = $this->conn();

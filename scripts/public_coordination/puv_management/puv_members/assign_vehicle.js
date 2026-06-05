@@ -1,4 +1,4 @@
-import { assignVehicle, getVehiclesByGroup, retirePuvMember } from "../../../data/fetch_public_group_trans.js";
+import { assignVehicle, getVehiclesByGroup, retirePuvMember, updateMemberDetails } from "../../../data/fetch_public_group_trans.js";
 
 
 export async function assignVehicleMember(modal, member, refreshMembers) {
@@ -138,27 +138,6 @@ export async function assignVehicleMember(modal, member, refreshMembers) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    /*const payload = {
-      personnel_id: member.personnel_id,
-      puv_member_id: member.puv_member_id,
-
-      first_name: document.getElementById("editFirstName").value,
-      middle_name: document.getElementById("editMiddleName").value,
-      last_name: document.getElementById("editLastName").value,
-
-      birth_date: document.getElementById("editBirthDate").value,
-      contact_number: document.getElementById("editContactNum").value,
-
-      personnel_type: document.getElementById("editPersonnelType").value,
-      verification_status: document.getElementById("editVerificationStatus").value,
-
-      license_number: document.getElementById("editLicenseNum")?.value ?? "",
-      license_type: document.getElementById("editLicenseType")?.value ?? "",
-
-      puv_vehicle_number: document.getElementById("editPuvNumber").value,
-      puv_plate_number: document.getElementById("editPlateNumber").value
-    };*/
-
     let operationSuccess = false;
 
     const verificationStatus = document.getElementById("editVerificationStatus").value;
@@ -171,6 +150,37 @@ export async function assignVehicleMember(modal, member, refreshMembers) {
       plate_number: document.getElementById("editPlateNumber").value
     };
 
+    const vehicleChanged = 
+      vehiclePayload.vehicle_number !== (member.vehicle_number ?? '') ||
+      vehiclePayload.plate_number !== (member.plate_number ?? '');
+
+    const memberPayload = {
+      personnel_id: member.personnel_id,
+      first_name: document.getElementById("editFirstName").value,
+      middle_name: document.getElementById("editMiddleName").value,
+      last_name: document.getElementById("editLastName").value,
+      birth_date: document.getElementById("editBirthDate").value,
+      contact_number: document.getElementById("editContactNum").value,
+      license_number: document.getElementById("edi  tLicenseNum")?.value ?? "",
+      license_type: document.getElementById("editLicenseType")?.value ?? "",
+    }
+
+    const updateMemberResult = await updateMemberDetails(memberPayload);
+
+    if(updateMemberResult.status === "success") {
+      operationSuccess = true;
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Member updated successfully",
+        showConfirmButton: false,
+        timer: 3000,
+        timeProgressBar: true
+      });
+    }
+
     if(verificationStatus === "retired") {
       const retireResult = await retirePuvMember({
         personnel_id: member.personnel_id
@@ -180,24 +190,29 @@ export async function assignVehicleMember(modal, member, refreshMembers) {
         operationSuccess = true;
       }
 
-    } else if(vehiclePayload.vehicle_number && vehiclePayload.plate_number) {
-      const assignVehicleResult = await assignVehicle(vehiclePayload);
+    } 
+    
+    if(vehiclePayload.vehicle_number && vehiclePayload.plate_number) {
 
-      if(assignVehicleResult.status === "success") {
-        operationSuccess = true;
+      if(vehicleChanged) {
+        const assignVehicleResult = await assignVehicle(vehiclePayload);
 
-        await Swal.fire({
-          icon: "success",
-          title: "Vehicle Assigned",
-          text: assignVehicleResult.message,
-          confirmButtonColor: "#2563eb"
-        });
+        if(assignVehicleResult.status === "success") {
+          operationSuccess = true;
 
-        modal.classList.add("member-info-hidden");
+          await Swal.fire({
+            icon: "success",
+            title: "Vehicle Assigned",
+            text: assignVehicleResult.message,
+            confirmButtonColor: "#2563eb"
+          });
 
-        setTimeout(() => {
-          modal.innerHTML = '';
-        }, 200);
+          modal.classList.add("member-info-hidden");
+
+          setTimeout(() => {
+            modal.innerHTML = '';
+          }, 200);
+        }
       }
     }
 

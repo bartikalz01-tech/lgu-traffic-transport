@@ -3,5 +3,9 @@ export async function renderPuvDiversion(container) {
     <div class="group-overview-container">
       <h1 class="group-overview-title">PUV Routes</h1>
     </div>
+
+    <div class="puv-diversion-container">
+      
+    </div>
   `;
 }
