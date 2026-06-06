@@ -24,16 +24,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   }*/
 
   setActiveBtn(puvManagementBtn);
+  puvManagementBtn.classList.add("expanded");
   await renderPuvManagement(ptcContainers);
 
   puvManagementBtn.addEventListener("click", async () => {
-    setActiveBtn(puvManagementBtn);
-    await renderPuvManagement(ptcContainers);
+
+    if(!puvManagementBtn.classList.contains("active")) {
+      setActiveBtn(puvManagementBtn);
+      await renderPuvManagement(ptcContainers);
+
+      puvManagementBtn.classList.add("expanded");
+    }
+
+    puvManagementBtn.classList.toggle("expanded");
   });
 
   puvDiversionBtn.addEventListener("click", async () => {
     setActiveBtn(puvDiversionBtn);
     await renderPuvDiversion(ptcContainers);
+
+    puvManagementBtn.classList.remove("expanded");
   });
 
 });

@@ -40,6 +40,20 @@ export function renderSidebarPuvGroups(container, groupsData, onGroupClick) {
       onGroupClick(selectedGroup);
     });
   });
+
+  if(groupElements.length > 0) {
+    const firstGroupElement = groupElements[0];
+
+    firstGroupElement.classList.add("active");
+
+    const firstGroupId = Number(firstGroupElement.dataset.groupId);
+
+    const firstGroup = groupsData.find(group => {
+      return group.puv_group_id == firstGroupId;
+    });
+
+    onGroupClick(firstGroup);
+  }
 }
 
 export function renderPuvGroupDetails(container, group, activePuvs = 0) {

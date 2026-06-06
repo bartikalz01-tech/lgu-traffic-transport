@@ -40,10 +40,11 @@
     <section class="puv-group-section" id="puvLayout">
       <div class="left-part" id="ptcNavbar">
 
-        <div class="sidebar-component active" id="puvManagementBtn">
-          <div class="component-header">
+        <div class="sidebar-component" id="puvManagementBtn">
+          <div class="component-header" id="puvManagementHeader">
             <i class="fas fa-bus-alt"></i>
             <span>PUV Groups</span>
+            <i class="fas fa-chevron-right collapse-icon"></i>
           </div>
           <div class="component-links"></div>
         </div>

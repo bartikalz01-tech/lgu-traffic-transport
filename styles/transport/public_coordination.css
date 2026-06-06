@@ -78,6 +78,21 @@
   box-shadow: 0 4px 10px rgba(var(--primary-color), 0.2);
 }
 
+.sidebar-component.expanded .component-links {
+  max-height: 500px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.collapse-icon {
+  margin-left: auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-component.expanded .collapse-icon {
+  transform: rotate(90deg);
+}
+
 .component-header i {
   font-size: 1rem;
 }
@@ -88,7 +103,17 @@
   flex-direction: column;
   gap: 4px;
   padding-left: 10px;
+
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+
+  transform: translateY(-10px);
+
+  transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
 }
+
+
 
 /* The Scrollable List Area */
 .puv-groups-list {
