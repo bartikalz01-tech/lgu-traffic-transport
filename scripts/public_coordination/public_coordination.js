@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await renderPuvManagement(ptcContainers);
 
       puvManagementBtn.classList.add("expanded");
+      return;
     }
 
     puvManagementBtn.classList.toggle("expanded");

@@ -1,0 +1,287 @@
+:root {
+  --badge-success-bg: rgba(46, 204, 113, 0.15);
+  --badge-warning-bg: rgba(243, 156, 114, 0.15);
+  --badge-danger-bg: rgba(231, 76, 60, 0.15);
+  --neutral-gray: #74808c;
+}
+
+.diversion-overview-container {
+  margin-top: calc(var(--header-h)) + 20px;
+  margin-bottom: 15px;
+  padding: 0 10px;
+}
+
+.diversion-overview-title {
+  color: var(--secondary-color);
+  font-size: 22px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.puv-diversion-container {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  padding: 0 10px;
+  margin-top: 20px;
+}
+
+.puv-diversion-map-container {
+  height: 500px;
+  border-radius: 12px;
+  align-self: start;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 20px var(--shadow-1);
+  border: 1px solid var(--border-color-1);
+}
+
+#puvDiversionMap {
+  width: 100%;
+  height: 100%;
+}
+
+.map-floating-legend {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  gap: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 500;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot.primary {
+  background: var(--primary-color);
+}
+.dot.alternate {
+  background: var(--accent-color);
+}
+
+.puv-diversion-details-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color-1);
+  height: 600px;
+  align-self: start;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 4px 20px var(--shadow-1);
+}
+
+.current-route-container {
+  background: var(--light-color);
+  border: 1px solid var(--border-color-1);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.section-badge {
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--primary-color);
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.puv-group-selector-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.puv-group-selector-row label {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.form-select-custom {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color-1);
+  font-size: 14px;
+  color: var(--text-color-1);
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.form-select-custom:focus {
+  border-color: var(--primary-color);
+}
+
+.route-meta-card {
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
+  border: 1px solid var(--border-color-1);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 10px;
+}
+
+.meta-label {
+  color: var(--text-secondary);
+  display: block;
+}
+
+.meta-value {
+  font-weight: 600;
+}
+
+.diversion-routes-heading h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: var(--secondary-color);
+}
+
+.diversion-routes-heading h4 i {
+  color: var(--accent-color);
+}
+
+.diversion-routes-heading p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.diversion-routes-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+
+.diversion-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color-1);
+  border-radius: 10px;
+  padding: 14px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.diversion-card:hover {
+  border-color: var(--primray-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.div-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge-success {
+  background: var(--badge-success-bg);
+  color: var(--success-color);
+}
+.badge-warning {
+  background: var(--badge-danger-bg);
+  color: var(--warning-color);
+}
+.badge-danger {
+  background: var(--badge-danger-bg);
+  color: var(--danger-color);
+}
+.badge-neutral { 
+  background: var(--light-color);     
+  color: var(--neutral-gray); 
+}
+
+.exit-counter {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.diversion-card h5 {
+  font-size: 14px;
+  color: var(--text-color-1);
+  margin-bottom: 4px;
+}
+
+.div-card-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.div-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-color-1);
+}
+
+.btn-preview-route {
+  background: transparent;
+  border: 1px solid var(--border-color-1);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-preview-route:hover {
+  background: var(--light-color);
+  color: var(--text-color-1);
+}
+
+.diversion-card.active-suggestion {
+  border-left: 4px solid var(--primary-color);
+  background-color: var(--sidebar-hover-bg-1);
+  border-color: var(--primary-color);
+}
+
+.btn-preview-route.active {
+  background-color: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+}
+
+.disabled-card {
+  opacity: 0.75;
+  background-color: #fafbfc;
+}

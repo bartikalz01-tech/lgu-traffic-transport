@@ -32,9 +32,6 @@
         <h1 class="sub-module-title">Public Utility Groups</h1>
         <p class="sub-module-description">Manage PUV Groups, Vehicle types, and members</p>
       </div>
-      <!--<button class="btn btn-primary" id="quickReportsBtn" style="margin-top: var(--header-h); margin-right: 20px;">
-        <i class="fas fa-plus"></i> Quick Reports
-      </button>-->
     </div>
 
     <section class="puv-group-section" id="puvLayout">
