@@ -1,4 +1,14 @@
-export async function renderAddCurrentRoute(container, puvGroupId, puvGroupName) {
+let puvMarker = null;
+
+export async function renderAddCurrentRoute(container, selectedGroup, map) {
+
+  const {
+    puv_group_id,
+    puv_group_name,
+    latitude,
+    longitude,
+  } = selectedGroup;
+
   container.innerHTML = `
     <div class="add-route-form-card">
       <div class="form-card-header">
@@ -10,7 +20,9 @@ export async function renderAddCurrentRoute(container, puvGroupId, puvGroupName)
 
       <div class="form-static-group">
         <span class="field-label">Target PUV Fleet Group:</span>
-        <span class="field-value-highlight" id="targetGroupName">Test</span>
+        <span class="field-value-highlight" id="targetGroupName">
+          ${puv_group_name}
+        </span>
       </div>
 
       <div class="form-input-group">
@@ -87,4 +99,23 @@ export async function renderAddCurrentRoute(container, puvGroupId, puvGroupName)
       </button>
     </div>
   `;
+
+  map.setView(
+    [latitude, longitude], 18
+  );
+
+  if(puvMarker) {
+    map.removeLayer(puvMarker);
+  }
+
+  puvMarker = L.marker([
+    latitude,
+    longitude
+  ]).addTo(map)
+    .bindPopup(`<b>${puv_group_name}</b>`)
+    .openPopup();
+
+  document.getElementById("btnSaveBaselineRoute").addEventListener("click", async () => {
+    console.log(puvGroupId);
+  });
 }

@@ -99,7 +99,6 @@ export async function renderPuvManagement(container) {
   });
 
 
-
   const memberBody = document.getElementById("memberBody");
 
   async function refreshMembers() {

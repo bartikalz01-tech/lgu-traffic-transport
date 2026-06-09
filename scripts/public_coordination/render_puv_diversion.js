@@ -169,9 +169,17 @@ export async function renderPuvDiversion(container) {
 
   setDefaultRoute.addEventListener("click", async () => {
 
+    const puvSelect = document.getElementById("puvGroupSelect");
+
+    const puvGroupId = puvSelect.value;
+
+    const selectedGroup = puvGroups.data.find(group => group.puv_group_id == puvGroupId);
+
+    const puvGroupName = puvSelect.options[puvSelect.selectedIndex].text;
+
     puvDiversionDetailsContainer.innerHTML = '';
 
-    renderAddCurrentRoute(puvDiversionDetailsContainer);
+    renderAddCurrentRoute(puvDiversionDetailsContainer, selectedGroup, puvAlternateRoute);
   });
 
 }
