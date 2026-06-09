@@ -97,6 +97,13 @@
   padding: 16px;
 }
 
+.current-route-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .section-badge {
   font-size: 11px;
   text-transform: uppercase;
@@ -104,6 +111,37 @@
   color: var(--primary-color);
   letter-spacing: 0.05em;
   margin-bottom: 10px;
+}
+
+.btn-create-route {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px dashed var(--primary-color);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-create-route i {
+  font-size: 12px;
+}
+
+.btn-create-route:hover {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-style: solid;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(76, 138, 137, 0.2);
+}
+
+.btn-create-route:active {
+  transform: translateY(0);
 }
 
 .puv-group-selector-row {
@@ -254,7 +292,8 @@
 }
 
 .btn-preview-route {
-  background: transparent;
+  background: var(--accent-color);
+  color: white;
   border: 1px solid var(--border-color-1);
   padding: 5px 12px;
   border-radius: 6px;
@@ -262,23 +301,29 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
+  display: none;
 }
 
 .btn-preview-route:hover {
-  background: var(--light-color);
-  color: var(--text-color-1);
+  background-color: #138496;
+  color: var(--light-color);
+  transform: translateY(-1px);
 }
 
 .diversion-card.active-suggestion {
-  border-left: 4px solid var(--primary-color);
-  background-color: var(--sidebar-hover-bg-1);
-  border-color: var(--primary-color);
+  border-left: 4px solid #3498db;
+  background-color: #3498db14;
+  /*border-color: var(--primary-color);*/
 }
 
 .btn-preview-route.active {
   background-color: var(--primary-color);
   color: #fff;
   border-color: var(--primary-color);
+}
+
+.show-route-btn {
+  display: inline-block;
 }
 
 .disabled-card {

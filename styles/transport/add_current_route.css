@@ -1,0 +1,236 @@
+/* Styling layout structures specific to the Add Baseline Route panel interface window */
+
+.puv-add-route-details-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color-1);
+  height: 600px; /* Perfectly aligned to the map element pane container bounds */
+  align-self: start;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 4px 20px var(--shadow-1);
+}
+
+/* Section A Form Card Box Elements */
+.add-route-form-card {
+  background: var(--light-color);
+  border: 1px solid var(--border-color-1);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-badge-alt {
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent-color);
+  letter-spacing: 0.05em;
+}
+
+.btn-cancel-action {
+  background: transparent;
+  border: 1px solid #dcdfe6;
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel-action:hover {
+  background: #fef0f0;
+  color: var(--danger-color);
+  border-color: #fbc4c4;
+}
+
+.form-static-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.field-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.field-value-highlight {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-color-1);
+}
+
+.form-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-input-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.form-input-custom {
+  width: 100%;
+  padding: 10px 12px 10px 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color-1);
+  font-size: 13px;
+  color: var(--text-color-1);
+  outline: none;
+}
+
+.form-input-custom:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Section B Header Elements */
+.reference-routes-heading h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--secondary-color);
+  margin-bottom: 2px;
+}
+
+.reference-routes-heading p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Section C Scroll Box Items Collection */
+.reference-cards-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+
+/* Reference Option Visual Elements */
+.ref-mini-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color-1);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.ref-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.ref-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.ref-badge.green  { background: rgba(46, 204, 113, 0.12); color: var(--success-color); }
+.ref-badge.orange { background: rgba(243, 156, 114, 0.12); color: var(--warning-color); }
+.ref-badge.red    { background: rgba(231, 76, 60, 0.12);  color: var(--danger-color); }
+.ref-badge.gray   { background: var(--light-color);       color: var(--neutral-gray); }
+
+.ref-metric {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.ref-mini-card h6 {
+  font-size: 13px;
+  color: var(--text-color-1);
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+
+.ref-mini-card p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.ref-mini-card.restricted {
+  background: #fffdfd;
+  border-color: #fde2e2;
+}
+
+/* Floating Map Badge Styles */
+.map-drawing-status-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: var(--dark-color);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 500;
+}
+
+/* Persistent Action Footer Bar Element */
+.add-route-actions-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border-color-1);
+  padding-top: 12px;
+}
+
+.btn-save-baseline-route {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-save-baseline-route:hover {
+  background-color: #3b6b6a;
+  box-shadow: 0 4px 12px rgba(76, 138, 137, 0.25);
+}

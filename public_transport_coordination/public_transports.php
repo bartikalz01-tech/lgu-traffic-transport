@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../styles/transport/puv_diversion.css">
   <link rel="stylesheet" href="../styles/transport/add_group.css">
   <link rel="stylesheet" href="../styles/transport/add_group_member.css">
+  <link rel="stylesheet" href="../styles/transport/add_current_route.css">
   <link rel="stylesheet" href="../styles/transport/member_info_modal.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Public Transport Coordination</title>
