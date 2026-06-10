@@ -234,3 +234,93 @@
   background-color: #3b6b6a;
   box-shadow: 0 4px 12px rgba(76, 138, 137, 0.25);
 }
+
+/* Placeholder and Loading Layout Frame Modifiers */
+
+/* Centered empty layout helper wrapper block */
+.route-placeholder-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  margin: auto 0; /* Keeps it balanced inside the scroll field frame bounds */
+}
+
+.placeholder-icon-wrap {
+  width: 54px;
+  height: 54px;
+  background-color: var(--light-color);
+  border: 1px solid var(--border-color-1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.placeholder-icon-wrap i {
+  font-size: 20px;
+  color: var(--neutral-gray);
+}
+
+/* Modifier color context frame for errors/failures */
+.placeholder-icon-wrap.alert-mode {
+  background-color: rgba(231, 76, 60, 0.08);
+  border-color: rgba(231, 76, 60, 0.2);
+}
+
+.placeholder-icon-wrap.alert-mode i {
+  color: var(--danger-color);
+}
+
+.route-placeholder-state h6 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color-1);
+  margin-bottom: 4px;
+}
+
+.route-placeholder-state p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 240px;
+}
+
+/* Spinner tracking container block */
+.route-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 50px 20px;
+  margin: auto 0;
+}
+
+/* CSS Native Core Spinner Element */
+.spinner-element {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(76, 138, 137, 0.15); /* Light trace background */
+  border-top-color: var(--primary-color);      /* Solid accented action arm */
+  border-radius: 50%;
+  animation: routePipelineSpin 0.75s linear infinite;
+}
+
+.route-loading-state p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.4;
+  max-width: 220px;
+}
+
+/* Spinning Animation Keyframes key track loops */
+@keyframes routePipelineSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

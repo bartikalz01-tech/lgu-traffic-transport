@@ -499,5 +499,205 @@ class Routing extends config {
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  // Additional for PUV Routing System
+  public function getBarangayExits() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        exit_id,
+        exit_name,
+        node_id,
+        description
+      FROM barangay_exits
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getNearestNode($lat, $lng) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        node_id,
+        lat,
+        lng
+      FROM road_nodes
+
+      ORDER BY SQRT(
+        POW(lat - :lat, 2) +
+        POW(lng - :lng, 2) 
+      )
+      LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->execute([
+      ':lat' => $lat,
+      ':lng' => $lng
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function generateExitSuggestions($puvLat, $puvLng) {
+
+    $startNode = $this->getNearestNode($puvLat, $puvLng);
+
+    if(!$startNode) {
+      return [];
+    }
+
+    $graph = $this->buildGraph();
+
+    $exits = $this->getBarangayExits();
+
+    $routes = [];
+
+    foreach($exits as $exit) {
+      $result = $this->dijkstra($graph, $startNode['node_id'], $exit['node_id']);
+
+      if(empty($result['path'])) {
+        continue;
+      }
+
+      $routes[] = [
+        'exit_id' => $exit['exit_id'],
+        'exit_name' => $exit['exit_name'],
+        'description' => $exit['description'],
+        'node_id' => $exit['node_id'],
+        'distance' => $result['distance'],
+        'path' => $result['path'] 
+      ];
+    }
+
+    usort($routes, function($a, $b) {
+      return $a['distance'] <=> $b['distance'];
+    });
+
+    return array_slice($routes, 0, 4);
+  }
+
+  public function getNodeCoordinates($nodeId) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT lat, lng
+      FROM road_nodes
+      WHERE node_id = :node_id
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([ ':node_id' => $nodeId ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function geocodeDestination($destination) {
+
+    $url =
+      "https://nominatim.openstreetmap.org/search?" .
+      http_build_query([
+        'q' => $destination,
+        'format' => 'json',
+        'limit' => 1
+      ]);
+
+    $options = [
+      'http' => [
+        'header' =>
+          "User-Agent: TrafficTransportManagementSystem/1.0\r\n"
+      ]
+    ];
+
+    $context = stream_context_create($options);
+
+    $response = file_get_contents(
+      $url,
+      false,
+      $context
+    );
+
+    if(!$response) {
+      return null;
+    }
+
+    $data = json_decode($response, true);
+
+    if(empty($data)) {
+      return null;
+    }
+
+    return [
+      'lat' => $data[0]['lat'],
+      'lng' => $data[0]['lon'],
+      'display_name' => $data[0]['display_name']
+    ];
+  }
+  
+  public function buildDefaultRouteSuggestions(
+    $terminalLat,
+    $terminalLng,
+    $destinationName
+  ) {
+
+    $destination =
+      $this->geocodeDestination(
+        $destinationName
+      );
+
+    if(!$destination) {
+      return [];
+    }
+
+    $suggestions =
+      $this->generateExitSuggestions(
+        $terminalLat,
+        $terminalLng
+      );
+
+    $routes = [];
+
+    foreach($suggestions as $exit) {
+
+      $exitCoords =
+        $this->getNodeCoordinates(
+          $exit['node_id']
+        );
+
+      if(!$exitCoords) {
+        continue;
+      }
+
+      $osrm =
+        $this->getOSRMRoute([
+          [
+            $exitCoords['lng'],
+            $exitCoords['lat']
+          ],
+          [
+            $destination['lng'],
+            $destination['lat']
+          ]
+        ]);
+
+      $routes[] = [
+        'exit_id' => $exit['exit_id'],
+        'exit_name' => $exit['exit_name'],
+        'description' => $exit['description'],
+
+        'barangay_path' =>
+          $exit['path'],
+
+        'osrm_route' =>
+          $osrm
+      ];
+    }
+
+    return $routes;
+  }
 }
 ?>

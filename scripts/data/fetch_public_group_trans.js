@@ -149,3 +149,20 @@ export async function getVehiclesByGroup(groupId) {
     };
   }
 }
+
+export async function getRouteSuggestions(payload) {
+  try {
+    const response = await fetch("../api/puv_api/get_puv_route_suggestions.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    return await response.json();
+  } catch(error) {
+    return {
+      status: "error",
+      message: "Request Failed"
+    };
+  }
+}

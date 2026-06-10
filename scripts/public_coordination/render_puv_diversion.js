@@ -175,11 +175,14 @@ export async function renderPuvDiversion(container) {
 
     const selectedGroup = puvGroups.data.find(group => group.puv_group_id == puvGroupId);
 
-    const puvGroupName = puvSelect.options[puvSelect.selectedIndex].text;
-
     puvDiversionDetailsContainer.innerHTML = '';
 
-    renderAddCurrentRoute(puvDiversionDetailsContainer, selectedGroup, puvAlternateRoute);
+    renderAddCurrentRoute(
+      puvDiversionDetailsContainer, 
+      selectedGroup, 
+      puvAlternateRoute,
+      () => renderPuvDiversion(container)
+    );
   });
 
 }

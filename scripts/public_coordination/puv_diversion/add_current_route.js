@@ -1,6 +1,8 @@
+import { getRouteSuggestions } from "../../data/fetch_public_group_trans.js";
+
 let puvMarker = null;
 
-export async function renderAddCurrentRoute(container, selectedGroup, map) {
+export async function renderAddCurrentRoute(container, selectedGroup, map, onCancel) {
 
   const {
     puv_group_id,
@@ -44,53 +46,14 @@ export async function renderAddCurrentRoute(container, selectedGroup, map) {
       <p>Review the standard 5 alternate corridors to ensure the new default path optimizes traffic flow.</p>
     </div>
 
-    <div class="reference-cards-container">
-      
-      <div class="ref-mini-card">
-        <div class="ref-card-meta">
-          <span class="ref-badge green">Option 1</span>
-          <span class="ref-metric">+3 mins</span>
+    <div class="reference-cards-container" id="routeSuggestionsContainer">
+      <div class="route-placeholder-state">
+        <div class="placeholder-icon-wrap">
+          <i class="fas fa-search-location"></i>
         </div>
-        <h6>Via Sampaguita St. Shortcut</h6>
-        <p>Bypasses main avenue intersection block. Uses minor residential street outlet</p>
+        <h6>No Target Destination Set</h6>
+        <p>Please enter a destination avenue or landmark above and press <strong>Enter</strong> to see reference options.</p>
       </div>
-
-      <div class="ref-mini-card">
-        <div class="ref-card-meta">
-          <span class="ref-badge orange">Option 2</span>
-          <span class="ref-metric">+6 mins</span>
-        </div>
-        <h6>Barangay Hall Perimeter Loop</h6>
-        <p>Redirects traffic through well-lit alternative boulevard. Avoids narrow corridors.</p>
-      </div>
-
-      <div class="ref-mini-card restricted">
-        <div class="ref-card-meta">
-          <span class="ref-badge red">Option 3</span>
-          <span class="ref-metric text-danger">Narrow</span>
-        </div>
-        <h6>Back-Alley Outflow Corridor</h6>
-        <p>Tight clearances. Not recommended for full-size commuter modern jeeps.</p>
-      </div>
-
-      <div class="ref-mini-card">
-        <div class="ref-card-meta">
-          <span class="ref-badge gray">Option 4</span>
-          <span class="ref-metric">+8 mins</span>
-        </div>
-        <h6>Boundary Road Intersect</h6>
-        <p>Exits early into the adjacent neighboring barangay roadway system.</p>
-      </div>
-
-      <div class="ref-mini-card">
-        <div class="ref-card-meta">
-          <span class="ref-badge gray">Option 5</span>
-          <span class="ref-metric">+5 mins</span>
-        </div>
-        <h6>School Zone Bypass System</h6>
-        <p>Utilizes school service access roads. Best applied only during non-school hours.</p>
-      </div>
-
     </div>
 
     <div class="add-route-actions-footer">
@@ -115,7 +78,89 @@ export async function renderAddCurrentRoute(container, selectedGroup, map) {
     .bindPopup(`<b>${puv_group_name}</b>`)
     .openPopup();
 
+  
+  const destinationInput = document.getElementById("puvDestinationInput");
+  const routeSuggestionsContainer = document.getElementById("routeSuggestionsContainer");
+
+  destinationInput.addEventListener("keydown", async (event) => {
+    if(event.key !== "Enter") {
+      return;
+    } 
+
+    const destination = destinationInput.value.trim();
+    if(!destination) return;
+
+    routeSuggestionsContainer.innerHTML = `
+      <div class="route-loading-state">
+        <div class="spinner-element"></div>
+        <p>Analyzing optimal neighborhood corridors for <strong>${destination}</strong>...</p>
+      </div>
+    `;
+
+    try {
+      const result = await getRouteSuggestions({
+        latitude: latitude,
+        longitude: longitude,
+        destination: destination
+      });
+      
+      if(result.status !== "success" || !result.routes || result.routes.length === 0) {
+        routeSuggestionsContainer.innerHTML = `
+          <div class="route-placeholder-state">
+            <div class="placeholder-icon-wrap alert-mode">
+              <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h6>No Routes Found</h6>
+            <p>Could not calculate trajectories for this terminal zone point. Try checking the spelling.</p>
+          </div>
+        `;
+        return;
+      }
+
+      routeSuggestionsContainer.innerHTML = result.routes.map((route, index) => `
+        <div class="ref-mini-card" data-index="${index}">
+          <div class="ref-card-meta">
+            <span class="ref-badge green">Option ${index + 1}</span>
+            <span class="ref-metric">+3 mins</span>
+          </div>
+          <h6>${route.exit_name}</h6>
+          <p>${route.description}</p>
+        </div>
+      `).join("");
+
+    } catch(error) {
+      console.error("Error fetching path suggestions: ", error);
+      routeSuggestionsContainer.innerHTML = `
+        <div class="route-placeholder-state">
+          <div class="placeholder-icon-wrap alert-mode">
+            <i class="fas fa-wifi"></i>
+          </div>
+          <h6>Network Exception</h6>
+          <p>Failed to communicate with the routing pipeline engine. Please try again.</p>
+        </div>
+      `;
+    }
+
+  });
+  
+
   document.getElementById("btnSaveBaselineRoute").addEventListener("click", async () => {
     console.log(puvGroupId);
+  });
+
+
+
+  document.getElementById("btnCancelAddRoute").addEventListener("click", () => {
+    if(puvMarker) {
+      map.removeLayer(puvMarker);
+      puvMarker = null;
+    }
+
+    if(routePolyLine) {
+      map.removeLayer(routePolyLine);
+      routePolyLine = null;
+    }
+
+    onCancel();
   });
 }
