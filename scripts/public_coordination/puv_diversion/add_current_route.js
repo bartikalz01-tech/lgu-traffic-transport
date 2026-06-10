@@ -177,6 +177,9 @@ export async function renderAddCurrentRoute(container, selectedGroup, map, onCan
 
           selectedRouteData = selectedRoute;
 
+          cards.forEach(c => c.classList.remove("active-selected-card"));
+          card.classList.add("active-selected-card");
+
           if(barangayPolyline) {
             map.removeLayer(barangayPolyline);
           }

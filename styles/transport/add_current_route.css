@@ -144,7 +144,32 @@
   border: 1px solid var(--border-color-1);
   border-radius: 8px;
   padding: 10px 12px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  position: relative;
+  border-left: 4px solid transparent;
   cursor: pointer;
+}
+
+.ref-mini-card:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: var(--light-color);
+}
+
+.ref-mini-card.active-selected-card {
+  background-color: rgba(52, 152, 219, 0.06); /* Soft translucent brand highlight */
+  border-color: var(--accent-color) var(--border-color-1) var(--border-color-1) var(--accent-color);
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
+}
+
+.ref-mini-card.active-selected-card h6 {
+  color: var(--secondary-color);
+}
+
+.ref-mini-card.restricted.active-selected-card {
+  background-color: rgba(231, 76, 60, 0.03);
+  border-left-color: var(--danger-color);
 }
 
 .ref-card-meta {
