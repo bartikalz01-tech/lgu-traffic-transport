@@ -1,6 +1,9 @@
 import { getRouteSuggestions } from "../../data/fetch_public_group_trans.js";
 
 let puvMarker = null;
+let barangayPolyline = null;
+let osrmPolyline = null
+let destinationMarker = null;
 
 export async function renderAddCurrentRoute(container, selectedGroup, map, onCancel) {
 
@@ -67,6 +70,12 @@ export async function renderAddCurrentRoute(container, selectedGroup, map, onCan
     [latitude, longitude], 18
   );
 
+  const mapLegend = document.querySelector(".map-floating-legend");
+
+  if(mapLegend) {
+    mapLegend.style.display = "none";
+  }
+
   if(puvMarker) {
     map.removeLayer(puvMarker);
   }
@@ -120,13 +129,89 @@ export async function renderAddCurrentRoute(container, selectedGroup, map, onCan
       routeSuggestionsContainer.innerHTML = result.routes.map((route, index) => `
         <div class="ref-mini-card" data-index="${index}">
           <div class="ref-card-meta">
-            <span class="ref-badge green">Option ${index + 1}</span>
+            <span class="ref-badge blue">Option ${index + 1}</span>
             <span class="ref-metric">+3 mins</span>
           </div>
           <h6>${route.exit_name}</h6>
           <p>${route.description}</p>
         </div>
       `).join("");
+
+      const cards = routeSuggestionsContainer.querySelectorAll(".ref-mini-card");
+
+      cards.forEach(card => {
+
+        card.addEventListener("click", () => {
+          const index = Number(card.dataset.index);
+
+          const selectedRoute = result.routes[index];
+
+          if(barangayPolyline) {
+            map.removeLayer(barangayPolyline);
+          }
+
+          if(osrmPolyline) {
+            map.removeLayer(osrmPolyline);
+          }
+
+          if(destinationMarker) {
+            map.removeLayer(destinationMarker);
+          }
+
+          const barangayCoords = selectedRoute.barangay_coords.map(coord => [
+            coord[1],
+            coord[0]
+          ]);
+
+          barangayPolyline = L.polyline(
+            barangayCoords,
+            {
+              color: "blue",
+              weight: 5
+            }
+          ).addTo(map);
+
+          const osrmCoords = 
+            selectedRoute.osrm_route.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
+
+          osrmPolyline = L.polyline(
+            osrmCoords,
+            {
+              color: "blue",
+              weight: 5
+            }
+          ).addTo(map);
+
+          const destinationIcon = L.divIcon({
+            html: `
+              <div class="destination-marker">
+                <i class="fas fa-flag-checkered"></i>
+              </div>
+            `,
+            className: "",
+            iconSize: [30, 30],
+            iconAnchor: [15, 30]
+          });
+
+          const lastCoord = selectedRoute.osrm_route.routes[0].geometry.coordinates.slice(-1)[0];
+
+          const destinationLat = lastCoord[1];
+          const destinationLng = lastCoord[0];
+
+          destinationMarker = L.marker(
+            [destinationLat, destinationLng],
+            {
+              icon: destinationIcon
+            }
+          ).addTo(map);
+
+          map.fitBounds(barangayPolyline.getBounds());
+          map.fitBounds(osrmPolyline.getBounds());
+
+          console.log(selectedRoute.barangay_path);
+
+        });
+      });
 
     } catch(error) {
       console.error("Error fetching path suggestions: ", error);
@@ -156,9 +241,19 @@ export async function renderAddCurrentRoute(container, selectedGroup, map, onCan
       puvMarker = null;
     }
 
-    if(routePolyLine) {
-      map.removeLayer(routePolyLine);
-      routePolyLine = null;
+    if(barangayPolyline) {
+      map.removeLayer(barangayPolyline);
+      barangayPolyline = null;
+    }
+
+    if(osrmPolyline) {
+      map.removeLayer(osrmPolyline);
+      osrmPolyline = null;
+    }
+
+    if(destinationMarker) {
+      map.removeLayer(destinationMarker);
+      destinationMarker = null;
     }
 
     onCancel();

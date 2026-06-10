@@ -144,6 +144,7 @@
   border: 1px solid var(--border-color-1);
   border-radius: 8px;
   padding: 10px 12px;
+  cursor: pointer;
 }
 
 .ref-card-meta {
@@ -159,7 +160,7 @@
   padding: 1px 6px;
   border-radius: 4px;
 }
-.ref-badge.green  { background: rgba(46, 204, 113, 0.12); color: var(--success-color); }
+.ref-badge.blue  { background: rgba(52, 152, 219, 0.08); color: var(--accent-color); }
 .ref-badge.orange { background: rgba(243, 156, 114, 0.12); color: var(--warning-color); }
 .ref-badge.red    { background: rgba(231, 76, 60, 0.12);  color: var(--danger-color); }
 .ref-badge.gray   { background: var(--light-color);       color: var(--neutral-gray); }
@@ -323,4 +324,23 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.destination-marker {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 50%;
+
+  font-size: 18px;
+}
+
+.destination-marker i {
+  color: #dc3545;
 }

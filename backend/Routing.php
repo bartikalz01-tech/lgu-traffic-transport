@@ -672,6 +672,8 @@ class Routing extends config {
         continue;
       }
 
+      $barangayCoords = $this->getCoordsFromPath($exit['path']);
+
       $osrm =
         $this->getOSRMRoute([
           [
@@ -689,11 +691,11 @@ class Routing extends config {
         'exit_name' => $exit['exit_name'],
         'description' => $exit['description'],
 
-        'barangay_path' =>
-          $exit['path'],
+        'barangay_path' => $exit['path'],
+        
+        'barangay_coords' => $barangayCoords,
 
-        'osrm_route' =>
-          $osrm
+        'osrm_route' => $osrm
       ];
     }
 
