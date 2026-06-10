@@ -55,6 +55,25 @@ export async function assignVehicle(payload) {
   }
 }
 
+export async function insertPuvRoute(payload) {
+  try {
+    const response = await fetch("../api/puv_api/insert_puv_route.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    return await response.json();
+  } catch(error) {
+
+    return {
+      status: "error",
+      messsage: error
+    };
+
+  }
+}
+
 export async function updateMemberDetails(payload) {
   try {
     const response = await fetch("../api/puv_api/update_member_details.php", {

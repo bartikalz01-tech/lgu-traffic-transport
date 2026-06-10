@@ -1,9 +1,38 @@
-import { getRouteSuggestions } from "../../data/fetch_public_group_trans.js";
+import { getRouteSuggestions, insertPuvRoute } from "../../data/fetch_public_group_trans.js";
 
 let puvMarker = null;
 let barangayPolyline = null;
 let osrmPolyline = null
 let destinationMarker = null;
+
+let selectedRouteData = null;
+
+
+function cleanupAndExit(map, onCancel) {
+  if(puvMarker) {
+    map.removeLayer(puvMarker);
+    puvMarker = null;
+  }
+
+  if(barangayPolyline) {
+    map.removeLayer(barangayPolyline);
+    barangayPolyline = null;
+  }
+
+  if(osrmPolyline) {
+    map.removeLayer(osrmPolyline);
+    osrmPolyline = null;
+  }
+
+  if(destinationMarker) {
+    map.removeLayer(destinationMarker);
+    destinationMarker = null;
+  }
+
+  onCancel();
+}
+
+
 
 export async function renderAddCurrentRoute(container, selectedGroup, map, onCancel) {
 
@@ -146,6 +175,8 @@ export async function renderAddCurrentRoute(container, selectedGroup, map, onCan
 
           const selectedRoute = result.routes[index];
 
+          selectedRouteData = selectedRoute;
+
           if(barangayPolyline) {
             map.removeLayer(barangayPolyline);
           }
@@ -230,32 +261,43 @@ export async function renderAddCurrentRoute(container, selectedGroup, map, onCan
   
 
   document.getElementById("btnSaveBaselineRoute").addEventListener("click", async () => {
-    console.log(puvGroupId);
+    
+    if(!selectedRouteData) {
+      alert("Please select a route");
+      return;
+    }
+
+    const payload = {
+      puv_group_id: puv_group_id,
+      destination_name: destinationInput.value.trim(),
+      exit_node_id: selectedRouteData.exit_id,
+      route_type: "current",
+      route_json: selectedRouteData
+    };
+
+    const result = await insertPuvRoute(payload);
+
+    if(result.status === "success") {
+      await Swal.fire({
+        icon: "success",
+        title: "Route Saved",
+        text: "The default route has been successfully registered.",
+        confirmButtonText: "OK",
+      });
+
+      cleanupAndExit(map, onCancel);
+    } else {
+       Swal.fire({
+        icon: "error",
+        title: "Save Failed",
+        text: result.message || "Unable to save route."
+      });
+    }
   });
 
 
 
   document.getElementById("btnCancelAddRoute").addEventListener("click", () => {
-    if(puvMarker) {
-      map.removeLayer(puvMarker);
-      puvMarker = null;
-    }
-
-    if(barangayPolyline) {
-      map.removeLayer(barangayPolyline);
-      barangayPolyline = null;
-    }
-
-    if(osrmPolyline) {
-      map.removeLayer(osrmPolyline);
-      osrmPolyline = null;
-    }
-
-    if(destinationMarker) {
-      map.removeLayer(destinationMarker);
-      destinationMarker = null;
-    }
-
-    onCancel();
+    cleanupAndExit(map, onCancel);
   });
 }

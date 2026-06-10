@@ -171,6 +171,61 @@ class PublicTransportCoordination extends config {
     }
   }
 
+  public function insertPuvRoute(
+    $puvGroupId,
+    $destinationName,
+    $exitNodeId,
+    $routeJson,
+    $routeType
+  ) {
+    $conn = $this->conn();
+    $sql = "
+      INSERT INTO puv_routes (
+        puv_group_id,
+        destination_name,
+        exit_node_id,
+        route_json,
+        route_type
+      )
+      VALUES (
+        :puv_group_id,
+        :destination_name,
+        :exit_node_id,
+        :route_json,
+        :route_type
+      )
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindParam(
+      ':puv_group_id',
+      $puvGroupId
+    );
+
+    $stmt->bindParam(
+      ':destination_name',
+      $destinationName
+    );
+
+    $stmt->bindParam(
+      ':exit_node_id',
+      $exitNodeId
+    );
+
+    $stmt->bindParam(
+      ':route_json',
+      $routeJson
+    );
+
+    $stmt->bindParam(
+      ':route_type',
+      $routeType
+    );
+
+    return $stmt->execute();
+  }
+
   public function updateMemberDetails(
     $personnelId, 
     $firstName, 
