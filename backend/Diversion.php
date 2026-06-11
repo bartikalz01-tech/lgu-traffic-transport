@@ -3,16 +3,18 @@ require_once 'config.php';
 
 class Diversion extends config {
 
-  public function createDiversion($start_road_id, $end_road_id, $route_config, $route_signature, $distance, $vehicle_per_min, $avg_speed) {
+  public function createDiversion($start_road_id, $end_road_id, $start_node_id, $end_node_id, $route_config, $route_signature, $distance, $vehicle_per_min, $avg_speed) {
     $conn = $this->conn();
     $sql = "
-      INSERT INTO diversion_routes (start_road_id, end_road_id, route_config, route_signature, distance, vehicle_per_min, avg_speed)
-      VALUES (:start, :end, :route_config, :route_signature, :distance, :vehicle_per_min, :avg_speed)
+      INSERT INTO diversion_routes (start_road_id, end_road_id, start_node_id, end_node_id, route_config, route_signature, distance, vehicle_per_min, avg_speed)
+      VALUES (:start, :end, :start_node_id, :end_node_id, :route_config, :route_signature, :distance, :vehicle_per_min, :avg_speed)
     ";
 
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':start', $start_road_id);
     $stmt->bindParam(':end', $end_road_id);
+    $stmt->bindParam(':start_node_id', $start_node_id);
+    $stmt->bindParam(':end_node_id', $end_node_id);
     $stmt->bindParam(':route_config', $route_config);
     $stmt->bindParam(':route_signature', $route_signature);
     $stmt->bindParam(':distance', $distance);

@@ -15,9 +15,14 @@ if(!$data) {
 $diversion = new Diversion();
 
 try {
+  error_reporting(E_ALL);
+  ini_set('display_errors', 1);
+
   $diversionId = $diversion->createDiversion(
     $data['start_road_id'],
     $data['end_road_id'],
+    $data['start_node_id'],
+    $data['end_node_id'],
     $data['route_config'],
     $data['route_signature'],
     $data['distance'],

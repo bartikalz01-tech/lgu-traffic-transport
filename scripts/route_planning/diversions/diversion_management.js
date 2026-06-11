@@ -348,6 +348,8 @@ async function renderDiversionManagement(container) {
     const payload = {
       start_road_id: activeSelectedRoute.start_road.road_id,
       end_road_id: activeSelectedRoute.end_road.road_id,
+      start_node_id: activeSelectedRoute.path[0],
+      end_node_id: activeSelectedRoute.path[activeSelectedRoute.path.length - 1],
       route_config: routeMode,
       distance: activeSelectedRoute.distance,
       vehicle_per_min: 0,
