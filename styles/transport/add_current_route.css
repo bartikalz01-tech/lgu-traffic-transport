@@ -351,6 +351,21 @@
   }
 }
 
+.terminal-marker {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 50%;
+
+  font-size: 18px;
+}
+
 .destination-marker {
   width: 30px;
   height: 30px;
@@ -368,4 +383,8 @@
 
 .destination-marker i {
   color: #dc3545;
+}
+
+.terminal-marker i {
+  color: #000;
 }

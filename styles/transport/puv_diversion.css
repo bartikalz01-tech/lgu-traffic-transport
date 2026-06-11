@@ -71,10 +71,10 @@
   display: inline-block;
 }
 .dot.primary {
-  background: var(--primary-color);
+  background: #475569;
 }
 .dot.alternate {
-  background: var(--accent-color);
+  background: var(--accent-color); /* #3498db */
 }
 
 .puv-diversion-details-container {

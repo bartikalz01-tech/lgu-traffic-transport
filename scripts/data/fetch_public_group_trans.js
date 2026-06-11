@@ -185,3 +185,19 @@ export async function getRouteSuggestions(payload) {
     };
   }
 }
+
+export async function getCurrentRoute(puvGroupId) {
+  try {
+    const response = await fetch(`../api/puv_api/get_puv_route.php?puv_group_id=${puvGroupId}`);
+
+    return await response.json();
+
+  } catch(error) {
+    
+    return {
+      status: "error",
+      message: "Request Failed"
+    };
+
+  }
+}

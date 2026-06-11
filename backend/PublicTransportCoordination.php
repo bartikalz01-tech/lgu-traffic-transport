@@ -493,6 +493,24 @@ class PublicTransportCoordination extends config {
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  public function getPuvCurrentRoute($puvGroupId) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT *
+      FROM puv_routes
+      WHERE puv_group_id = :puv_group_id
+      AND route_type = 'current'
+      LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':puv_group_id', $puvGroupId);
+
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
 }
 
 ?>
