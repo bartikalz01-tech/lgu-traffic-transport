@@ -201,3 +201,19 @@ export async function getCurrentRoute(puvGroupId) {
 
   }
 }
+
+export async function getDiversionRoutes(lat, lng) {
+  try {
+    const response = await fetch(`../api/puv_api/get_puv_diversion_routes.php?lat=${lat}&lng=${lng}`);
+
+    return await response.json();
+
+  } catch(error) {
+
+    return {
+      status: "error",
+      message: `Request Failed: ${error}`
+    };
+
+  }
+}

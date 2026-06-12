@@ -1,4 +1,4 @@
-import { getPuvGroup, getCurrentRoute } from "../data/fetch_public_group_trans.js";
+import { getPuvGroup, getCurrentRoute, getDiversionRoutes } from "../data/fetch_public_group_trans.js";
 import { renderAddCurrentRoute } from "./puv_diversion/add_current_route.js";
 import { initMap } from "../utils/traffic_and_events.js";
 
@@ -63,71 +63,8 @@ export async function renderPuvDiversion(container) {
           <p>Select a route suggestion block to map coordinates or review narrow street limits.</p>
         </div>
 
-        <div class="diversion-routes-container">
-          <div class="diversion-card">
-            <div class="div-card-header">
-              <span class="badge badge-success">Option 1 (Optimal)</span>
-              <span class="exit-counter"><i class="fas fa-door-open"></i> 2 Local Exits</span>
-            </div>
-            <h5>Via Sampaguita St. Shortcut</h5>
-            <p class="div-card-desc">Bypasses main avenue intersection block. Uses minor residential street outlet</p>
-            <div class="div-card-footer">
-              <span>Est: <strong>+3 mins</strong></span>
-              <button class="btn-preview-route">Activate Route</button>
-            </div>
-          </div>
-
-          <div class="diversion-card">
-            <div class="div-card-header">
-              <span class="badge badge-warning">Option 2 (Secondary)</span>
-              <span class="exit-counter"><i class="fas fa-door-open"></i> 1 Exit Used</span>
-            </div>
-            <h5>Barangay Hall Perimeter Loop</h5>
-            <p class="div-card-desc">Redirects traffic through well-lit alternative boulevard. Avoids narrow corridors.</p>
-            <div class="div-card-footer">
-              <span>Est: <strong>+6 mins</strong></span>
-              <button class="btn-preview-route">Activate Route</button>
-            </div>
-          </div>
-
-          <div class="diversion-card disabled-card">
-            <div class="div-card-header">
-              <span class="badge badge-danger">Option 3 (High-Load)</span>
-              <span class="exit-counter text-danger"><i class="fas fa-exclamation-triangle"></i> Narrow Exit</span>
-            </div>
-            <h5>Back-Alley Outflow Corridor</h5>
-            <p class="div-card-desc">Tight clearances. Not recommended for full-size commuter modern jeeps.</p>
-            <div class="div-card-footer">
-              <span>Est: <strong>+11 mins</strong></span>
-              <button class="btn-preview-route">Activate Route</button>
-            </div>
-          </div>
-
-          <div class="diversion-card">
-            <div class="div-card-header">
-              <span class="badge badge-neutral">Option 4</span>
-              <span class="exit-counter"><i class="fas fa-door-open"></i> 3 Exits Used</span>
-            </div>
-            <h5>Boundary Road Intersect</h5>
-            <p class="div-card-desc">Exits early into the adjacent neighboring barangay roadway system.</p>
-            <div class="div-card-footer">
-              <span>Est: <strong>+8 mins</strong></span>
-              <button class="btn-preview-route">Activate Route</button>
-            </div>
-          </div>
-
-          <div class="diversion-card">
-            <div class="div-card-header">
-              <span class="badge badge-neutral">Option 5</span>
-              <span class="exit-counter"><i class="fas fa-door-open"></i> 2 Exits Used</span>
-            </div>
-            <h5>School Zone Bypass System</h5>
-            <p class="div-card-desc">Utilizes school service access roads. Best applied only during non-school hours.</p>
-            <div class="div-card-footer">
-              <span>Est: <strong>+5 mins</strong></span>
-              <button class="btn-preview-route">Activate Route</button>
-            </div>
-          </div>
+        <div class="diversion-routes-container" id="diversionRoutesContainer">
+          
         </div>
       </div>
     </div>
@@ -137,7 +74,7 @@ export async function renderPuvDiversion(container) {
 
   const puvDiversionDetailsContainer = document.querySelector(".puv-diversion-details-container");
   const puvSelect = document.getElementById("puvGroupSelect");
-  const diversionCards = document.querySelectorAll(".diversion-card");
+  const diversionRoutesContainer = document.getElementById("diversionRoutesContainer");
   const routeMetaCard = document.getElementById("routeMetaCard");
   const setDefaultRouteBtn = document.getElementById("btnCreateCurrentRoute");
 
@@ -187,6 +124,72 @@ export async function renderPuvDiversion(container) {
       const selectedGroup = puvGroups.data.find(
         group => group.puv_group_id == puvGroupId
       );
+
+      const diversionResult = await getDiversionRoutes(selectedGroup.latitude, selectedGroup.longitude);
+
+      if(diversionResult.status === "success" && diversionResult.data.length > 0) {
+        diversionRoutesContainer.innerHTML = diversionResult.data.map((route, index) => {
+          let badgeClass = "badge-neutral";
+          let badgeText = `Option ${index + 1}`;
+
+          if(index === 0) {
+            badgeClass = "badge-success";
+            badgeText = "Option 1 (Optimal)";
+          }
+
+          if(index === 1) {
+            badgeClass = "badge-warning";
+            badgeText = "Option 2 (Secondary)";
+          }
+
+          return `
+            <div class="diversion-card" data-route-index="${index}">
+              <div class="div-card-header">
+                <span class="badge ${badgeClass}">${badgeText}</span>
+                <span class="exit-counter"><i class="fas fa-door-open"></i> ${route.exit_name}</span>
+              </div>
+
+              <h5>${route.exit_name}</h5>
+
+              <p class="div-card-desc">${route.description}</p>
+
+              <div class="div-card-footer">
+                <span>Distance: <strong>${route.distance.toFixed(4)}</strong></span>
+
+                <button class="btn-preview-route">Activate Route</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        const diversionCards = document.querySelectorAll(".diversion-card");
+
+        diversionCards.forEach(card => {
+          card.addEventListener("click", () => {
+
+            diversionCards.forEach(c => {
+              c.classList.remove("active-suggestion");
+
+              const btn = c.querySelector(".btn-preview-route");
+
+              btn.classList.remove("show-route-btn");
+            });
+
+            card.classList.add("active-suggestion");
+
+            const btn = card.querySelector(".btn-preview-route");
+            btn.classList.add("show-route-btn");
+
+          });
+        });
+
+      } else {
+        diversionRoutesContainer.innerHTML = `
+          <div class="diversion-card">
+            <p>No diversion routes available.</p>
+          </div>
+        `;
+      }
 
       const terminalIcon = L.divIcon({
         html: `
@@ -290,25 +293,6 @@ export async function renderPuvDiversion(container) {
 
     puvSelect.addEventListener("change", loadRouteStatus);
   }
-
-  diversionCards.forEach(card => {
-    card.addEventListener("click", () => {
-
-      diversionCards.forEach(c => {
-        c.classList.remove("active-suggestion");
-
-        const btn = c.querySelector(".btn-preview-route");
-
-        btn.classList.remove("show-route-btn");
-      });
-
-      card.classList.add("active-suggestion");
-
-      const btn = card.querySelector(".btn-preview-route");
-      btn.classList.add("show-route-btn");
-
-    });
-  });
 
   setDefaultRouteBtn.addEventListener("click", async () => {
 

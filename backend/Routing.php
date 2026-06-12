@@ -701,5 +701,38 @@ class Routing extends config {
 
     return $routes;
   }
+
+  public function generateDiversionSuggestions($puvLat, $puvLng) {
+    $startNode = $this->getNearestNode($puvLat, $puvLng);
+
+    if(!$startNode) {
+      return [];
+    }
+
+    $exits = $this->getBarangayExits();
+
+    $routes = [];
+
+    foreach($exits as $exit) {
+      $alternatives = $this->generateAlternativeRoutes($startNode['node_id'], $exit['node_id'], 5);
+
+      foreach($alternatives as $route) {
+        $routes[] = [
+          'exit_id' => $exit['exit_id'],
+          'exit_name' => $exit['exit_name'],
+          'description' => $exit['description'],
+          'distance' => $route['distance'],
+          'path' => $route['path'],
+          'coords' => $this->getCoordsFromPath($route['path'])
+        ];
+      }
+    }
+
+    usort($routes, function($a, $b) {
+      return $a['distance'] <=> $b['distance'];
+    });
+
+    return array_slice($routes, 0, 5);
+  }
 }
 ?>
