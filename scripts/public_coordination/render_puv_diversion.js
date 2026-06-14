@@ -3,6 +3,7 @@ import { renderAddCurrentRoute } from "./puv_diversion/add_current_route.js";
 import { initMap } from "../utils/traffic_and_events.js";
 
 let currentRoutePolyline = [];
+let diversionPolyline = [];
 
 let terminalMarker = null;
 let destinationMarker = null;
@@ -63,9 +64,7 @@ export async function renderPuvDiversion(container) {
           <p>Select a route suggestion block to map coordinates or review narrow street limits.</p>
         </div>
 
-        <div class="diversion-routes-container" id="diversionRoutesContainer">
-          
-        </div>
+        <div class="diversion-routes-container" id="diversionRoutesContainer"></div>
       </div>
     </div>
   `;
@@ -125,7 +124,9 @@ export async function renderPuvDiversion(container) {
         group => group.puv_group_id == puvGroupId
       );
 
-      const diversionResult = await getDiversionRoutes(selectedGroup.latitude, selectedGroup.longitude);
+      const diversionResult = await getDiversionRoutes(selectedGroup.latitude, selectedGroup.longitude, result.data.destination_name);
+
+      const diversionRoutes = diversionResult.data;
 
       if(diversionResult.status === "success" && diversionResult.data.length > 0) {
         diversionRoutesContainer.innerHTML = diversionResult.data.map((route, index) => {
@@ -180,6 +181,45 @@ export async function renderPuvDiversion(container) {
             const btn = card.querySelector(".btn-preview-route");
             btn.classList.add("show-route-btn");
 
+            const routeIndex = Number(card.dataset.routeIndex);
+
+            const selectedDiversionRoute = diversionRoutes[routeIndex];
+
+            diversionPolyline.forEach(polyline => {
+              puvAlternateRoute.removeLayer(polyline);
+            });
+
+            diversionPolyline = [];
+
+            const barangayCoords = selectedDiversionRoute.barangay_coords.map(coord => [
+              Number(coord[1]),
+              Number(coord[0])
+            ]);
+
+            const osrmCoords = selectedDiversionRoute.osrm_route.routes[0].geometry.coordinates.map(coord => [
+              coord[1],
+              coord[0]
+            ]);
+
+            const fullDiversionRoute = [
+              ...barangayCoords,
+              ...osrmCoords
+            ]
+
+            const outline = L.polyline(fullDiversionRoute, {
+              color: "#ffffff",
+              weight: 8
+            }).addTo(puvAlternateRoute);
+
+            const diversion = L.polyline(fullDiversionRoute, {
+              color: "#3498db",
+              weight: 5
+            }).addTo(puvAlternateRoute);
+
+            diversionPolyline.push(outline);
+            diversionPolyline.push(diversion);
+
+            puvAlternateRoute.fitBounds(diversion.getBounds());
           });
         });
 

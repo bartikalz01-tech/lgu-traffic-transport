@@ -202,9 +202,9 @@ export async function getCurrentRoute(puvGroupId) {
   }
 }
 
-export async function getDiversionRoutes(lat, lng) {
+export async function getDiversionRoutes(lat, lng, destination) {
   try {
-    const response = await fetch(`../api/puv_api/get_puv_diversion_routes.php?lat=${lat}&lng=${lng}`);
+    const response = await fetch(`../api/puv_api/get_puv_diversion_routes.php?lat=${lat}&lng=${lng}&destination=${destination}`);
 
     return await response.json();
 

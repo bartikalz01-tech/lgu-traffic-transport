@@ -702,7 +702,14 @@ class Routing extends config {
     return $routes;
   }
 
-  public function generateDiversionSuggestions($puvLat, $puvLng) {
+  public function generateDiversionSuggestions($puvLat, $puvLng, $destinationName) {
+    
+    $destination = $this->geocodeDestination($destinationName);
+
+    if(!$destination) {
+      return [];
+    }
+    
     $startNode = $this->getNearestNode($puvLat, $puvLng);
 
     if(!$startNode) {
@@ -716,14 +723,32 @@ class Routing extends config {
     foreach($exits as $exit) {
       $alternatives = $this->generateAlternativeRoutes($startNode['node_id'], $exit['node_id'], 5);
 
+      $exitCoords = $this->getNodeCoordinates($exit['node_id']);
+
+      if(!$exitCoords) {
+        continue;
+      }
+
       foreach($alternatives as $route) {
+        $barangayCoords = $this->getCoordsFromPath($route['path']);
+
+        $osrm = $this->getOSRMRoute([
+          [$exitCoords['lng'], $exitCoords['lat']], 
+          [$destination['lng'], $destination['lat']]
+        ]);
+          
         $routes[] = [
           'exit_id' => $exit['exit_id'],
           'exit_name' => $exit['exit_name'],
           'description' => $exit['description'],
+
           'distance' => $route['distance'],
-          'path' => $route['path'],
-          'coords' => $this->getCoordsFromPath($route['path'])
+           
+          'barangay_path' => $route['path'],
+
+          'barangay_coords' => $barangayCoords,
+
+          'osrm_route' => $osrm
         ];
       }
     }
