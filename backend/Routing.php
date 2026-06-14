@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'PublicTransportCoordination.php';
 
 class Routing extends config {
 
@@ -758,6 +759,40 @@ class Routing extends config {
     });
 
     return array_slice($routes, 0, 5);
+  }
+
+  public function generateDiversionToAssignedExit($puvGroupId) {
+    $ptc = new PublicTransportCoordination();
+    $currentRoute = $ptc->getPuvCurrentRoute($puvGroupId);
+    $group = $ptc->getPuvGroupById($puvGroupId);
+
+    $startNode = $this->getNearestNode($group['latitude'], $group['longitude']);
+    $exitNodeId = $currentRoute['exit_node_id'];
+
+    $graph = $this->buildGraph(true);
+
+    $result = $this->dijkstra($graph, $startNode['node_id'], $exitNodeId);
+
+    $coords = $this->getCoordsFromPath($result['path']);
+
+    $destinationName = $currentRoute['destination_name'];
+
+    $destination = $this->geocodeDestination($destinationName);
+
+    $exitCoords = $this->getNodeCoordinates($exitNodeId);
+
+    $osrm = $this->getOSRMRoute([
+      [$exitCoords['lng'], $exitCoords['lat']],
+      [$destination['lng'], $destination['lat']]
+    ]);
+
+    return  [
+      'path' => $result['path'],
+      //'coords' => $coords,
+      'barangay_coords' => $coords,
+      'osrm_route' => $osrm,
+      'exit_node_id' => $exitNodeId
+    ];
   }
 }
 ?>

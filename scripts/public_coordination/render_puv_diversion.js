@@ -89,6 +89,12 @@ export async function renderPuvDiversion(container) {
 
     currentRoutePolyline = [];
 
+    diversionPolyline.forEach(polyline => {
+      puvAlternateRoute.removeLayer(polyline);
+    })
+
+    diversionPolyline = [];
+
     if(terminalMarker) {
       puvAlternateRoute.removeLayer(terminalMarker);
       terminalMarker = null;
@@ -124,109 +130,63 @@ export async function renderPuvDiversion(container) {
         group => group.puv_group_id == puvGroupId
       );
 
-      const diversionResult = await getDiversionRoutes(selectedGroup.latitude, selectedGroup.longitude, result.data.destination_name);
+      const diversionResult = await getDiversionRoutes(puvGroupId);
 
-      const diversionRoutes = diversionResult.data;
-
-      if(diversionResult.status === "success" && diversionResult.data.length > 0) {
-        diversionRoutesContainer.innerHTML = diversionResult.data.map((route, index) => {
-          let badgeClass = "badge-neutral";
-          let badgeText = `Option ${index + 1}`;
-
-          if(index === 0) {
-            badgeClass = "badge-success";
-            badgeText = "Option 1 (Optimal)";
-          }
-
-          if(index === 1) {
-            badgeClass = "badge-warning";
-            badgeText = "Option 2 (Secondary)";
-          }
-
-          return `
-            <div class="diversion-card" data-route-index="${index}">
-              <div class="div-card-header">
-                <span class="badge ${badgeClass}">${badgeText}</span>
-                <span class="exit-counter"><i class="fas fa-door-open"></i> ${route.exit_name}</span>
-              </div>
-
-              <h5>${route.exit_name}</h5>
-
-              <p class="div-card-desc">${route.description}</p>
-
-              <div class="div-card-footer">
-                <span>Distance: <strong>${route.distance.toFixed(4)}</strong></span>
-
-                <button class="btn-preview-route">Activate Route</button>
-              </div>
+      if(diversionResult.status === "success" && diversionResult.route) {
+        diversionRoutesContainer.innerHTML = `
+          <div class="diversion-card active-suggestion">
+            <div class="div-card-header">
+              <span class="badge badge-success">
+                Assigned Exit Route
+              </span>
             </div>
-          `;
-        }).join("");
 
-        const diversionCards = document.querySelectorAll(".diversion-card");
+            <h5>Diversion Activated</h5>
 
-        diversionCards.forEach(card => {
-          card.addEventListener("click", () => {
+            <p class="div-card-desc">
+              Vehicle group has been assigned to a designated barangay exit
+            </p>
 
-            diversionCards.forEach(c => {
-              c.classList.remove("active-suggestion");
+            <div class="div-card-footer">
+              <button class="btn-preview-route show-route-btn">
+                Show Diversion
+              </button>
+            </div>
+          </div>
+        `;
 
-              const btn = c.querySelector(".btn-preview-route");
+        const barangayCoords = diversionResult.route.barangay_coords.map(coord => [
+          Number(coord[1]),
+          Number(coord[0])
+        ]);
 
-              btn.classList.remove("show-route-btn");
-            });
+        const osrmCoords = diversionResult.route.osrm_route.routes[0].geometry.coordinates.map(coord => [
+          coord[1],
+          coord[0]
+        ]);
 
-            card.classList.add("active-suggestion");
+        const diversionCoords = [
+          ...barangayCoords,
+          ...osrmCoords.slice(1)
+        ];
 
-            const btn = card.querySelector(".btn-preview-route");
-            btn.classList.add("show-route-btn");
+        const outline = L.polyline(diversionCoords, {
+          color: "#ffffff",
+          weight: 8
+        }).addTo(puvAlternateRoute);
 
-            const routeIndex = Number(card.dataset.routeIndex);
+        const diversion = L.polyline(diversionCoords, {
+          color: "#3498db",
+          weight: 5
+        }).addTo(puvAlternateRoute);
 
-            const selectedDiversionRoute = diversionRoutes[routeIndex];
-
-            diversionPolyline.forEach(polyline => {
-              puvAlternateRoute.removeLayer(polyline);
-            });
-
-            diversionPolyline = [];
-
-            const barangayCoords = selectedDiversionRoute.barangay_coords.map(coord => [
-              Number(coord[1]),
-              Number(coord[0])
-            ]);
-
-            const osrmCoords = selectedDiversionRoute.osrm_route.routes[0].geometry.coordinates.map(coord => [
-              coord[1],
-              coord[0]
-            ]);
-
-            const fullDiversionRoute = [
-              ...barangayCoords,
-              ...osrmCoords
-            ]
-
-            const outline = L.polyline(fullDiversionRoute, {
-              color: "#ffffff",
-              weight: 8
-            }).addTo(puvAlternateRoute);
-
-            const diversion = L.polyline(fullDiversionRoute, {
-              color: "#3498db",
-              weight: 5
-            }).addTo(puvAlternateRoute);
-
-            diversionPolyline.push(outline);
-            diversionPolyline.push(diversion);
-
-            puvAlternateRoute.fitBounds(diversion.getBounds());
-          });
-        });
+        diversionPolyline.push(outline);
+        diversionPolyline.push(diversion);
 
       } else {
         diversionRoutesContainer.innerHTML = `
           <div class="diversion-card">
-            <p>No diversion routes available.</p>
+            <p>No Diversion Route assigned.</p>
           </div>
         `;
       }

@@ -359,7 +359,22 @@ class PublicTransportCoordination extends config {
     $stmt->execute(); 
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-  } 
+  }
+  
+  public function getPuvGroupById($groupId) {
+    $conn = $this->conn();
+    $sql = "
+      SELECT * 
+      FROM puv_groups
+      WHERE puv_group_id = :puv_group_id
+      LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':puv_group_id' => $groupId]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
 
   public function getPuvMembersByGroup($puvGroupId) {
     $conn = $this->conn();
