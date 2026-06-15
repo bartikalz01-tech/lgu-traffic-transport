@@ -60,8 +60,8 @@ export async function renderPuvDiversion(container) {
         </div>
 
         <div class="diversion-routes-heading">
-          <h4><i class="fas fa-directions"></i> Local Diversion Options (5 Suggestions)</h4>
-          <p>Select a route suggestion block to map coordinates or review narrow street limits.</p>
+          <h4 id="diversionHeading"><i class="fas fa-directions"></i> Local Diversion Options</h4>
+          <p id="diversionDescription">Waiting for diversion routes...</p>
         </div>
 
         <div class="diversion-routes-container" id="diversionRoutesContainer"></div>
@@ -74,12 +74,24 @@ export async function renderPuvDiversion(container) {
   const puvDiversionDetailsContainer = document.querySelector(".puv-diversion-details-container");
   const puvSelect = document.getElementById("puvGroupSelect");
   const diversionRoutesContainer = document.getElementById("diversionRoutesContainer");
+  const diversionHeading = document.getElementById("diversionHeading");
+  const diversionDescription = document.getElementById("diversionDescription");
   const routeMetaCard = document.getElementById("routeMetaCard");
   const setDefaultRouteBtn = document.getElementById("btnCreateCurrentRoute");
 
 
   async function loadRouteStatus() {
     const puvGroupId = puvSelect.value;
+
+    diversionRoutesContainer.innerHTML = `
+      <div class="diversion-card">
+        <p>Loading Diversion Routes...</p>
+      </div>
+    `;
+
+    diversionHeading.innerHTML = `<i class="fas fa-directions"></i> Local Diversion Options`;
+
+    diversionDescription.textContent = "Loading diversion routes...";
 
     const result = await getCurrentRoute(puvGroupId);
 
@@ -132,56 +144,89 @@ export async function renderPuvDiversion(container) {
 
       const diversionResult = await getDiversionRoutes(puvGroupId);
 
-      if(diversionResult.status === "success" && diversionResult.route) {
-        diversionRoutesContainer.innerHTML = `
-          <div class="diversion-card active-suggestion">
+      if(diversionResult.status === "success" && diversionResult.routes.length) {
+        
+        diversionHeading.innerHTML = `
+          <i class="fas fa-directions"></i>
+          Local Diversion Options (${diversionResult.routes.length} Suggestions)
+        `;
+
+        diversionDescription.textContent = "Select a route suggestion block to map coordinates";
+
+        diversionRoutesContainer.innerHTML = diversionResult.routes.map((route, index) => `
+          <div class="diversion-card" data-index="${index}">
             <div class="div-card-header">
               <span class="badge badge-success">
                 Assigned Exit Route
               </span>
             </div>
 
-            <h5>Diversion Activated</h5>
+            <h5>Diversion Route ${index + 1}</h5>
 
             <p class="div-card-desc">
-              Vehicle group has been assigned to a designated barangay exit
+              Distance: ${route.distance.toFixed(2)}
             </p>
 
             <div class="div-card-footer">
-              <button class="btn-preview-route show-route-btn">
-                Show Diversion
+              <button class="btn-preview-route show-route-btn" id="activatePuvDiversion" data-index="${index}">
+                Active Diversion
               </button>
             </div>
           </div>
-        `;
+        `).join("");
 
-        const barangayCoords = diversionResult.route.barangay_coords.map(coord => [
-          Number(coord[1]),
-          Number(coord[0])
-        ]);
+        document.querySelectorAll(".diversion-card").forEach(card => {
+          card.addEventListener("click", () => {
+            const routeIndex = Number(card.dataset.index);
 
-        const osrmCoords = diversionResult.route.osrm_route.routes[0].geometry.coordinates.map(coord => [
-          coord[1],
-          coord[0]
-        ]);
+            const selectedDiversionRoute = diversionResult.routes[routeIndex];
 
-        const diversionCoords = [
-          ...barangayCoords,
-          ...osrmCoords.slice(1)
-        ];
+            document.querySelectorAll(".diversion-card").forEach(c => {
+              c.classList.remove("active-suggestion");
+            });
 
-        const outline = L.polyline(diversionCoords, {
-          color: "#ffffff",
-          weight: 8
-        }).addTo(puvAlternateRoute);
+            card.classList.add("active-suggestion");
 
-        const diversion = L.polyline(diversionCoords, {
-          color: "#3498db",
-          weight: 5
-        }).addTo(puvAlternateRoute);
+            diversionPolyline.forEach(polyline => {
+              puvAlternateRoute.removeLayer(polyline);
+            });
 
-        diversionPolyline.push(outline);
-        diversionPolyline.push(diversion);
+            diversionPolyline = [];
+
+            const barangayCoords = selectedDiversionRoute.barangay_coords.map(coord => [
+              Number(coord[1]),
+              Number(coord[0])
+            ]);
+
+            const osrmCoords = selectedDiversionRoute.osrm_route.routes[0].geometry.coordinates.map(coord => [
+              coord[1],
+              coord[0]
+            ]);
+
+            const diversionCoords = [
+              ...barangayCoords,
+              ...osrmCoords.slice(1)
+            ];
+
+            const outline = L.polyline(diversionCoords, {
+              color: "#ffffff",
+              weight: 8
+            }).addTo(puvAlternateRoute);
+
+            const diversion = L.polyline(diversionCoords, {
+              color: "#3498db",
+              weight: 5
+            }).addTo(puvAlternateRoute);
+
+            diversionPolyline.push(outline);
+            diversionPolyline.push(diversion);
+
+            puvAlternateRoute.fitBounds(
+              diversion.getBounds()
+            );
+
+          });
+        });
 
       } else {
         diversionRoutesContainer.innerHTML = `
@@ -189,6 +234,13 @@ export async function renderPuvDiversion(container) {
             <p>No Diversion Route assigned.</p>
           </div>
         `;
+
+        diversionHeading.innerHTML = `
+          <i class="fas fa-directions"></i>
+          Local Diversion Options (0 Suggestions)
+        `;
+
+        diversionDescription.textContent = "No Diversion routes available for this PUV Group";
       }
 
       const terminalIcon = L.divIcon({

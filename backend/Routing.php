@@ -703,77 +703,22 @@ class Routing extends config {
     return $routes;
   }
 
-  public function generateDiversionSuggestions($puvLat, $puvLng, $destinationName) {
-    
-    $destination = $this->geocodeDestination($destinationName);
-
-    if(!$destination) {
-      return [];
-    }
-    
-    $startNode = $this->getNearestNode($puvLat, $puvLng);
-
-    if(!$startNode) {
-      return [];
-    }
-
-    $exits = $this->getBarangayExits();
-
-    $routes = [];
-
-    foreach($exits as $exit) {
-      $alternatives = $this->generateAlternativeRoutes($startNode['node_id'], $exit['node_id'], 5);
-
-      $exitCoords = $this->getNodeCoordinates($exit['node_id']);
-
-      if(!$exitCoords) {
-        continue;
-      }
-
-      foreach($alternatives as $route) {
-        $barangayCoords = $this->getCoordsFromPath($route['path']);
-
-        $osrm = $this->getOSRMRoute([
-          [$exitCoords['lng'], $exitCoords['lat']], 
-          [$destination['lng'], $destination['lat']]
-        ]);
-          
-        $routes[] = [
-          'exit_id' => $exit['exit_id'],
-          'exit_name' => $exit['exit_name'],
-          'description' => $exit['description'],
-
-          'distance' => $route['distance'],
-           
-          'barangay_path' => $route['path'],
-
-          'barangay_coords' => $barangayCoords,
-
-          'osrm_route' => $osrm
-        ];
-      }
-    }
-
-    usort($routes, function($a, $b) {
-      return $a['distance'] <=> $b['distance'];
-    });
-
-    return array_slice($routes, 0, 5);
-  }
-
   public function generateDiversionToAssignedExit($puvGroupId) {
     $ptc = new PublicTransportCoordination();
+
     $currentRoute = $ptc->getPuvCurrentRoute($puvGroupId);
     $group = $ptc->getPuvGroupById($puvGroupId);
 
     $startNode = $this->getNearestNode($group['latitude'], $group['longitude']);
     $exitNodeId = $currentRoute['exit_node_id'];
 
-    $graph = $this->buildGraph(true);
+    /*$graph = $this->buildGraph(true);
 
     $result = $this->dijkstra($graph, $startNode['node_id'], $exitNodeId);
 
-    $coords = $this->getCoordsFromPath($result['path']);
+    $coords = $this->getCoordsFromPath($result['path']);*/
+
+    $routes = $this->generateAlternativeRoutes($startNode['node_id'], $exitNodeId, 5);
 
     $destinationName = $currentRoute['destination_name'];
 
@@ -786,13 +731,26 @@ class Routing extends config {
       [$destination['lng'], $destination['lat']]
     ]);
 
-    return  [
-      'path' => $result['path'],
-      //'coords' => $coords,
-      'barangay_coords' => $coords,
-      'osrm_route' => $osrm,
-      'exit_node_id' => $exitNodeId
-    ];
+    $results = [];
+
+
+    foreach($routes as $route) {
+      $barangayCoords = $this->getCoordsFromPath($route['path']);
+
+      /*$osrm = $this->getOSRMRoute([
+        [$exitCoords['lng'], $exitCoords['lat']],
+        [$destination['lng'], $destination['lat']]
+      ]);*/
+
+      $results[] = [
+        'path' => $route['path'],
+        'barangay_coords' => $barangayCoords,
+        'osrm_route' => $osrm,
+        'distance' => $route['distance']
+      ];
+    }
+
+    return $results;
   }
 }
 ?>

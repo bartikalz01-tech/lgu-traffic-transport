@@ -45,7 +45,7 @@ try {
 
   echo json_encode([
     'status' => 'success',
-    'route' => $route
+    'routes' => $route
   ]);
 
 } catch(Exception $e) {
