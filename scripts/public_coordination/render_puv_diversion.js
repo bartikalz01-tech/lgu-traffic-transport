@@ -1,4 +1,4 @@
-import { getPuvGroup, getCurrentRoute, getDiversionRoutes } from "../data/fetch_public_group_trans.js";
+import { getPuvGroup, getCurrentRoute, getDiversionRoutes, insertActivatePuvDiversion } from "../data/fetch_public_group_trans.js";
 import { renderAddCurrentRoute } from "./puv_diversion/add_current_route.js";
 import { initMap } from "../utils/traffic_and_events.js";
 
@@ -224,6 +224,39 @@ export async function renderPuvDiversion(container) {
             puvAlternateRoute.fitBounds(
               diversion.getBounds()
             );
+
+            const activatePuvDiversionBtn = card.querySelector(".show-route-btn");
+
+            activatePuvDiversionBtn.addEventListener("click", async (event) => {
+              event.stopPropagation();
+
+              const routeIndex = Number(activatePuvDiversionBtn.dataset.index);
+
+              const selectedDiversionRoute = diversionResult.routes[routeIndex];
+
+              console.log(selectedDiversionRoute);
+
+              const payload = {
+                puv_group_id: puvGroupId,
+                destination_name: result.data.destination_name,
+                exit_node_id: selectedDiversionRoute.exit_node_id,
+                route_json: JSON.stringify({
+                  coordinates: diversionCoords
+                }),
+                route_type: "diversion"
+              };
+
+              const saveResult = await insertActivatePuvDiversion(payload);
+
+              if(saveResult.status === "success") {
+                alert("Diversion route activated.");
+
+                await loadRouteStatus();
+              } else {
+                alert(JSON.stringify(saveResult, null, 2));
+              }
+
+            });
 
           });
         });

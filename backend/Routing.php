@@ -314,11 +314,11 @@ class Routing extends config {
       LIMIT 1
     ";
 
-     $stmt = $conn->prepare($sql);
-     $stmt->execute([
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([
       ':a' => $nodeA,
       ':b' => $nodeB
-     ]);
+    ]);
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -746,7 +746,8 @@ class Routing extends config {
         'path' => $route['path'],
         'barangay_coords' => $barangayCoords,
         'osrm_route' => $osrm,
-        'distance' => $route['distance']
+        'distance' => $route['distance'],
+        'exit_node_id' => $exitNodeId
       ];
     }
 
