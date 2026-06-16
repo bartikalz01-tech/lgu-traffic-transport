@@ -526,6 +526,31 @@ class PublicTransportCoordination extends config {
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  public function getPuvDiversionRoute($puvGroupId) {
+
+    $conn = $this->conn();
+
+    $sql = "
+      SELECT *
+      FROM puv_routes
+      WHERE puv_group_id = :puv_group_id
+      AND route_type = 'diversion'
+      ORDER BY puv_route_id DESC
+      LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindParam(
+      ':puv_group_id',
+      $puvGroupId
+    );
+
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
 }
 
 ?>

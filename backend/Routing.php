@@ -706,6 +706,16 @@ class Routing extends config {
   public function generateDiversionToAssignedExit($puvGroupId) {
     $ptc = new PublicTransportCoordination();
 
+    $activeDiversion = $ptc->getPuvDiversionRoute($puvGroupId);
+
+    $activeCoords = null;
+
+    if($activeDiversion) {
+      $routeData = json_decode($activeDiversion['route_json'], true);
+
+      $activeCoords = $routeData['coordinates'] ?? [];
+    }
+
     $currentRoute = $ptc->getPuvCurrentRoute($puvGroupId);
     $group = $ptc->getPuvGroupById($puvGroupId);
 
@@ -742,12 +752,56 @@ class Routing extends config {
         [$destination['lng'], $destination['lat']]
       ]);*/
 
+      $barangayCoords = array_map(function($coord) {
+        return [
+          $coord[1],
+          $coord[0]
+        ];
+      }, $barangayCoords);
+
+      $osrmCoords = [];
+
+      foreach($osrm['routes'][0]['geometry']['coordinates'] as $coord) {
+
+        $osrmCoords[] = [
+          $coord[1],
+          $coord[0]
+        ];
+      }
+
+      $diversionCoords = array_merge(
+        $barangayCoords,
+        array_slice($osrmCoords, 1)
+      );
+
+      $isCurrent = false;
+
+      if($activeCoords) {
+          
+        $activeCoords = array_map(function($coord) {
+          return [
+            round((float)$coord[0], 6),
+            round((float)$coord[1], 6)
+          ];
+        }, $activeCoords);
+
+        $diversionCoords = array_map(function($coord) {
+          return[
+            round((float)$coord[0], 6),
+            round((float)$coord[1], 6)
+          ];
+        }, $diversionCoords);
+
+        $isCurrent = json_encode($activeCoords) === json_encode($diversionCoords); 
+      }
+
       $results[] = [
         'path' => $route['path'],
         'barangay_coords' => $barangayCoords,
         'osrm_route' => $osrm,
         'distance' => $route['distance'],
-        'exit_node_id' => $exitNodeId
+        'exit_node_id' => $exitNodeId,
+        'current_diversion' => $isCurrent
       ];
     }
 

@@ -62,6 +62,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  cursor: pointer;
 }
 
 .dot {
@@ -329,4 +330,12 @@
 .disabled-card {
   opacity: 0.75;
   background-color: #fafbfc;
+}
+
+.hidden-footer {
+  display: none;
+}
+
+.div-card-footer {
+  margin-top: 12px;
 }

@@ -8,6 +8,9 @@ let diversionPolyline = [];
 let terminalMarker = null;
 let destinationMarker = null;
 
+let showCurrentRoute = true;
+let showDiversionRoute = true;
+
 export async function renderPuvDiversion(container) {
   container.innerHTML = `
     <div class="diversion-overview-container">
@@ -21,8 +24,8 @@ export async function renderPuvDiversion(container) {
       <div class="puv-diversion-map-container">
         <div id="puvDiversionMap"></div>
         <div class="map-floating-legend">
-          <span class="legend-item"><span class="dot primary"></span> Normal Route</span>
-          <span class="legend-item"><span class="dot alternate"></span> Proposed Diversion</span>
+          <span class="legend-item" id="toggleCurrentRoute"><span class="dot primary"></span> Normal Route</span>
+          <span class="legend-item" id="toggleDiversionRoute"><span class="dot alternate"></span> Proposed Diversion</span>
         </div>
       </div>
 
@@ -78,6 +81,36 @@ export async function renderPuvDiversion(container) {
   const diversionDescription = document.getElementById("diversionDescription");
   const routeMetaCard = document.getElementById("routeMetaCard");
   const setDefaultRouteBtn = document.getElementById("btnCreateCurrentRoute");
+
+  const toggleCurrentRouteBtn = document.getElementById("toggleCurrentRoute");
+  const toggleDiversionRouteBtn = document.getElementById("toggleDiversionRoute");
+
+  function togglePolylineVisibility(polylines, visible) {
+    polylines.forEach(polyline => {
+      if(polyline._path) {
+        polyline._path.style.display = visible ? "block" : "none";
+      }
+    });
+  }
+
+  toggleCurrentRouteBtn.addEventListener("click", () => {
+    showCurrentRoute = !showCurrentRoute;
+
+    togglePolylineVisibility(
+      currentRoutePolyline,
+      showCurrentRoute
+    );
+
+    toggleCurrentRouteBtn.classList.toggle("active", showCurrentRoute);
+  });
+
+  toggleDiversionRouteBtn.addEventListener("click", () => {
+    showDiversionRoute = !showDiversionRoute;
+
+    togglePolylineVisibility(diversionPolyline, showDiversionRoute);
+
+    toggleDiversionRouteBtn.classList.toggle("active", showDiversionRoute);
+  });
 
 
   async function loadRouteStatus() {
@@ -156,8 +189,8 @@ export async function renderPuvDiversion(container) {
         diversionRoutesContainer.innerHTML = diversionResult.routes.map((route, index) => `
           <div class="diversion-card" data-index="${index}">
             <div class="div-card-header">
-              <span class="badge badge-success">
-                Assigned Exit Route
+              <span class="badge ${route.current_diversion ? "badge-success" : "badge_warning"}">
+                ${route.current_diversion ? "Current Diversion" : "Diversion Option"}
               </span>
             </div>
 
@@ -168,8 +201,12 @@ export async function renderPuvDiversion(container) {
             </p>
 
             <div class="div-card-footer">
-              <button class="btn-preview-route show-route-btn" id="activatePuvDiversion" data-index="${index}">
-                Active Diversion
+              <button 
+                class="btn-preview-route show-route-btn" 
+                id="activatePuvDiversion" 
+                data-index="${index}"
+                ${route.current_diversion ? "disabled" : ""}>
+                ${route.current_diversion ? "Current Diversion" : "Activate Diversion"}
               </button>
             </div>
           </div>
@@ -183,9 +220,15 @@ export async function renderPuvDiversion(container) {
 
             document.querySelectorAll(".diversion-card").forEach(c => {
               c.classList.remove("active-suggestion");
+
+              const footer = c.querySelector(".div-card-footer");
+
+              footer.classList.add("hidden-footer");
             });
 
             card.classList.add("active-suggestion");
+
+            card.querySelector(".div-card-footer").classList.remove("hidden-footer");
 
             diversionPolyline.forEach(polyline => {
               puvAlternateRoute.removeLayer(polyline);
@@ -193,10 +236,19 @@ export async function renderPuvDiversion(container) {
 
             diversionPolyline = [];
 
+            console.log(selectedDiversionRoute.barangay_coords);
+
             const barangayCoords = selectedDiversionRoute.barangay_coords.map(coord => [
-              Number(coord[1]),
-              Number(coord[0])
+              Number(coord[0]),
+              Number(coord[1])
             ]);
+
+            console.log("Barangay converted:", barangayCoords);
+
+            console.log(
+              selectedDiversionRoute.osrm_route.routes[0]
+              .geometry.coordinates.slice(0, 5)
+            );
 
             const osrmCoords = selectedDiversionRoute.osrm_route.routes[0].geometry.coordinates.map(coord => [
               coord[1],
@@ -220,6 +272,8 @@ export async function renderPuvDiversion(container) {
 
             diversionPolyline.push(outline);
             diversionPolyline.push(diversion);
+
+            togglePolylineVisibility(diversionPolyline, showDiversionRoute);
 
             puvAlternateRoute.fitBounds(
               diversion.getBounds()
@@ -346,6 +400,8 @@ export async function renderPuvDiversion(container) {
 
       currentRoutePolyline.push(outline);
       currentRoutePolyline.push(route);
+
+      togglePolylineVisibility(currentRoutePolyline, showCurrentRoute);
 
       puvAlternateRoute.fitBounds(route.getBounds());
 
