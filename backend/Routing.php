@@ -774,9 +774,11 @@ class Routing extends config {
         array_slice($osrmCoords, 1)
       );
 
+      $routeSignature = $puvGroupId . "_" . $exitNodeId . "_" . md5(implode('-', $route['path']));
+
       $isCurrent = false;
 
-      if($activeCoords) {
+      /*if($activeCoords) {
           
         $activeCoords = array_map(function($coord) {
           return [
@@ -793,7 +795,9 @@ class Routing extends config {
         }, $diversionCoords);
 
         $isCurrent = json_encode($activeCoords) === json_encode($diversionCoords); 
-      }
+      }*/
+
+      $isCurrent = $activeDiversion && $activeDiversion['route_signature'] === $routeSignature;
 
       $results[] = [
         'path' => $route['path'],
@@ -801,6 +805,7 @@ class Routing extends config {
         'osrm_route' => $osrm,
         'distance' => $route['distance'],
         'exit_node_id' => $exitNodeId,
+        'route_signature' => $routeSignature,
         'current_diversion' => $isCurrent
       ];
     }

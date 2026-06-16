@@ -297,7 +297,8 @@ export async function renderPuvDiversion(container) {
                 route_json: JSON.stringify({
                   coordinates: diversionCoords
                 }),
-                route_type: "diversion"
+                route_type: "diversion",
+                route_signature: selectedDiversionRoute.route_signature
               };
 
               const saveResult = await insertActivatePuvDiversion(payload);

@@ -13,7 +13,8 @@ try {
     $data["destination_name"],
     $data["exit_node_id"],
     $data["route_json"],
-    $data["route_type"]
+    $data["route_type"],
+    $data["route_signature"]
   );
 
   echo json_encode([

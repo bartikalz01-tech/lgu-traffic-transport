@@ -176,7 +176,8 @@ class PublicTransportCoordination extends config {
     $destinationName,
     $exitNodeId,
     $routeJson,
-    $routeType
+    $routeType,
+    $routeSignature
   ) {
     $conn = $this->conn();
     $sql = "
@@ -185,14 +186,16 @@ class PublicTransportCoordination extends config {
         destination_name,
         exit_node_id,
         route_json,
-        route_type
+        route_type,
+        route_signature
       )
       VALUES (
         :puv_group_id,
         :destination_name,
         :exit_node_id,
         :route_json,
-        :route_type
+        :route_type,
+        :route_signature
       )
     ";
 
@@ -221,6 +224,11 @@ class PublicTransportCoordination extends config {
     $stmt->bindParam(
       ':route_type',
       $routeType
+    );
+
+    $stmt->bindParam(
+      ':route_signature',
+      $routeSignature
     );
 
     return $stmt->execute();
