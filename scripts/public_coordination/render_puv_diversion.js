@@ -200,14 +200,20 @@ export async function renderPuvDiversion(container) {
               Distance: ${route.distance.toFixed(2)}
             </p>
 
-            <div class="div-card-footer">
-              <button 
-                class="btn-preview-route show-route-btn" 
-                id="activatePuvDiversion" 
-                data-index="${index}"
-                ${route.current_diversion ? "disabled" : ""}>
-                ${route.current_diversion ? "Current Diversion" : "Activate Diversion"}
-              </button>
+            <div class="div-card-footer hidden-footer">
+              ${
+                route.current_diversion ? `
+                  <div class="current-diversion-badge">
+                    <i class="fas fa-check-circle"></i>
+                    Current Diversion
+                  </div>
+                `
+                : `
+                  <button class="btn-preview-route show-route-btn" data-index="${index}">
+                    Activate Diversion
+                  </button>
+                `
+              }
             </div>
           </div>
         `).join("");
