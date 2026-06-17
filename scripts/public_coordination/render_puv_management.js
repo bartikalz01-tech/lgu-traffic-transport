@@ -3,6 +3,7 @@ import { renderAddGroup } from "./puv_management/puv_group/add_group.js";
 import { renderAddMember } from "./puv_management/puv_members/add_member.js";
 import { renderSidebarPuvGroups, renderPuvGroupDetails } from "./puv_management/puv_group/puv_groups.js";
 import { renderPuvMembersTable } from "./puv_management/puv_members/puv_members.js";
+import { showActionDropdown, initializeDropdownEvents } from "./puv_management/puv_members/member_dropdown.js";
 import { getCodingDay } from "../utils/traffic_and_events.js";
 
 
@@ -168,7 +169,8 @@ export async function renderPuvManagement(container) {
 
 
   // For dropdown on PUV Members Component
-  const dropdownBtn = document.getElementById("actionDropdownBtn");
+  const dropdownContainer = document.querySelector(".dropdown-container");
+  /*const dropdownBtn = document.getElementById("actionDropdownBtn");
 
   const dropdownMenu = document.getElementById("actionDropdownMenu");
 
@@ -176,9 +178,9 @@ export async function renderPuvManagement(container) {
   const addMemberBtn = document.getElementById("addMemberOption");
   const searchMemberBtn = document.getElementById("searchDriverOption");
   const retiredMembersBtn = document.getElementById("retiredMembersOption");
-  const addMemberContainer = document.getElementById("addGroupMemberOverlay");
+  const addMemberContainer = document.getElementById("addGroupMemberOverlay");*/
 
-  dropdownBtn.addEventListener("click", (e) => {
+  /*dropdownBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     
     dropdownMenu.classList.toggle("hidden");
@@ -188,9 +190,21 @@ export async function renderPuvManagement(container) {
     if(!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
       dropdownMenu.classList.add("hidden");
     }
+  });*/
+
+  showActionDropdown(dropdownContainer);
+
+  initializeDropdownEvents({
+    dropdownContainer,
+    getCurrentSelectedGroup: () => currentSelectedGroup,
+    refreshMembers,
+    memberBody,
+    membersTitle: document.getElementById("membersTitle"),
+    addMemberContainer: document.getElementById("addGroupMemberOverlay"),
+    membersData: []
   });
 
-  addMemberBtn.addEventListener("click", () => {
+  /*addMemberBtn.addEventListener("click", () => {
     dropdownMenu.classList.add("hidden");
 
     addMemberContainer.classList.remove("add-member-hidden");
@@ -203,7 +217,25 @@ export async function renderPuvManagement(container) {
   });
 
   searchMemberBtn.addEventListener("click", () => {
-    dropdownMenu.classList.add("hidden");
+    dropdownContainer.innerHTML = `
+      <div class="driver-search-container">
+        <button class="search-back-btn" id="searchBackBtn">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+
+        <input type="text" id="memberSearchInput" class="member-search-input" placeholder="Search Member...">
+      </div>
+    `;
+
+    const searchInput = document.getElementById("memberSearchInput");
+
+    searchInput.focus();
+
+    const searchBackBtn = document.getElementById("searchBackBtn");
+
+    searchBackBtn.addEventListener("click", () => {
+      renderPuvManagement(container);
+    });
   });
 
   retiredMembersBtn.addEventListener("click", async () => {
@@ -221,7 +253,7 @@ export async function renderPuvManagement(container) {
 
     }
 
-  });
+  });*/
 
   if(currentSelectedGroup) {
     await refreshMembers();

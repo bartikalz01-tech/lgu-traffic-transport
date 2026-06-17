@@ -481,6 +481,43 @@
   color: var(--primary-color);
 }
 
+.driver-search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-back-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color-1);
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-back-btn:hover {
+  background: var(--sidebar-hover-bg-1);
+  color: var(--primary-color);
+}
+
+.driver-search-input {
+  width: 250px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border-color-1);
+  border-radius: 10px;
+  outline: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.driver-search-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
 .members-table-container {
   margin-top: 1rem;
   border-radius: 8px;
