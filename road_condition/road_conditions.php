@@ -24,7 +24,7 @@
     <div class="module-title-container">
       <p class="module-title">Real Time Road Condition Updates</p>
       <h1 class="sub-module-title">CCTV Monitoring</h1>
-      <p class="sub-module-description">Real-time surveillance and predictive analytics<span class="streetName remove"></span></p>
+      <p class="sub-module-description">Real-time surveillance and Real-Time analytics<span class="streetName remove"></span></p>
     </div>
 
     <!--<section class="charts-container">
@@ -45,7 +45,31 @@
       </div>
     </section>-->
 
-    <section class="cctv-grid js-cctv-grid"></section>
+    <div class="cctv-management-container">
+      
+      <aside class="cctv-details-sidebar" id="cctvDetailsSidebar">
+        <div class="sidebar-details-header">
+          <div class="header-title-block">
+            <span class="status-badge live"><span class="pulse-dot"></span> MONITORING NODE</span>
+            <h2 id="sidebarRoadName" class="focused-road-title">Select a Stream...</h2>
+          </div>
+          <button class="btn-close-details" id="btnCloseDetailsSidebar">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="sidebar-details-content text-center-state">
+          <div class="focused-route-indicator">
+            <div class="route-icon-avatar">
+              <i class="fas fa-road"></i>
+            </div>
+            <p class="route-context-subtext">Active Roadway Core Information Stream</p>
+          </div>
+        </div>
+      </aside>  
+
+      <section class="cctv-grid js-cctv-grid"></section>
+    </div>
 
     <div class="road-condition-overlay hidden"></div>
   </main>
@@ -53,6 +77,7 @@
   <?php include '../includes/admin-footer.php'; ?>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/road_condition/road_condition.js"></script>
 </body>
 

@@ -1,0 +1,259 @@
+.cctv-management-container {
+  margin-right: 10px;
+  margin-top: 15px;
+  margin-left: 20px;
+  margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  column-gap: 20px;
+  min-height: 600px
+}
+
+.cctv-sidebar {
+  height: fit-content;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color-1);
+  border-radius: 12px;
+  padding: 0;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 4px 12px var(--shadow-1);
+  overflow: hidden;
+}
+
+.cctv-sidebar-header {
+  display: flex;
+  gap: 12px;
+  padding: 18px 20px;
+  background: linear-gradient(to bottom, #ffffff, var(--light-color));
+  border-bottom: 1px solid var(--border-color-1);
+}
+
+.logo-container {
+  width: auto;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.logo-container i {
+  font-size: 16px;
+  color: var(--secondary-color);
+  background: var(--light-color);
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color-1);
+}
+
+.live-indicator {
+  width: 8px;
+  height: 8px;
+  background: var(--danger-color);
+  border-radius: 50%;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  box-shadow: 0 0 0 2px var(--card-bg);
+  animation: liveSignalPulse 1.8s infinite ease-in-out;;
+}
+
+@keyframes liveSignalPulse {
+  0% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.5); }
+  50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 6px rgba(231, 76, 60, 0); }
+  100% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+}
+
+.cctv-sidebar-header h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.03rem;
+  margin: 0;
+}
+
+.cctv-links {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cctv-road {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cctv-road-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cctv-road p {
+  font-size: 13px;
+  color: var(--text-color-1);
+  font-weight: 500;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.cctv-road i.fa-circle {
+  font-size: 6px;
+  color: var(--neutral-gray, #a0aec0);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.cctv-road-chevron {
+  font-size: 11px;
+  color: #b8b8b8;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.cctv-road:hover {
+  background-color: var(--sidebar-hover-bg-1, rgba(76, 138, 137, 0.08));
+  border-left-color: rgba(76, 138, 137, 0.4);
+}
+
+.cctv-road:hover p {
+  color: var(--primary-color);
+}
+
+.cctv-road:hover .cctv-road-chevron {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* Active Highlight Modifier State (Inject via JS on click) */
+.cctv-road.active-stream {
+  background-color: var(--sidebar-hover-bg-1, rgba(76, 138, 137, 0.12));
+  border-left-color: var(--primary-color);
+}
+
+.cctv-road.active-stream p {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.cctv-road.active-stream i.fa-circle {
+  color: var(--success-color); /* Green light indicating active connection channel */
+  transform: scale(1.2);
+}
+
+.cctv-road.active-stream .cctv-road-chevron {
+  opacity: 1;
+  color: var(--primary-color);
+}
+
+.cctv-container {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.cctv-stream-card {
+  background: var(--dark-color);
+  border: 2px solid var(--border-color-1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px var(--shadwo-1);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cctv-stream-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.stream-card-header {
+  background-color: #ffffff;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-color-1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stream-badge.live {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--danger-color);
+  background-color: rgba(231, 76, 60, 0.08);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stream-pulse {
+  font-size: 6px;
+  animation: streamLivePulse 1.2s infinite ease-in-out;
+}
+
+@keyframes streamLivePulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.stream-tag-id {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: monospace;
+}
+
+.stream-video-viewport {
+  position: relative;
+  flex: 1;
+  min-height: 260px;
+  background-color: #111622;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.viewport-center-icon {
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.15);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.cctv-stream-card:hover .viewport-center-icon {
+  color: rgba(76, 138, 137, 0.4);
+  transform: scale(1.1);
+}
+
+.stream-overlay-metadata {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+  padding: 20px 14px 10px 14px;
+  pointer-events: none;
+}
+
+.stream-road-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff !important; /* Forces readable white crisp text on dark stream backdrop layers */
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
