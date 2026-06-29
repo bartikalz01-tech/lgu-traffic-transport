@@ -47,6 +47,89 @@ export async function renderDiversionMaps(container) {
   let currentIndex = 0;
   let currentPolyline = null;
 
+  let startDiversionMarker = null;
+  let endDiversionMarker = null;
+
+  function drawSimpleDiversionMarkers(map, points, routeConfig) {
+    if(startDiversionMarker) {
+      map.removeLayer(startDiversionMarker);
+      startDiversionMarker = null;
+    }
+
+    if(endDiversionMarker) {
+      map.removeLayer(endDiversionMarker);
+      endDiversionMarker = null;
+    }
+
+    /*if(routeConfig !== "one-way") {
+      return;
+    }*/
+
+    const startPoint = points[0];
+    const endPoint = points[points.length - 1];
+
+    if(routeConfig === "one-way") {
+      const startIcon = L.divIcon({
+        className: "diversion-start-marker",
+        html: `
+          <div class="marker-circle start">
+            <i class="fas fa-traffic-light"></i>
+          </div>
+        `,
+        iconSize: [34, 34],
+        iconAnchor: [17, 17]
+      });
+
+      const endIcon = L.divIcon({
+        className: "diversion-end-marker",
+        html: `
+          <div class="marker-circle end">
+            <i class="fas fa-flag-checkered"></i>
+          </div>
+        `,
+        iconSize: [34,34],
+        iconAnchor: [17,17]
+      });
+
+      startDiversionMarker = L.marker(
+        [startPoint.lat, startPoint.lng],
+        {
+          icon: startIcon
+        }
+      ).addTo(map);
+
+      endDiversionMarker = L.marker(
+        [endPoint.lat, endPoint.lng],
+        {
+          icon: endIcon
+        }
+      ).addTo(map);
+
+    } else if(routeConfig === "two-way") {
+      const pointIcon = L.divIcon({
+        className: "diversion-two-way-marker",
+        html: `
+          <div class="marker-circle two-way">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+        `,
+        iconSize: [34, 34],
+        iconAnchor: [17, 17]
+      });
+
+      startDiversionMarker = L.marker(
+        [startPoint.lat, startPoint.lng],
+        { icon: pointIcon }
+      ).addTo(map);
+
+      endDiversionMarker = L.marker(
+        [endPoint.lat, endPoint.lng],
+        { icon: pointIcon }
+      ).addTo(map);
+    }
+
+  }
+
   async function updateRoute(index) {
     const diversion = diversions[index];
 
@@ -80,10 +163,17 @@ export async function renderDiversionMaps(container) {
       parseFloat(point.lng)
     ]);
 
+    const markerPoints = points.map(point => ({
+      lat: parseFloat(point.lat),
+      lng: parseFloat(point.lng)
+    }));
+
     currentPolyline = L.polyline(coords, {
       color: "#2980b9",
       weight: 5
     }).addTo(map);
+
+    drawSimpleDiversionMarkers(map, markerPoints, diversion.route_config)
 
     map.fitBounds(currentPolyline.getBounds());
 

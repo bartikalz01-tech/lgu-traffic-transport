@@ -35,7 +35,7 @@
 
     <section class="route-diversion-container">
       <div class="reports-and-actions-container">
-        <div class="officers-card">
+        <!--<div class="officers-card">
           <h2><i class="fas fa-clipboard-list"></i> Officer Reports</h2>
           <div class="officer-arrival-data">
             <p class="officer-status">
@@ -58,7 +58,7 @@
             </p>
             <p class="officer-value">1</p>
           </div>
-        </div>
+        </div>-->
 
         <div class="emergency-card">
           <h2><i class="fas fa-truck-medical"></i> Emergency Routes</h2>
@@ -113,9 +113,9 @@
         <div class="actions-card">
           <h2><i class="fas fa-circle"></i> Actions</h2>
           <div class="action-button-container">
-            <button class="action-btn assign-btn" id="assignBtn">
+            <!--<button class="action-btn assign-btn" id="assignBtn">
               <i class="fas fa-user-plus"></i> Assign Officer
-            </button>
+            </button>-->
             <button class="action-btn emergency-btn" id="emergencyBtn">
               <i class="fas fa-tower-broadcast"></i> Set Emergency Routes
             </button>

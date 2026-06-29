@@ -7,7 +7,7 @@
 
 .reports-and-actions-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   column-gap: 10px;
 }
 
@@ -608,4 +608,40 @@
   100% {
     opacity: 1;
   }
+}
+
+.marker-circle{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:16px;
+    border:3px solid white;
+    box-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+
+.marker-circle.start{
+    background:#2e7d32;
+}
+
+.marker-circle.end{
+    background:#d32f2f;
+}
+
+.marker-circle.two-way {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
 }
