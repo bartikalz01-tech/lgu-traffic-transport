@@ -376,6 +376,9 @@ async function renderDiversionManagement(container) {
 
       alert("Diversion route activated successfully!");
 
+      const updatedDiversions = await fetchDiversions();
+      updateActiveDiversions(updatedDiversions);
+
       const activeCard = document.querySelector(".active-route");
 
       if(activeCard) {

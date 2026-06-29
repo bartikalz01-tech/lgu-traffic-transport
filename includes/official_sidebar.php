@@ -17,7 +17,7 @@
       <span>Dashboard</span>
       <!--<span class="purpose">Summary</span>-->
     </a>
-    <a href="../road_condition/road_conditions.php" class="sidebar-link">
+    <a href="../road_condition/road_conditions_test.php" class="sidebar-link">
       <i class="fas fa-road"></i>
       <span>Road Conditions</span>
       <!--<span class="purpose">Real-Time</span>-->

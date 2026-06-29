@@ -7,6 +7,89 @@ let editingDiversionId = null;
 let previewDiversionPolyline = null;
 let generatedPreviewRoutes = [];
 
+let startDiversionMarker = null;
+let endDiversionMarker = null;
+
+function drawSimpleDiversionMarkers(map, points, routeConfig) {
+  if(startDiversionMarker) {
+    map.removeLayer(startDiversionMarker);
+    startDiversionMarker = null;
+  }
+
+  if(endDiversionMarker) {
+    map.removeLayer(endDiversionMarker);
+    endDiversionMarker = null;
+  }
+
+  /*if(routeConfig !== "one-way") {
+    return;
+  }*/
+
+  const startPoint = points[0];
+  const endPoint = points[points.length - 1];
+
+  if(routeConfig === "one-way") {
+    const startIcon = L.divIcon({
+      className: "diversion-start-marker",
+      html: `
+        <div class="marker-circle start">
+          <i class="fas fa-traffic-light"></i>
+        </div>
+      `,
+      iconSize: [34, 34],
+      iconAnchor: [17, 17]
+    });
+
+    const endIcon = L.divIcon({
+      className: "diversion-end-marker",
+      html: `
+        <div class="marker-circle end">
+          <i class="fas fa-flag-checkered"></i>
+        </div>
+      `,
+      iconSize: [34,34],
+      iconAnchor: [17,17]
+    });
+
+    startDiversionMarker = L.marker(
+      [startPoint.lat, startPoint.lng],
+      {
+        icon: startIcon
+      }
+    ).addTo(map);
+
+    endDiversionMarker = L.marker(
+      [endPoint.lat, endPoint.lng],
+      {
+        icon: endIcon
+      }
+    ).addTo(map);
+
+  } else if(routeConfig === "two-way") {
+    const pointIcon = L.divIcon({
+      className: "diversion-two-way-marker",
+      html: `
+        <div class="marker-circle two-way">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+      `,
+      iconSize: [34, 34],
+      iconAnchor: [17, 17]
+    });
+
+    startDiversionMarker = L.marker(
+      [startPoint.lat, startPoint.lng],
+      { icon: pointIcon }
+    ).addTo(map);
+
+    endDiversionMarker = L.marker(
+      [endPoint.lat, endPoint.lng],
+      { icon: pointIcon }
+    ).addTo(map);
+  }
+
+}
+
 export function renderRouteSelectionSidebar() {
 
   return `
@@ -210,6 +293,16 @@ export async function renderActiveDiversionsSidebar(map) {
       activeDiversionPolyline = null;
     }
 
+    if(startDiversionMarker) {
+      map.removeLayer(startDiversionMarker);
+      startDiversionMarker = null;
+    }
+
+    if(endDiversionMarker) {
+      map.removeLayer(endDiversionMarker);
+      endDiversionMarker = null
+    }
+
     diversionSidebar.innerHTML = renderRouteSelectionSidebar();
 
     initRouteSelectionSidebar();
@@ -250,11 +343,23 @@ async function attachDiversionHistoryEvents(map) {
         activeDiversionPolyline = null
       }
 
+      if(startDiversionMarker) {
+        map.removeLayer(startDiversionMarker);
+        startDiversionMarker = null;
+      }
+
+      if(endDiversionMarker) {
+        map.removeLayer(endDiversionMarker);
+        endDiversionMarker = null;
+      }
+
       activeDiversionPolyline = drawSimpleLine(
         map,
         points,
         null
       );
+
+      drawSimpleDiversionMarkers(map, points, card.dataset.config);
 
       map.fitBounds(
         L.latLngBounds(points.map(p => [p.lat, p.lng])),
