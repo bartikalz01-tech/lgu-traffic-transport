@@ -2,7 +2,7 @@ import { getEmergenciesLocation, getEmergencyRoute, getRespondersByType } from "
 import { getEventMarker } from "../../utils/traffic_and_events.js";
 import { clearAllRoutes, getEmergencyMarker, getResponderMarkerIcon, loadAssingedRoutes } from "../../utils/emergencyUtils.js";
 
-function getResponderIcon(type) {
+/*function getResponderIcon(type) {
   if (type === "fire") {
     return `<i class="fas fa-fire-extinguisher"></i>`;
   } else if (type === "hospital") {
@@ -99,14 +99,6 @@ async function renderEmergencyPlan(container) {
     }).addTo(emergencyMap);
 
     emergencyMap.fitBounds(routeLine.getBounds());
-
-    /*selectedRouteData = {
-      emergency_id: emergencyId,
-      responder_id: responderId,
-      distance: data.distance,
-      eta: data.duration,
-      route: data.route
-    };*/
   }
 
   function addResponderSelection(responderData) {
@@ -353,13 +345,6 @@ async function renderEmergencyPlan(container) {
 
         if(!assignedRoutes || assignedRoutes.length === 0) return;
 
-        /*const assignedRoutes = assignedRoutesRaw.filter(
-          (route, index, self) =>
-            index === self.findIndex(r =>
-              r.responder_id === route.responder_id
-            )
-        );*/
-
         const bounds = [];
 
         assignedRoutes.forEach(assignedData => {
@@ -426,19 +411,6 @@ async function renderEmergencyPlan(container) {
 
           if(assignedData.selected == 1) {
             primaryResponderItems.appendChild(responderItem);
-
-            /*selectedPrimaryResponder = {
-              emergency_id: emergency.emergency_id,
-              responder_id: assignedData.responder_id,
-              responder_type: assignedData.responder_type,
-              responder_name: assignedData.responder_name,
-              distance: assignedData.distance,
-              eta: assignedData.eta,
-              route: assignedData.route_coords,
-              is_primary: true
-            };
-
-            selectedResponders = [selectedPrimaryResponder];*/
 
             addResponderSelection({
               emergency_id: emergency.emergency_id,
@@ -590,41 +562,6 @@ async function renderEmergencyPlan(container) {
           </div>
         `;
 
-        /*responderItem.addEventListener("click", () => {
-
-          primaryResponderItems.querySelectorAll(".responder-item")
-            .forEach(item => item.classList.remove("selected-responder"));
-          
-          responderItem.classList.add("selected-responder");
-
-          const responderId = responder.responder_id;
-
-          const marker = responderMarkers[responderId];
-
-          drawEmergencyRoute(selectedEmergencyId, responderId);
-
-          selectedPrimaryResponder = {
-            emergency_id: selectedEmergencyId,
-            responder_id: responder.responder_id,
-            responder_type: responder.type,
-            responder_name: responder.responder_name,
-            distance: route.distance,
-            eta: route.duration,
-            route: route.route,
-            is_primary: true
-          };
-
-          selectedResponders = [selectedPrimaryResponder];
-
-          if (marker) {
-            const latlng = marker.getLatLng();
-
-            emergencyMap.setView(latlng, 17);
-
-            marker.openPopup();
-          }
-        });*/
-
         responderItem.addEventListener("click", () => {
           const responderId = responder.responder_id
 
@@ -711,6 +648,11 @@ async function renderEmergencyPlan(container) {
 
       if (result.status === "success") {
 
+        const clearedRoutes = clearAllRoutes(emergencyMap, routeLine, activeAssignedPolylines);
+
+        routeLine = clearedRoutes.routeLine;
+        activeAssignedPolylines = clearedRoutes.activeAssignedPolylines;
+
         alert("Emergency Route activated successfully");
 
         const emergencyMarkerData = emergencyMarkers[selectedEmergencyId];
@@ -765,4 +707,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   const settingEmergencyRoutes = document.querySelector(".js-setting-emergency-routes");
 
   await renderEmergencyPlan(settingEmergencyRoutes);
-});
+});*/

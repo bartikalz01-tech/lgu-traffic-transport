@@ -15,7 +15,7 @@ class Emergencies extends config {
         r.road_name
       FROM emergencies e
       LEFT JOIN roads r ON e.road_id = r.road_id
-      WHERE e.status IN ('active', 'assigned')
+      WHERE e.status IN ('pending', 'assigned')
     ";
 
     $stmt = $conn->prepare($sql);

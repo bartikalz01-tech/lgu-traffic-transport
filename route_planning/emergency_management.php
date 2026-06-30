@@ -37,17 +37,17 @@
 
         <!-- This kpi card will handle the new table called emergency_dispatch_logs and emergency_route_updates -->
         <div class="em-kpi-cards">
-          <div class="overview-card assigned-emergency">
+          <div class="overview-card assigned-emergency" id="pendingEmergencies">
             <div class="card-icon">
               <i class="fas fa-circle-exclamation"></i>
             </div>
             <div class="card-details">
               <span class="card-label">Pending Emergencies</span>
-              <h2 class="card-value" id="pendingEmergencyRoutes">0</h2>
+              <h2 class="card-value" id="totalPendingEmergencies">0</h2>
             </div>
           </div>
 
-          <div class="overview-card emergency-arrival">
+          <div class="overview-card emergency-arrival" id="activeEmergencies">
             <div class="card-icon">
               <i class="fas fa-circle-check"></i>
             </div>
@@ -77,7 +77,13 @@
           </div>
         </div>
 
-        <div class="setting-emergency-routes js-setting-emergency-routes"></div>
+        <div class="setting-emergency-routes js-setting-emergency-routes">
+          <div class="emergency-map-container">
+            <div id="emergency-map"></div>
+          </div>
+
+          <aside class="ai-routes-container js-ai-routes-container"></aside>
+        </div>
       </section>
 
       <?php include '../includes/admin-footer.php'; ?>
@@ -86,7 +92,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../scripts/sidebar.js"></script>
-  <script type="module" src="../scripts/route_planning/emergency/emergency_management.js"></script>
+  <script type="module" src="../scripts/route_planning/emergency/emergency_management_trial.js"></script>
 </body>
 
 </html>
