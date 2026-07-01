@@ -1,8 +1,9 @@
 import { getPendingEmergenciesLocation, getRespondersByType } from "../../../data/fetch_emergencies.js";
-import { getEmergencyMarker } from "../../../utils/emergencyUtils.js";
+import { mapMemory } from "../emergency_memory.js";
+import { getEmergencyMarker, getResponderMarkerIcon } from "../../../utils/emergencyUtils.js";
 
 export async function renderPendingEmergency(container, map) {
-  
+
   container.innerHTML = `
     <div class="ai-header">
       <h3><i class="fas fa-satellite-dish"></i> Emergency Responders</h3>
@@ -24,6 +25,18 @@ export async function renderPendingEmergency(container, map) {
       </div>
     `;
 
+    mapMemory.responderMarkers.forEach(marker => {
+      map.removeLayer(marker);
+    });
+
+    mapMemory.responderMarkers.length = 0;
+
+    mapMemory.emergencyMarkers.forEach(marker => {
+      map.removeLayer(marker);
+    });
+
+    mapMemory.emergencyMarkers.length = 0;
+
     return;
   }
 
@@ -35,6 +48,11 @@ export async function renderPendingEmergency(container, map) {
     </div>
   `;
 
+  mapMemory.emergencyMarkers.forEach(marker => {
+    map.removeLayer(marker);
+  });
+
+  mapMemory.emergencyMarkers.length = 0;
 
   // This will reveal the emergencies location on the map with the specific type.
   emergencies.forEach(emergency => {
@@ -43,9 +61,9 @@ export async function renderPendingEmergency(container, map) {
     emergency.longitude
    ], {
     icon: getEmergencyMarker(emergency.type, emergency.status)
-   });
+   }).addTo(map);
 
-   emergencyMarker.addTo(map);
+   mapMemory.emergencyMarkers.push(emergencyMarker);
 
    emergencyMarker.on("click", async () => {
     const responders = await getRespondersByType(emergency.type);
@@ -72,7 +90,22 @@ export async function renderPendingEmergency(container, map) {
 
     primaryResponders.innerHTML = "";
 
+    mapMemory.responderMarkers.forEach(marker => {
+      map.removeLayer(marker);
+    });
+
+    mapMemory.responderMarkers.length = 0;
+
     responders.forEach(responder => {
+
+      const responderMarker = L.marker([
+        responder.latitude,
+        responder.longitude
+      ], {
+        icon: getResponderMarkerIcon(responder.type)
+      }).addTo(map);
+
+      mapMemory.responderMarkers.push(responderMarker);
 
       let responderClass = "";
       let responderIcon = "";
