@@ -145,7 +145,7 @@ export function renderActiveEmergency(container, map) {
     <div class="emergency-card-actions" id="activeBtnContainer">
       <button class="btn-primary-dispatch" id="activeBtn">
         <i class="fas fa-bullhorn"></i>
-        Deploy & Activate Route
+        Deploy Backup Units
       </button>
     </div>
   `;

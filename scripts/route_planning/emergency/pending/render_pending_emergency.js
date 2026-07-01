@@ -1,4 +1,7 @@
-export function renderPendingEmergency(container, map) {
+import { getPendingEmergenciesLocation } from "../../../data/fetch_emergencies.js";
+import { getEmergencyMarker } from "../../../utils/emergencyUtils.js";
+
+export async function renderPendingEmergency(container, map) {
   container.innerHTML = `
     <div class="ai-header">
       <h3><i class="fas fa-satellite-dish"></i> Emergency Responders</h3>
@@ -75,8 +78,20 @@ export function renderPendingEmergency(container, map) {
     <div class="emergency-card-actions" id="activeBtnContainer">
       <button class="btn-primary-dispatch" id="activeBtn">
         <i class="fas fa-bullhorn"></i>
-        Deploy & Activate Route
+        Deploy Responders
       </button>
     </div>
   `;
+
+  // This will reveal the emergencies location on the map with the specific type.
+  const emergencies = await getPendingEmergenciesLocation();
+
+  emergencies.forEach(emergency => {
+   L.marker([
+    emergency.latitude,
+    emergency.longitude
+   ], {
+    icon: getEmergencyMarker(emergency.type, emergency.status)
+   }).addTo(map);
+  });
 }

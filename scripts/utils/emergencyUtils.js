@@ -26,7 +26,7 @@ export function getEmergencyMarker(type, status = "active") {
     iconClass = "fa-h-square";
   }
 
-  if(status === "active") {
+  if(status === "pending") {
     bgColor = "#e74c3c";
   } else if(status === "assigned") {
     bgColor = "#f1c40f";
