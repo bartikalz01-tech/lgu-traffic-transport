@@ -1,4 +1,5 @@
 export const mapMemory = {
   responderMarkers: [],
-  emergencyMarkers: []
+  emergencyMarkers: [],
+  activeRoutes: new Map()
 };

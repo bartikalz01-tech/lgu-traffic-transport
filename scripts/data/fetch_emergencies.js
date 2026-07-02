@@ -1,3 +1,27 @@
+export async function insertEmergencyRoutes(emergencyId, responders) {
+  try {
+    const response = await fetch("../api/emergencies/save_emergency_routes.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        emergency_id: emergencyId,
+        responders: responders
+      })
+    });
+
+    const data = await response.json();
+
+    return data
+  } catch(error) {
+    console.error("Save Emergency Routes error:", error);
+    
+    return {
+      status: "error",
+      message: "Unable to save emergency routes"
+    }
+  }
+}
+
 export async function getEmergenciesLocation() {
   try {
     const response = await fetch("../api/emergencies/get_emergencies.php");

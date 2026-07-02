@@ -15,6 +15,11 @@ function clearPendingMap(map) {
   });
 
   mapMemory.emergencyMarkers.length = 0;
+
+  if(mapMemory.activeRoute) {
+    map.removeLayer(mapMemory.activeRoute);
+    mapMemory.activeRoute = null;
+  }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
