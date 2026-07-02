@@ -46,6 +46,18 @@ export async function getPendingEmergenciesLocation() {
   }
 }
 
+export async function getAssignedEmergenciesLocation() {
+  try {
+    const response = await fetch("../api/emergencies/get_assigned_emergencies.php");
+    const data = await response.json();
+
+    return data;
+  } catch(error) {
+    console.error('Assigend Emergencies did not fetched:', error);
+    return[];
+  }
+}
+
 export async function getRespondersByType(type) {
   try {
     const response = await fetch(`../api/emergencies/get_responders.php?type=${type}`);

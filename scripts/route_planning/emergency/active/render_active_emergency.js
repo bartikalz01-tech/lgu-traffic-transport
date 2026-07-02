@@ -1,4 +1,8 @@
-export function renderActiveEmergency(container, map) {
+import { getAssignedEmergenciesLocation } from "../../../data/fetch_emergencies.js";
+import { formatEmergencyDate, getEmergencyMarker } from "../../../utils/emergencyUtils.js";
+import { mapMemory } from "../emergency_memory.js";
+
+export async function renderActiveEmergency(container, map) {
   container.innerHTML = `
     <div class="ai-header">
       <h3><i class="fas fa-satellite-dish"></i> Emergency Responder Status</h3>
@@ -149,4 +153,24 @@ export function renderActiveEmergency(container, map) {
       </button>
     </div>
   `;
+
+  const assignedEmergencies = await getAssignedEmergenciesLocation();
+
+  assignedEmergencies.forEach(emergency => {
+    const emergencyMarker = L.marker([
+      emergency.latitude,
+      emergency.longitude
+    ], {
+      icon: getEmergencyMarker(emergency.type, emergency.status)
+    }).addTo(map);
+
+    mapMemory.emergencyMarkers.push(emergencyMarker);
+
+    emergencyMarker.bindPopup(`
+      <strong>Emergency</strong><br>
+      Type: ${emergency.type}<br>
+      Status: ${emergency.status}<br>
+      Reported Date: ${formatEmergencyDate(emergency.reported_date)}  
+    `);
+  });
 }

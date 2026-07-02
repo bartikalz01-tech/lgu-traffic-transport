@@ -11,7 +11,7 @@ function setActiveCard(cardId) {
   document.getElementById(cardId).classList.add("active");
 }
 
-function clearPendingMap(map) {
+function clearMap(map) {
   mapMemory.responderMarkers.forEach(marker => {
     map.removeLayer(marker);
   });
@@ -24,10 +24,11 @@ function clearPendingMap(map) {
 
   mapMemory.emergencyMarkers.length = 0;
 
-  if(mapMemory.activeRoute) {
-    map.removeLayer(mapMemory.activeRoute);
-    mapMemory.activeRoute = null;
-  }
+  mapMemory.activeRoutes.forEach(route => {
+    map.removeLayer(route.polyline);
+  });
+
+  mapMemory.activeRoutes.clear();
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -50,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     setActiveCard("pendingEmergencies");
 
-    clearPendingMap(emergencyMap);
+    clearMap(emergencyMap);
 
     renderPendingEmergency(aiRoutesContainer, emergencyMap);
   });
@@ -59,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     setActiveCard("activeEmergencies");
 
-    clearPendingMap(emergencyMap);
+    clearMap(emergencyMap);
 
     renderActiveEmergency(aiRoutesContainer, emergencyMap)
   });

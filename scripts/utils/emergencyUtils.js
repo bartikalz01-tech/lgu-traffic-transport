@@ -135,6 +135,32 @@ export function getResponderMarkerIcon(type) {
   });
 }
 
+export function formatEmergencyDate(datetime) {
+  const emergencyDate = new Date(datetime);
+  const today = new Date;
+
+  const isToday = 
+    emergencyDate.getDate() === today.getDate() &&
+    emergencyDate.getMonth() === today.getMonth() &&
+    emergencyDate.getFullYear() === today.getFullYear();
+
+  if(isToday) {
+    return emergencyDate.toLocaleTimeString("en-us", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    });
+  }
+
+  return emergencyDate.toLocaleString("en-us", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  });
+}
+
 export function clearAllRoutes(
   emergencyMap,
   routeLine,

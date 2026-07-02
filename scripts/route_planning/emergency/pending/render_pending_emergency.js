@@ -76,7 +76,15 @@ export async function renderPendingEmergency(container, map) {
 
       emergencyMarker.openPopup();
 
-      const responders = await getRespondersByType(emergency.type);
+      let responderType = emergency.type;
+
+      if(emergency.type === "accident") {
+        responderType = "hospital";
+      }
+
+      const allowMultipleResponders = emergency.type === "fire";
+
+      const responders = await getRespondersByType(responderType);
 
       responderList.innerHTML = `
         <div class="responder-group-section">
@@ -114,6 +122,12 @@ export async function renderPendingEmergency(container, map) {
         ], {
           icon: getResponderMarkerIcon(responder.type)
         }).addTo(map);
+
+        responderMarker.bindPopup(`
+          <strong>${responder.responder_name}</strong><br>
+          Type: ${responder.type}<br>
+          Address: ${responder.responder_address}
+        `)
 
         mapMemory.responderMarkers.push(responderMarker);
 
@@ -159,6 +173,8 @@ export async function renderPendingEmergency(container, map) {
 
         responderItem.addEventListener("click", async () => {
 
+          responderMarker.openPopup();
+
           const existingRoute = mapMemory.activeRoutes.get(responder.responder_id);
 
           if(existingRoute) {
@@ -169,6 +185,18 @@ export async function renderPendingEmergency(container, map) {
             mapMemory.activeRoutes.delete(responder.responder_id);
 
             return;
+          }
+
+          if(!allowMultipleResponders) {
+            mapMemory.activeRoutes.forEach(route => {
+              map.removeLayer(route.polyline);
+            });
+
+            mapMemory.activeRoutes.clear();
+
+            document.querySelectorAll(".selected-responder").forEach(item => {
+              item.classList.remove("selected-responder");
+            });
           }
 
           responderItem.classList.add("selected-responder");
