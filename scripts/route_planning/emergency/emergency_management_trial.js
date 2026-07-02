@@ -1,7 +1,15 @@
 import { renderActiveEmergency } from "./active/render_active_emergency.js";
 import { renderPendingEmergency } from "./pending/render_pending_emergency.js";
+import { renderEmergencyCounts, startEmergencyCountPolling } from "./emergency_counts.js";
 import { mapMemory } from "./emergency_memory.js";
 
+function setActiveCard(cardId) {
+  document.querySelectorAll(".overview-card").forEach(card => {
+    card.classList.remove("active");
+  });
+
+  document.getElementById(cardId).classList.add("active");
+}
 
 function clearPendingMap(map) {
   mapMemory.responderMarkers.forEach(marker => {
@@ -23,6 +31,11 @@ function clearPendingMap(map) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  await renderEmergencyCounts();
+
+  startEmergencyCountPolling();
+
   const emergencyMap = L.map("emergency-map").setView([14.6414, 120.9909], 20);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -35,12 +48,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("pendingEmergencies").addEventListener("click", () => {
 
+    setActiveCard("pendingEmergencies");
+
     clearPendingMap(emergencyMap);
 
     renderPendingEmergency(aiRoutesContainer, emergencyMap);
   });
 
   document.getElementById("activeEmergencies").addEventListener("click", () => {
+
+    setActiveCard("activeEmergencies");
 
     clearPendingMap(emergencyMap);
 

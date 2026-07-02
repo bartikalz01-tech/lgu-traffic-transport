@@ -83,3 +83,18 @@ export async function getAssignedRoutes() {
     return [];
   }
 }
+
+export async function getEmergencyCounts() {
+  try {
+    const response = await fetch("../api/emergencies/get_emergency_counts.php");
+
+    return await response.json();
+  } catch(error) {
+    console.error(error);
+
+    return {
+      pending: 0,
+      assigned: 0
+    }
+  }
+}

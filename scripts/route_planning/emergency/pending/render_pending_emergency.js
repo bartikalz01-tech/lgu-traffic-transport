@@ -1,6 +1,7 @@
 import { insertEmergencyRoutes, getPendingEmergenciesLocation, getRespondersByType, getEmergencyRoute } from "../../../data/fetch_emergencies.js";
 import { mapMemory } from "../emergency_memory.js";
 import { getEmergencyMarker, getResponderMarkerIcon } from "../../../utils/emergencyUtils.js";
+import { renderEmergencyCounts } from "../emergency_counts.js";
 
 export async function renderPendingEmergency(container, map) {
 
@@ -247,6 +248,8 @@ export async function renderPendingEmergency(container, map) {
             text: "Emergency routes were deployed successfully.",
             confirmButtonColor: "#2563eb"
           });
+
+          await renderEmergencyCounts();
 
           renderPendingEmergency(container, map);
         } else {

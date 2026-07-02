@@ -157,6 +157,21 @@ class Emergencies extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function getEmergencyCounts() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending,
+        SUM(CASE WHEN status = 'assigned' THEN 1 ELSE 0 END) AS assigned
+      FROM emergencies
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
 }
 
 ?>
