@@ -49,7 +49,7 @@ foreach($coordinates as $coord) {
 
 echo json_encode([
   "distance" => $data['routes'][0]['distance'],
-  "duration" => $data['routes'][0]['duration'],
+  "eta" => $data['routes'][0]['duration'],
   "route" => $route
 ]);
 

@@ -35,8 +35,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await renderEmergencyCounts();
 
-  startEmergencyCountPolling();
-
   const emergencyMap = L.map("emergency-map").setView([14.6414, 120.9909], 20);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -46,6 +44,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const aiRoutesContainer = document.querySelector(".js-ai-routes-container");
 
   renderPendingEmergency(aiRoutesContainer, emergencyMap);
+
+  startEmergencyCountPolling(emergencyMap);
 
   document.getElementById("pendingEmergencies").addEventListener("click", () => {
 

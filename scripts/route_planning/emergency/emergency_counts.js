@@ -1,14 +1,30 @@
 import { getEmergencyCounts } from "../../data/fetch_emergencies.js";
+import { refreshEmergencyMarkers } from "./pending/render_pending_emergency.js";
 
 export async function renderEmergencyCounts() {
   const counts = await getEmergencyCounts();
 
   document.getElementById("totalPendingEmergencies").textContent = counts.pending;
+  const pendingBadge = document.getElementById("pendingBadge");
+
+  if(counts.pending > 0) {
+    pendingBadge.classList.add("show");
+  } else {
+    pendingBadge.classList.remove("show");
+  }
+
 
   document.getElementById("totalActiveEmergencies").textContent = counts.assigned;
 }
 
-export function startEmergencyCountPolling() {
+export async function refreshPendingEmergencies(map) {
+  await renderEmergencyCounts();
+  await refreshEmergencyMarkers(map);
+}
+
+export function startEmergencyCountPolling(map) {
   renderEmergencyCounts();
-  return setInterval(renderEmergencyCounts, 2500);
+  return setInterval(() => {
+    refreshPendingEmergencies(map)
+  }, 2500);
 }

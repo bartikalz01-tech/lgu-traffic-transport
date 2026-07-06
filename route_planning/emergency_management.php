@@ -38,6 +38,9 @@
         <!-- This kpi card will handle the new table called emergency_dispatch_logs and emergency_route_updates -->
         <div class="em-kpi-cards">
           <div class="overview-card assigned-emergency" id="pendingEmergencies">
+
+            <span class="notification-badge" id="pendingBadge">!</span>
+
             <div class="card-icon">
               <i class="fas fa-circle-exclamation"></i>
             </div>

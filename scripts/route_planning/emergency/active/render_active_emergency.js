@@ -274,7 +274,7 @@ export async function renderActiveEmergency(container, map) {
           </div>
 
           <div class="responder-distance">
-            <span class="dist-value">${responder.distance}</span>
+            <span class="dist-value">${(responder.distance / 1000).toFixed(3)}</span>
             <span class="dist-unit">km</span>
           </div>
         `;

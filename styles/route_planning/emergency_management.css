@@ -94,6 +94,7 @@
 }
 
 .overview-card {
+  position: relative;
   background: #ffffff;
   border-top: 1px solid #e2e8f0;
   border-radius: 12px;
@@ -586,4 +587,121 @@
 #primaryResponderContainer::-webkit-scrollbar-thumb:hover,
 #supportiveResponderContainer::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+
+.responder-skeleton-item {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  margin-top: 10px;
+  pointer-events: none; /* Block item selections safely during load intervals */
+}
+
+/* Base Shimmer Mask Variable Frame */
+.skeleton-icon,
+.skeleton-line,
+.skeleton-distance {
+  background: #f1f5f9;
+  background: linear-gradient(
+    90deg, 
+    #f1f5f9 25%, 
+    #e2e8f0 50%, 
+    #f1f5f9 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmerSweep 1.5s infinite linear;
+}
+
+@keyframes shimmerSweep {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Icon Structural Box Placeholder */
+.skeleton-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  margin-right: 14px;
+  flex-shrink: 0;
+}
+
+/* Text Meta Block Controls */
+.skeleton-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+}
+
+.skeleton-line.title {
+  width: 65%;
+}
+
+.skeleton-line.subtitle {
+  width: 45%;
+  height: 9px;
+}
+
+/* Distance Container Blocks */
+.skeleton-distance {
+  width: 45px;
+  height: 24px;
+  border-radius: 6px;
+  margin-left: 14px;
+  flex-shrink: 0;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+
+  width: 22px;
+  height: 22px;
+
+  border-radius: 50%;
+  background: #ef4444;
+  color: #fff;
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  box-shadow: 0 0 0 3px #fff;
+  animation: badgePulse 1.5s infinite;
+}
+
+.notification-badge.show {
+  display: flex;
+}
+
+@keyframes badgePulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239,68,68,.5);
+  }
+
+  70% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 10px rgba(239,68,68,0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239,68,68,0);
+  }
 }
