@@ -160,6 +160,8 @@ class Emergencies extends config {
         e.type,
         e.latitude AS emergency_lat,
         e.longitude AS emergency_lng,
+        er.distance,
+        er.eta,
         r.responder_name,
         r.responder_address,
         r.type as responder_type,
