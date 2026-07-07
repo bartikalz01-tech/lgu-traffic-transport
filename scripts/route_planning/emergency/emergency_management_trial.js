@@ -35,7 +35,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await renderEmergencyCounts();
 
-  const emergencyMap = L.map("emergency-map").setView([14.6414, 120.9909], 20);
+  //const emergencyMap = L.map("emergency-map").setView([14.6414, 120.9909], 20);
+
+  //const emergencyMap = L.map("emergency-map").setView([14.72942, 121.03694], 20);
+
+  const emergencyMap = L.map("emergency-map").setView([14.72959, 121.03867], 20);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
