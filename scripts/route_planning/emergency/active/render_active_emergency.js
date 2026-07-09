@@ -26,8 +26,8 @@ export async function renderActiveEmergency(container, map) {
           <i class="fas fa-handshake"></i>
           Optional Support Units
         </div>
-
-        <div id="supportiveResponderContainer">
+        
+        <div id="backupResponderContainer">
 
           <div class="responder-item medical-dept">
 

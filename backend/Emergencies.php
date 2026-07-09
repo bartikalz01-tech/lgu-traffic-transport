@@ -102,6 +102,89 @@ class Emergencies extends config {
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  public function getBackupsResponders($emergencyId) {
+    $conn = $this->conn();
+    $emergencySql = "
+      SELECT type
+      FROM emergencies
+      WHERE emergency_id = :emergency_id
+    ";
+
+    $stmt = $conn->prepare($emergencySql);
+
+    $stmt->execute([
+      ':emergency_id' => $emergencyId
+    ]);
+
+    $emergency = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if(!$emergency) {
+      return [];
+    }
+
+    $emergencyType = $emergency["type"];
+
+    if($emergencyType === "accident") {
+      $allowedTypes = ["police"];
+    } else if($emergencyType === "fire") {
+      $allowedTypes = ["fire", "police", "hospital"];
+    } else {
+      $allowedTypes = [$emergencyType];
+    }
+
+    $placeholders = implode(",", array_fill(0, count($allowedTypes), "?"));
+
+    $sql = "
+      SELECT
+        e.emergency_id,
+        e.type,
+
+        e.latitude AS emergency_lat,
+        e.longitude AS emergency_lng,
+
+        r.responder_id,
+        r.responder_name,
+        r.responder_address,
+
+        r.type AS responder_type,
+
+        r.latitude AS responder_lat,
+        r.longitude AS responder_lng
+      FROM responders r
+
+      INNER JOIN emergencies e 
+        ON e.emergency_id = ?
+      WHERE r.type IN ($placeholders)
+      
+      AND 
+        r.responder_id NOT IN (
+          SELECT responder_id
+          FROM emergency_routes
+          WHERE emergency_id = ?
+        )
+      
+      ORDER BY
+        FIELD(r.type, 'fire', 'police', 'hospital'),
+        r.responder_name  
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $params = [];
+
+    $params[] = $emergencyId;
+
+    foreach($allowedTypes as $type) {
+      $params[] = $type;
+    }
+
+    $params[] = $emergencyId;
+
+    $stmt->execute($params);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function saveEmergencyRoutes($emergencyId, $responderId, $distance, $eta, $routeJson, $selected) {
     $conn = $this->conn();
     $sql = "

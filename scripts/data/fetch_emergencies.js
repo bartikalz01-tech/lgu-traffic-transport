@@ -96,6 +96,21 @@ export async function getAssignedRoutes() {
   }
 }
 
+export async function getBackupResponders(emergencyId) {
+  try {
+    const response = await fetch(
+      `../api/emergencies/get_backup_responders.php?emergency_id=${emergencyId}`
+    );
+
+    return await response.json();
+
+  } catch(error) {
+    console.error("Backup responders fetch error:", error);
+
+    return [];
+  }
+}
+
 export async function getEmergencyCounts() {
   try {
     const response = await fetch("../api/emergencies/get_emergency_counts.php");

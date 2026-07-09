@@ -13,12 +13,10 @@ export function renderAssignedResponders(
     if (responder.responder_type === "hospital") {
       responderClass = "medical-dept";
       responderIcon = "fa-hospital-user";
-    }
-    else if (responder.responder_type === "fire") {
+    } else if (responder.responder_type === "fire") {
       responderClass = "fire-dept";
       responderIcon = "fa-fire-extinguisher";
-    }
-    else if (responder.responder_type === "police") {
+    } else if (responder.responder_type === "police") {
       responderClass = "police-dept";
       responderIcon = "fa-shield-halved";
     }
