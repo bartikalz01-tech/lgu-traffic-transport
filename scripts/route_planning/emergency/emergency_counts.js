@@ -1,5 +1,4 @@
 import { getEmergencyCounts } from "../../data/fetch_emergencies.js";
-import { refreshEmergencyMarkers } from "./pending/render_pending_emergency.js";
 
 export async function renderEmergencyCounts() {
   const counts = await getEmergencyCounts();
@@ -17,7 +16,7 @@ export async function renderEmergencyCounts() {
   document.getElementById("totalActiveEmergencies").textContent = counts.assigned;
 }
 
-export async function refreshPendingEmergencies(map) {
+/*export async function refreshPendingEmergencies(map) {
   await renderEmergencyCounts();
   await refreshEmergencyMarkers(map);
 }
@@ -27,4 +26,4 @@ export function startEmergencyCountPolling(map) {
   return setInterval(() => {
     refreshPendingEmergencies(map)
   }, 2500);
-}
+}*/

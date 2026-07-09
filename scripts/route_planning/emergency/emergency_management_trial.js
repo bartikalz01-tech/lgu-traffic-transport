@@ -1,6 +1,6 @@
 import { renderActiveEmergency } from "./active/render_active_emergency.js";
 import { renderPendingEmergency } from "./pending/render_pending_emergency.js";
-import { renderEmergencyCounts, startEmergencyCountPolling } from "./emergency_counts.js";
+import { renderEmergencyCounts } from "./emergency_counts.js";
 import { mapMemory } from "./emergency_memory.js";
 
 function setActiveCard(cardId) {
@@ -35,11 +35,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await renderEmergencyCounts();
 
-  //const emergencyMap = L.map("emergency-map").setView([14.6414, 120.9909], 20);
+  const emergencyMap = L.map("emergency-map").setView([14.6414, 120.9909], 20);
 
   //const emergencyMap = L.map("emergency-map").setView([14.72942, 121.03694], 20);
 
-  const emergencyMap = L.map("emergency-map").setView([14.72959, 121.03867], 20);
+  //const emergencyMap = L.map("emergency-map").setView([14.72959, 121.03867], 20);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
@@ -48,8 +48,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const aiRoutesContainer = document.querySelector(".js-ai-routes-container");
 
   renderPendingEmergency(aiRoutesContainer, emergencyMap);
-
-  startEmergencyCountPolling(emergencyMap);
 
   document.getElementById("pendingEmergencies").addEventListener("click", () => {
 
