@@ -122,14 +122,21 @@ export async function renderBackupResponders(emergency, responderList, map) {
         responder.responder_id,
         {
           responder_id: responder.responder_id,
-          responder_type: responder.responder_type,
           responder_name: responder.responder_name,
+          responder_type: responder.responder_type,
+
+          responder_address: responder.responder_address,
+          responder_lat: responder.responder_lat,
+          responder_lng: responder.responder_lng,
+
           distance: routeData.distance,
           eta: routeData.eta,
 
           route: routeData.route,
 
-          polyline
+          polyline,
+
+          selected: 1
         }
       );
 

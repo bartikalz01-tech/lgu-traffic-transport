@@ -96,7 +96,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../scripts/sidebar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script type="module" src="../scripts/route_planning/emergency/emergency_management_trial.js"></script>
+  <script type="module" src="../scripts/route_planning/emergency/emergency_management.js"></script>
 </body>
 
 </html>

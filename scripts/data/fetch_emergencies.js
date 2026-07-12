@@ -22,6 +22,31 @@ export async function insertEmergencyRoutes(emergencyId, responders) {
   }
 }
 
+export async function insertBackupResponders(emergencyId, responders) {
+  try {
+    const response = await fetch("../api/emergencies/save_backup_responder_routes.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        emergency_id: emergencyId,
+        responders: responders
+      })
+    });
+
+    return await response.json();
+
+  } catch(error) {
+    console.error(error);
+    
+    return {
+      status: "error",
+      message: "Unable to deploy backup responders."
+    }
+  }
+}
+
 export async function getEmergenciesLocation() {
   try {
     const response = await fetch("../api/emergencies/get_emergencies.php");

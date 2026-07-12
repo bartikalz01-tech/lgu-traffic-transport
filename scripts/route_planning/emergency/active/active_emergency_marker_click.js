@@ -2,6 +2,7 @@ import { getAssignedRoutes } from "../../../data/fetch_emergencies.js";
 import { mapMemory } from "../emergency_memory.js";
 import { renderAssignedResponders } from "./render_assigned_responders.js";
 import { renderBackupResponders } from "./render_backup_responders.js";
+import { deployBackupResponders } from "./deploy_backup_responders.js";
 import { renderResponderMarkers } from "../../../utils/emergencyUtils.js";
 
 export function attachActiveEmergencyClick(emergencyMarker, emergency, responderList, map) {
@@ -92,9 +93,9 @@ export function attachActiveEmergencyClick(emergencyMarker, emergency, responder
 
     const deployBtn = document.getElementById("deployBackupBtn");
 
-    deployBtn.addEventListener("click", async () => {
-      await deployBackupResponders() // Help me finish this.
-    });
+    deployBtn.onclick = async () => {
+      await deployBackupResponders(emergency, currentResponders, backupResponders, map);
+    };
 
   });
 
