@@ -1,4 +1,6 @@
 import { getBackupResponders, getEmergencyRoute } from "../../../data/fetch_emergencies.js";
+import { mapMemory } from "../emergency_memory.js";
+import { getResponderMarkerIcon } from "../../../utils/emergencyUtils.js";
 
 export async function renderBackupResponders(emergency, responderList, map) {
 
@@ -79,9 +81,71 @@ export async function renderBackupResponders(emergency, responderList, map) {
     responderList.appendChild(backupResponderItem);
 
     backupResponderItem.addEventListener("click", async () => {
+      const existingRoute = mapMemory.selectedBackupRoutes.get(responder.responder_id);
+
+      if(existingRoute) {
+        backupResponderItem.classList.remove("selected-responder");
+
+        map.removeLayer(existingRoute.polyline);
+
+        mapMemory.selectedBackupRoutes.delete(responder.responder_id);
+
+        return;
+      }
+
+      if(emergency.type === "accident") {
+        mapMemory.selectedBackupRoutes.forEach(route => {
+          map.removeLayer(route.polyline);
+        });
+
+        mapMemory.selectedBackupRoutes.clear();
+
+        responderList.querySelectorAll(".selected-responder").forEach(item => {
+          item.classList.remove("selected-responder");
+        });
+      }
+
+      backupResponderItem.classList.add("selected-responder");
+
+      const latlngs = routeData.route.map(point => [
+        point.lat,
+        point.lng
+      ]);
+
+      const polyline = L.polyline(latlngs,{
+        color:"#3b82f6",
+        weight:5,
+        opacity:0.8
+      }).addTo(map);
+
+      mapMemory.selectedBackupRoutes.set(
+        responder.responder_id,
+        {
+          responder_id: responder.responder_id,
+          responder_type: responder.responder_type,
+          responder_name: responder.responder_name,
+          distance: routeData.distance,
+          eta: routeData.eta,
+
+          route: routeData.route,
+
+          polyline
+        }
+      );
+
+      const bounds = L.latLngBounds();
+
+      mapMemory.selectedBackupRoutes.forEach(route => {
+        bounds.extend(route.polyline.getBounds());
+      });
+
+      if(bounds.isValid()) {
+        map.fitBounds(bounds, {
+          padding: [50, 50]
+        });
+      }
 
     });
-
 
   }
 

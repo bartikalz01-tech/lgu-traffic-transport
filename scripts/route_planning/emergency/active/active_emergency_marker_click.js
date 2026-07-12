@@ -20,6 +20,12 @@ export function attachActiveEmergencyClick(emergencyMarker, emergency, responder
 
     mapMemory.displayedAssignedPolylines.length = 0;
 
+    mapMemory.selectedBackupRoutes.forEach(route => {
+      map.removeLayer(route.polyline);
+    });
+
+    mapMemory.selectedBackupRoutes.clear();
+
     emergencyMarker.openPopup();
 
     responderList.innerHTML = `
@@ -83,6 +89,12 @@ export function attachActiveEmergencyClick(emergencyMarker, emergency, responder
       mapMemory.responderMarkers,
       false
     );
+
+    const deployBtn = document.getElementById("deployBackupBtn");
+
+    deployBtn.addEventListener("click", async () => {
+      await deployBackupResponders() // Help me finish this.
+    });
 
   });
 

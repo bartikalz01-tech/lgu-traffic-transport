@@ -90,13 +90,13 @@ export async function renderResponderList(responders, emergency, primaryResponde
 
       if (existingRoute) {
 
-          responderItem.classList.remove("selected-responder");
+        responderItem.classList.remove("selected-responder");
 
-          map.removeLayer(existingRoute.polyline);
+        map.removeLayer(existingRoute.polyline);
 
-          mapMemory.activeRoutes.delete(responder.responder_id);
+        mapMemory.activeRoutes.delete(responder.responder_id);
 
-          return;
+        return;
       }
 
       if (!allowMultipleResponders) {
@@ -115,33 +115,33 @@ export async function renderResponderList(responders, emergency, primaryResponde
       responderItem.classList.add("selected-responder");
 
       const latlngs = routeData.route.map(point => [
-          point.lat,
-          point.lng
+        point.lat,
+        point.lng
       ]);
 
       const polyline = L.polyline(latlngs, {
-          color: "#3b82f6",
-          weight: 5,
-          opacity: 0.8
+        color: "#3b82f6",
+        weight: 5,
+        opacity: 0.8
       }).addTo(map);
 
       mapMemory.activeRoutes.set(responder.responder_id, {
-          polyline,
-          responder_id: responder.responder_id,
-          distance: routeData.distance,
-          eta: routeData.eta,
-          route: routeData.route
+        polyline,
+        responder_id: responder.responder_id,
+        distance: routeData.distance,
+        eta: routeData.eta,
+        route: routeData.route
       });
 
       const bounds = L.latLngBounds();
 
       mapMemory.activeRoutes.forEach(route => {
-          bounds.extend(route.polyline.getBounds());
+        bounds.extend(route.polyline.getBounds());
       });
 
       if (bounds.isValid()) {
         map.fitBounds(bounds, {
-            padding: [50, 50]
+          padding: [50, 50]
         });
       }
 

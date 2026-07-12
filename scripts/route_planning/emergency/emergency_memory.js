@@ -4,5 +4,7 @@ export const mapMemory = {
   activeRoutes: new Map(),
 
   assignedRouteMemory: {},
-  displayedAssignedPolylines: []
+  displayedAssignedPolylines: [],
+
+  selectedBackupRoutes: new Map()
 };
