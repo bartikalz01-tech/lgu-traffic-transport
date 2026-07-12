@@ -56,7 +56,7 @@ export function getEmergencyMarker(type, status = "active") {
   });
 }
 
-export async function loadAssingedRoutes(map, assignedRouteMemory) {
+export async function loadAssignedRoutes(map, assignedRouteMemory) {
   const assigendRoutes = await getAssignedRoutes();
 
   assigendRoutes.forEach(routeData => {
@@ -92,6 +92,8 @@ export async function loadAssingedRoutes(map, assignedRouteMemory) {
       responder_address: routeData.responder_address,
       responder_lat: routeData.responder_lat,
       responder_lng: routeData.responder_lng,
+      distance: routeData.distance,
+      eta: routeData.eta,
       route_coords: routeCoords,
       selected: routeData.selected
     })
@@ -133,6 +135,40 @@ export function getResponderMarkerIcon(type) {
     iconSize: [38, 38],
     iconAnchor: [19, 19]
   });
+}
+
+export function renderResponderMarkers(responders, map, responderMarkers, clearExisting = true) {
+
+  if(clearExisting) {
+    // Remove previous responder markers
+    responderMarkers.forEach(marker => {
+      map.removeLayer(marker);
+    });
+
+    responderMarkers.length = 0;
+  }
+
+  responders.forEach(responder => {
+
+    const marker = L.marker(
+      [
+        responder.responder_lat,
+        responder.responder_lng
+      ],
+      {
+        icon: getResponderMarkerIcon(responder.responder_type)
+      }
+    ).addTo(map);
+
+    marker.bindPopup(`
+      <strong>${responder.responder_name}</strong><br>
+      ${responder.responder_address}
+    `);
+
+    responderMarkers.push(marker);
+
+  });
+
 }
 
 export function formatEmergencyDate(datetime) {

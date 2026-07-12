@@ -29,6 +29,12 @@ function clearMap(map) {
   });
 
   mapMemory.activeRoutes.clear();
+
+  mapMemory.displayedAssignedPolylines.forEach(polyline => {
+    map.removeLayer(polyline);
+  });
+
+  mapMemory.displayedAssignedPolylines.length = 0;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

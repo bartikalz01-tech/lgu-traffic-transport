@@ -84,4 +84,6 @@ export async function renderBackupResponders(emergency, responderList, map) {
 
 
   }
+
+  return responders;
 }
