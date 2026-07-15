@@ -1,5 +1,5 @@
 import { fetchRoadNodes, fetchGeneratedDiversion, fetchRoadMap, activateDiversionRoute, fetchDiversions } from "../../data/fetch_road_map.js";
-import { renderRouteSelectionSidebar, renderActiveDiversionsSidebar, initRouteSelectionSidebar } from "./diversion_sidebar_views.js";
+import { renderRouteSelectionSidebar, renderActiveDiversionsSidebar, initRouteSelectionSidebar, clearDiversionMap } from "./diversion_sidebar_views.js";
 import { drawSimpleLine, initMap } from "../../utils/diversions.js";
 
 let selectedStart = null;
@@ -7,6 +7,164 @@ let selectedEnd = null;
 let routeLine = null;
 let activeSelectedRoute = null;
 let activatedRouteIndex = null;
+
+function resetNodeMarkers(map) {
+
+  map.eachLayer(layer => {
+
+    if(layer instanceof L.CircleMarker) {
+      layer.setStyle({
+        color: "#1e88e5",
+        fillColor: "#42a5f5"
+      });
+    }
+
+  });
+
+}
+
+export function bindRefreshButton(map) {
+
+  const refreshBtn = document.querySelector(".refresh-btn");
+
+  if (!refreshBtn) return;
+
+  refreshBtn.addEventListener("click", () => {
+
+    clearDiversionMap(map);
+
+    resetDiversionUI(map);
+
+  });
+
+}
+
+export function resetDiversionUI(map) {
+
+  selectedStart = null;
+  selectedEnd = null;
+  activeSelectedRoute = null;
+  activatedRouteIndex = null;
+
+  if(routeLine){
+    map.removeLayer(routeLine);
+    routeLine = null;
+  }
+
+  resetNodeMarkers(map);
+
+  // Reset sidebar
+  document.querySelector(".diversion-sidebar").innerHTML =
+    renderRouteSelectionSidebar();
+
+  initRouteSelectionSidebar();
+
+  bindActivateButton(map);
+
+  document.getElementById("startPointName").textContent =
+    "Awaiting Selection...";
+
+  document.getElementById("endPointName").textContent =
+    "Awaiting Selection...";
+
+  document.getElementById("calcDistance").textContent =
+    "0.00 km";
+}
+
+export function resetDiversionPlanner() {
+  selectedStart = null;
+  selectedEnd = null;
+  activeSelectedRoute = null;
+  activatedRouteIndex = null;
+}
+
+export function bindActivateButton(map) {
+  const activateBtn = document.getElementById("activateDiversion");
+
+  if(!activateBtn) return;
+
+  activateBtn.addEventListener("click", async () => {
+    
+    if(!activeSelectedRoute) {
+      alert("Please select a route first");
+      return;
+    }
+
+    const dirToggle = document.getElementById("directionToggle");
+
+    const routeMode = dirToggle ? dirToggle.getAttribute("data-mode") : "two-way";
+
+    console.log(activeSelectedRoute);
+
+    const payload = {
+      start_road_id: activeSelectedRoute.start_road.road_id,
+      end_road_id: activeSelectedRoute.end_road.road_id,
+      start_node_id: activeSelectedRoute.path[0],
+      end_node_id: activeSelectedRoute.path[activeSelectedRoute.path.length - 1],
+      route_config: routeMode,
+      distance: activeSelectedRoute.distance,
+      vehicle_per_min: 0,
+      avg_speed: 0,
+
+      route_signature: activeSelectedRoute.points.map(
+        point => point.road_id
+      ).join("-"),
+
+      points: activeSelectedRoute.points
+    };
+
+    activateBtn.disabled = true;
+    activateBtn.innerHTML = `
+      <i class="fas fa-spinner"></i>
+      Activating...
+    `;
+
+    const result = await activateDiversionRoute(payload);
+
+    if(result.status === "success") {
+
+      activatedRouteIndex = parseInt(document.querySelector(".active-route").dataset.routeIndex);
+
+      alert("Diversion route activated successfully!");
+
+      const updatedDiversions = await fetchDiversions();
+      updateActiveDiversions(updatedDiversions);
+
+      clearDiversionMap(map);
+
+      resetDiversionUI(map);
+
+      const activeCard = document.querySelector(".active-route");
+
+      if(activeCard) {
+        activeCard.dataset.isActive = "true";
+      }
+
+      updateActivateButtonState();
+
+      const cards = document.querySelectorAll(".suggestion-card");
+
+      cards.forEach((card, index) => {
+        card.classList.remove("activated-route");
+
+        if(index === activatedRouteIndex) {
+          card.classList.add("activated-route");
+        }
+      });
+
+    } else {
+      activateBtn.disabled = false;
+
+      activateBtn.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        Activate Diversion
+      `;
+
+      alert(result.message || "Activation failed.");
+    }
+
+  });
+}
 
 function updateActivateButtonState() {
   const activateBtn = document.getElementById("activateDiversion");
@@ -321,6 +479,8 @@ async function renderDiversionManagement(container) {
 
   const diversionMap = initMap("map-placeholder");
 
+  bindRefreshButton(diversionMap);
+
   const roadMap = await fetchRoadMap();
   const activeDiversions = await fetchDiversions();
   renderHighTrafficRoads(diversionMap, roadMap);
@@ -330,85 +490,9 @@ async function renderDiversionManagement(container) {
   const nodes = await fetchRoadNodes();
   renderRoadNodes(diversionMap, nodes);
 
-  const activateBtn = document.getElementById("activateDiversion"); 
+  //const activateBtn = document.getElementById("activateDiversion"); 
 
-  activateBtn.addEventListener("click", async () => {
-    
-    if(!activeSelectedRoute) {
-      alert("Please select a route first");
-      return;
-    }
-
-    const dirToggle = document.getElementById("directionToggle");
-
-    const routeMode = dirToggle ? dirToggle.getAttribute("data-mode") : "two-way";
-
-    console.log(activeSelectedRoute);
-
-    const payload = {
-      start_road_id: activeSelectedRoute.start_road.road_id,
-      end_road_id: activeSelectedRoute.end_road.road_id,
-      start_node_id: activeSelectedRoute.path[0],
-      end_node_id: activeSelectedRoute.path[activeSelectedRoute.path.length - 1],
-      route_config: routeMode,
-      distance: activeSelectedRoute.distance,
-      vehicle_per_min: 0,
-      avg_speed: 0,
-
-      route_signature: activeSelectedRoute.points.map(
-        point => point.road_id
-      ).join("-"),
-
-      points: activeSelectedRoute.points
-    };
-
-    activateBtn.disabled = true;
-    activateBtn.innerHTML = `
-      <i class="fas fa-spinner"></i>
-      Activating...
-    `;
-
-    const result = await activateDiversionRoute(payload);
-
-    if(result.status === "success") {
-
-      activatedRouteIndex = parseInt(document.querySelector(".active-route").dataset.routeIndex);
-
-      alert("Diversion route activated successfully!");
-
-      const updatedDiversions = await fetchDiversions();
-      updateActiveDiversions(updatedDiversions);
-
-      const activeCard = document.querySelector(".active-route");
-
-      if(activeCard) {
-        activeCard.dataset.isActive = "true";
-      }
-
-      updateActivateButtonState();
-
-      const cards = document.querySelectorAll(".suggestion-card");
-
-      cards.forEach((card, index) => {
-        card.classList.remove("activated-route");
-
-        if(index === activatedRouteIndex) {
-          card.classList.add("activated-route");
-        }
-      });
-
-    } else {
-      activateBtn.disabled = false;
-
-      activateBtn.innerHTML = `
-        <i class="fas fa-check-circle"></i>
-        Activate Diversion
-      `;
-
-      alert(result.message || "Activation failed.");
-    }
-
-  });
+  bindActivateButton(diversionMap);
 
   const activeDiversionCard = document.querySelector(".overview-card.active-diversions");
 

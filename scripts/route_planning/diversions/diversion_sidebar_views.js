@@ -1,6 +1,6 @@
 import { fetchDiversions, fetchDiversionDetails, fetchGeneratedDiversion, updateDiversionRoute, deleteDiversionRoute } from "../../data/fetch_road_map.js";
 import { drawSimpleLine } from "../../utils/diversions.js";
-import { updateActiveDiversions } from "./diversion_management.js";
+import { updateActiveDiversions, bindActivateButton, resetDiversionPlanner, resetDiversionUI } from "./diversion_management.js";
 
 let activeDiversionPolyline = null;
 let editingDiversionId = null;
@@ -12,6 +12,29 @@ let endDiversionMarker = null;
 
 let originalDiversion = null;
 
+export function clearDiversionMap(map) {
+
+  if (activeDiversionPolyline) {
+    map.removeLayer(activeDiversionPolyline);
+    activeDiversionPolyline = null;
+  }
+
+  if (previewDiversionPolyline) {
+    map.removeLayer(previewDiversionPolyline);
+    previewDiversionPolyline = null;
+  }
+
+  if (startDiversionMarker) {
+    map.removeLayer(startDiversionMarker);
+    startDiversionMarker = null;
+  }
+
+  if (endDiversionMarker) {
+    map.removeLayer(endDiversionMarker);
+    endDiversionMarker = null;
+  }
+}
+
 function drawSimpleDiversionMarkers(map, points, routeConfig) {
   if(startDiversionMarker) {
     map.removeLayer(startDiversionMarker);
@@ -22,10 +45,6 @@ function drawSimpleDiversionMarkers(map, points, routeConfig) {
     map.removeLayer(endDiversionMarker);
     endDiversionMarker = null;
   }
-
-  /*if(routeConfig !== "one-way") {
-    return;
-  }*/
 
   const startPoint = points[0];
   const endPoint = points[points.length - 1];
@@ -95,8 +114,12 @@ function drawSimpleDiversionMarkers(map, points, routeConfig) {
 export function renderRouteSelectionSidebar() {
 
   return `
-    <div class="d-sidebar-header">
+    <div class="planning-sidebar-header">
       <h3>Route Selection</h3>
+
+      <button class="refresh-btn">
+        <p>Refresh Points</p>
+      </button>
     </div>
 
     <div class="selection-group">
@@ -290,27 +313,25 @@ export async function renderActiveDiversionsSidebar(map) {
   const backBtn = document.getElementById("backToPlanner");
 
   backBtn.addEventListener("click", async () => {
-    if (activeDiversionPolyline) {
-      map.removeLayer(activeDiversionPolyline);
-      activeDiversionPolyline = null;
-    }
-
-    if(startDiversionMarker) {
-      map.removeLayer(startDiversionMarker);
-      startDiversionMarker = null;
-    }
-
-    if(endDiversionMarker) {
-      map.removeLayer(endDiversionMarker);
-      endDiversionMarker = null
-    }
+    
+    clearDiversionMap(map);
 
     diversionSidebar.innerHTML = renderRouteSelectionSidebar();
 
     initRouteSelectionSidebar();
+
+    resetDiversionPlanner();
+
+    bindActivateButton(map);
   });
 
   attachDiversionHistoryEvents(map);
+
+  const firstCard = document.querySelector(".diversion-history-card");
+
+  if(firstCard) {
+    firstCard.click();
+  }
 }
 
 async function attachDiversionHistoryEvents(map) {
@@ -339,21 +360,8 @@ async function attachDiversionHistoryEvents(map) {
         lat: parseFloat(point.lat),
         lng: parseFloat(point.lng)
       }));
-
-      if (activeDiversionPolyline) {
-        map.removeLayer(activeDiversionPolyline);
-        activeDiversionPolyline = null
-      }
-
-      if(startDiversionMarker) {
-        map.removeLayer(startDiversionMarker);
-        startDiversionMarker = null;
-      }
-
-      if(endDiversionMarker) {
-        map.removeLayer(endDiversionMarker);
-        endDiversionMarker = null;
-      }
+      
+      clearDiversionMap(map);
 
       activeDiversionPolyline = drawSimpleLine(
         map,
@@ -506,10 +514,27 @@ async function attachDiversionHistoryEvents(map) {
       };
 
       const diversionSidebar = document.querySelector(".diversion-sidebar");
+      diversionSidebar.innerHTML = `
+        <div class="d-sidebar-header">
+          <button class="back-btn" id="backToActiveDiversions">
+            <i class="fas fa-arrow-left"></i>
+          </button>
 
-      diversionSidebar.innerHTML = renderRouteSelectionSidebar();
+          <h3>Edit Diversion</h3>
+        </div>
+
+        ${renderRouteSelectionSidebar()}
+      `;
 
       initRouteSelectionSidebar(card.dataset.config);
+
+      const backBtn = document.getElementById("backToActiveDiversions");
+
+      backBtn.addEventListener("click", async() => {
+        clearDiversionMap(map);
+
+        await renderActiveDiversionsSidebar(map);
+      });
 
       document.getElementById("startPointName").textContent = card.dataset.start;
 
@@ -523,15 +548,7 @@ async function attachDiversionHistoryEvents(map) {
         placeholder.remove();
       }
 
-      if(activeDiversionPolyline) {
-        map.removeLayer(activeDiversionPolyline);
-        activeDiversionPolyline = null;
-      }
-
-      if(previewDiversionPolyline) {
-        map.removeLayer(previewDiversionPolyline);
-        previewDiversionPolyline = null;
-      }
+      clearDiversionMap(map);
 
       const generatedRoutes = await fetchGeneratedDiversion(startNodeId, endNodeId);
 
@@ -578,6 +595,8 @@ async function attachDiversionHistoryEvents(map) {
 
       previewDiversionPolyline = drawSimpleLine(map, originalPoints, null);
 
+      drawSimpleDiversionMarkers(map, originalPoints, card.dataset.config)
+
       map.fitBounds(
         L.latLngBounds(
           originalPoints.map(
@@ -597,9 +616,7 @@ async function attachDiversionHistoryEvents(map) {
 
           if(!route) return;
 
-          if(previewDiversionPolyline) {
-            map.removeLayer(previewDiversionPolyline);
-          }
+          clearDiversionMap(map);
 
           const routePoints = route.points.map(point => ({
             lat: parseFloat(point.lat),
@@ -607,6 +624,8 @@ async function attachDiversionHistoryEvents(map) {
           }));
 
           previewDiversionPolyline = drawSimpleLine(map, routePoints, null);
+
+          drawSimpleDiversionMarkers(map, routePoints, document.getElementById("directionToggle").dataset.mode);
 
           generatedCards.forEach(c => {
             c.classList.remove("active-route");
@@ -626,60 +645,6 @@ async function attachDiversionHistoryEvents(map) {
       `;
 
       document.getElementById("sidebarActions").classList.remove("hidden");
-
-      /*activateBtn.addEventListener("click", async () => {
-        const selectedCard = document.querySelector(".generated-route-card.active-route");
-
-        if(!selectedCard) {
-          alert("Please Select a diversion route first.");
-          return;
-        }
-
-        const selectedIndex = parseInt(selectedCard.dataset.index);
-
-        const selectedRoute = generatedPreviewRoutes[selectedIndex];
-
-        if(!selectedRoute) {
-          alert("Invalid Route selected");
-          return;
-        }
-
-        const routeConfig = document.getElementById("directionToggle").dataset.mode;
-
-        const routeSignature = selectedRoute.points.map(point => point.road_id).join("-");
-
-        const payload = {
-          diversion_id: editingDiversionId,
-          route_config: routeConfig,
-          route_signature: routeSignature,
-          distance: selectedRoute.distance,
-          points: selectedRoute.points
-        };
-
-        console.log("UPDATE PAYLOAD:", payload);
-
-        const result = await updateDiversionRoute(payload);
-
-        console.log(result);
-
-        if(result.success) {
-          alert("Diversion updated successfully!");
-
-          if(previewDiversionPolyline) {
-            map.removeLayer(previewDiversionPolyline);
-            previewDiversionPolyline = null;
-          }
-
-          if(activeDiversionPolyline) {
-            map.removeLayer(activeDiversionPolyline);
-            activeDiversionPolyline = null;
-          }
-
-          renderActiveDiversionsSidebar(map);
-        } else {
-          alert(result.message || "Failed to update diversion.");
-        }
-      });*/
 
       activateBtn.addEventListener("click", async () => {
         const routeConfig = document.getElementById("directionToggle").dataset.mode;
@@ -717,15 +682,11 @@ async function attachDiversionHistoryEvents(map) {
         if(result.success) {
           alert("Diversion updated successfully!");
 
-          if(previewDiversionPolyline) {
-            map.removeLayer(previewDiversionPolyline);
-            previewDiversionPolyline = null;
-          }
+          clearDiversionMap(map);
 
-          if(activeDiversionPolyline){
-            map.removeLayer(activeDiversionPolyline);
-            activeDiversionPolyline = null;
-          }
+          resetDiversionUI(map);
+
+          resetDiversionPlanner(map);
 
           renderActiveDiversionsSidebar(map);
         } else {
@@ -757,15 +718,7 @@ async function attachDiversionHistoryEvents(map) {
 
         const updateDiversionCount = await fetchDiversions();
 
-        if(activeDiversionPolyline) {
-          map.removeLayer(activeDiversionPolyline);
-          activeDiversionPolyline = null;
-        }
-
-        if(previewDiversionPolyline) {
-          map.removeLayer(previewDiversionPolyline);
-          previewDiversionPolyline = null;
-        }
+        clearDiversionMap(map)
 
         renderActiveDiversionsSidebar(map);
 
