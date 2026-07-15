@@ -49,32 +49,42 @@ class Diversion extends config {
     return true;
   }
 
-  public function updateDiversion(
-    $diversion_id, 
-    $route_config, 
-    $route_signature, 
-    $distance ) {
-
+  public function updateDiversion($diversion_id, $route_config = null, $route_signature = null, $distance = null) {
     $conn = $this->conn();
+    
+    $fields = [];
+    $params = [
+      ':diversion_id' => $diversion_id
+    ];
+
+    if($route_config !== null) {
+      $fields[] = "route_config = :route_config";
+      $params[':route_config'] = $route_config;
+    }
+
+    if($route_signature !== null) {
+      $fields[] = "route_signature = :route_signature";
+      $params[':route_signature'] = $route_signature;
+    }
+
+    if($distance !== null) {
+      $fields[] = "distance = :distance";
+      $params[':distance'] = $distance;
+    }
+
+    if(empty($fields)) {
+      return true;
+    }
+
     $sql = "
       UPDATE diversion_routes
-      SET
-        route_config = :route_config,
-        route_signature = :route_signature,
-        distance = :distance
+      SET ".implode(", ", $fields)."
       WHERE diversion_id = :diversion_id
     ";
 
     $stmt = $conn->prepare($sql);
 
-    $stmt->execute([
-      ':route_config' => $route_config,
-      ':route_signature' => $route_signature,
-      ':distance' => $distance,
-      ':diversion_id' => $diversion_id
-    ]);
-
-    return true;
+    return $stmt->execute($params);
   }
 
   public function deleteDiversionDetails($diversion_id) {

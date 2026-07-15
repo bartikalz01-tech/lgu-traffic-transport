@@ -1,9 +1,7 @@
 import { trafficTbody, brgyTrafficStatus, getDivesionPlan, getEmergencyPlan } from "../global_variables.js";
 import { fetchRoadEvents, fetchRoadMap, fetchDiversions, fetchDiversionDetails, fetchAllDiversionStatus } from "../data/fetch_road_map.js";
-import { getEmergenciesLocation } from "../data/fetch_emergencies.js";
+import { getAssignedEmergenciesLocation, getEmergenciesLocation, getEmergencyCounts, getPendingEmergenciesLocation } from "../data/fetch_emergencies.js";
 import { getEventMarker, getTrafficColor } from "../utils/traffic_and_events.js";
-import { renderDiversionPlan } from "./diversions/set_diversion_plan.js";
-import { renderEmergencyPlan } from "./emergency/set_emergency_plan.js";
 import { renderDiversionMaps } from "./diversions/final_render_diversion.js";
 //import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
 //import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
@@ -50,15 +48,7 @@ async function loadDiversionRoutes() {
 
 async function renderEmergencyCounts() {
 
-  const emergencies = await getEmergenciesLocation();
-
-  const pendingCount = emergencies.filter(
-    emergency => emergency.status === "active"
-  ).length;
-
-  const assignedCount = emergencies.filter(
-    emergency => emergency.status === "assigned"
-  ).length;
+  const emergencyCounts = await getEmergencyCounts();
 
   const pendingEl = document.getElementById(
     "emergencyPendingCount"
@@ -68,9 +58,9 @@ async function renderEmergencyCounts() {
     "emergencyAssignedCount"
   );
 
-  pendingEl.textContent = pendingCount;
+  pendingEl.textContent = emergencyCounts.pending;
 
-  assignedEl.textContent = assignedCount;
+  assignedEl.textContent = emergencyCounts.assigned;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

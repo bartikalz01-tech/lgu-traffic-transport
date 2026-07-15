@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
-  <link rel="stylesheet" href="../styles/road_condition/road_Condition_test.css">
+  <link rel="stylesheet" href="../styles/road_condition/road_condition_test.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Document</title>
 </head>

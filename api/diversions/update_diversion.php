@@ -27,10 +27,18 @@ try {
   $distance = $data['distance'] ?? null;
   $points = $data['points'] ?? [];
 
-  if(!$diversion_id || !$route_config || !$route_signature || !$distance || empty($points)) {
+  /*if(!$diversion_id || !$route_config || !$route_signature || !$distance || empty($points)) {
     echo json_encode([
       "success" => false,
       "message" => "Missing required fields"
+    ]);
+    exit;
+  }*/
+
+  if(!$diversion_id) {
+    echo json_encode([
+      "success" => false,
+      "message" => "Missing diversion id."
     ]);
     exit;
   }
@@ -42,12 +50,11 @@ try {
     $distance
   );
 
-  $diversions->deleteDiversionDetails($diversion_id);
+  if(!empty($points)) {
+    $diversions->deleteDiversionDetails($diversion_id);
 
-  $diversions->insertRouteDetails(
-    $diversion_id,
-    $points
-  );
+    $diversions->insertRouteDetails($diversion_id, $points);
+  }
 
   $conn->commit();
 

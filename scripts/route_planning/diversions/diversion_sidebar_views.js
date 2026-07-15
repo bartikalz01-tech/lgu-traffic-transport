@@ -10,6 +10,8 @@ let generatedPreviewRoutes = [];
 let startDiversionMarker = null;
 let endDiversionMarker = null;
 
+let originalDiversion = null;
+
 function drawSimpleDiversionMarkers(map, points, routeConfig) {
   if(startDiversionMarker) {
     map.removeLayer(startDiversionMarker);
@@ -496,6 +498,13 @@ async function attachDiversionHistoryEvents(map) {
         return;
       }
 
+      originalDiversion = {
+        route_config: card.dataset.config,
+        distance: parseFloat(card.dataset.distance),
+        route_signature: details.map(point => point.road_id).join("-"),
+        points: details
+      };
+
       const diversionSidebar = document.querySelector(".diversion-sidebar");
 
       diversionSidebar.innerHTML = renderRouteSelectionSidebar();
@@ -618,7 +627,7 @@ async function attachDiversionHistoryEvents(map) {
 
       document.getElementById("sidebarActions").classList.remove("hidden");
 
-      activateBtn.addEventListener("click", async () => {
+      /*activateBtn.addEventListener("click", async () => {
         const selectedCard = document.querySelector(".generated-route-card.active-route");
 
         if(!selectedCard) {
@@ -670,6 +679,59 @@ async function attachDiversionHistoryEvents(map) {
         } else {
           alert(result.message || "Failed to update diversion.");
         }
+      });*/
+
+      activateBtn.addEventListener("click", async () => {
+        const routeConfig = document.getElementById("directionToggle").dataset.mode;
+
+        const selectedCard = document.querySelector(".generated-route-card.active-route");
+
+        let payload = {
+          diversion_id: editingDiversionId
+        };
+
+        if(routeConfig !== originalDiversion.route_config) {
+          payload.route_config = routeConfig;
+        }
+
+        if(selectedCard) {
+          const selectedRoute = generatedPreviewRoutes[Number(selectedCard.dataset.index)];
+
+          payload.route_signature = 
+            selectedRoute.points.map(point => point.road_id).join("-");
+
+          payload.distance = selectedRoute.distance;
+
+          payload.points = selectedRoute.points;
+        }
+
+        if(Object.keys(payload).length === 1) {
+          alert("No changes were made.");
+          return;
+        }
+
+        console.log(payload);
+
+        const result = await updateDiversionRoute(payload);
+
+        if(result.success) {
+          alert("Diversion updated successfully!");
+
+          if(previewDiversionPolyline) {
+            map.removeLayer(previewDiversionPolyline);
+            previewDiversionPolyline = null;
+          }
+
+          if(activeDiversionPolyline){
+            map.removeLayer(activeDiversionPolyline);
+            activeDiversionPolyline = null;
+          }
+
+          renderActiveDiversionsSidebar(map);
+        } else {
+          alert(result.message || "Failed to update diversion");
+        }
+
       });
 
     });
