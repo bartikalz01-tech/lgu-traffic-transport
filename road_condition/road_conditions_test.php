@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_test.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
-  <title>Document</title>
+  <title>Road Condition Updates</title>
 </head>
 <body>
   <?php include '../includes/official_sidebar.php' ?>
@@ -41,31 +41,31 @@
           <div class="cctv-road active-stream">
             <div class="cctv-road-meta">
               <i class="fas fa-circle"></i>
-              <p>CCTV-Dome-1</p>
+              <p>CCTV-Dome</p>
             </div>
             <i class="fas fa-chevron-right cctv-road-chevron"></i>
           </div>
           <div class="cctv-road">
             <div class="cctv-road-meta">
               <i class="fas fa-circle"></i>
-              <p>CCTV-Dome-2</p>
+              <p>CCTV-Tagaytay</p>
             </div>
             <i class="fas fa-chevron-right cctv-road-chevron"></i>
           </div>
           <div class="cctv-road">
             <div class="cctv-road-meta">
               <i class="fas fa-circle"></i>
-              <p>CCTV-Tagaytay-1</p>
+              <p>CCTV-Mauban</p>
             </div>
             <i class="fas fa-chevron-right cctv-road-chevron"></i>
           </div>
-          <div class="cctv-road">
+          <!--<div class="cctv-road">
             <div class="cctv-road-meta">
               <i class="fas fa-circle"></i>
               <p>CCTV-Tagaytay-2</p>
             </div>
             <i class="fas fa-chevron-right cctv-road-chevron"></i>
-          </div>
+          </div>-->
         </div>
       </div>
 
@@ -78,7 +78,7 @@
           <div class="stream-video-viewport">
             <i class="fas fa-video viewport-center-icon"></i>
             <div class="stream-overlay-metadata">
-              <p class="stream-road-name">CCTV-Dome-1</p>
+              <p class="stream-road-name">CCTV-Dome</p>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@
           <div class="stream-video-viewport">
             <i class="fas fa-video viewport-center-icon"></i>
             <div class="stream-overlay-metadata">
-              <p class="stream-road-name">CCTV-Dome-2</p>
+              <p class="stream-road-name">CCTV-Tagaytay</p>
             </div>
           </div>
         </div>
@@ -104,12 +104,12 @@
           <div class="stream-video-viewport">
             <i class="fas fa-video viewport-center-icon"></i>
             <div class="stream-overlay-metadata">
-              <p class="stream-road-name">CCTV-Tagaytay-1</p>
+              <p class="stream-road-name">CCTV-Mauban</p>
             </div>
           </div>
         </div>
 
-        <div class="cctv-stream-card">
+        <!--<div class="cctv-stream-card">
           <div class="stream-card-header">
             <span class="stream-badge live"><i class="fas fa-circle stream-pulse"></i> LIVE</span>
             <span class="stream-tag-id">NODE-04</span>
@@ -120,7 +120,7 @@
               <p class="stream-road-name">CCTV-Tagaytay-2</p>
             </div>
           </div>
-        </div>
+        </div>-->
       </div>
     </section>
 
@@ -129,5 +129,6 @@
   <?php include '../includes/admin-footer.php' ?>
 
   <script src="../scripts/sidebar.js"></script>
+  <script type="module" src="../scripts/road_condition/road_condition_test.js"></script>
 </body>
 </html>
