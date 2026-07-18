@@ -3,8 +3,8 @@ from pathlib import Path
 import cv2
 import time
 
-#VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
-VIDEO_FOLDER = Path(r"C:\xampp\htdocs\cctv_feeds")
+VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
+#VIDEO_FOLDER = Path(r"C:\xampp\htdocs\cctv_feeds")
 
 MODEL_NAME = "yolov8n.pt"
 
@@ -38,35 +38,12 @@ def load_videos():
   return videos
 
 
-def process_video(model, video_path):
-  print(f"\nProcessing: {video_path.name}")
-
-  results = model.predict(
-    source=str(video_path),
-    stream=True,
-    verbose=False
-  )
-
-  frame_count = 0
-
-  for result in results:
-    frame_count += 1
-
-  print(f"Finished {video_path.name}")
-  print(f"Frames processed: {frame_count}")
-
-
-def process_all_videos(model, videos):
-  for video in videos:
-    process_video(model, video)
-
-
 # Open all cctv videos
 def open_video_streams(videos):
   streams = []
 
   for video in videos:
-    capture = cv2.VideoCapture(str(video))
+    capture = cv2.VideoCapture(str(video)) # Gives tool to each cctv video
 
     if not capture.isOpened():
       print(f"Unable to open {video.name}")
@@ -84,18 +61,6 @@ def open_video_streams(videos):
 
   return streams
 
-#Read one frame from each CCTV
-def read_frame(stream):
-  capture = stream["capture"]
-
-  success, frame = capture.read()
-
-  if not success:
-    capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
-
-    success, frame = capture.read()
-
-  return frame
 
 # Detect Vehicles
 def detect_vehicles(model, frame):
@@ -122,6 +87,20 @@ def detect_vehicles(model, frame):
   print(f"Detected Vehicles: {vehicle_count}")
 
   return vehicle_count
+
+
+#Read one frame from each CCTV
+def read_frame(stream):
+  capture = stream["capture"]
+
+  success, frame = capture.read()
+
+  if not success:
+    capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
+
+    success, frame = capture.read()
+
+  return frame
 
 
 # Process one CCTV 
