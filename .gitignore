@@ -1,0 +1,6 @@
+# Ignore CCTV videos
+cctv_feeds/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
