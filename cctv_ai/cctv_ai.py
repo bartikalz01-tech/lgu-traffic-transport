@@ -95,7 +95,7 @@ def process_stream(model, stream):
     if frame is None:
       return
     
-  results = model.track(frame, persist=True, tracker="bytetrack.yaml", verbose=False)
+    results = model.track(frame, persist=True, tracker="bytetrack.yaml", verbose=False)
   
   print("\n" + "=" * 60)
   print(f"CCTV: {stream['name']}")
