@@ -1,5 +1,7 @@
 from ultralytics import YOLO
 from pathlib import Path
+from detect_vehicles import detect_vehicles
+from calculate_speed import calculate_speed
 import cv2
 import time
 
@@ -20,7 +22,7 @@ def load_model():
 
   model = YOLO(MODEL_NAME)
 
-  print("YOLO model loaded successfully.")
+  #print("YOLO model loaded successfully.")
 
   return model
 
@@ -33,7 +35,7 @@ def load_videos():
 
   videos = sorted(videos)
 
-  print(f"Found {len(videos)} CCTV Videos.")
+  #print(f"Found {len(videos)} CCTV Videos.")
 
   return videos
 
@@ -57,36 +59,9 @@ def open_video_streams(videos):
       "fps": fps
     })
 
-    print(f"Opened {video.name} ({fps:2f} fps)")
+    #print(f"Opened {video.name} ({fps:2f} fps)")
 
   return streams
-
-
-# Detect Vehicles
-def detect_vehicles(model, frame):
-  results = model.predict(frame, verbose=False)
-
-  vehicle_classes = {2, 3, 5, 7}
-
-  confidence_threshold = 0.40
-
-  vehicle_count = 0
-
-  for result in results:
-
-    for box in result.boxes:
-      class_id = int(box.cls[0])
-      confidence = float(box.conf[0])
-
-      if confidence < confidence_threshold:
-        continue
-
-      if class_id in vehicle_classes:
-        vehicle_count += 1
-
-  print(f"Detected Vehicles: {vehicle_count}")
-
-  return vehicle_count
 
 
 #Read one frame from each CCTV
@@ -115,8 +90,11 @@ def process_stream(model, stream):
 
   if frame is None:
     return
+  
+  results = model.track(frame, persist=True, tracker="bytetrack.yaml", verbose=False)
 
-  vehicle_count = detect_vehicles(model, frame)
+  vehicle_count = detect_vehicles(results, stream["name"])
+  calculate_speed(results, stream["name"])
 
   print(f"{stream['name']} | Vehicles: {vehicle_count}")
 
