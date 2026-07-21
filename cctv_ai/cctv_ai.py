@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 from pathlib import Path
+from filter_vehicles import filter_vehicles
 from detect_vehicles import detect_vehicles
 from calculate_speed import calculate_speed
 import cv2
@@ -8,7 +9,7 @@ import time
 VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
 #VIDEO_FOLDER = Path(r"C:\xampp\htdocs\cctv_feeds")
 
-MODEL_NAME = "yolov8n.pt"
+MODEL_NAME = "yolov8s.pt"
 
 VIDEO_EXTENSIONS = (
   "*.mp4",
@@ -53,6 +54,8 @@ def open_video_streams(videos):
 
     fps = capture.get(cv2.CAP_PROP_FPS)
 
+    capture.set(cv2.CAP_PROP_POS_MSEC, 7000)
+
     streams.append({
       "name": video.name,
       "capture": capture,
@@ -80,23 +83,38 @@ def read_frame(stream):
 
 # Process one CCTV 
 def process_stream(model, stream):
-  
-  frame = None
 
-  fps = int(stream["fps"])
+  frame = None
+  results = None
+  
+  fps = max(1, int(stream["fps"]))
 
   for _ in range(fps):
     frame = read_frame(stream)
 
-  if frame is None:
-    return
-  
+    if frame is None:
+      return
+    
   results = model.track(frame, persist=True, tracker="bytetrack.yaml", verbose=False)
+  
+  print("\n" + "=" * 60)
+  print(f"CCTV: {stream['name']}")
+  print("=" * 60)
 
-  vehicle_count = detect_vehicles(results, stream["name"])
-  calculate_speed(results, stream["name"])
+  print(f"FPS           : {int(stream['fps'])}")
+  print("Detection     : Every 1 second")
 
-  print(f"{stream['name']} | Vehicles: {vehicle_count}")
+  vehicles = filter_vehicles(results)
+
+  vehicle_count = detect_vehicles(vehicles)
+
+  print(f"\nVehicle Count : {vehicle_count}")
+
+  calculate_speed(vehicles, stream["name"])
+  
+  print("=" * 60)
+  print(f"END of {stream['name']}")
+  print("=" * 60)
 
 
 def process_all_streams(model, streams):
@@ -117,7 +135,7 @@ def main():
 
     print("-" * 60)
 
-    time.sleep(1)
+    time.sleep(0)
   
 
 if __name__ == "__main__":
