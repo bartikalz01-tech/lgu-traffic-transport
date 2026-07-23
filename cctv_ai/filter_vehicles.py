@@ -6,10 +6,10 @@ def filter_vehicles(results):
 
   for result in results:
 
-    print(f"Tracking IDs : {result.boxes.id}")
-    print(f"Total Boxes : {len(result.boxes)}")
+    #print(f"Tracking IDs : {result.boxes.id}")
+    #print(f"Total Boxes : {len(result.boxes)}")
 
-    print(f"\nDetected Objects:")
+    #print(f"\nDetected Objects:")
 
     if result.boxes.id is None:
 
@@ -18,9 +18,9 @@ def filter_vehicles(results):
         class_id = int(box.cls[0])
         class_name = result.names[class_id]
 
-        print(f"  - {class_name:<15} (Class ID: {class_id})")
+        #print(f"  - {class_name:<15} (Class ID: {class_id})")
       
-      print("=" * 40)
+      #print("=" * 40)
       continue
     
     for box, track_id in zip(result.boxes, result.boxes.id):
@@ -28,12 +28,12 @@ def filter_vehicles(results):
       class_name = result.names[class_id]
       confidence = float(box.conf[0])
 
-      print(
-        f"  - {class_name:<15} "
-        f"(Class ID: {class_id})"
-        f"Track ID: {int(track_id)}"
-        f"Confidence {confidence:2f}"
-      )
+      #print(
+        #f"  - {class_name:<15} "
+        #f"(Class ID: {class_id})"
+        #f"Track ID: {int(track_id)}"
+        #f"Confidence {confidence:2f}"
+      #)
 
       if class_id not in vehicle_classes:
         continue
@@ -48,6 +48,6 @@ def filter_vehicles(results):
         "box": box
       })
 
-    print("=" * 40) 
+    #print("=" * 40) 
 
   return vehicles

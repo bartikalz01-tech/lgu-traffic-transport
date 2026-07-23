@@ -1,7 +1,9 @@
+import os
 from ultralytics import YOLO
 from pathlib import Path
 from filter_vehicles import filter_vehicles
-from detect_vehicles import detect_vehicles
+from vehicle_counter import (update_vehicle_counter, report_vehicle_count)
+#from detect_vehicles import detect_vehicles
 from calculate_speed import calculate_speed
 import cv2
 import time
@@ -87,30 +89,44 @@ def process_stream(model, stream):
   frame = None
   results = None
   
-  fps = max(1, int(stream["fps"]))
+  # Every 60 Frame
+  #fps = max(1, int(stream["fps"]))
 
-  for _ in range(fps):
+  #frames_per_min = int(stream["fps"] * 60)
+
+  #print(f"FPS: {stream['fps']}")
+  #print(f"Frames per minute: {frames_per_min}")
+
+  vehicles = []
+
+  start_time = time.time()
+
+  while time.time() - start_time < 10:
+
     frame = read_frame(stream)
 
     if frame is None:
       return
     
     results = model.track(frame, persist=True, tracker="bytetrack.yaml", verbose=False)
+
+    vehicles = filter_vehicles(results)
+    #calculate_speed(vehicles, stream["name"])
+    update_vehicle_counter(vehicles, stream["name"])
   
+  vehicle_count = report_vehicle_count(stream["name"])
+  #average_speed = calculate_speed(None, stream["name"], report=True)
+
   print("\n" + "=" * 60)
   print(f"CCTV: {stream['name']}")
   print("=" * 60)
 
   print(f"FPS           : {int(stream['fps'])}")
-  print("Detection     : Every 1 second")
+  print("Detection     : Real-time")
 
-  vehicles = filter_vehicles(results)
+  print(f"\nUnique Vehicle Observed (Last Minute) : {vehicle_count}")
 
-  vehicle_count = detect_vehicles(vehicles)
-
-  print(f"\nVehicle Count : {vehicle_count}")
-
-  calculate_speed(vehicles, stream["name"])
+  #print(f"Average Road Speed : {average_speed:.2f} px/s")
   
   print("=" * 60)
   print(f"END of {stream['name']}")
@@ -131,6 +147,9 @@ def main():
   streams = open_video_streams(videos)
 
   while True:
+
+    #os.system("cls")
+
     process_all_streams(model, streams)
 
     print("-" * 60)
