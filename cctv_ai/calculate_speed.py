@@ -4,18 +4,38 @@ previous_positions = {}
 
 vehicle_speeds = {}
 
-def calculate_speed(vehicles, camera_name, report=False):
+printed_ids = {}
+
+def calculate_speed(vehicles, camera_name, fps, report=False):
 
   global previous_positions
   global vehicle_speeds
 
   if report:
-    speeds = vehicle_speeds.get(camera_name, {})
+    speed = vehicle_speeds.get(camera_name, {})
 
-    if len(speeds) == 0:
+    if len(speed) == 0:
       return 0
     
-    return sum(speeds.values()) / len(speeds)
+    vehicle_averages = []
+
+    for speed_list in speed.values():
+
+      if len(speed_list) == 0:
+        continue
+
+      average_vehicle_speed = sum(speed_list) / len(speed_list)
+
+      vehicle_averages.append(average_vehicle_speed)
+    
+    if len(vehicle_averages) == 0:
+      return 0
+
+    road_average = sum(vehicle_averages) / len(vehicle_averages)
+
+    vehicle_speeds[camera_name].clear() 
+    
+    return road_average
 
   if camera_name not in previous_positions:
     previous_positions[camera_name] = {}
@@ -25,12 +45,26 @@ def calculate_speed(vehicles, camera_name, report=False):
 
   camera_positions = previous_positions[camera_name]
 
+  if camera_name not in printed_ids:
+    printed_ids[camera_name] = set()
+
   #total_speed = 0
   #total_vehicles = 0
 
   for vehicle in vehicles:
 
     track_id = vehicle["track_id"]
+
+    if track_id not in printed_ids[camera_name]:
+      printed_ids[camera_name].add(track_id)
+
+      #print(
+        #f"[{camera_name}] "
+        #f"NEW TRACK -> "
+        #f"ID {track_id:<4} "
+        #f"{vehicle['class_name']}"
+      #)
+
     #class_name = vehicle["class_name"]
     box = vehicle["box"]
 
@@ -58,10 +92,24 @@ def calculate_speed(vehicles, camera_name, report=False):
 
       # For now since I am processing every second.
       # pixels traveled = pixels/sec
-      speed = distance
+      speed = distance * fps
+    
+    vehicle["speed"] = speed
     
     camera_positions[track_id] = current_position
-    vehicle_speeds[camera_name][track_id] = speed
+    #vehicle_speeds[camera_name][track_id] = speed
+    camera_speeds = vehicle_speeds[camera_name]
+
+    if track_id not in camera_speeds:
+      camera_speeds[track_id] = []
+
+    camera_speeds[track_id].append(speed)
+
+    #print(
+      #f"[{camera_name}] "
+      #f"Vehicle ID: {track_id:<3} | "
+      #f"Current speed: {speed:.2f} px/s"
+    #)
 
     #total_speed += speed
     #total_vehicles += 1

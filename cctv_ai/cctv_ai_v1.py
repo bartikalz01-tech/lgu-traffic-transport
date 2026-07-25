@@ -5,6 +5,7 @@ from filter_vehicles import filter_vehicles
 from vehicle_counter import (update_vehicle_counter, report_vehicle_count)
 #from detect_vehicles import detect_vehicles
 from calculate_speed import calculate_speed
+from draw_tracking import draw_tracking
 import cv2
 import time
 
@@ -101,7 +102,7 @@ def process_stream(model, stream):
 
   start_time = time.time()
 
-  while time.time() - start_time < 10:
+  while time.time() - start_time < 60:
 
     frame = read_frame(stream)
 
@@ -111,11 +112,18 @@ def process_stream(model, stream):
     results = model.track(frame, persist=True, tracker="bytetrack.yaml", verbose=False)
 
     vehicles = filter_vehicles(results)
-    #calculate_speed(vehicles, stream["name"])
+    calculate_speed(vehicles, stream["name"])
     update_vehicle_counter(vehicles, stream["name"])
+    frame = draw_tracking(frame, vehicles)
+
+    cv2.imshow(stream["name"], frame)
+
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+      return
+    
   
   vehicle_count = report_vehicle_count(stream["name"])
-  #average_speed = calculate_speed(None, stream["name"], report=True)
+  average_speed = calculate_speed(None, stream["name"], report=True)
 
   print("\n" + "=" * 60)
   print(f"CCTV: {stream['name']}")
@@ -126,7 +134,7 @@ def process_stream(model, stream):
 
   print(f"\nUnique Vehicle Observed (Last Minute) : {vehicle_count}")
 
-  #print(f"Average Road Speed : {average_speed:.2f} px/s")
+  print(f"Average Road Speed : {average_speed:.2f} px/s")
   
   print("=" * 60)
   print(f"END of {stream['name']}")
@@ -155,6 +163,8 @@ def main():
     print("-" * 60)
 
     time.sleep(0)
+  
+  cv2.destroyAllWindows()
   
 
 if __name__ == "__main__":
