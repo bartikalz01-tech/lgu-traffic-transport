@@ -187,7 +187,7 @@ def main():
 
               print(f"Vehicle Count: {stats['vehicle_count']}")
 
-              print(f"Average Speed : {stats['average_speed']:.2f} px/s")
+              print(f"Average Speed : {stats['average_speed']:.2f} km/h")
 
               print(f"Video FPS     : {stats['fps']}")
 

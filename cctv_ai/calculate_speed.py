@@ -1,5 +1,8 @@
 import math
 
+AVERAGE_CAR_LENGTH = 4.5
+AVERAGE_TRUCK_LENGTH = 10.0
+
 previous_positions = {}
 
 vehicle_speeds = {}
@@ -54,6 +57,7 @@ def calculate_speed(vehicles, camera_name, fps, report=False):
   for vehicle in vehicles:
 
     track_id = vehicle["track_id"]
+    class_name = vehicle["class_name"]
 
     if track_id not in printed_ids[camera_name]:
       printed_ids[camera_name].add(track_id)
@@ -70,6 +74,13 @@ def calculate_speed(vehicles, camera_name, fps, report=False):
 
     #Bounding box coordinates
     x1, y1, x2, y2 = box.xyxy[0].tolist()
+
+    vehicle_width_pixels = abs(y2 - y1)
+
+    if class_name in ["truck", "bus"]:
+      reference_length = AVERAGE_TRUCK_LENGTH
+    else:
+      reference_length = AVERAGE_CAR_LENGTH
 
     #center point
     center_x = (x1 + x2) / 2
@@ -92,7 +103,12 @@ def calculate_speed(vehicles, camera_name, fps, report=False):
 
       # For now since I am processing every second.
       # pixels traveled = pixels/sec
-      speed = distance * fps
+      #speed = distance * fps
+      meters_per_pixel = reference_length / vehicle_width_pixels
+
+      speed_mps = distance * meters_per_pixel * fps
+
+      speed = speed_mps * 3.6
     
     vehicle["speed"] = speed
     

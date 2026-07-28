@@ -25,7 +25,7 @@ def draw_tracking(frame, vehicles):
     label = (
       f"{class_name} "
       f"ID: {track_id} "
-      f"{speed:.1f} px/s"
+      f"{speed:.1f} km/h"
     )
 
     cv2.putText(
