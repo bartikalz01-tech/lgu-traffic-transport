@@ -1,6 +1,6 @@
 import { fetchDiversions, fetchDiversionDetails, fetchGeneratedDiversion, updateDiversionRoute, deleteDiversionRoute } from "../../data/fetch_road_map.js";
 import { drawSimpleLine } from "../../utils/diversions.js";
-import { updateActiveDiversions, bindActivateButton, resetDiversionPlanner, resetDiversionUI } from "./diversion_management.js";
+import { updateActiveDiversions, bindActivateButton, resetDiversionPlanner, resetDiversionUI, setPlannerMode } from "./diversion_management.js";
 
 let activeDiversionPolyline = null;
 let editingDiversionId = null;
@@ -313,6 +313,8 @@ export async function renderActiveDiversionsSidebar(map) {
   const backBtn = document.getElementById("backToPlanner");
 
   backBtn.addEventListener("click", async () => {
+
+    setPlannerMode(true);
     
     clearDiversionMap(map);
 
@@ -720,9 +722,17 @@ async function attachDiversionHistoryEvents(map) {
 
         clearDiversionMap(map)
 
-        renderActiveDiversionsSidebar(map);
+        //renderActiveDiversionsSidebar(map);
 
         updateActiveDiversions(updateDiversionCount);
+
+        if(updateDiversionCount.length === 0) {
+          setPlannerMode(true);
+
+          resetDiversionUI(map);
+        } else {
+          renderActiveDiversionsSidebar(map);
+        }
 
         alert("Diversion deleted successfully");
       } else {

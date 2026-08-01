@@ -8,6 +8,12 @@ let routeLine = null;
 let activeSelectedRoute = null;
 let activatedRouteIndex = null;
 
+let plannerMode = true;
+
+export function setPlannerMode(value) {
+  plannerMode = value;
+}
+
 function resetNodeMarkers(map) {
 
   map.eachLayer(layer => {
@@ -30,6 +36,8 @@ export function bindRefreshButton(map) {
   if (!refreshBtn) return;
 
   refreshBtn.addEventListener("click", () => {
+
+    console.log("Refresh Button Clicked");
 
     clearDiversionMap(map);
 
@@ -59,6 +67,8 @@ export function resetDiversionUI(map) {
 
   initRouteSelectionSidebar();
 
+  bindRefreshButton(map);
+
   bindActivateButton(map);
 
   document.getElementById("startPointName").textContent =
@@ -83,7 +93,7 @@ export function bindActivateButton(map) {
 
   if(!activateBtn) return;
 
-  activateBtn.addEventListener("click", async () => {
+  activateBtn.onclick = async () => {
     
     if(!activeSelectedRoute) {
       alert("Please select a route first");
@@ -134,7 +144,7 @@ export function bindActivateButton(map) {
 
       resetDiversionUI(map);
 
-      const activeCard = document.querySelector(".active-route");
+      /*const activeCard = document.querySelector(".active-route");
 
       if(activeCard) {
         activeCard.dataset.isActive = "true";
@@ -150,7 +160,7 @@ export function bindActivateButton(map) {
         if(index === activatedRouteIndex) {
           card.classList.add("activated-route");
         }
-      });
+      });*/
 
     } else {
       activateBtn.disabled = false;
@@ -163,7 +173,7 @@ export function bindActivateButton(map) {
       alert(result.message || "Activation failed.");
     }
 
-  });
+  };
 }
 
 function updateActivateButtonState() {
@@ -239,20 +249,36 @@ function renderRoadNodes(map, nodes) {
     marker.bindPopup(`
       <b>Intersection</b><br>
       ${node.roads}<br><br> 
+      ${node.lat} | ${node.lng}
     `);
 
     marker.on("click", async () => {
 
+      if(!plannerMode) return;
+
+      console.log("Clicked Node ID: ", node.node_id);
+      // There is an query of finding a road where the condition of road name
+
       if(selectedStart && selectedEnd) {
 
-        document.getElementById("sidebarActions").classList.add("hidden");
+        const sidebarActions = document.getElementById("sidebarActions");
+        const startPoint = document.getElementById("startPointName");
+        const endPoint = document.getElementById("endPointName");
+        
+        if(sidebarActions) {
+          sidebarActions.classList.add("hidden");
+        }
 
         selectedStart = null;
         selectedEnd = null;
 
-        document.getElementById("startPointName").textContent = "Awaiting Selection...";
+        if(startPoint) {
+          startPoint.textContent = "Awaiting Selection...";
+        }
 
-        document.getElementById("endPointName").textContent = "Awaiting Selection";
+        if(endPoint) {
+          endPoint.textContent = "Awaiting Selection...";
+        }
 
         map.eachLayer(layer => {
           if(layer instanceof L.CircleMarker) {
@@ -263,13 +289,18 @@ function renderRoadNodes(map, nodes) {
           }
         });
 
-        document.querySelector(".suggestions-list").innerHTML = `
-          <label class="list-label">Diversion Suggestions</label>
-          <div id="suggestionsPlaceholder" class="suggestions-loading">
-            <div class="spinner"></div>
-            <p>Select start and end points to generate routes</p>
-          </div>
-        `;
+        const suggestionList = document.querySelector(".suggestions-list");
+
+        if(suggestionList){
+          suggestionList.innerHTML = `
+            <label class="list-label">Diversion Suggestions</label>
+            <div id="suggestionsPlaceholder" class="suggestions-loading">
+              <div class="spinner"></div>
+              <p>Select start and end points to generate routes</p>
+            </div>
+          `;
+        }
+
       }
 
       if(!selectedStart) {
@@ -416,7 +447,7 @@ async function renderSuggestions(routes, map) {
     updateActivateButtonState();
   }
 
-  if(cards.length > 0) {
+  if(cards.length > 0 && !activeCard) {
     cards[0].classList.add("active-route");
 
     activeSelectedRoute = routes[0];
@@ -497,6 +528,8 @@ async function renderDiversionManagement(container) {
   const activeDiversionCard = document.querySelector(".overview-card.active-diversions");
 
   activeDiversionCard.addEventListener("click", async () => {
+
+    plannerMode = false;
 
     if(routeLine) {
       diversionMap.removeLayer(routeLine);

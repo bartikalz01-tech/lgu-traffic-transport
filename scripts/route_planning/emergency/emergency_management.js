@@ -41,13 +41,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await renderEmergencyCounts();
 
-  const emergencyMap = L.map("emergency-map").setView([14.6414, 120.9909], 20);
+  //const emergencyMap = L.map("emergency-map").setView([14.6414, 120.9909], 20);
 
   //const emergencyMap = L.map("emergency-map").setView([14.72956, 121.038604], 30);
 
   //const emergencyMap = L.map("emergency-map").setView([14.72942, 121.03694], 20);
 
-  //const emergencyMap = L.map("emergency-map").setView([14.72959, 121.03867], 20);
+  const emergencyMap = L.map("emergency-map").setView([14.72959, 121.03867], 16);
 
   // Barangay 128
   //const emergencyMap = L.map("emergency-map").setView([14.641225, 120.989883], 20);

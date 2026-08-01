@@ -89,9 +89,10 @@ export function initMap(mapId) {
   if(maps[mapId]) {
     maps[mapId].remove();
     delete maps[mapId]
-  }
+  }  
 
-  const map = L.map(mapId).setView([14.6414, 120.9909], 18);
+  //const map = L.map(mapId).setView([14.6414, 120.9909], 18);
+  const map = L.map(mapId).setView([14.72959, 121.03867], 16);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
