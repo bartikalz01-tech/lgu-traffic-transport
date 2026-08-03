@@ -2,12 +2,14 @@ import os
 import threading
 from ultralytics import YOLO
 from pathlib import Path
-from filter_vehicles import filter_vehicles
-from vehicle_counter import (update_vehicle_counter, report_vehicle_count)
+from .filter_vehicles import filter_vehicles
+from .vehicle_counter import (update_vehicle_counter, report_vehicle_count)
 #from detect_vehicles import detect_vehicles
-from calculate_speed import calculate_speed
-from traffic_congestion import calculate_congestion
-from draw_tracking import draw_tracking
+from .calculate_speed import calculate_speed
+from .traffic_congestion import calculate_congestion
+from ai_storage.get_road_id import get_road_id
+from ai_storage.update_traffic_status import update_traffic_status
+#from draw_tracking import draw_tracking
 import cv2
 import time
 
@@ -104,6 +106,8 @@ def process_camera(stream):
 
   last_vehicles = []
 
+  road_id = get_road_id(stream["name"])
+
   while True:
     frame = read_frame(stream)
 
@@ -145,6 +149,13 @@ def process_camera(stream):
           "congestion": congestion,
           "fps": int(stream["fps"])
         }
+
+        update_traffic_status(
+          road_id=road_id,
+          vehicle_flow=vehicle_per_minute,
+          average_speed=average_speed,
+          traffic_level=congestion
+        )
 
       report_start = time.time()
 
