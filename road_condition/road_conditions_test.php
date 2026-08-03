@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_test.css">
+  <link rel="stylesheet" href="../styles/road_condition/detailed_cctv.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Road Condition Updates</title>
 </head>

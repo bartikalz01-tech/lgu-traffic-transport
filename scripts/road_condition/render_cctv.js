@@ -1,4 +1,5 @@
 import { getCctvAiDetails } from "../data/fetch_road_condition.js";
+import { openRoadCondition } from "./road_details.js";
 
 export async function renderCctvAi(container) {
 
@@ -72,5 +73,19 @@ export async function renderCctvAi(container) {
       video.play();
     });
 
+  });
+
+
+
+  const cctvItems = container.querySelectorAll(".cctv-road");
+
+  cctvItems.forEach(item => {
+    item.addEventListener("click", () => {
+
+      const roadId = item.dataset.roadId;
+
+      openRoadCondition(container, roadId);
+
+    });
   });
 }

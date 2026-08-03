@@ -1,37 +1,8 @@
-import { roadOverlay } from '../global_variables.js';
+import { renderCctvAi } from "./render_cctv.js";
 
-async function fetchPrediction() {
+export function openRoadCondition(container, roadId) {
 
-  try {
-
-    const response = await fetch("http://localhost:5000/predict", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        vehicles_per_min: 140,
-        pedestrians: 20,
-        avg_speed: 30,
-        lane_usage: 65,
-        avg_wait_time: 40,
-        time_of_day: 18,
-        day_of_week: 2
-      })
-    });
-
-    const data = await response.json();
-
-    updatePredictionUI(data);
-
-  } catch(err) {
-    console.error(err);
-  }
-
-}
-
-export function openRoadCondition(road) {
-  roadOverlay.innerHTML = `
+  container.innerHTML = `
     <div class="road-condition-content">
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -41,7 +12,7 @@ export function openRoadCondition(road) {
         </button>
         <p class="module-title">Real Time Road Condition Updates</p>
         <h1 class="sub-module-title">CCTV Monitoring</h1>
-        <p class="sub-module-description">Real-time surveillance and predictive analytics of ${road.road_name}</p>
+        <p class="sub-module-description">Real-time surveillance of Susano Road</p>
       </div>
       <button class="btn btn-primary" id="fullscreenBtn">
         <i class="fas fa-expand"></i> Full Screen
@@ -55,7 +26,7 @@ export function openRoadCondition(road) {
           <div class="cctv-video-header">
             <h3>
               <i class="fas fa-video"></i>
-              <span id="currentCameraName">Camera 1 - Main Intersection View</span>
+              <span id="currentCameraName">Node 1</span>
             </h3>
             <div class="live-status">
               <i class="fas fa-circle"></i>
@@ -64,12 +35,7 @@ export function openRoadCondition(road) {
           </div>
 
           <div class="cctv-video-display">
-            <iframe
-              src="https://www.youtube.com/embed/${road.video_id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${road.video_id}"
-              frameborder="0"
-              allow="autoplay; encrypted-media"
-              allowfullscreen>
-            </iframe>
+           
           </div>
 
           <div class="video-controls">
@@ -105,11 +71,11 @@ export function openRoadCondition(road) {
             <div class="details-grid">
               <div class="detail-item">
                 <span class="detail-label">Camera ID</span>
-                <span class="detail-value">CAM-${road.road_name}-001</span>
+                <span class="detail-value">CAM-Susano Road-001</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Location</span>
-                <span class="detail-value">${road.road_name} Street Intersection</span>
+                <span class="detail-value">Susano Road</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Type</span>
@@ -125,7 +91,7 @@ export function openRoadCondition(road) {
               </div>
               <div class="detail-item">
                 <span class="detail-label">Installation Date</span>
-                <span class="detail-value">2024-01-15</span>
+                <span class="detail-value">2026-08-15</span>
               </div>
             </div>
             <div class="camera-status">
@@ -167,7 +133,7 @@ export function openRoadCondition(road) {
                 </div>
                 <div class="camera-info">
                   <div class="camera-name">Camera 1 - Main View</div>
-                  <div class="camera-location">${road.road_name} Street Intersection</div>
+                  <div class="camera-location">Street Intersection</div>
                 </div>
                 <span class="live-status" style="font-size: 0.625rem;">LIVE</span>
               </div>
@@ -177,7 +143,7 @@ export function openRoadCondition(road) {
                 </div>
                 <div class="camera-info">
                   <div class="camera-name">Camera 2 - North View</div>
-                  <div class="camera-location">${road.road_name} Street North End</div>
+                  <div class="camera-location"> Street North End</div>
                 </div>
               </div>
               <div class="camera-list-item" data-camera="cam3">
@@ -186,7 +152,7 @@ export function openRoadCondition(road) {
                 </div>
                 <div class="camera-info">
                   <div class="camera-name">Camera 3 - South View</div>
-                  <div class="camera-location">${road.road_name} Street South End</div>
+                  <div class="camera-location">Test Street South End</div>
                 </div>
               </div>
               <div class="camera-list-item" data-camera="cam4">
@@ -213,14 +179,14 @@ export function openRoadCondition(road) {
                 <div class="stat-value">23</div>
                 <div class="stat-label">Pedestrians</div>
               </div>
-              <div class="stat-card">
+              <!--<div class="stat-card">
                 <div class="stat-value">65%</div>
                 <div class="stat-label">Lane Usage</div>
               </div>
               <div class="stat-card">
                 <div class="stat-value">42s</div>
                 <div class="stat-label">Avg Wait Time</div>
-              </div>
+              </div>-->
             </div>
           </div>
         </div>
@@ -233,7 +199,7 @@ export function openRoadCondition(road) {
       <div class="video-placeholder">
         <i class="fas fa-video" style="font-size: 5rem;"></i>
         <p style="font-size: 1.5rem;">Full Screen CCTV View</p>
-        <p>${road.road_name} Street Intersection - Live Feed</p>
+        <p>Susano Road Street Intersection - Live Feed</p>
       </div>
       <button class="close-fullscreen" id="closeFullscreen">
         <i class="fas fa-times"></i>
@@ -253,24 +219,11 @@ export function openRoadCondition(road) {
   </div>
   `;
 
-  roadOverlay.classList.remove('hidden');
+  container.classList.remove('hidden');
 
-  fetchPrediction();
-}
+  const closeBtn = container.querySelector(".close-btn");
 
-function updatePredictionUI(data){
-
-  const trafficCard = document.querySelector(".prediction-item.traffic .prediction-value");
-
-  if(!trafficCard) return;
-
-  const low = (data.low * 100).toFixed(1);
-  const medium = (data.medium * 100).toFixed(1);
-  const high = (data.high * 100).toFixed(1);
-
-  trafficCard.innerHTML = `
-    Low ${low}% |
-    Medium ${medium}% |
-    High ${high}%
-  `;
+  closeBtn.addEventListener("click", () => {
+    renderCctvAi(container);
+  });
 }
