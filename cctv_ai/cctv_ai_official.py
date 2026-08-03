@@ -89,7 +89,7 @@ def read_frame(stream):
   success, frame = capture.read()
 
   if not success:
-    capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
+    capture.set(cv2.CAP_PROP_POS_FRAMES, 7000)
 
     success, frame = capture.read()
 
