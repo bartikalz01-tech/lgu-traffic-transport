@@ -3,6 +3,8 @@ import math
 AVERAGE_CAR_LENGTH = 4.5
 AVERAGE_TRUCK_LENGTH = 10.0
 
+SPEED_CALIBRATION_FACTOR = 0.22
+
 previous_positions = {}
 
 vehicle_speeds = {}
@@ -108,7 +110,9 @@ def calculate_speed(vehicles, camera_name, fps, report=False):
 
       speed_mps = distance * meters_per_pixel * fps
 
-      speed = speed_mps * 3.6
+      raw_speed = speed_mps * 3.6
+
+      speed = raw_speed * SPEED_CALIBRATION_FACTOR
     
     vehicle["speed"] = speed
     

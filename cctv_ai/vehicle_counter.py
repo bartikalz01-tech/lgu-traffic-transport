@@ -1,4 +1,3 @@
-
 vehicle_history = {}
 
 def update_vehicle_counter(vehicles, camera_name):

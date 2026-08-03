@@ -6,6 +6,7 @@ from filter_vehicles import filter_vehicles
 from vehicle_counter import (update_vehicle_counter, report_vehicle_count)
 #from detect_vehicles import detect_vehicles
 from calculate_speed import calculate_speed
+from traffic_congestion import calculate_congestion
 from draw_tracking import draw_tracking
 import cv2
 import time
@@ -21,6 +22,8 @@ VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
 
 MODEL_NAME = "yolov8s.pt"
 
+REPORT_INTERVAL = 15
+
 VIDEO_EXTENSIONS = (
   "*.mp4",
   "*.avi",
@@ -29,7 +32,7 @@ VIDEO_EXTENSIONS = (
 
 # Responsible for loading YOLO
 def load_model():
-  print("Loading YOLO model...")
+  #print("Loading YOLO model...")
 
   model = YOLO(MODEL_NAME)
 
@@ -119,21 +122,27 @@ def process_camera(stream):
 
       last_vehicles = vehicles
 
-    frame = draw_tracking(frame, last_vehicles)
+    #frame = draw_tracking(frame, last_vehicles)
 
     #cv2.imshow(stream["name"], frame)
     with frame_lock:
       shared_frames[stream["name"]] = frame.copy()
 
-    if time.time() - report_start >= 60:
+    if time.time() - report_start >= REPORT_INTERVAL:
       vehicle_count = report_vehicle_count(stream["name"])
+      vehicle_per_minute = vehicle_count * (60 / REPORT_INTERVAL)
+
       average_speed = calculate_speed(None, stream["name"], fps=stream["fps"], report=True)
+      congestion_score, congestion = calculate_congestion(vehicle_per_minute, average_speed)
 
       with stats_lock:
 
         shared_statistics[stream["name"]] = {
-          "vehicle_count": vehicle_count,
+          "vehicle_count" : vehicle_count,
+          "vehicle_per_minute" : vehicle_per_minute,
           "average_speed": average_speed,
+          "congestion_score": congestion_score,
+          "congestion": congestion,
           "fps": int(stream["fps"])
         }
 
@@ -173,7 +182,7 @@ def main():
 
         cv2.imshow(camera_name, frame)
 
-        if time.time() - dashboard_timer >= 60:
+        if time.time() - dashboard_timer >= REPORT_INTERVAL:
           print("=" * 80)
           print("TRAFFIC AI MONITOR ".center(80))
           print("=" * 80)
@@ -187,7 +196,13 @@ def main():
 
               print(f"Vehicle Count: {stats['vehicle_count']}")
 
+              print(f"Equivalent Flow:  {stats['vehicle_per_minute']:.0f} veh/min")
+
               print(f"Average Speed : {stats['average_speed']:.2f} km/h")
+
+              print(f"Congestion Score : {stats['congestion_score']:.1f}/100")
+
+              print(f"Congestion Level : {stats['congestion']}")
 
               print(f"Video FPS     : {stats['fps']}")
 
