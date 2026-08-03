@@ -1,35 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const openSidebarBtn = document.querySelector('.hamburger-menu-btn');
-  const closeSidebarBtn = document.querySelector('.sidebar-close-btn');
-  const sidebar = document.querySelector('.sidebar-container');
-  const sidebarOverlay = document.querySelector('.sidebar-overlay');
-
-  if (openSidebarBtn && sidebar && sidebarOverlay) {
-    openSidebarBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      sidebarOverlay.classList.toggle('visible');
-    });
-  }
-
-  if (closeSidebarBtn && sidebar && sidebarOverlay) {
-    closeSidebarBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      sidebarOverlay.classList.toggle('visible');
-    });
-  }
-
-  // Close sidebar when clicking overlay
-  if (sidebarOverlay) {
-    sidebarOverlay.addEventListener('click', () => {
-      if (sidebar) {
-        sidebar.classList.remove('open');
-        sidebarOverlay.classList.remove('visible');
-      }
-    });
-  }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
+/*document.addEventListener("DOMContentLoaded", function () {
 
   const ctx = document.getElementById('trafficVolumeChart');
 
@@ -196,4 +165,22 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+});*/
+
+import { fetchRoadMap } from "../data/fetch_road_map.js";
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const mapId = document.getElementById("map");
+
+  const map = L.map(mapId).setView([14.72959, 121.03867], 16);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
+
+
+  const roadCongestion = await fetchRoadMap();
+
+  
 });

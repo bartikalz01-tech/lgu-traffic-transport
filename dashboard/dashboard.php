@@ -156,15 +156,9 @@
 
   <?php include '../includes/admin-footer.php'; ?>
 
-  <script src="../scripts/dashboard.js"></script>
+  <script src="../scripts/sidebar.js"></script>
+  <script type="module" src="../scripts/dashboard/dashboard.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    const map = L.map('map').setView([14.6414, 120.9909], 18);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-  </script>
 </body>
 
 </html>
