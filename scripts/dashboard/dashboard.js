@@ -168,6 +168,7 @@
 });*/
 
 import { fetchRoadMap } from "../data/fetch_road_map.js";
+import { startTrafficStore } from "../data/road_condition/trafficStore.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -179,8 +180,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       attribution: "&copy; OpenStreetMap contributors"
   }).addTo(map);
 
+  startTrafficStore();
 
   const roadCongestion = await fetchRoadMap();
 
-  
 });
