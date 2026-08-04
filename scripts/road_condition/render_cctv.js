@@ -1,9 +1,14 @@
-import { getCctvAiDetails } from "../data/fetch_road_condition.js";
+import { getCctvAiDetails } from "../data/road_condition/fetch_road_condition.js";
+import { getCurrentTraffic, subscribeTraffic } from "../data/road_condition/trafficStore.js";
 import { openRoadCondition } from "./road_details.js";
 
 export async function renderCctvAi(container) {
 
-  const cctvRoads = await getCctvAiDetails();
+  let cctvRoads = getCurrentTraffic();
+
+  if(cctvRoads.length === 0) {
+    cctvRoads = await getCctvAiDetails();
+  }
 
   let sidebarHTML = "";
   let cctvCardsHTML = "";
@@ -59,6 +64,26 @@ export async function renderCctvAi(container) {
       ${cctvCardsHTML}
     </div>
   `;
+
+  subscribeTraffic((roads) => {
+
+    roads.forEach(road => {
+
+      const card = container.querySelector(
+        `.cctv-stream-card[data-road-id="${road.road_id}"]`
+      );
+
+      if(!card) return;
+
+      const roadName = card.querySelector(".stream-road-name");
+
+      if (roadName) {
+        roadName.textContent = `CCTV-${road.road_name}`;
+      }
+
+    });
+
+  });
 
   const videos = container.querySelectorAll(".stream-video");
   

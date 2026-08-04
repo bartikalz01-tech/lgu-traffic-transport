@@ -1,4 +1,11 @@
+import { subscribeTraffic } from "../data/road_condition/trafficStore.js";
+
+let activeRoadId = null;
+let subscribed = false;
+
 export function openRoadCondition(container, road) {
+
+  activeRoadId = road.road_id;
 
   const VIDEO_FOLDER = "/lgu-traffic-transport/cctv_ai/cctv_feeds/";
 
@@ -176,11 +183,11 @@ export function openRoadCondition(container, road) {
             <h4><i class="fas fa-chart-line"></i> Real-time Statistics</h4>
             <div class="traffic-stats">
               <div class="stat-card">
-                <div class="stat-value">${road.vehicle_flow}</div>
+                <div class="stat-value" id="detailVehicleFlow">${road.vehicle_flow}</div>
                 <div class="stat-label">Vehicles/min</div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">${road.avg_speed} km/h</div>
+                <div class="stat-value" id="detailAverageSpeed">${road.avg_speed} km/h</div>
                 <div class="stat-label">Average Street Speed</div>
               </div>
               <!--<div class="stat-card">
@@ -234,6 +241,9 @@ export function openRoadCondition(container, road) {
   const closeBtn = container.querySelector(".close-btn");
 
   closeBtn.addEventListener("click", () => {
+
+    activeRoadId = null;
+
     const video = document.getElementById(`video-${road.road_id}`);
     
     const originalViewport = document.getElementById(`viewport-${road.road_id}`);
@@ -244,4 +254,29 @@ export function openRoadCondition(container, road) {
 
     document.getElementById("cctvPage").classList.remove("hidden");
   });
+
+  if (!subscribed) {
+
+    subscribeTraffic((roads) => {
+
+      if (!activeRoadId) return;
+
+      const latestRoad = roads.find(r => r.road_id == activeRoadId);
+
+      if (!latestRoad) return;
+
+      const vehicle = document.getElementById("detailVehicleFlow");
+
+      const speed = document.getElementById("detailAverageSpeed");
+
+      if (vehicle) vehicle.textContent = latestRoad.vehicle_flow;
+
+      if (speed) speed.textContent = `${latestRoad.avg_speed} km/h`;
+
+    });
+
+    subscribed = true;
+
+  }
+
 }
