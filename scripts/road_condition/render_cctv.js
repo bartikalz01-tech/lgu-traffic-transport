@@ -17,7 +17,7 @@ export async function renderCctvAi(container) {
           <i class="fas fa-circle"></i>
           <p>CCTV-${roads.road_name}</p>
         </div>
-        <i class="fas fa-chevron-right cctv-road-chevron"></i>
+        <i class="fas fa-eye cctv-road-chevron"></i>
       </div>
     `
 
@@ -27,8 +27,8 @@ export async function renderCctvAi(container) {
           <span class="stream-badge live"><i class="fas fa-circle stream-pulse"></i> LIVE</span>
           <span class="stream-tag-id">${roads.camera_name}</span>
         </div>
-        <div class="stream-video-viewport">
-          <video autoplay muted class="stream-video">
+        <div class="stream-video-viewport" id="viewport-${roads.road_id}">
+          <video autoplay muted class="stream-video" id="video-${roads.road_id}">
             <source src="${VIDEO_FOLDER}${roads.video_filename}" type="video/mp4">
           </video>
 
@@ -82,9 +82,18 @@ export async function renderCctvAi(container) {
   cctvItems.forEach(item => {
     item.addEventListener("click", () => {
 
-      const roadId = item.dataset.roadId;
+      /*const roadId = item.dataset.roadId;*/
+      const selectedRoad = cctvRoads.find(
+        road => road.road_id == item.dataset.roadId
+      );
 
-      openRoadCondition(container, roadId);
+      const cctvPage = document.getElementById("cctvPage");
+      const roadContainer = document.getElementById("roadConditionContainer");
+
+      cctvPage.classList.add("hidden");
+      roadContainer.classList.remove("hidden");
+
+      openRoadCondition(roadContainer, selectedRoad);
 
     });
   });

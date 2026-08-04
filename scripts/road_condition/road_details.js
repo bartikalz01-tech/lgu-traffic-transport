@@ -1,11 +1,11 @@
-import { renderCctvAi } from "./render_cctv.js";
+export function openRoadCondition(container, road) {
 
-export function openRoadCondition(container, roadId) {
+  const VIDEO_FOLDER = "/lgu-traffic-transport/cctv_ai/cctv_feeds/";
 
   container.innerHTML = `
     <div class="road-condition-content">
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
       <div class="module-title-container">
         <button class="close-btn">
           <img class="left-arrow-logo" src="../images/arrow_to_left_fill.svg">
@@ -26,7 +26,7 @@ export function openRoadCondition(container, roadId) {
           <div class="cctv-video-header">
             <h3>
               <i class="fas fa-video"></i>
-              <span id="currentCameraName">Node 1</span>
+              <span id="currentCameraName">${road.camera_name}</span>
             </h3>
             <div class="live-status">
               <i class="fas fa-circle"></i>
@@ -34,9 +34,13 @@ export function openRoadCondition(container, roadId) {
             </div>
           </div>
 
-          <div class="cctv-video-display">
-           
-          </div>
+          <!--<div class="cctv-video-display">
+            <video autoplay muted class="stream-video" id="roadVideo">
+              <source src="${VIDEO_FOLDER}${road.video_filename}" type="video/mp4">
+            </video>
+          </div>-->
+
+          <div class="cctv-video-display" id="detailedVideoContainer"></div>
 
           <div class="video-controls">
             <div class="control-buttons">
@@ -71,11 +75,11 @@ export function openRoadCondition(container, roadId) {
             <div class="details-grid">
               <div class="detail-item">
                 <span class="detail-label">Camera ID</span>
-                <span class="detail-value">CAM-Susano Road-001</span>
+                <span class="detail-value">CAM-${road.road_name}-${road.camera_name}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Location</span>
-                <span class="detail-value">Susano Road</span>
+                <span class="detail-value">${road.road_name}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Type</span>
@@ -83,7 +87,7 @@ export function openRoadCondition(container, roadId) {
               </div>
               <div class="detail-item">
                 <span class="detail-label">Resolution</span>
-                <span class="detail-value">1080p @ 30fps</span>
+                <span class="detail-value">1080p @ 60fps</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Field of View</span>
@@ -172,12 +176,12 @@ export function openRoadCondition(container, roadId) {
             <h4><i class="fas fa-chart-line"></i> Real-time Statistics</h4>
             <div class="traffic-stats">
               <div class="stat-card">
-                <div class="stat-value">142</div>
+                <div class="stat-value">${road.vehicle_flow}</div>
                 <div class="stat-label">Vehicles/min</div>
               </div>
               <div class="stat-card">
-                <div class="stat-value">23</div>
-                <div class="stat-label">Pedestrians</div>
+                <div class="stat-value">${road.avg_speed} km/h</div>
+                <div class="stat-label">Average Street Speed</div>
               </div>
               <!--<div class="stat-card">
                 <div class="stat-value">65%</div>
@@ -219,11 +223,25 @@ export function openRoadCondition(container, roadId) {
   </div>
   `;
 
+  const existingVideo = document.getElementById(`video-${road.road_id}`);
+
+  const detailContainer = document.getElementById("detailedVideoContainer");
+
+  detailContainer.appendChild(existingVideo);
+
   container.classList.remove('hidden');
 
   const closeBtn = container.querySelector(".close-btn");
 
   closeBtn.addEventListener("click", () => {
-    renderCctvAi(container);
+    const video = document.getElementById(`video-${road.road_id}`);
+    
+    const originalViewport = document.getElementById(`viewport-${road.road_id}`);
+    
+    originalViewport.appendChild(video)
+
+    container.classList.add("hidden");
+
+    document.getElementById("cctvPage").classList.remove("hidden");
   });
 }

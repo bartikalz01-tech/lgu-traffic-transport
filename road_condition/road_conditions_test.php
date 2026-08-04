@@ -21,14 +21,18 @@
   <?php include '../includes/accident_header.php' ?>
 
   <main class="main">
-    <div class="module-title-container">
-      <p class="module-title">Real Time Road Condition Updates</p>
-      <h1 class="sub-module-title">CCTV Monitoring</h1>
-      <p class="sub-module-description">Real-time surveillance and Real-Time analytics<span class="streetName remove"></span></p>
+
+    <div id="cctvPage">
+      <div class="module-title-container">
+        <p class="module-title">Real Time Road Condition Updates</p>
+        <h1 class="sub-module-title">CCTV Monitoring</h1>
+        <p class="sub-module-description">Real-time surveillance and Real-Time analytics<span class="streetName remove"></span></p>
+      </div>
+
+      <section class="cctv-management-container" id="cctvManagementContainer"></section>
     </div>
 
-    <section class="cctv-management-container" id="cctvManagementContainer"></section>
-
+    <div id="roadConditionContainer" class="hidden"></div>
   </main>
   
   <?php include '../includes/admin-footer.php' ?>
