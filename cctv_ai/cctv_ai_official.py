@@ -9,13 +9,15 @@ from .calculate_speed import calculate_speed
 from .traffic_congestion import calculate_congestion
 from ai_storage.get_road_id import get_road_id
 from ai_storage.update_traffic_status import update_traffic_status
-#from draw_tracking import draw_tracking
+from .draw_tracking import draw_tracking
 from flask import Flask, Response
 import cv2
 import time
 
 shared_frames = {}
 frame_lock = threading.Lock()
+
+FRAME_SKIP = 1
 
 app = Flask(__name__)
 
@@ -27,7 +29,7 @@ VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
 
 MODEL_NAME = "yolov8s.pt"
 
-REPORT_INTERVAL = 15
+REPORT_INTERVAL = 60
 
 VIDEO_EXTENSIONS = (
   "*.mp4",
@@ -89,10 +91,13 @@ def open_video_streams(videos):
 def read_frame(stream):
   capture = stream["capture"]
 
+  for _ in range(FRAME_SKIP):
+    capture.grab()
+
   success, frame = capture.read()
 
   if not success:
-    capture.set(cv2.CAP_PROP_POS_FRAMES, 7000)
+    capture.set(cv2.CAP_PROP_POS_MSEC, 7000)
 
     success, frame = capture.read()
 
@@ -110,6 +115,8 @@ def generate(camera_name):
       time.sleep(0.01)
       continue
 
+    frame = frame.copy()
+
     success, buffer = cv2.imencode(".jpg", frame)
 
     if not success:
@@ -121,6 +128,8 @@ def generate(camera_name):
       + buffer.tobytes()
       + b"\r\n"
     )
+
+    time.sleep(1 / 30)
 
 @app.route("/video/<camera_name>")
 def video(camera_name):
@@ -151,7 +160,7 @@ def process_camera(stream):
     if frame is None:
       continue
 
-    if frame_counter % 3 == 0:
+    if frame_counter % 2 == 0:
 
       results = model.track(frame, persist=True, tracker="bytetrack.yaml", verbose=False)
 
@@ -161,11 +170,12 @@ def process_camera(stream):
 
       last_vehicles = vehicles
 
-    #frame = draw_tracking(frame, last_vehicles)
+    if last_vehicles:
+      frame = draw_tracking(frame, last_vehicles)
 
     #cv2.imshow(stream["name"], frame)
     with frame_lock:
-      shared_frames[stream["name"]] = frame.copy()
+      shared_frames[stream["name"]] = frame
 
     if time.time() - report_start >= REPORT_INTERVAL:
       vehicle_count = report_vehicle_count(stream["name"])
@@ -229,49 +239,9 @@ def main():
 
     threads.append(thread)
 
-  dashboard_timer = time.time()
+  print("Traffic AI server running...")
+  threading.Event().wait()
   
-  while True:
-
-    with frame_lock:
-      frames = shared_frames.copy()
-
-      for camera_name, frame in frames.items():
-
-        cv2.imshow(camera_name, frame)
-
-        if time.time() - dashboard_timer >= REPORT_INTERVAL:
-          print("=" * 80)
-          print("TRAFFIC AI MONITOR ".center(80))
-          print("=" * 80)
-
-          with stats_lock:
-
-            for camera, stats in shared_statistics.items():
-              print(f"\nCamera : {camera}")
-
-              print("-" * 80)
-
-              print(f"Vehicle Count: {stats['vehicle_count']}")
-
-              print(f"Equivalent Flow:  {stats['vehicle_per_minute']:.0f} veh/min")
-
-              print(f"Average Speed : {stats['average_speed']:.2f} km/h")
-
-              print(f"Congestion Score : {stats['congestion_score']:.1f}/100")
-
-              print(f"Congestion Level : {stats['congestion']}")
-
-              print(f"Video FPS     : {stats['fps']}")
-
-          print("\n" + "=" * 80)
-
-          dashboard_timer = time.time()
-
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-      break
-
-  cv2.destroyAllWindows()
   
 
 if __name__ == "__main__":
