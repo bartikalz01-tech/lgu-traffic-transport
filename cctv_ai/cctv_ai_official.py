@@ -10,11 +10,14 @@ from .traffic_congestion import calculate_congestion
 from ai_storage.get_road_id import get_road_id
 from ai_storage.update_traffic_status import update_traffic_status
 #from draw_tracking import draw_tracking
+from flask import Flask, Response
 import cv2
 import time
 
 shared_frames = {}
 frame_lock = threading.Lock()
+
+app = Flask(__name__)
 
 shared_statistics = {}
 stats_lock = threading.Lock()
@@ -96,6 +99,38 @@ def read_frame(stream):
   return frame
 
 
+def generate(camera_name):
+
+  while True:
+
+    with frame_lock:
+      frame = shared_frames.get(camera_name)
+
+    if frame is None:
+      time.sleep(0.01)
+      continue
+
+    success, buffer = cv2.imencode(".jpg", frame)
+
+    if not success:
+      continue
+
+    yield(
+      b"--frame\r\n"
+      b"Content-Type: image/jpeg\r\n\r\n"
+      + buffer.tobytes()
+      + b"\r\n"
+    )
+
+@app.route("/video/<camera_name>")
+def video(camera_name):
+
+  return Response(
+    generate(camera_name),
+    mimetype="multipart/x-mixed-replace; boundary=frame"
+  )
+
+
 def process_camera(stream):
 
   model = load_model()
@@ -171,6 +206,18 @@ def main():
   videos = load_videos()
 
   streams = open_video_streams(videos)
+
+  flask_thread = threading.Thread(
+    target=lambda: app.run(
+      host="0.0.0.0",
+      port=5001,
+      threaded=True,
+      use_reloader=False
+    ),
+    daemon=True
+  )
+
+  flask_thread.start()
 
   threads = []
 
