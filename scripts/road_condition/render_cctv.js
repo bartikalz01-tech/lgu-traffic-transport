@@ -13,7 +13,7 @@ export async function renderCctvAi(container) {
   let sidebarHTML = "";
   let cctvCardsHTML = "";
 
-  const VIDEO_FOLDER = "/lgu-traffic-transport/cctv_ai/cctv_feeds/";
+  //const VIDEO_FOLDER = "/lgu-traffic-transport/cctv_ai/cctv_feeds/";
 
   cctvRoads.forEach((roads, index) => {
     sidebarHTML += `
@@ -33,9 +33,7 @@ export async function renderCctvAi(container) {
           <span class="stream-tag-id">${roads.camera_name}</span>
         </div>
         <div class="stream-video-viewport" id="viewport-${roads.road_id}">
-          <video autoplay muted class="stream-video" id="video-${roads.road_id}">
-            <source src="${VIDEO_FOLDER}${roads.video_filename}" type="video/mp4">
-          </video>
+          <img class="stream-video" id="video-${roads.road_id}" src="http://127.0.0.1:5001/video/${roads.video_filename}" />
 
           <div class="stream-overlay-metadata">
             <p class="stream-road-name">CCTV-${roads.road_name}</p>
@@ -84,23 +82,6 @@ export async function renderCctvAi(container) {
     });
 
   });
-
-  const videos = container.querySelectorAll(".stream-video");
-  
-  videos.forEach(video => {
-
-    video.addEventListener("loadedmetadata", () => {
-      video.currentTime = 7;
-    });
-
-    video.addEventListener("ended", () => {
-      video.currentTime = 7;
-      video.play();
-    });
-
-  });
-
-
 
   const cctvItems = container.querySelectorAll(".cctv-road");
 

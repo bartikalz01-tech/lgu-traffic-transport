@@ -7,8 +7,6 @@ export function openRoadCondition(container, road) {
 
   activeRoadId = road.road_id;
 
-  const VIDEO_FOLDER = "/lgu-traffic-transport/cctv_ai/cctv_feeds/";
-
   container.innerHTML = `
     <div class="road-condition-content">
 
@@ -42,12 +40,12 @@ export function openRoadCondition(container, road) {
           </div>
 
           <!--<div class="cctv-video-display">
-            <video autoplay muted class="stream-video" id="roadVideo">
-              <source src="${VIDEO_FOLDER}${road.video_filename}" type="video/mp4">
-            </video>
+            
           </div>-->
 
-          <div class="cctv-video-display" id="detailedVideoContainer"></div>
+          <div class="cctv-video-display" id="detailedVideoContainer">
+            <img id="roadVideo" class="stream-video" src="http://127.0.0.1:5001/video/${road.video_filename}" />
+          </div>
 
           <div class="video-controls">
             <div class="control-buttons">
@@ -116,8 +114,8 @@ export function openRoadCondition(container, road) {
             <h4><i class="fas fa-brain"></i> Predictive AI Analysis</h4>
             <div class="ai-predictions">
               <div class="prediction-item traffic">
-                <span class="prediction-label">Traffic Congestion Risk</span>
-                <span class="prediction-value medium">Medium (65%)</span>
+                <span class="prediction-label">Traffic Congestion</span>
+                <span class="prediction-value medium">${road.traffic_level}</span>
               </div>
               <div class="prediction-item accident">
                 <span class="prediction-label">Accident Probability</span>
@@ -230,12 +228,6 @@ export function openRoadCondition(container, road) {
   </div>
   `;
 
-  const existingVideo = document.getElementById(`video-${road.road_id}`);
-
-  const detailContainer = document.getElementById("detailedVideoContainer");
-
-  detailContainer.appendChild(existingVideo);
-
   container.classList.remove('hidden');
 
   const closeBtn = container.querySelector(".close-btn");
@@ -243,12 +235,6 @@ export function openRoadCondition(container, road) {
   closeBtn.addEventListener("click", () => {
 
     activeRoadId = null;
-
-    const video = document.getElementById(`video-${road.road_id}`);
-    
-    const originalViewport = document.getElementById(`viewport-${road.road_id}`);
-    
-    originalViewport.appendChild(video)
 
     container.classList.add("hidden");
 
