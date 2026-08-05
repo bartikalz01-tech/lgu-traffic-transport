@@ -111,73 +111,29 @@ export function openRoadCondition(container, road) {
 
           <!-- Predictive AI Card -->
           <div class="predictive-ai-card">
-            <h4><i class="fas fa-brain"></i> Predictive AI Analysis</h4>
+            <h4><i class="fas fa-brain"></i> Real-Time AI Analysis</h4>
             <div class="ai-predictions">
               <div class="prediction-item traffic">
                 <span class="prediction-label">Traffic Congestion</span>
-                <span class="prediction-value medium">${road.traffic_level}</span>
+                <span class="prediction-value medium" id="detailTrafficLevel">${road.traffic_level}</span>
               </div>
-              <div class="prediction-item accident">
-                <span class="prediction-label">Accident Probability</span>
-                <span class="prediction-value low">Low (15%)</span>
+              <div class="prediction-item vehicle-flow">
+                <span class="prediction-label">Vehicle per/min</span>
+                <span class="prediction-value vehicle-count-value" id="detailVehicleFlow">${road.vehicle_flow}</span>
               </div>
               <div class="prediction-item congestion">
-                <span class="prediction-label">Peak Hour Prediction</span>
-                <span class="prediction-value high">17:30 - 19:00</span>
+                <span class="prediction-label">Average Street Speed</span>
+                <span class="prediction-value average-speed" id="detailAverageSpeed">${road.avg_speed} km/h</span>
               </div>
             </div>
             <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-secondary-1);">
               <i class="fas fa-info-circle"></i>
-              <span>Updated every 5 minutes based on traffic patterns</span>
+              <span>Updated every 1 minute based on traffic patterns</span>
             </div>
           </div>
 
-          <!-- Camera List Card -->
-          <!--<div class="camera-list-card">
-            <h4><i class="fas fa-list"></i> Available Cameras</h4>
-            <div class="camera-list">
-              <div class="camera-list-item active" data-camera="cam1">
-                <div class="camera-icon">
-                  <i class="fas fa-video"></i>
-                </div>
-                <div class="camera-info">
-                  <div class="camera-name">Camera 1 - Main View</div>
-                  <div class="camera-location">Street Intersection</div>
-                </div>
-                <span class="live-status" style="font-size: 0.625rem;">LIVE</span>
-              </div>
-              <div class="camera-list-item" data-camera="cam2">
-                <div class="camera-icon">
-                  <i class="fas fa-video"></i>
-                </div>
-                <div class="camera-info">
-                  <div class="camera-name">Camera 2 - North View</div>
-                  <div class="camera-location"> Street North End</div>
-                </div>
-              </div>
-              <div class="camera-list-item" data-camera="cam3">
-                <div class="camera-icon">
-                  <i class="fas fa-video"></i>
-                </div>
-                <div class="camera-info">
-                  <div class="camera-name">Camera 3 - South View</div>
-                  <div class="camera-location">Test Street South End</div>
-                </div>
-              </div>
-              <div class="camera-list-item" data-camera="cam4">
-                <div class="camera-icon">
-                  <i class="fas fa-video"></i>
-                </div>
-                <div class="camera-info">
-                  <div class="camera-name">Camera 4 - Pedestrian</div>
-                  <div class="camera-location">Crosswalk Area</div>
-                </div>
-              </div>
-            </div>
-          </div>-->
-
           <!-- Traffic Statistics -->
-          <div class="camera-details-card">
+          <!--<div class="camera-details-card">
             <h4><i class="fas fa-chart-line"></i> Real-time Statistics</h4>
             <div class="traffic-stats">
               <div class="stat-card">
@@ -188,16 +144,16 @@ export function openRoadCondition(container, road) {
                 <div class="stat-value" id="detailAverageSpeed">${road.avg_speed} km/h</div>
                 <div class="stat-label">Average Street Speed</div>
               </div>
-              <!--<div class="stat-card">
+              <div class="stat-card">
                 <div class="stat-value">65%</div>
                 <div class="stat-label">Lane Usage</div>
               </div>
               <div class="stat-card">
                 <div class="stat-value">42s</div>
                 <div class="stat-label">Avg Wait Time</div>
-              </div>-->
+              </div>
             </div>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>
@@ -255,9 +211,26 @@ export function openRoadCondition(container, road) {
 
       const speed = document.getElementById("detailAverageSpeed");
 
+      const traffic = document.getElementById("detailTrafficLevel");
+      const trafficItem = traffic?.closest(".prediction-item");
+
       if (vehicle) vehicle.textContent = latestRoad.vehicle_flow;
 
       if (speed) speed.textContent = `${latestRoad.avg_speed} km/h`;
+
+      if(traffic) {
+        traffic.textContent = latestRoad.traffic_level
+
+        // Remove old colors
+        traffic.classList.remove("low", "moderate", "high", "medium");
+
+        trafficItem.classList.remove("low", "moderate", "high", "medium");
+
+        const level = latestRoad.traffic_level.toLowerCase();
+
+        traffic.classList.add(level);
+        trafficItem.classList.add(level);
+      }
 
     });
 
