@@ -18,6 +18,7 @@
 
 .road-condition-content {
   background-color: var(--light-color);
+  border: 2px solid red;
   width: 100vw;
   height: 100vh;
   padding: 20px;

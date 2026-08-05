@@ -1,6 +1,7 @@
 import { getCctvAiDetails } from "../data/road_condition/fetch_road_condition.js";
 import { getCurrentTraffic, subscribeTraffic } from "../data/road_condition/trafficStore.js";
-import { openRoadCondition } from "./road_details.js";
+import { getActiveRoadId, getRoadDetailDom, openRoadCondition } from "./road_details.js";
+import { updateRoadCondition } from "./update_road_details.js";
 
 export async function renderCctvAi(container) {
 
@@ -58,8 +59,13 @@ export async function renderCctvAi(container) {
       </div>
     </div>
 
-    <div class="cctv-container">
-      ${cctvCardsHTML}
+    <div class="cctv-content">
+      <div id="cctvGridView" class="cctv-container">
+        ${cctvCardsHTML}
+      </div>
+
+      <div id="roadDetailView" class="hidden"></div>
+      
     </div>
   `;
 
@@ -77,6 +83,13 @@ export async function renderCctvAi(container) {
 
       if (roadName) {
         roadName.textContent = `CCTV-${road.road_name}`;
+        
+        const activeRoadId = getActiveRoadId();
+
+        if (road.road_id == activeRoadId) {
+          const dom = getRoadDetailDom();
+          updateRoadCondition(road, dom);
+        }
       }
 
     });
@@ -93,13 +106,17 @@ export async function renderCctvAi(container) {
         road => road.road_id == item.dataset.roadId
       );
 
-      const cctvPage = document.getElementById("cctvPage");
-      const roadContainer = document.getElementById("roadConditionContainer");
+      const gridView = container.querySelector("#cctvGridView");
+      const detailView = container.querySelector("#roadDetailView");
 
-      cctvPage.classList.add("hidden");
-      roadContainer.classList.remove("hidden");
+      gridView.classList.add("hidden");
+      detailView.classList.remove("hidden");
 
-      openRoadCondition(roadContainer, selectedRoad);
+      cctvItems.forEach(item => item.classList.remove("active-stream"));
+
+      item.classList.add("active-stream");
+
+      openRoadCondition(detailView, selectedRoad);
 
     });
   });

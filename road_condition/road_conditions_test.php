@@ -31,8 +31,6 @@
 
       <section class="cctv-management-container" id="cctvManagementContainer"></section>
     </div>
-
-    <div id="roadConditionContainer" class="hidden"></div>
   </main>
   
   <?php include '../includes/admin-footer.php' ?>
