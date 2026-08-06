@@ -18,29 +18,28 @@
 
 .road-condition-content {
   background-color: var(--light-color);
-  border: 2px solid red;
-  width: 100vw;
-  height: 100vh;
-  padding: 20px;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
   overflow-y: auto;
 }
 
 .cctv-dashboard {
-  margin-left: 20px;
-  padding: 1.5rem 0;
+  padding: 0;
+  margin: 0;
 }
 
 @media (max-width: 1024px) {
   .cctv-dashboard {
-    margin-left: 10px;
+    margin-left: 0px;
   }
 }
 
 .cctv-details-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1.2fr 1fr;
   gap: 1.5rem;
-  margin-top: 1.5rem;
+  /*margin-top: 1.5rem;*/
 }
 
 @media (max-width: 1024px) {
@@ -67,17 +66,42 @@
 }
 
 .close-btn {
-  background: black;
-  border: none;
-  font-size: 17px;
-  cursor: pointer;
-  margin-right: 15px;
-  margin-bottom: 15px;
-  display: inline-flex;
+  width: 40px;
+  height: 40px;
+
+  display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 30px;
-  width: 50px;
+
+  border-radius: 50%;
+
+  border: none;
+
+  background: #f3f4f6;
+
+  color: #374151;
+
+  cursor: pointer;
+
+  transition: .25s;
+}
+
+.close-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateX(-3px);
+}
+
+.close-btn:hover i {
+  color: white;
+}
+
+.cctv-video-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .left-arrow-logo {
@@ -310,11 +334,11 @@
   border-left: 3px solid transparent;
 }
 
-.prediction-item.traffic.low {
+.prediction-item.low {
   border-left-color: #10b981;
 }
 
-.prediction-item.traffic.moderate {
+.prediction-item.moderate {
   border-left-color: #f59e0b;
 }
 

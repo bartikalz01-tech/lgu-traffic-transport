@@ -26,6 +26,9 @@ export function updateRoadCondition(road, dom) {
 
   const item = dom.detailTrafficLevel.closest(".prediction-item");
 
+  console.log(item);
+  console.log(level);
+
   item.classList.remove(
     "low",
     "moderate",

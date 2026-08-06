@@ -9,7 +9,7 @@
   min-height: 600px
 }
 
-.cctv-content{
+.cctv-content {
   width: 100%;
   display: flex;
   flex-direction: column;

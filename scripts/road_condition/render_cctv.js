@@ -98,6 +98,8 @@ export async function renderCctvAi(container) {
 
   const cctvItems = container.querySelectorAll(".cctv-road");
 
+  cctvItems.forEach(item => item.classList.remove("active-stream"));
+
   cctvItems.forEach(item => {
     item.addEventListener("click", () => {
 
