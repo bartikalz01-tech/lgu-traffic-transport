@@ -3,7 +3,11 @@ import { getCurrentTraffic, subscribeTraffic } from "../data/road_condition/traf
 import { getActiveRoadId, getRoadDetailDom, openRoadCondition } from "./road_details.js";
 import { updateRoadCondition } from "./update_road_details.js";
 
+const subModuleTitle = document.getElementById("subModuleTitle");
+
 export async function renderCctvAi(container) {
+
+  subModuleTitle.textContent = "CCTV Monitoring";
 
   let cctvRoads = getCurrentTraffic();
 
@@ -46,16 +50,28 @@ export async function renderCctvAi(container) {
 
   container.innerHTML = `
     <div class="cctv-sidebar">
-      <div class="cctv-sidebar-header">
-        <div class="logo-container">
-          <div class="live-indicator"></div>
-          <i class="fas fa-video"></i>
+      <div class="cctv-sidebar-controller">
+        <div class="cctv-sidebar-header">
+          <div class="logo-container">
+            <div class="live-indicator"></div>
+            <i class="fas fa-video"></i>
+          </div>
+          <h4>CCTV Navigation</h4>
         </div>
-        <h4>CCTV Navigation</h4>
+
+        <div class="cctv-links">
+          ${sidebarHTML}
+        </div>
       </div>
 
-      <div class="cctv-links">
-        ${sidebarHTML}
+      <div class="cctv-sidebar-controller reports-controller" id="reportsController">
+        <div class="cctv-sidebar-header reports-header">
+          <div class="logo-container reports-logo">
+            <!--<div class="live-indicator"></div>-->
+            <i class="fas fa-chart-column"></i>
+          </div>
+          <p class="road-p">Road Reports Summary</p>
+        </div>
       </div>
     </div>
 
@@ -66,6 +82,10 @@ export async function renderCctvAi(container) {
 
       <div id="roadDetailView" class="hidden"></div>
       
+    </div>
+
+    <div class="road-reports-content hidden" id="roadReportsView">
+      <h1>Example</h1>
     </div>
   `;
 
@@ -98,10 +118,22 @@ export async function renderCctvAi(container) {
 
   const cctvItems = container.querySelectorAll(".cctv-road");
 
+  const reportsController = container.querySelector("#reportsController");
+
+  const cctvContent = container.querySelector(".cctv-content");
+
+  const reportsView = container.querySelector("#roadReportsView");
+
   cctvItems.forEach(item => item.classList.remove("active-stream"));
 
   cctvItems.forEach(item => {
     item.addEventListener("click", () => {
+
+      subModuleTitle.textContent = "CCTV Monitoring";
+
+      cctvContent.classList.remove("hidden");
+      reportsView.classList.add("hidden");
+      reportsController.classList.remove("active-stream");
 
       /*const roadId = item.dataset.roadId;*/
       const selectedRoad = cctvRoads.find(
@@ -121,5 +153,19 @@ export async function renderCctvAi(container) {
       openRoadCondition(detailView, selectedRoad);
 
     });
+  });
+
+
+  reportsController.addEventListener("click", () => {
+
+    subModuleTitle.textContent = "Road Reports";
+
+    reportsController.classList.add("active-stream");
+
+    cctvContent.classList.add("hidden");
+
+    reportsView.classList.remove("hidden");
+
+    cctvItems.forEach(item => item.classList.remove("active-stream"));
   });
 }

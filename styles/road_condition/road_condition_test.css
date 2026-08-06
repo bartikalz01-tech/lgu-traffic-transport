@@ -9,6 +9,10 @@
   min-height: 600px
 }
 
+.hidden {
+  display: none !important;
+}
+
 .cctv-content {
   width: 100%;
   display: flex;
@@ -29,6 +33,7 @@
 
 .cctv-sidebar-header {
   display: flex;
+  align-items: center;
   gap: 12px;
   padding: 18px 20px;
   background: linear-gradient(to bottom, #ffffff, var(--light-color));
@@ -61,6 +66,41 @@
   right: -2px;
   box-shadow: 0 0 0 2px var(--card-bg);
   animation: liveSignalPulse 1.8s infinite ease-in-out;;
+}
+
+.reports-controller {
+  cursor: pointer;
+}
+
+.reports-header {
+  background: linear-gradient(to bottom, #ffffff, #eef6ff);
+}
+
+.road-p {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.reports-logo i {
+  color: var(--accent-color);
+  background: rgba(52, 152, 219, 0.08);
+  border: 1px solid rgba(52, 152, 219, 0.2);
+}
+
+.reports-controller.active-stream {
+  border-left: 2px solid var(--accent-color);
+  background: rgba(52,152,219,.08);
+}
+
+.reports-indicator {
+  width: 8px;
+  height: 8px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  box-shadow: 0 0 0 2px var(--card-bg);
 }
 
 @keyframes liveSignalPulse {

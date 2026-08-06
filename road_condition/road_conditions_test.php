@@ -25,7 +25,7 @@
     <div id="cctvPage">
       <div class="module-title-container">
         <p class="module-title">Real Time Road Condition Updates</p>
-        <h1 class="sub-module-title">CCTV Monitoring</h1>
+        <h1 class="sub-module-title" id="subModuleTitle"></h1>
         <p class="sub-module-description">Real-time surveillance and Real-Time analytics<span class="streetName remove"></span></p>
       </div>
 
