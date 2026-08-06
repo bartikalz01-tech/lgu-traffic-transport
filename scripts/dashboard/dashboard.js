@@ -170,6 +170,7 @@
 import { startTrafficStore, subscribeRoadMap, subscribeTraffic } from "../data/road_condition/trafficStore.js";
 import { congestionMap } from "./congestion_map.js";
 import { updateRoadMetrics, updateTrafficMetric } from "./dashboard_metrics.js";
+import { initializedTrafficChart, updateTrafficChart } from "./traffic_volume_vehicle_chart.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -183,6 +184,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   startTrafficStore();
 
+  initializedTrafficChart();
+
   subscribeRoadMap((roads) => {
     congestionMap(map, roads);
     updateRoadMetrics(roads);
@@ -190,6 +193,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   subscribeTraffic((trafficData) => {
     updateTrafficMetric(trafficData);
+    updateTrafficChart(trafficData);
   })
 
   //const roadCongestion = await fetchRoadMap();
