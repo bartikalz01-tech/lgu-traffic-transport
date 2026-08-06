@@ -29,7 +29,7 @@ VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
 
 MODEL_NAME = "yolov8s.pt"
 
-REPORT_INTERVAL = 60
+REPORT_INTERVAL = 15
 
 VIDEO_EXTENSIONS = (
   "*.mp4",

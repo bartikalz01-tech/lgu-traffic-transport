@@ -81,13 +81,13 @@
               </div>
               <div class="chart-control">
                 <select id="roadFilter">
-                  <option value="all">All Roads</option>
+                  <!--<option value="all">All Roads</option>
                   <option value="Dome">Dome</option>
                   <option value="Mt. Natib">Mt. Natib</option>
                   <option value="Klawit">Klawit</option>
                   <option value="Kalandang">Kalandang</option>
                   <option value="Mauban">Mauban</option>
-                  <option value="Tagaytay St">Tagaytay St</option>
+                  <option value="Tagaytay St">Tagaytay St</option>-->
                 </select>
               </div>
             </div>

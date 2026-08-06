@@ -23,7 +23,7 @@ async function refreshTrafficData() {
 export function startTrafficStore() {
   refreshTrafficData();
 
-  setInterval(refreshTrafficData, 30000);
+  setInterval(refreshTrafficData, 15000);
 }
 
 export function subscribeTraffic(callback) {
