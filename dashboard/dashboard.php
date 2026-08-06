@@ -76,19 +76,11 @@
           <div class="chart-card">
             <div class="chart-header">
               <div class="chart-title">
-                <h3><i class="fa-solid fa-chart-line"></i> Traffic Volume Overtime</h3>
+                <h3><i class="fa-solid fa-chart-line chart-icon chart-icon--traffic"></i> Traffic Volume Overtime</h3>
                 <p>Vehicles per minute</p>
               </div>
               <div class="chart-control">
-                <select id="roadFilter">
-                  <!--<option value="all">All Roads</option>
-                  <option value="Dome">Dome</option>
-                  <option value="Mt. Natib">Mt. Natib</option>
-                  <option value="Klawit">Klawit</option>
-                  <option value="Kalandang">Kalandang</option>
-                  <option value="Mauban">Mauban</option>
-                  <option value="Tagaytay St">Tagaytay St</option>-->
-                </select>
+                <select id="roadFilter"></select>
               </div>
             </div>
             <div class="chart-wrapper">
@@ -103,7 +95,7 @@
           <div class="chart-card">
             <div class="chart-header" style="margin-bottom: -15px;">
               <div class="chart-title">
-                <h3><i class="fa-solid fa-map-pin"></i> Barangay Traffic Update</h3>
+                <h3><i class="fa-solid fa-map-pin chart-icon chart-icon--congestion"></i> Barangay Traffic Update</h3>
                 <p>Traffic Congestion</p>
               </div>
             </div>
@@ -117,7 +109,7 @@
           <div class="chart-card">
             <div class="chart-header">
               <div class="chart-title">
-                <h3><i class="fa-solid fa-bolt"></i> Average speed by road</h3>
+                <h3><i class="fa-solid fa-bolt chart-icon chart-icon--speed"></i> Average speed by road</h3>
                 <p>Traffic flow</p>
               </div>
             </div>
@@ -129,24 +121,51 @@
 
         <div class="congested-roads-card">
           <div class="title">
-            <h3><i class="fa-solid fa-business-time"></i> Congested Roads with Peak Hours</h3>
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> Live Possible Incident Reports</h3>
+            <p class="subtitle">Real-time alerts and suspected incidents by road segment</p>
           </div>
 
-          <div class="congested-roads-list">
-            <div class="road-data high-traffic">
-              <p><i class="fa-solid fa-circle" style="color: #db3d3d;"></i></p>
-              <p class="road-name" id="roadName">Tagaytay St</p>
-              <p class="peak-time" id="peakTime">8:00am - 10:00am</p>
+          <div class="incident-report-list">
+            <div class="incident-report high-severity">
+              <div class="icon">
+                <i class="fa-solid fa-car-crash"></i>
+              </div>
+              <div class="details">
+                <p class="incident-road">Tagaytay St</p>
+                <p class="incident-description">Possible stalled vehicle causing slow traffic</p>
+              </div>
+              <div class="meta">
+                <span class="status">High</span>
+                <span class="time">2 min ago</span>
+              </div>
             </div>
-            <div class="road-data moderate-traffic">
-              <p><i class="fa-solid fa-circle" style="color: #f39c12"></i></p>
-              <p class="road-name" id="roadName">Mt. Natib</p>
-              <p class="peak-time" id="peakTime">8:00am - 11:00am</p>
+
+            <div class="incident-report moderate-severity">
+              <div class="icon">
+                <i class="fa-solid fa-traffic-light"></i>
+              </div>
+              <div class="details">
+                <p class="incident-road">Mt. Natib</p>
+                <p class="incident-description">Near intersection, slow-moving queue detected</p>
+              </div>
+              <div class="meta">
+                <span class="status">Moderate</span>
+                <span class="time">8 min ago</span>
+              </div>
             </div>
-            <div class="road-data moderate-traffic">
-              <p><i class="fa-solid fa-circle" style="color: #f39c12"></i></p>
-              <p class="road-name" id="roadName">Mauban</p>
-              <p class="peak-time" id="peakTime">8:00am - 11:00am</p>
+
+            <div class="incident-report low-severity">
+              <div class="icon">
+                <i class="fa-solid fa-exclamation-circle"></i>
+              </div>
+              <div class="details">
+                <p class="incident-road">Mauban</p>
+                <p class="incident-description">Possible lane obstruction from roadside activity</p>
+              </div>
+              <div class="meta">
+                <span class="status">Low</span>
+                <span class="time">12 min ago</span>
+              </div>
             </div>
           </div>
         </div>

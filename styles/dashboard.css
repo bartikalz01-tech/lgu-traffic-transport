@@ -115,6 +115,41 @@
   align-items: center;
 }
 
+.chart-icon {
+  font-size: 1.15rem;
+  margin-right: 10px;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.chart-icon--traffic {
+  color: #3498db;
+}
+
+.chart-icon--congestion {
+  color: #f39c12;
+}
+
+.chart-icon--speed {
+  color: #2ecc71;
+}
+
+.congested-roads-card .title h3 i {
+  color: #e74c3c;
+  animation: pulse-icon 1.8s ease-in-out infinite;
+  text-shadow: 0 0 14px rgba(231, 76, 60, 0.35);
+}
+
+@keyframes pulse-icon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.8;
+  }
+}
+
 .traffic-map {
   background: #d4d2d2;
   /*width: 50vw;*/
@@ -140,7 +175,6 @@
 
 .road-condition-chart-container {
   height: 50vh;
-  
 }
 
 .chart-card {
@@ -155,10 +189,22 @@
 
 .congested-roads-card {
   background: white;
-  height: 100%;
+  height: 50vh;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.congested-roads-card .title {
+  margin-bottom: 16px;
+}
+
+.incident-report-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .chart-card h3 {
@@ -246,5 +292,109 @@
 }
 
 .road-data i {
+  font-size: 12px;
+}
+
+.incident-report-list {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.incident-report {
+  display: grid;
+  grid-template-columns: 42px 1fr 120px;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  border-left: 4px solid #ccc;
+}
+
+.incident-report.high-severity {
+  border-left-color: #db3d3d;
+}
+
+.incident-report.moderate-severity {
+  border-left-color: #f39c12;
+}
+
+.incident-report.low-severity {
+  border-left-color: #28a745;
+}
+
+.incident-report .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(52, 152, 219, 0.1);
+}
+
+.incident-report .icon i {
+  font-size: 16px;
+  color: #3b5d90;
+}
+
+.incident-report .details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.incident-report .incident-road {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-color-1);
+}
+
+.incident-report .incident-description {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.incident-report .meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.incident-report .status {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.incident-report.high-severity .status {
+  color: #b02a37;
+  background: rgba(219, 61, 61, 0.12);
+}
+
+.incident-report.moderate-severity .status {
+  color: #874d00;
+  background: rgba(243, 156, 18, 0.14);
+}
+
+.incident-report.low-severity .status {
+  color: #1f7a2f;
+  background: rgba(40, 167, 69, 0.12);
+}
+
+.incident-report .time {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
   font-size: 12px;
 }

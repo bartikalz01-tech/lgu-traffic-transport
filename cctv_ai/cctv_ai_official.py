@@ -4,7 +4,6 @@ from ultralytics import YOLO
 from pathlib import Path
 from .filter_vehicles import filter_vehicles
 from .vehicle_counter import (update_vehicle_counter, report_vehicle_count)
-#from detect_vehicles import detect_vehicles
 from .calculate_speed import calculate_speed
 from .traffic_congestion import calculate_congestion
 from ai_storage.get_road_id import get_road_id
