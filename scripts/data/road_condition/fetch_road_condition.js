@@ -10,3 +10,14 @@ export async function getCctvAiDetails() {
     console.log(error);
   }
 }
+
+export async function getRoadMapTrafficlevel() {
+  try {
+    const response = await fetch("../api/get_road_map.php");
+
+    return await response.json();
+  } catch(error) {
+    console.error(error);
+    return [];
+  }
+}

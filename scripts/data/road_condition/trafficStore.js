@@ -1,13 +1,19 @@
-import { getCctvAiDetails } from "./fetch_road_condition.js";
+import { getCctvAiDetails, getRoadMapTrafficlevel } from "./fetch_road_condition.js";
 
 let trafficData = [];
-let subscribers = [];
+let roadMapData = [];
+//let subscribers = [];
+let trafficSubscribers = [];
+let roadMapSubscribers = [];
 
 async function refreshTrafficData() {
   try {
     trafficData = await getCctvAiDetails();
+    roadMapData = await getRoadMapTrafficlevel();
 
-    subscribers.forEach(callback => callback(trafficData));
+    trafficSubscribers.forEach(callback => callback(trafficData));
+
+    roadMapSubscribers.forEach(callback => callback(roadMapData));
   } catch(err) {
     console.error("Traffic Store:", err);
   }
@@ -21,11 +27,21 @@ export function startTrafficStore() {
 }
 
 export function subscribeTraffic(callback) {
-  subscribers.push(callback);
+  trafficSubscribers.push(callback);
 
   callback(trafficData);
 }
 
+export function subscribeRoadMap(callback) {
+  roadMapSubscribers.push(callback);
+
+  callback(roadMapData);
+}
+
 export function getCurrentTraffic() {
   return trafficData;
+}
+
+export function getCurrentRoadMap() {
+  return roadMapData;
 }

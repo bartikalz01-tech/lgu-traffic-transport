@@ -168,7 +168,8 @@
 });*/
 
 import { fetchRoadMap } from "../data/fetch_road_map.js";
-import { startTrafficStore } from "../data/road_condition/trafficStore.js";
+import { startTrafficStore, subscribeRoadMap } from "../data/road_condition/trafficStore.js";
+import { congestionMap } from "./congestion_map.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -182,6 +183,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   startTrafficStore();
 
-  const roadCongestion = await fetchRoadMap();
+  subscribeRoadMap((roads) => {
+    congestionMap(map, roads);
+  });
+
+  //const roadCongestion = await fetchRoadMap();
 
 });
