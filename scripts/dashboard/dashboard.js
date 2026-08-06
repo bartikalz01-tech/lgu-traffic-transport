@@ -167,9 +167,9 @@
   });
 });*/
 
-import { fetchRoadMap } from "../data/fetch_road_map.js";
-import { startTrafficStore, subscribeRoadMap } from "../data/road_condition/trafficStore.js";
+import { startTrafficStore, subscribeRoadMap, subscribeTraffic } from "../data/road_condition/trafficStore.js";
 import { congestionMap } from "./congestion_map.js";
+import { updateRoadMetrics, updateTrafficMetric } from "./dashboard_metrics.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -185,7 +185,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   subscribeRoadMap((roads) => {
     congestionMap(map, roads);
+    updateRoadMetrics(roads);
   });
+
+  subscribeTraffic((trafficData) => {
+    updateTrafficMetric(trafficData);
+  })
 
   //const roadCongestion = await fetchRoadMap();
 

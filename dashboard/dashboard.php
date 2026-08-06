@@ -34,7 +34,7 @@
             <i class="fas fa-road"></i>
           </div>
           <div class="traffic-road-description">
-            <h2 class="top-section-value" id="totalHighTrafficRoads">3</h2>
+            <h2 class="top-section-value" id="totalHighTrafficRoads"></h2>
             <p class="top-section-label">High Traffic Roads</p>
           </div>
         </div>
@@ -53,7 +53,7 @@
             <i class="fas fa-tachometer-alt"></i>
           </div>
           <div class="avg-speed-description">
-            <h2 class="top-section-value" id="averageSpeed">38 km/h</h2>
+            <h2 class="top-section-value" id="averageSpeed"></h2>
             <p class="top-section-label">Average City Speed</p>
           </div>
         </div>
