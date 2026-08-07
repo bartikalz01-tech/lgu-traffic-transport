@@ -595,3 +595,92 @@
 .speed-badge.low{
     background:#c62828;
 }
+
+
+.peak-hour-layout{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.summary-panel{
+    background:#fff;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin-top:18px;
+}
+
+.summary-card{
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: .25s ease;
+  border: 1px solid transparent;
+}
+
+.summary-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
+}
+
+.summary-card.danger{
+    background:#fff2f2;
+    border-color:#ffc8c8;
+}
+
+.summary-card.warning{
+    background:#fff8eb;
+    border-color:#ffe2a8;
+}
+
+.summary-card.success{
+    background:#eefcf3;
+    border-color:#bde8c8;
+}
+
+.summary-card.primary{
+    background:#eef6ff;
+    border-color:#b8d8ff;
+}
+
+.summary-card.info{
+    background:#f2fbff;
+    border-color:#bdefff;
+}
+
+.summary-label{
+    font-size:.85rem;
+    color:#666;
+}
+
+.summary-value{
+    font-size:1.05rem;
+    font-weight:700;
+}
+
+.summary-value.danger{
+    color:#d32f2f;
+}
+
+.summary-value.success{
+    color:#2e7d32;
+}
+
+.insight-list{
+    margin-top:15px;
+    padding-left:20px;
+    line-height:1.8;
+}
+
+.insight-list li{
+    margin-bottom:8px;
+}

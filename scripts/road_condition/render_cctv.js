@@ -6,6 +6,7 @@ import { renderCongestionFrequency } from "./road_reports/congestion_frequency.j
 import { renderTrafficTrend } from "./road_reports/traffic_trend_overtime.js";
 import { renderAverageSpeedHistory } from "./road_reports/average_speed_history.js";
 import { updateRoadCondition } from "./update_road_details.js";
+import { renderPeakHour } from "./road_reports/peak_hour_analytics.js";
 
 const subModuleTitle = document.getElementById("subModuleTitle");
 
@@ -95,6 +96,11 @@ export async function renderCctvAi(container) {
           <div class="report-link" data-report="average-speed-history">
             <i class="fas fa-gauge-high"></i>
             <span>Average Speed History</span>
+          </div>
+
+          <div class="report-link" data-report="peak-hour-analysis">
+            <i class="fas fa-clock"></i>
+            <span>Peak Hour Analysis</span>
           </div>
         </div>
       </div>
@@ -208,6 +214,10 @@ export async function renderCctvAi(container) {
 
       case "average-speed-history":
         renderAverageSpeedHistory(reportContent);
+        break;
+
+      case "peak-hour-analysis":
+        renderPeakHour(reportContent);
         break;
     }
   }
