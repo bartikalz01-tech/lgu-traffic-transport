@@ -1,4 +1,6 @@
-export function renderTrafficTrend(container) {
+import { getTrafficTrendLogs } from "../../data/road_condition/fetch_road_condition.js";
+
+export async function renderTrafficTrend(container) {
   container.innerHTML = `
     <div class="report-card">
       <div class="report-header">
@@ -36,59 +38,52 @@ export function renderTrafficTrend(container) {
                 </tr>
               </thead>
 
-              <tbody id="trafficReportTableBody">
-                <tr>
-                  <td>Aug 04, 2026</td>
-                  <td>Rizal Avenue</td>
-                  <td>32 km/h</td>
-                  <td>186 veh/min</td>
-                  <td><span class="traffic-badge high">High</span></td>
-                </tr>
-
-                <tr>
-                  <td>Aug 04, 2026</td>
-                  <td>Mabini Street</td>
-                  <td>41 km/h</td>
-                  <td>121 veh/min</td>
-                  <td><span class="traffic-badge medium">Medium</span></td>
-                </tr>
-
-                <tr>
-                  <td>Aug 04, 2026</td>
-                  <td>Bonifacio Road</td>
-                  <td>58 km/h</td>
-                  <td>73 veh/min</td>
-                  <td><span class="traffic-badge low">Low</span></td>
-                </tr>
-
-                <tr>
-                  <td>Aug 03, 2026</td>
-                  <td>National Highway</td>
-                  <td>29 km/h</td>
-                  <td>214 veh/min</td>
-                  <td><span class="traffic-badge high">High</span></td>
-                </tr>
-
-                <tr>
-                  <td>Aug 03, 2026</td>
-                  <td>Quezon Street</td>
-                  <td>47 km/h</td>
-                  <td>108 veh/min</td>
-                  <td><span class="traffic-badge medium">Medium</span></td>
-                </tr>
-
-                <tr>
-                  <td>Aug 02, 2026</td>
-                  <td>Rizal Avenue</td>
-                  <td>61 km/h</td>
-                  <td>64 veh/min</td>
-                  <td><span class="traffic-badge low">Low</span></td>
-                </tr>
-              </tbody>
+              <tbody id="trafficReportTableBody"></tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
   `;
+
+  const tbody = container.querySelector("#trafficReportTableBody");
+
+  async function loadLogs() {
+    const filters = {
+      start_date: document.querySelector("#startDate")?.value || "",
+      end_date: document.querySelector("#endDate")?.value || "",
+      road_id: document.querySelector("#roadFilter")?.value || "all"
+    };
+
+    const logs = await getTrafficTrendLogs(filters);
+
+    tbody.innerHTML = "";
+
+    logs.forEach(log => {
+
+      let badge = "low";
+
+      if(log.traffic_level.toLowerCase() == "moderate") badge = "medium";
+
+      else if(log.traffic_level.toLowerCase() == "high") badge = "high";
+
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${new Date(log.recorded_at).toLocaleString()}</td>
+          <td>${log.road_name}</td>
+          <td>${Number(log.avg_speed).toFixed(2)} km/h</td>
+          <td>${Math.round(log.vehicle_flow)} veh/min</td>
+          <td><span class="traffic-badge ${badge}">${log.traffic_level}</span></td>
+        </tr>
+      `;
+ 
+    });
+  }
+
+  await loadLogs();
+
+  document.querySelector("#startDate")?.addEventListener("change", loadLogs);
+  document.querySelector("#endDate")?.addEventListener("change", loadLogs);
+  document.querySelector("#roadFilter")?.addEventListener("change", loadLogs);
 }

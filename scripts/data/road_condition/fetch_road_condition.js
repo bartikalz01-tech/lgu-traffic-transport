@@ -21,3 +21,20 @@ export async function getRoadMapTrafficlevel() {
     return [];
   }
 }
+
+export async function getTrafficTrendLogs(filters = {}) {
+  try {
+
+    const params = new URLSearchParams(filters);
+
+    const response = await fetch(
+      `../api/road_condition/get_traffic_trend.php?${params.toString()}`
+    );
+
+    return await response.json();
+
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}

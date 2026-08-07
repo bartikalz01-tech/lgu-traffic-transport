@@ -199,25 +199,25 @@ export async function renderCctvAi(container) {
     cctvItems.forEach(item => item.classList.remove("active-stream"));
 
     if(!reportsInitialized) {
-      reportContent = roadReports(reportsView);
+      reportContent = await roadReports(reportsView);
       reportsInitialized = true;
     }
 
     switch(reportName) {
       case "traffic-trend":
-        renderTrafficTrend(reportContent);
+        await renderTrafficTrend(reportContent);
         break;
 
       case "congestion-frequency":
-        renderCongestionFrequency(reportContent);
+        await renderCongestionFrequency(reportContent);
         break;
 
       case "average-speed-history":
-        renderAverageSpeedHistory(reportContent);
+        await renderAverageSpeedHistory(reportContent);
         break;
 
       case "peak-hour-analysis":
-        renderPeakHour(reportContent);
+        await renderPeakHour(reportContent);
         break;
     }
   }
