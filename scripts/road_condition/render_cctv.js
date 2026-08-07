@@ -1,9 +1,14 @@
 import { getCctvAiDetails } from "../data/road_condition/fetch_road_condition.js";
 import { getCurrentTraffic, subscribeTraffic } from "../data/road_condition/trafficStore.js";
+import { roadReports } from "./render_road_reports.js";
 import { getActiveRoadId, getRoadDetailDom, openRoadCondition } from "./road_details.js";
+import { renderTrafficTrend } from "./road_reports/traffic_trend_overtime.js";
 import { updateRoadCondition } from "./update_road_details.js";
 
 const subModuleTitle = document.getElementById("subModuleTitle");
+
+let reportsInitialized = false;
+let reportContent = null;
 
 export async function renderCctvAi(container) {
 
@@ -72,6 +77,13 @@ export async function renderCctvAi(container) {
           </div>
           <p class="road-p">Road Reports Summary</p>
         </div>
+
+        <div class="report-links">
+          <div class="report-link active-report" data-report="traffic-trend">
+            <i class="fas fa-chart-line"></i>
+            <span>Traffic Trend</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -84,9 +96,7 @@ export async function renderCctvAi(container) {
       
     </div>
 
-    <div class="road-reports-content hidden" id="roadReportsView">
-      <h1>Example</h1>
-    </div>
+    <div class="road-reports-content hidden" id="roadReportsView"></div>
   `;
 
   subscribeTraffic((roads) => {
@@ -117,6 +127,7 @@ export async function renderCctvAi(container) {
   });
 
   const cctvItems = container.querySelectorAll(".cctv-road");
+  const reportItems = container.querySelectorAll(".report-link");
 
   const reportsController = container.querySelector("#reportsController");
 
@@ -126,6 +137,8 @@ export async function renderCctvAi(container) {
 
   cctvItems.forEach(item => item.classList.remove("active-stream"));
 
+  reportItems.forEach(item => item.classList.remove("active-report"));
+
   cctvItems.forEach(item => {
     item.addEventListener("click", () => {
 
@@ -134,6 +147,7 @@ export async function renderCctvAi(container) {
       cctvContent.classList.remove("hidden");
       reportsView.classList.add("hidden");
       reportsController.classList.remove("active-stream");
+      reportItems.forEach(item => item.classList.remove("active-report"));
 
       /*const roadId = item.dataset.roadId;*/
       const selectedRoad = cctvRoads.find(
@@ -156,16 +170,42 @@ export async function renderCctvAi(container) {
   });
 
 
-  reportsController.addEventListener("click", () => {
+  reportsController.addEventListener("click", async () => {
 
     subModuleTitle.textContent = "Road Reports";
-
-    reportsController.classList.add("active-stream");
 
     cctvContent.classList.add("hidden");
 
     reportsView.classList.remove("hidden");
 
     cctvItems.forEach(item => item.classList.remove("active-stream"));
+
+    if(!reportsInitialized) {
+      reportContent = await roadReports(reportsView);
+
+      renderTrafficTrend(reportContent);
+
+      reportsInitialized = true;
+    }
+  });
+
+
+  reportItems.forEach(item => {
+
+    item.addEventListener("click", () => {
+
+      reportItems.forEach(link => {
+        link.classList.remove("active-report");
+      });
+
+      item.classList.add("active-report");
+
+      switch(item.dataset.report){
+        case "traffic-trend":
+          renderTrafficTrend(reportContent);
+          break;
+      }
+
+    });
   });
 }
