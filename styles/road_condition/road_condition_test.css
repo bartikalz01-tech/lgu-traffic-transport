@@ -563,3 +563,35 @@
   background: #fdeceb;
   color: #e74c3c;
 }
+
+.speed-high{
+  background:#e8f7ec;
+}
+
+.speed-medium{
+  background:#fff8e5;
+}
+
+.speed-low{
+  background:#fdeaea;
+}
+
+.speed-badge{
+    padding:4px 10px;
+    border-radius:15px;
+    font-size:12px;
+    font-weight:600;
+    color:#fff;
+}
+
+.speed-badge.high{
+    background:#2e7d32;
+}
+
+.speed-badge.medium{
+    background:#f9a825;
+}
+
+.speed-badge.low{
+    background:#c62828;
+}

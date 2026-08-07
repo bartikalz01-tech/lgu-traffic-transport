@@ -4,6 +4,7 @@ import { roadReports } from "./render_road_reports.js";
 import { getActiveRoadId, getRoadDetailDom, openRoadCondition } from "./road_details.js";
 import { renderCongestionFrequency } from "./road_reports/congestion_frequency.js";
 import { renderTrafficTrend } from "./road_reports/traffic_trend_overtime.js";
+import { renderAverageSpeedHistory } from "./road_reports/average_speed_history.js";
 import { updateRoadCondition } from "./update_road_details.js";
 
 const subModuleTitle = document.getElementById("subModuleTitle");
@@ -87,8 +88,13 @@ export async function renderCctvAi(container) {
           </div>
 
           <div class="report-link active-report" data-report="congestion-frequency">
-            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-road"></i>
             <span>Congestion Frequency</span>
+          </div>
+
+          <div class="report-link" data-report="average-speed-history">
+            <i class="fas fa-gauge-high"></i>
+            <span>Average Speed History</span>
           </div>
         </div>
       </div>
@@ -198,6 +204,10 @@ export async function renderCctvAi(container) {
 
       case "congestion-frequency":
         renderCongestionFrequency(reportContent);
+        break;
+
+      case "average-speed-history":
+        renderAverageSpeedHistory(reportContent);
         break;
     }
   }
