@@ -1,6 +1,7 @@
 import { renderTrafficTrend } from "./road_reports/traffic_trend_overtime.js";
+import { renderCongestionFrequency } from "./road_reports/congestion_frequency.js";
 
-export async function roadReports(container) {
+export function roadReports(container) {
   container.innerHTML = `
     <div class="road-report-toolbar">
 
@@ -34,5 +35,7 @@ export async function roadReports(container) {
     <div id="reportContent"></div>
   `
 
-  return container.querySelector('#reportContent');
+  const reportContent =  container.querySelector('#reportContent');
+
+  return reportContent;
 }

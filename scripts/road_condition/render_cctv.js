@@ -2,12 +2,14 @@ import { getCctvAiDetails } from "../data/road_condition/fetch_road_condition.js
 import { getCurrentTraffic, subscribeTraffic } from "../data/road_condition/trafficStore.js";
 import { roadReports } from "./render_road_reports.js";
 import { getActiveRoadId, getRoadDetailDom, openRoadCondition } from "./road_details.js";
+import { renderCongestionFrequency } from "./road_reports/congestion_frequency.js";
 import { renderTrafficTrend } from "./road_reports/traffic_trend_overtime.js";
 import { updateRoadCondition } from "./update_road_details.js";
 
 const subModuleTitle = document.getElementById("subModuleTitle");
 
 let reportsInitialized = false;
+
 let reportContent = null;
 
 export async function renderCctvAi(container) {
@@ -83,6 +85,11 @@ export async function renderCctvAi(container) {
             <i class="fas fa-chart-line"></i>
             <span>Traffic Trend</span>
           </div>
+
+          <div class="report-link active-report" data-report="congestion-frequency">
+            <i class="fas fa-chart-line"></i>
+            <span>Congestion Frequency</span>
+          </div>
         </div>
       </div>
     </div>
@@ -131,8 +138,9 @@ export async function renderCctvAi(container) {
 
   const reportsController = container.querySelector("#reportsController");
 
-  const cctvContent = container.querySelector(".cctv-content");
+  const reportsHeader = container.querySelector("#reportsController .reports-header");
 
+  const cctvContent = container.querySelector(".cctv-content");
   const reportsView = container.querySelector("#roadReportsView");
 
   cctvItems.forEach(item => item.classList.remove("active-stream"));
@@ -170,42 +178,43 @@ export async function renderCctvAi(container) {
   });
 
 
-  reportsController.addEventListener("click", async () => {
-
+  async function openReport(reportName) {
     subModuleTitle.textContent = "Road Reports";
 
     cctvContent.classList.add("hidden");
-
     reportsView.classList.remove("hidden");
 
     cctvItems.forEach(item => item.classList.remove("active-stream"));
 
     if(!reportsInitialized) {
-      reportContent = await roadReports(reportsView);
-
-      renderTrafficTrend(reportContent);
-
+      reportContent = roadReports(reportsView);
       reportsInitialized = true;
     }
-  });
+
+    switch(reportName) {
+      case "traffic-trend":
+        renderTrafficTrend(reportContent);
+        break;
+
+      case "congestion-frequency":
+        renderCongestionFrequency(reportContent);
+        break;
+    }
+  }
 
 
   reportItems.forEach(item => {
 
-    item.addEventListener("click", () => {
+    item.addEventListener("click", async () => {
 
-      reportItems.forEach(link => {
-        link.classList.remove("active-report");
-      });
+      reportItems.forEach(link => link.classList.remove("active-report"));
 
       item.classList.add("active-report");
 
-      switch(item.dataset.report){
-        case "traffic-trend":
-          renderTrafficTrend(reportContent);
-          break;
-      }
+      await openReport(item.dataset.report);
 
     });
+
   });
+
 }
