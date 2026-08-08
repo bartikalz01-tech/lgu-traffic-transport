@@ -1,4 +1,5 @@
 import { getTrafficTrendAndCongestionLogs } from "../../data/road_condition/fetch_road_condition.js";
+import { renderCongestionFrequencyChart } from "./road_report_charts/congestion_frequency_chart.js";
 
 export async function renderCongestionFrequency(container) {
 
@@ -18,7 +19,7 @@ export async function renderCongestionFrequency(container) {
           </div>
 
           <div class="chart-placeholder">
-            Stacked Bar chart will render here
+            <canvas id="congestionFrequencyChart"></canvas>
           </div>
         </div>
 
@@ -48,6 +49,7 @@ export async function renderCongestionFrequency(container) {
   `;
 
   const tbody = container.querySelector("#congestionFrequencyTableBody");
+  const chartCanvas = container.querySelector("#congestionFrequencyChart");
 
   async function loadCongestionFrequency() {
     const filters = {
@@ -114,6 +116,8 @@ export async function renderCongestionFrequency(container) {
         </tr>
       `; 
     });
+
+    renderCongestionFrequencyChart(chartCanvas, roadStats);
   }
 
   await loadCongestionFrequency();
