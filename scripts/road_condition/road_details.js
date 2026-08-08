@@ -1,5 +1,6 @@
 import { subscribeTraffic } from "../data/road_condition/trafficStore.js";
 import { updateRoadCondition } from "./update_road_details.js";
+import { openAccidentModal } from "./accident_and_violation/accident_modal.js";
 
 let activeRoadId = null;
 //let subscribed = false;
@@ -132,6 +133,16 @@ export function openRoadCondition(container, road) {
                   <span>Updated every 1 minute based on traffic patterns</span>
                 </div>
               </div>
+
+              <div class="traffic-stats">
+                <div class="stat-card">
+                  <button class="btn btn-danger" id="accidentReportBtn"><i class="fas fa-car-crash"></i> Accident Report</button>
+                </div>
+                <div class="stat-card">
+                  <button class="btn btn-info"><i class="fas fa-triangle-exclamation"></i> Violation Report</button>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -160,6 +171,8 @@ export function openRoadCondition(container, road) {
           </div>
         </div>
       </div>
+
+      <div class="quick-report-overlay accident-hidden-overlay" id="accidentModal"></div>
     `;
 
     dom = {
@@ -197,5 +210,12 @@ export function openRoadCondition(container, road) {
   container.classList.remove('hidden');
 
   updateRoadCondition(road, dom)
+
+  const accidentModal = document.getElementById("accidentModal");
+  const accidentReportBtn = document.getElementById("accidentReportBtn");
+
+  accidentReportBtn.addEventListener("click", () => {
+    openAccidentModal(accidentModal);
+  });
 
 }

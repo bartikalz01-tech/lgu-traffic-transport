@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_test.css">
   <link rel="stylesheet" href="../styles/road_condition/detailed_cctv.css">
+  <link rel="stylesheet" href="../styles/accident/quick_report.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>Road Condition Updates</title>

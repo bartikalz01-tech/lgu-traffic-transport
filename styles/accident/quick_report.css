@@ -8,7 +8,11 @@
   padding: 2rem 1rem;
   overflow-y: auto;
   background: rgba(0, 0, 0, 0.6);
-  z-index: 999;
+  z-index: 1006;
+}
+
+.accident-hidden-overlay {
+  display: none;
 }
 
 .hidden {
@@ -26,6 +30,18 @@
   max-width: 900px;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  } 
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .form-panel h3 {
@@ -41,7 +57,52 @@
 }
 
 .form-panel h3 i {
-  color: var(--primary-color-1);
+  color: var(--danger-color);
+}
+
+.accident-modal-header {
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color-1);
+}
+
+.accident-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.accident-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+
+  font-size: 1.1rem;
+}
+
+.accident-modal-title h3 {
+  margin: 0;
+  padding: 0;
+
+  border: none;
+
+  font-size: 1.2rem;
+  color: var(--text-color-1);
+}
+
+.accident-modal-title p {
+  margin: 0.25rem 0 0;
+
+  color: var(--text-secondary-1);
+  font-size: 0.8rem;
 }
 
 .form-section {
@@ -56,17 +117,19 @@
 }
 
 .section-header h4 {
+  margin: 0;
+
   color: var(--text-color-1);
   font-size: 1rem;
   font-weight: 600;
+
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .section-header h4 i {
-  color: var(--primary-color);
-  font-size: 0.875rem;
+  color: var(--secondary-color);
 }
 
 .section-count {
@@ -76,6 +139,23 @@
   padding: 0.125rem 0.5rem;
   border-radius: 10px;
   font-weight: 600;
+}
+
+.section-badge {
+  padding: 0.25rem 0.6rem;
+
+  border-radius: 20px;
+
+  background: rgba(76, 138, 137, 0.1);
+  color: var(--primary-color-1);
+
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.section-badge.evidence {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
 }
 
 /* Form Groups */
@@ -118,6 +198,65 @@
   color: var(--text-color-1);
   font-size: 0.875rem;
   transition: all 0.2s ease;
+}
+
+.cctv-section {
+  width: 100%;
+  min-height: 220px;
+
+  border: 1px solid var(--border-color-1);
+  border-radius: 8px;
+
+  background: var(--bg-color-1);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+.cctv-empty-state {
+  text-align: center;
+  padding: 2rem;
+}
+
+.cctv-empty-icon {
+  width: 52px;
+  height: 52px;
+
+  margin: 0 auto 0.75rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(76, 138, 137, 0.1);
+  color: var(--primary-color-1);
+
+  font-size: 1.2rem;
+}
+
+.cctv-empty-state h5 {
+  margin: 0 0 0.4rem;
+
+  color: var(--text-color-1);
+
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cctv-empty-state p {
+  margin: 0;
+
+  max-width: 420px;
+
+  color: var(--text-secondary-1);
+
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 
 .form-control:focus {
@@ -216,8 +355,9 @@
 
 .form-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+  gap: 15px;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border-color-1);
   margin-top: 1rem;
