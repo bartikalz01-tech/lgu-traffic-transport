@@ -56,3 +56,26 @@ export async function getAverageSpeedHistoryLogs(filters = {}) {
     return [];
   }
 }
+
+export async function getPeakHourAnalyticsLogs(filters = {}) {
+  try {
+
+    const params = new URLSearchParams(filters);
+
+    const response = await fetch(
+      `../api/road_condition/get_peak_hour_analytics.php?${params.toString()}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    return await response.json();
+
+  } catch (error) {
+
+    console.error("Failed to fetch peak hour analytics:", error);
+
+    return [];
+  }
+}
