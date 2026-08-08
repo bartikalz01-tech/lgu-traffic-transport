@@ -584,16 +584,16 @@
     color:#fff;
 }
 
-.speed-badge.high{
-    background:#2e7d32;
+.speed-badge.low {
+    background: #c62828;
 }
 
-.speed-badge.medium{
-    background:#f9a825;
+.speed-badge.medium {
+    background: #f9a825;
 }
 
-.speed-badge.low{
-    background:#c62828;
+.speed-badge.high {
+    background: #2e7d32;
 }
 
 

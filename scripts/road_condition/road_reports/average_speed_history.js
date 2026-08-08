@@ -1,4 +1,13 @@
 import { getAverageSpeedHistoryLogs } from "../../data/road_condition/fetch_road_condition.js";
+import { renderAverageSpeedHistoryChart } from "./road_report_charts/average_speed_history_chart.js";
+
+function parseMySQLDateTime(dateTime) {
+  if (!dateTime) {
+    return null;
+  }
+
+  return new Date(dateTime.replace(" ", "T"));
+}
 
 export async function renderAverageSpeedHistory(container) {
 
@@ -18,7 +27,7 @@ export async function renderAverageSpeedHistory(container) {
         </div>
 
         <div class="chart-placeholder">
-          Line Chart will render here
+          <canvas id="averageSpeedHistoryChart"></canvas>
         </div>
       </div>
 
@@ -49,6 +58,8 @@ export async function renderAverageSpeedHistory(container) {
 
   const tbody = container.querySelector("#averageSpeedHistoryTableBody");
 
+  const chartCanvas = container.querySelector("#averageSpeedHistoryChart");
+
   async function loadAverageSpeedHistory() {
     const filters = {
       start_date: document.querySelector("#startDate")?.value || "",
@@ -56,7 +67,7 @@ export async function renderAverageSpeedHistory(container) {
       road_id: document.querySelector("#roadFilter")?.value || "all"
     };
 
-    const logs = await getAverageSpeedHistoryLogs();
+    const logs = await getAverageSpeedHistoryLogs(filters);
 
     tbody.innerHTML = "";
 
@@ -86,14 +97,16 @@ export async function renderAverageSpeedHistory(container) {
         roadStats[roadId] = {
           road_name: log.road_name,
           speeds: [],
-          latest_recorderd_at: log.recorded_at
+          recorded_at: [],
+          latest_recorded_at: log.recorded_at
         };
       }
       
       roadStats[roadId].speeds.push(speed);
+      roadStats[roadId].recorded_at.push(log.recorded_at);
 
-      if(new Date(log.recorded_at) > new Date(roadStats[roadId].latest_recorderd_at)) {
-        roadStats[roadId].latest_recorderd_at = log.recorded_at;
+      if(parseMySQLDateTime(log.recorded_at) > parseMySQLDateTime(roadStats[roadId].latest_recorded_at)) {
+        roadStats[roadId].latest_recorded_at = log.recorded_at;
       }
     });
 
@@ -127,9 +140,7 @@ export async function renderAverageSpeedHistory(container) {
       tbody.innerHTML += `
         <tr class="speed-${statusClass}">
           <td>
-            ${new Date(
-              road.latest_recorded_at
-            ).toLocaleString()}
+            ${parseMySQLDateTime(road.latest_recorded_at)?.toLocaleString() || "N/A"}
           </td>
           <td>
             ${road.road_name}
@@ -151,6 +162,8 @@ export async function renderAverageSpeedHistory(container) {
         </tr>
       `;
     });
+
+    renderAverageSpeedHistoryChart(chartCanvas, roadStats);
   }
 
   await loadAverageSpeedHistory();
