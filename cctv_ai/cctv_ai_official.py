@@ -10,6 +10,7 @@ from ai_storage.get_road_id import get_road_id
 from ai_storage.update_traffic_status import update_traffic_status
 from .draw_tracking import draw_tracking
 from flask import Flask, Response
+from flask_cors import CORS
 import cv2
 import time
 
@@ -19,12 +20,15 @@ frame_lock = threading.Lock()
 FRAME_SKIP = 1
 
 app = Flask(__name__)
+CORS(app)
 
 shared_statistics = {}
 stats_lock = threading.Lock()
 
 VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
-#VIDEO_FOLDER = Path(r"C:\xampp\htdocs\cctv_feeds")
+
+SNAPSHOT_FOLDER = Path(__file__).parent / "accident_snapshots"
+SNAPSHOT_FOLDER.mkdir(parents=True, exist_ok=True)
 
 MODEL_NAME = "yolov8s.pt"
 
@@ -137,6 +141,61 @@ def video(camera_name):
     generate(camera_name),
     mimetype="multipart/x-mixed-replace; boundary=frame"
   )
+
+
+@app.route("/snapshot/<camera_name>", methods=["POST"])
+def snapshot(camera_name):
+
+  with frame_lock:
+    frame = shared_frames.get(camera_name)
+
+    if frame is None:
+      return {
+        "success": False,
+        "message": "No current frame available for this camera."
+      }, 404
+
+    frame = frame.copy()
+
+  timestamp = time.strftime("%Y%m%d_%H%M%S")
+
+  filename = f"{Path(camera_name).stem}_{timestamp}.jpg"
+
+  filepath = SNAPSHOT_FOLDER / filename
+
+  success = cv2.imwrite(str(filepath), frame)
+
+  if not success:
+    return {
+      "success": False,
+      "message": "Failed to save snapshot"
+    }, 500
+
+  captured_at = time.strftime("%Y-%m-%d %H:%M:%S")
+
+  return {
+    "success": True,
+    "filename": filename,
+    "captured_at": captured_at
+  }
+
+
+@app.route("/accident_snapshot/<filename>")
+def accident_snapshot(filename):
+   
+  filepath = SNAPSHOT_FOLDER / filename
+
+  if not filepath.exists():
+    return {
+      "success": False,
+      "message": "Snapshot not found"
+    }, 404
+
+  return Response(
+    filepath.read_bytes(),
+    mimetype="image/jpeg"
+  )
+
 
 
 def process_camera(stream):

@@ -215,7 +215,7 @@ export function openRoadCondition(container, road) {
   const accidentReportBtn = document.getElementById("accidentReportBtn");
 
   accidentReportBtn.addEventListener("click", () => {
-    openAccidentModal(accidentModal);
+    openAccidentModal(accidentModal, road);
   });
 
 }

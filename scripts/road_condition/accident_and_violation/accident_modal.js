@@ -1,4 +1,4 @@
-export function openAccidentModal(container) {
+export function openAccidentModal(container, road) {
   container.innerHTML = `
     <div class="form-panel">
       <div class="accident-modal-header">
@@ -65,7 +65,7 @@ export function openAccidentModal(container) {
         </div>
 
         <div class="cctv-section">
-          <div class="cctv-empty-state">
+          <div class="cctv-empty-state" id="cctvEmptyState">
 
             <div class="cctv-empty-icon">
               <i class="fas fa-video"></i>
@@ -78,6 +78,29 @@ export function openAccidentModal(container) {
               will be attached here.
             </p>
 
+            <button type="button" class="btn btn-primary" id="captureSnapshotBtn">
+              <i class="fas fa-camera"></i>
+              Capture Snapshot
+            </button>
+          </div>
+
+          <div class="cctv-snapshot-preview hidden" id="snapshotPreview">
+            <img id="accidentSnapshot" src="" alt="Accident CCTV Snapshot">
+            <div class="snapshot-meta">
+              <div>
+                <i class="fas fa-clock"></i>
+                <span id="snapshotCapturedAt"></span>
+              </div>
+
+              <span class="snapshot-status">
+                Snapshot Captured
+              </span>
+            </div>
+
+            <button type="button" class="btn btn-secondary" id="retakeSnapshotBtn">
+              <i class="fas fa-camera"></i>
+              Retake Snapshot
+            </button>
           </div>
         </div>
       </div>
@@ -94,6 +117,58 @@ export function openAccidentModal(container) {
   `
 
   container.classList.remove("accident-hidden-overlay")
+
+  const captureBtn = container.querySelector("#captureSnapshotBtn");
+  const snapshotPreview = container.querySelector("#snapshotPreview");
+  const emptyState = container.querySelector("#cctvEmptyState");
+  const snapshotImage = container.querySelector("#accidentSnapshot");
+  const snapshotCapturedAt = container.querySelector("#snapshotCapturedAt");
+
+  captureBtn.addEventListener("click", async () => {
+    try {
+      captureBtn.disabled = true;
+
+      captureBtn.innerHTML = `
+        <i class="fas fa-spinner fa-spin"></i>
+        Capturing...
+      `;
+
+      const response = await fetch(`http://127.0.0.1:5001/snapshot/${encodeURIComponent(road.video_filename)}`,
+        {
+          method: "POST"
+        }
+      );
+
+      const data = await response.json();
+
+      if(!data.success) {
+        throw new Error(data.message);
+      }
+
+      console.log("Snapshot captured:", data);
+
+      snapshotImage.src = `http://127.0.0.1:5001/accident_snapshot/${encodeURIComponent(data.filename)}`;
+
+      snapshotCapturedAt.textContent = data.captured_at;
+
+      emptyState.classList.add("hidden");
+      snapshotPreview.classList.remove("hidden");
+
+    } catch(error) {
+      console.error("Snapshot error:", error);
+
+      alert("Unable to capture CCTV snapshot.");
+
+    } finally {
+      captureBtn.disabled = false;
+
+      captureBtn.innerHTML = `
+        <i class="fas fa-camera"></i>
+        Capture Snapshot
+      `;
+    }
+  });
+
 
   const exitBtn = container.querySelector("#exitAccidentBtn");
 

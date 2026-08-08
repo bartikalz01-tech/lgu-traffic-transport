@@ -15,10 +15,6 @@
   display: none;
 }
 
-.hidden {
-  display: none;
-}
-
 .form-panel {
   background: var(--card-bg);
   border: 1px solid var(--border-color-1);
@@ -205,7 +201,7 @@
   min-height: 220px;
 
   border: 1px solid var(--border-color-1);
-  border-radius: 8px;
+  border-radius: 10px;
 
   background: var(--bg-color-1);
 
@@ -216,16 +212,18 @@
   overflow: hidden;
 }
 
+
 .cctv-empty-state {
+  width: 100%;
   text-align: center;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
 }
 
 .cctv-empty-icon {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
 
-  margin: 0 auto 0.75rem;
+  margin: 0 auto 0.9rem;
 
   display: flex;
   align-items: center;
@@ -236,7 +234,7 @@
   background: rgba(76, 138, 137, 0.1);
   color: var(--primary-color-1);
 
-  font-size: 1.2rem;
+  font-size: 1.25rem;
 }
 
 .cctv-empty-state h5 {
@@ -249,7 +247,7 @@
 }
 
 .cctv-empty-state p {
-  margin: 0;
+  margin: 0 auto 1.25rem;
 
   max-width: 420px;
 
@@ -257,6 +255,129 @@
 
   font-size: 0.8rem;
   line-height: 1.5;
+}
+
+.cctv-snapshot-preview {
+  width: 100%;
+  padding: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+#accidentSnapshot {
+  display: block;
+
+  width: 100%;
+  max-height: 420px;
+
+  object-fit: contain;
+
+  border-radius: 8px;
+
+  background: #000;
+
+  border: 1px solid var(--border-color-1);
+}
+
+.snapshot-meta {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-top: 0.75rem;
+  margin-bottom: 0.9rem;
+
+  padding: 0.7rem 0.85rem;
+
+  border-radius: 7px;
+
+  background: var(--card-bg);
+
+  border: 1px solid var(--border-color-1);
+
+  color: var(--text-secondary-1);
+
+  font-size: 0.75rem;
+}
+
+.snapshot-meta > div {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.snapshot-meta i {
+  color: var(--primary-color-1);
+}
+
+.snapshot-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 0.25rem 0.6rem;
+
+  border-radius: 20px;
+
+  background: rgba(34, 197, 94, 0.1);
+
+  color: #16a34a;
+
+  font-size: 0.7rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.snapshot-status::before {
+  content: "";
+
+  width: 6px;
+  height: 6px;
+
+  margin-right: 0.4rem;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+#retakeSnapshotBtn {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.45rem;
+
+  margin-left: auto;
+}
+
+#retakeSnapshotBtn i {
+  font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+
+  .cctv-empty-state {
+    padding: 2rem 1rem;
+  }
+
+  .snapshot-meta {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  #retakeSnapshotBtn {
+    width: 100%;
+  }
+
 }
 
 .form-control:focus {
