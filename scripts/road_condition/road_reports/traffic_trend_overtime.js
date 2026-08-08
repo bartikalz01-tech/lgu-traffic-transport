@@ -1,4 +1,5 @@
 import { getTrafficTrendAndCongestionLogs } from "../../data/road_condition/fetch_road_condition.js";
+import { renderTrafficTrendChart } from "./road_report_charts/traffic_trend_chart.js";
 
 export async function renderTrafficTrend(container) {
   container.innerHTML = `
@@ -16,7 +17,7 @@ export async function renderTrafficTrend(container) {
             Traffic Trend Chart
           </div>
 
-          <div class="chart-placeholder">
+          <div id="trafficTrendChart" class="chart-placeholder">
             Chart will be rendered here
           </div>
         </div>
@@ -56,6 +57,10 @@ export async function renderTrafficTrend(container) {
     };
 
     const logs = await getTrafficTrendAndCongestionLogs(filters);
+    
+    const chartContainer = container.querySelector("#trafficTrendChart");
+
+    renderTrafficTrendChart(chartContainer, logs);
 
     tbody.innerHTML = "";
 

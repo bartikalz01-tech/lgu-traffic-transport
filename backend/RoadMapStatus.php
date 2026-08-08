@@ -106,7 +106,7 @@ class RoadMapStatus extends config{
       $params[] = $_GET['road_id'];
     }
 
-    $sql .= " ORDER BY rtl.recorded_at DESC";
+    $sql .= " ORDER BY rtl.recorded_at ASC";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
