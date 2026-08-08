@@ -1,4 +1,5 @@
 import { getPeakHourAnalyticsLogs } from "../../data/road_condition/fetch_road_condition.js";
+import { renderPeakHourChart } from "./road_report_charts/peak_hour_chart.js";
 
 export async function renderPeakHour(container) {
   container.innerHTML = `
@@ -148,6 +149,8 @@ export async function renderPeakHour(container) {
 
       document.querySelector("#lowestSpeedValue").textContent = `${Number(lowestHour.avg_speed).toFixed(0)} km/h`;
     }
+
+    renderPeakHourChart(document.querySelector('#peakHourChart'), peakHour, lowestHour, formatHour);
   }
 
   await loadPeakAnalytics();
