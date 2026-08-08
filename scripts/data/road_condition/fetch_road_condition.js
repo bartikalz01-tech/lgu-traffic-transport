@@ -38,3 +38,21 @@ export async function getTrafficTrendAndCongestionLogs(filters = {}) {
     return [];
   }
 }
+
+export async function getAverageSpeedHistoryLogs(filters = {}) {
+  try {
+    const params = new URLSearchParams(filters);
+
+    const response = await fetch(`../api/road_condition/get_average_speed_history.php?${params.toString()}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    return await response.json();
+
+  } catch (error) {
+    console.error("Failed to fetch average speed history:", error);
+    return [];
+  }
+}

@@ -113,6 +113,49 @@ class RoadMapStatus extends config{
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  public function averageSpeedHistoryLogs() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        rtl.traffic_log_id,
+        rtl.road_id,
+        r.road_name,
+        rtl.avg_speed,
+        rtl.recorded_at
+      FROM road_traffic_logs rtl
+      INNER JOIN roads r
+        ON rtl.road_id = r.road_id
+      WHERE 1=1
+    ";
+
+    $params = [];
+
+    if(!empty($_GET['start_date'])) {
+      $sql .= " AND DATE(rtl.recorded_at) >= ?";
+      $params[] = $_GET['start_date']; 
+    }
+
+    if(!empty($_GET['end_date'])) {
+      $sql .= " AND DATE(rtl.recorded_at) <= ?";
+      $params[] = $_GET['end_date']; 
+    }
+
+    if(!empty($_GET['road_id']) && $_GET['road_id'] !== "all") {
+      $sql .= " AND rtl.road_id = ?";
+      $params[] = $_GET['road_id'];
+    }
+
+    $sql .= "
+      ORDER BY rtl.recorded_at DESC
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->execute($params);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }
 
 ?>

@@ -1,4 +1,6 @@
-export function renderAverageSpeedHistory(container) {
+import { getAverageSpeedHistoryLogs } from "../../data/road_condition/fetch_road_condition.js";
+
+export async function renderAverageSpeedHistory(container) {
 
   container.innerHTML = `
     <div class="traffic-report-header">
@@ -38,38 +40,122 @@ export function renderAverageSpeedHistory(container) {
               </tr>
             </thead>
 
-            <tbody>
-              <tr class="speed-high">
-                <td>Aug 05, 2026</td>
-                <td>Rizal Avenue</td>
-                <td>65 km/h</td>
-                <td>82 km/h</td>
-                <td>54 km/h</td>
-                <td><span class="speed-badge high">High</span></td>
-              </tr>
-
-              <tr class="speed-medium">
-                <td>Aug 05, 2026</td>
-                <td>Mabini Street</td>
-                <td>43 km/h</td>
-                <td>59 km/h</td>
-                <td>31 km/h</td>
-                <td><span class="speed-badge medium">Moderate</span></td>
-              </tr>
-
-              <tr class="speed-low">
-                <td>Aug 05, 2026</td>
-                <td>National Highway</td>
-                <td>18 km/h</td>
-                <td>35 km/h</td>
-                <td>8 km/h</td>
-                <td><span class="speed-badge low">Low</span></td>
-              </tr>
-            </tbody>
+            <tbody id="averageSpeedHistoryTableBody"></tbody>
           </table>
         </div>
       </div>
     </div>
   `;
 
+  const tbody = container.querySelector("#averageSpeedHistoryTableBody");
+
+  async function loadAverageSpeedHistory() {
+    const filters = {
+      start_date: document.querySelector("#startDate")?.value || "",
+      end_date: document.querySelector("#endDate")?.value || "",
+      road_id: document.querySelector("#roadFilter")?.value || "all"
+    };
+
+    const logs = await getAverageSpeedHistoryLogs();
+
+    tbody.innerHTML = "";
+
+    if(!logs || logs.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            No average speed records found.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    const roadStats = {};
+
+    logs.forEach(log => {
+      const roadId = log.road_id;
+
+      const speed = Number(log.avg_speed);
+
+      if(Number.isNaN(speed)) {
+        return;
+      }
+
+      if(!roadStats[roadId]) {
+        roadStats[roadId] = {
+          road_name: log.road_name,
+          speeds: [],
+          latest_recorderd_at: log.recorded_at
+        };
+      }
+      
+      roadStats[roadId].speeds.push(speed);
+
+      if(new Date(log.recorded_at) > new Date(roadStats[roadId].latest_recorderd_at)) {
+        roadStats[roadId].latest_recorderd_at = log.recorded_at;
+      }
+    });
+
+    Object.values(roadStats).forEach(road => {
+      const speeds = road.speeds;
+
+      if(speeds.length === 0) {
+        return;
+      }
+
+      const averageSpeed = speeds.reduce(
+        (sum, speed) => sum + speed,
+        0
+      ) / speeds.length;
+
+      const peakSpeed = Math.max(...speeds);
+
+      const lowestSpeed = Math.min(...speeds);
+
+      let status = "Low";
+      let statusClass= "low";
+
+      if(averageSpeed >= 50) {
+        status = "High";
+        statusClass = "high";
+      } else if(averageSpeed >= 30) {
+        status = "Moderate";
+        statusClass = "medium";
+      }
+
+      tbody.innerHTML += `
+        <tr class="speed-${statusClass}">
+          <td>
+            ${new Date(
+              road.latest_recorded_at
+            ).toLocaleString()}
+          </td>
+          <td>
+            ${road.road_name}
+          </td>
+          <td>
+            ${averageSpeed.toFixed(2)} km/h
+          </td>
+          <td>
+            ${peakSpeed.toFixed(2)} km/h
+          </td>
+          <td>
+            ${lowestSpeed.toFixed(2)} km/h
+          </td>
+          <td>
+            <span class="speed-badge ${statusClass}">
+              ${status}
+            </span>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  await loadAverageSpeedHistory();
+
+  document.querySelector("#startDate")?.addEventListener("change", loadAverageSpeedHistory);
+  document.querySelector("#endDate")?.addEventListener("change", loadAverageSpeedHistory);
+  document.querySelector("#roadFilter")?.addEventListener("change", loadAverageSpeedHistory);
 }
