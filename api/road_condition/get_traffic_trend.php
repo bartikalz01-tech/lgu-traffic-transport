@@ -5,6 +5,6 @@ header("Content-Type: application/json");
 
 $road = new RoadMapStatus();
 
-echo json_encode($road->trafficTrendLogs());
+echo json_encode($road->trafficTrendAndCongestionFrequencyLogs());
 
 ?>

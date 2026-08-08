@@ -72,7 +72,7 @@ class RoadMapStatus extends config{
   }
 
 
-  public function trafficTrendLogs() {
+  public function trafficTrendAndCongestionFrequencyLogs() {
     $conn = $this->conn();
     $sql = "
       SELECT

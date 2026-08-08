@@ -22,7 +22,7 @@ export async function getRoadMapTrafficlevel() {
   }
 }
 
-export async function getTrafficTrendLogs(filters = {}) {
+export async function getTrafficTrendAndCongestionLogs(filters = {}) {
   try {
 
     const params = new URLSearchParams(filters);

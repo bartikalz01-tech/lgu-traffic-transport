@@ -672,15 +672,41 @@
 }
 
 .summary-value.success{
-    color:#2e7d32;
+  color:#2e7d32;
 }
 
 .insight-list{
-    margin-top:15px;
-    padding-left:20px;
-    line-height:1.8;
+  margin-top:15px;
+  padding-left:20px;
+  line-height:1.8;
 }
 
 .insight-list li{
-    margin-bottom:8px;
+  margin-bottom:8px;
+}
+
+.congestion-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.congestion-score.low {
+  background: #e8f8ef;
+  color: #2e7d32;
+}
+
+.congestion-score.medium {
+  background: #fff7e6;
+  color: #f39c12;
+}
+
+.congestion-score.high {
+  background: #fdeceb;
+  color: #e74c3c;
 }

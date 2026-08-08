@@ -1,4 +1,4 @@
-import { getTrafficTrendLogs } from "../../data/road_condition/fetch_road_condition.js";
+import { getTrafficTrendAndCongestionLogs } from "../../data/road_condition/fetch_road_condition.js";
 
 export async function renderTrafficTrend(container) {
   container.innerHTML = `
@@ -55,7 +55,7 @@ export async function renderTrafficTrend(container) {
       road_id: document.querySelector("#roadFilter")?.value || "all"
     };
 
-    const logs = await getTrafficTrendLogs(filters);
+    const logs = await getTrafficTrendAndCongestionLogs(filters);
 
     tbody.innerHTML = "";
 
