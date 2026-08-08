@@ -157,14 +157,35 @@ class RoadMapStatus extends config{
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-
   public function peakHourAnalyticsLogs() {
 
     $conn = $this->conn();
 
     $roadId = $_GET['road_id'] ?? 'all';
 
+    $where = "WHERE 1=1";
+    $params = [];
+
+    if (!empty($_GET['start_date'])) {
+        $where .= " AND DATE(rtl.recorded_at) >= ?";
+        $params[] = $_GET['start_date'];
+    }
+
+    if (!empty($_GET['end_date'])) {
+        $where .= " AND DATE(rtl.recorded_at) <= ?";
+        $params[] = $_GET['end_date'];
+    }
+
+    if ($roadId !== 'all' && !empty($roadId)) {
+        $where .= " AND rtl.road_id = ?";
+        $params[] = $roadId;
+    }
+
+    /*
+     * First get the hourly traffic averages.
+     */
     $sql = "
+
         SELECT
             HOUR(rtl.recorded_at) AS traffic_hour,
 
@@ -172,97 +193,73 @@ class RoadMapStatus extends config{
 
             AVG(rtl.avg_speed) AS avg_speed,
 
-            AVG(
-                CASE
-                    WHEN LOWER(rtl.traffic_level) = 'high' THEN 3
-                    WHEN LOWER(rtl.traffic_level) = 'moderate' THEN 2
-                    WHEN LOWER(rtl.traffic_level) = 'low' THEN 1
-                    ELSE 0
-                END
-            ) AS congestion_points,
+            COUNT(*) AS recorded_count,
 
-            COUNT(*) AS recorded_count
-    ";
-
-    // Selected road mode
-    if ($roadId !== 'all' && !empty($roadId)) {
-
-        $sql .= ",
-            rtl.road_id,
+            r.road_id,
             r.road_name
-        ";
-    }
 
-    $sql .= "
         FROM road_traffic_logs rtl
 
         INNER JOIN roads r
             ON rtl.road_id = r.road_id
 
-        WHERE 1=1
-    ";
+        $where
 
-    $params = [];
+        GROUP BY
+            HOUR(rtl.recorded_at)
 
-    // Date filtering
-    if (!empty($_GET['start_date'])) {
-
-        $sql .= " AND DATE(rtl.recorded_at) >= ?";
-        $params[] = $_GET['start_date'];
-    }
-
-    if (!empty($_GET['end_date'])) {
-
-        $sql .= " AND DATE(rtl.recorded_at) <= ?";
-        $params[] = $_GET['end_date'];
-    }
-
-    // Road filtering
-    if ($roadId !== 'all' && !empty($roadId)) {
-
-        $sql .= " AND rtl.road_id = ?";
-        $params[] = $roadId;
-    }
-
-    // Grouping
-    if ($roadId !== 'all' && !empty($roadId)) {
-
-        $sql .= "
-            GROUP BY
-                rtl.road_id,
-                r.road_name,
-                HOUR(rtl.recorded_at)
-        ";
-
-    } else {
-
-        $sql .= "
-            GROUP BY
-                HOUR(rtl.recorded_at)
-        ";
-    }
-
-    $sql .= "
         ORDER BY
             traffic_hour ASC
     ";
 
-    try {
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
+    $hourlyData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (empty($hourlyData)) {
+        return [
+            "peak" => null,
+            "lowest" => null,
+            "hourly_data" => []
+        ];
+    }
 
-    } catch (PDOException $e) {
+    /*
+     * Find the hour with the highest vehicle flow.
+     */
+    $peakHour = $hourlyData[0];
 
-      error_log(
-          "Peak Hour SQL Error: " . $e->getMessage()
-      );
+    /*
+     * Find the hour with the lowest vehicle flow.
+     */
+    $lowestHour = $hourlyData[0];
 
-      throw $e;
-  }
-  }
+    foreach ($hourlyData as $hour) {
+
+        if (
+            (float)$hour['avg_vehicle_flow']
+            >
+            (float)$peakHour['avg_vehicle_flow']
+        ) {
+            $peakHour = $hour;
+        }
+
+        if (
+            (float)$hour['avg_vehicle_flow']
+            <
+            (float)$lowestHour['avg_vehicle_flow']
+        ) {
+            $lowestHour = $hour;
+        }
+    }
+
+    return [
+        "peak" => $peakHour,
+        "lowest" => $lowestHour,
+        "hourly_data" => $hourlyData
+    ];
+}
 }
 
 ?>

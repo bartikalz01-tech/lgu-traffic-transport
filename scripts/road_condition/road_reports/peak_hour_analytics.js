@@ -81,9 +81,9 @@ export async function renderPeakHour(container) {
       road_id: roadId
     };
 
-    const logs = await getPeakHourAnalyticsLogs(filters);
+    const result = await getPeakHourAnalyticsLogs(filters);
 
-    if(!logs || logs.length === 0) {
+    if(!result || (!result.peak && !result.lowest)) {
       document.querySelector("#peakHourValue").textContent = "--";
       document.querySelector("#highestFlowValue").textContent = "--";
       document.querySelector("#averagePeakSpeedValue").textContent = "--";
@@ -97,6 +97,9 @@ export async function renderPeakHour(container) {
       return;
     }
 
+    const peakHour = result.peak;
+    const lowestHour = result.lowest;
+
     const isBarangayWide = roadId === "all";
     const title = document.querySelector("#peakHourTitle");
     const description = document.querySelector("#peakHourDescription");
@@ -105,26 +108,10 @@ export async function renderPeakHour(container) {
       title.textContent = "Barangay Peak Hour Analytics";
       description.textContent = "Shows the busiest and lowest traffic periods across all monitored roads.";
     } else {
-      const roadName = logs[0]?.road_name || "Selected Road";
+      const roadName = peakHour?.road_name || lowestHour?.road_name || "Selected Road";
       title.textContent = `${roadName} Peak Hour Analytics`;
       description.textContent = `Shows the busiest and lowest traffic periods for ${roadName}.`;
     }
-
-    const data = logs.map(log => ({
-      ...log,
-      traffic_hour: Number(log.traffic_hour),
-      avg_vehicle_flow: Number(log.avg_vehicle_flow),
-      avg_speed: Number(log.avg_speed),
-      congestion_points: Number(log.congestion_points)
-    }));
-
-    const peakHour = data.reduce((highest, current) => {
-      return current.avg_vehicle_flow > highest.avg_vehicle_flow ? current : highest;
-    });
-
-    const lowestHour = data.reduce((lowest, current) => {
-      return current.avg_vehicle_flow < lowest.avg_vehicle_flow ? current : lowest;
-    });
 
     function formatHour(hour) {
       const start = new Date();
@@ -146,29 +133,21 @@ export async function renderPeakHour(container) {
       return `${startText} - ${endText}`;
     }
 
-    document.querySelector("#peakHourValue").textContent = formatHour(peakHour.traffic_hour);
+    if(peakHour) {
+      document.querySelector("#peakHourValue").textContent = formatHour(peakHour.traffic_hour);
 
-    document.querySelector("#highestFlowValue").textContent = `${Number(peakHour.avg_vehicle_flow).toFixed(0)} vehicles/min`;
+      document.querySelector("#highestFlowValue").textContent = `${Number(peakHour.avg_vehicle_flow).toFixed(0)} vehicles/min`;
 
-    document.querySelector("#averagePeakSpeedValue").textContent = `${Number(peakHour.avg_speed).toFixed(0)} km/h`;
+      document.querySelector("#averagePeakSpeedValue").textContent = `${Number(peakHour.avg_speed).toFixed(0)} km/h`;
+    }
 
-    document.querySelector("#lowestHourValue").textContent = formatHour(lowestHour.traffic_hour);
+    if(lowestHour) {
+      document.querySelector("#lowestHourValue").textContent = formatHour(lowestHour.traffic_hour);
 
-    document.querySelector("#lowestFlowValue").textContent = `${Number(lowestHour.avg_vehicle_flow).toFixed(0)} vehicles/min`;
+      document.querySelector("#lowestFlowValue").textContent = `${Number(lowestHour.avg_vehicle_flow).toFixed(0)} vehicles/min`;
 
-    document.querySelector("#lowestSpeedValue").textContent = `${Number(lowestHour.avg_speed).toFixed(0)} km/h`;
-
-    const chart = document.querySelector('#peakHourChart');
-
-    chart.innerHTML = data.map(hour => {
-      return `
-        <div>
-          ${formatHour(hour.traffic_hour)}
-          :
-          ${Number(hour.avg_vehicle_flow).toFixed(0)}
-        </div>
-      `
-    }).join("");
+      document.querySelector("#lowestSpeedValue").textContent = `${Number(lowestHour.avg_speed).toFixed(0)} km/h`;
+    }
   }
 
   await loadPeakAnalytics();
