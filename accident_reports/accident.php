@@ -10,10 +10,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/cards.css">
   <link rel="stylesheet" href="../styles/accident/accident_test.css">
-  <link rel="stylesheet" href="../styles/accident/quick_report.css">
   <link rel="stylesheet" href="../styles/accident/detailed_report.css">
-  <link rel="stylesheet" href="../styles/ticket1.css">
-  <link rel="stylesheet" href="../styles/tickets.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Accident Reports</title>
@@ -26,67 +23,275 @@
 
     <?php include '../includes/accident_header.php'; ?>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-      <div class="module-title-container">
-        <p class="module-title">Accident Reports</p>
-        <h1 class="sub-module-title">Accident Reports System</h1>
-        <p class="sub-module-description">Report and manage traffic accidents, violations, and incidents in real-time</p>
-      </div>
-      <button class="btn btn-primary" id="quickReportsBtn" style="margin-top: var(--header-h); margin-right: 20px;">
-        <i class="fas fa-plus"></i> Quick Reports
-      </button>
-    </div>
-
     <section class="accidents-container">
-      <div class="accident-list-panel">
-        <div class="list-header">
-          <h3><i class="fas fa-history"></i> Recent Reports</h3>
-          <div class="list-controls">
-            <div class="filter-container">
-              <div class="date-filter">
-                <button class="date-filter-btn" title="Filter by date">
-                  <i class="fas fa-calendar-days"></i>
-                </button>
+      <div class="accident-summary-grid">
+        <div class="accident-summary-card">
+          <div class="accident-summary-icon">
+            <i class="fas fa-car-crash"></i>
+          </div>
 
-                <div class="date-filter-field">
-                  <label for="dateFromm">From</label>
-                  <input type="date" id="dateFrom">
-                </div>
-
-                <div class="date-filter-field">
-                  <label for="dateTo">To</label>
-                  <input type="date" id="dateTo">
-                </div>
-
-                <div class="date-filter-actions">
-                  <button type="button" class="btn btn-secondary">Clear</button>
-                  <button type="button" class="btn btn-primary">Apply</button>
-                </div>
-              </div>
-              <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchReports" placeholder="Search reports...">
-              </div>
-            </div>
-            <button class="btn btn-secondary" id="refreshListBtn">
-              <i class="fas fa-sync-alt"></i>
-            </button>
+          <div class="accident-summary-info">
+            <span>Total Accidents</span>
+            <strong>24</strong>
+            <small>All recorded cases</small>
           </div>
         </div>
 
-        <div class="list-body" id="accidentList">
-          <!-- Accident items will be loaded here -->
+        <div class="accident-summary-card">
+          <div class="accident-summary-icon active">
+            <i class="fas fa-folder-open"></i>
+          </div>
+
+          <div class="accident-summary-info">
+            <span>Active Cases</span>
+            <strong>7</strong>
+            <small>Cases requiring attention</small>
+          </div>
+        </div>
+
+        <div class="accident-summary-card">
+          <div class="accident-summary-icon resolved">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="accident-summary-info">
+            <span>Resolved Cases</span>
+            <strong>17</strong>
+            <small>Successfully resolved</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="accident-reports-panel">
+        <div class="accident-panel-header">
+          <div>
+            <h2>Accident Reports</h2>
+            <p>Monitor and manage reported traffic accidents.</p>
+          </div>
+
+          <button class="accident-refresh-btn">
+            <i class="fas fa-sync-alt"></i>
+            Refresh
+          </button>
+        </div>
+
+        <div class="accident-toolbar">
+          <div class="accident-search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search accident ID, road, or location...">
+          </div>
+
+          <select class="accident-filter">
+            <option>All statuses</option>
+            <option value="">Reported</option>
+            <option value="">Investigating</option>
+            <option value="">Resolved</option>
+          </select>
+
+          <select class="accident-filter">
+            <option value="">All Accident Types</option>
+            <option value="">Vehicle Collision</option>
+            <option value="">Road Obstruction</option>
+            <option value="">Hit and Run</option>
+            <option value="">Other</option>
+          </select>
+
+          <button class="accident-filter-btn">
+            <i class=fas fa-filter></i>
+            Filter
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="accident-table-wrapper">
+        <table class="accident-table">
+          <thead>
+            <th>Public Accident ID</th>
+            <th>Road / Street</th>
+            <th>Date & Time</th>
+            <th>Accident Type</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Action</th>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+                <span class="accident-public-id">ACC-20260809-0001</span>
+              </td>
+              <td>
+                <div class="road-cell">
+                  <i class="fas fa-road"></i>
+                  <span>Susano Road</span>
+                </div>
+              </td>
+              <td>
+                <div class="date-cell">
+                  <strong>Aug 09, 2026</strong>
+                  <small>08:42 AM</small>
+                </div>
+              </td>
+              <td>Vehicle Collision</td>
+              <td>Susano Road Intersection</td>
+              <td>
+                <span class="accident-status reported">Reported</span>
+              </td>
+              <td>
+                <button class="accident-view-btn">
+                  <i class="fas fa-eye"></i>
+                  View
+                </button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <span class="accident-public-id">ACC-20260808-0009</span>
+              </td>
+              <td>
+                <div class="road-cell">
+                  <i class="fas fa-road"></i>
+                  <span>Quirino Highway</span>
+                </div>
+              </td>
+              <td>
+                <div class="date-cell">
+                  <strong>Aug 08, 2026</strong>
+                  <small>06:17 PM</small>
+                </div>
+              </td>
+              <td>Hit and Run</td>
+              <td>Near Barangay Hall</td>
+              <td>
+                <span class="accident-status investigating">Investigating</span>
+              </td>
+              <td>
+                <button class="accident-view-btn">
+                  <i class="fas fa-eye"></i>
+                  View
+                </button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <span class="accident-public-id">ACC-20260807-0007</span>
+              </td>
+              <td>
+                <div class="road-cell">
+                  <i class="fas fa-road"></i>
+                  <span>Novaliches Road</span>
+                </div>
+              </td>
+              <td>
+                <div class="date-cell">
+                  <strong>Aug 07, 2026</strong>
+                  <small>11:23 AM</small>
+                </div>
+              </td>
+              <td>Vehicle Collision</td>
+              <td>Near Market Area</td>
+              <td>
+                <span class="accident-status resolved">Resolved</span>
+              </td>
+              <td>
+                <button class="accident-view-btn">
+                  <i class="fas fa-eye"></i>
+                  View
+                </button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <span class="accident-public-id">ACC-20260806-0004</span>
+              </td>
+              <td>
+                <div class="road-cell">
+                  <i class="fas fa-road"></i>
+                  <span>Bagbag Road</span>
+                </div>
+              </td>
+              <td>
+                <div class="date-cell">
+                  <strong>Aug 06, 2026</strong>
+                  <small>09:05 PM</small>
+                </div>
+              </td>
+              <td>Road Obstruction</td>
+              <td>Bagbag Road Junction</td>
+              <td>
+                <span class="accident-status reported">Reported</span>
+              </td>
+              <td>
+                <button class="accident-view-btn">
+                  <i class="fas fa-eye"></i>
+                  View
+                </button>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <span class="accident-public-id">ACC-20260805-0002</span>
+              </td>
+              <td>
+                <div class="road-cell">
+                  <i class="fas fa-road"></i>
+                  <span>General Luis Road</span>
+                </div>
+              </td>
+              <td>
+                <div class="date-cell">
+                  <strong>Aug 05, 2026</strong>
+                  <small>03:36 PM</small>
+                </div>
+              </td>
+              <td>Vehicle Collision</td>
+              <td>Near School Zone</td>
+              <td>
+                <span class="accident-status resolved">Resolved</span>
+              </td>
+              <td>
+                <button class="accident-view-btn">
+                  <i class="fas fa-eye"></i>
+                  View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="accident-table-footer">
+        <span>
+          Showing <strong>1-5</strong> of <strong>24</strong> accident reports
+        </span>
+
+        <div class="accident-pagination">
+          <button disabled>
+            <i class="fas fa-chevron-left"></i>
+          </button>
+
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>4</button>
+          <button>5</button>
+
+          <button>
+            <i class="fas fa-chevron-right"></i>
+          </button>
         </div>
       </div>
     </section>
 
-    <div class="quick-report-overlay hidden"></div>
-
-    <div class="detailed-reports-overlay detailed-reports-hidden"></div>
-
     <?php include '../includes/admin-footer.php'; ?>
   </main>
 
+  <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/accident/accident_test.js" defer></script>
 </body>
 

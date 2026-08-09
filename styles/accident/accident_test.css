@@ -1,268 +1,389 @@
-.accident-list-panel {
-  background: var(--card-bg-1);
-  border: 1px solid var(--border-color-1);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px var(--shadow-1);
-  display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  margin-right: 20px;
+.accidents-container {
+  min-height: 600px;
+  margin: 5.7rem 20px 40px 20px;
+}
+
+.accident-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
   margin-bottom: 20px;
 }
 
-.list-header {
-  padding: 1.25rem 1.5rem;
-  background: var(--header-bg-1);
-  border-bottom: 1px solid var(--border-color-1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.list-header h3 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-color-1);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.list-header h3 i {
-  color: var(--primary-color);
-}
-
-.list-controls {
-  display: flex;
-  gap: 0.5rem;
-}
-
-/* FILTER CONTAINER */
-.filter-container {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-/* DATE FILTER WRAPPER */
-.date-filter {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-/* CALENDAR BUTTON */
-.date-filter-btn {
-  background: var(--bg-color-1);
-  border: 1px solid var(--border-color-1);
-  border-radius: 6px;
-  padding: 0.45rem 0.6rem;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: background 0.2s ease;
-}
-
-.date-filter-btn:hover {
-  background: var(--sidebar-hover-bg-1);
-}
-
-/* DATE DROPDOWN */
-.date-filter.open .date-filter-field,
-.date-filter.open .date-filter-actions {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* INPUT FIELDS */
-.date-filter-field,
-.date-filter-actions {
-  position: absolute;
-  top: 120%;
+.accident-summary-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color-1);
-  border-radius: 8px;
-  padding: 0.75rem;
-  box-shadow: 0 6px 16px var(--shadow-1);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 8px var(--shadow-1);
+}
+
+.accident-summary-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--sidebar-hover-bg-1);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.accident-summary-icon.active {
+  background: #f39c1220;
+  color: var(--warning-color);
+}
+
+.accident-summary-icon.resolved {
+  background: #2ecc7120;
+  color: var(--success-color);
+}
+
+.accident-summary-info {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-
-  opacity: 0;
-  transform: translateY(-5px);
-  pointer-events: none;
-  transition: all 0.2s ease;
 }
 
-.date-filter-field {
-  width: 180px;
-}
-
-.date-filter-field label {
-  font-size: 0.7rem;
+.accident-summary-info span {
+  font-size: 13px;
   color: var(--text-secondary);
 }
 
-.date-filter-field input {
-  padding: 0.4rem;
-  font-size: 0.75rem;
-  border-radius: 6px;
-  border: 1px solid var(--border-color-1);
-}
-
-/* POSITIONING */
-.date-filter-field:nth-of-type(1) {
-  right: 0;
-}
-
-.date-filter-field:nth-of-type(2) {
-  right: 190px;
-}
-
-.date-filter-actions {
-  right: 0;
-  top: calc(120% + 120px);
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.search-box {
-  position: relative;
-  width: 200px;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 0.5rem 0.75rem 0.5rem 2rem;
-  border: 1px solid var(--border-color-1);
-  border-radius: 6px;
-  background: var(--bg-color-1);
+.accident-summary-info strong {
+  font-size: 26px;
+  line-height: 1.2;
   color: var(--text-color-1);
-  font-size: 0.875rem;
+  font-weight: 700;
 }
 
-.search-box i {
+.accident-summary-info small {
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.accident-reports-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color-1);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px var(--shadow-1);
+  overflow: hidden;
+}
+
+.accident-panel-header {
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color-1);
+}
+
+.accident-panel-header h2 {
+  font-size: 17px;
+  font-weight: 650;
+  color: var(--text-color-1);
+  margin: 0 0 3px;
+}
+
+.accident-panel-header p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.accident-refresh-btn {
+  border: 1px solid var(--border-color-1);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  padding: 8px 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.accident-refresh-btn:hover {
+  background: var(--light-color);
+  color: var(--primary-color);
+}
+
+.accident-toolbar {
+  padding: 15px 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border-color-1);
+}
+
+.accident-search-box {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.accident-search-box i {
   position: absolute;
-  left: 0.75rem;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-secondary-1);
-  font-size: 0.875rem;
+  color: #999;
+  font-size: 13px;
 }
 
-.list-body {
-  flex: 1;
-  overflow-y: auto;
-  max-height: 600px;
+.accident-search-box input {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--border-color-1);
+  border-radius: 6px;
+  padding: 0 12px 0 34px;
+  font-size: 12px;
+  color: var(--text-color-1);
+  outline: none;
+  background: var(--card-bg);
 }
 
-.accident-item {
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--border-color-1);
-  transition: all 0.2s ease;
+.accident-search-box input:focus {
+  border-color: var(--primary-color);
+}
+
+.accident-filter {
+  height: 38px;
+  min-width: 150px;
+  border: 1px solid var(--border-color-1);
+  border-radius: 6px;
+  padding: 0 10px;
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  font-size: 12px;
+  outline: none;
+}
+
+.accident-filter:focus {
+  border-color: var(--primary-color);
+}
+
+.accident-filter-btn {
+  height: 38px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary-color);
+  color: white;
+  font-size: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
 
-.accident-item:hover {
+.accident-filter-btn:hover {
+  opacity: 0.9;
+}
+
+.accident-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.accident-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 950px;
+}
+
+.accident-table thead {
+  background: #fafbfc;
+}
+
+.accident-table th {
+  padding: 13px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--border-color-1);
+  white-space: nowrap;
+}
+
+.accident-table td {
+  padding: 15px 16px;
+  font-size: 12px;
+  color: var(--text-color-1);
+  border-bottom: 1px solid var(--border-color-1);
+  vertical-align: middle;
+}
+
+.accident-table tbody tr:hover {
+  background: #fafcfc;
+}
+
+.accident-public-id {
+  color: var(--primary-color);
+  font-weight: 650;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.road-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 550;
+}
+
+.road-cell i {
+  color: var(--primary-color);
+  font-size: 12px;
+}
+
+.date-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.date-cell strong {
+  font-size: 12px;
+  font-weight: 550;
+}
+
+.date-cell small {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.accident-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.accident-status.reported {
+  background: #3498db18;
+  color: var(--accent-color);
+}
+
+.accident-status.investigating {
+  background: #f39c1218;
+  color: var(--warning-color);
+}
+
+.accident-status.resolved {
+  background: #2ecc7118;
+  color: var(--success-color);
+}
+
+.accident-view-btn {
+  border: 1px solid var(--border-color-1);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.accident-view-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
   background: var(--sidebar-hover-bg-1);
 }
 
-.accident-item:hover .all-about-ticket-buttons {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.accident-item.active {
-  background: rgba(76, 138, 137, 0.1);
-  border-left: 3px solid var(--primary-color-1);
-}
-
-.accident-header {
+.accident-table-footer {
+  padding: 14px 22px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.75rem;
+  gap: 15px;
 }
 
-.accident-id {
-  font-weight: 600;
-  color: var(--primary-color);
-  font-size: 0.875rem;
-}
-
-.accident-time {
-  font-size: 0.75rem;
+.accident-table-footer > span {
+  font-size: 11px;
   color: var(--text-secondary);
 }
 
-.accident-details h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1rem;
-  color: var(--text-color-1);
-}
-
-.accident-meta {
-  display: flex;
-  gap: 1rem;
-  font-size: 0.75rem;
-  color: var(--text-secondary-1);
-  margin-bottom: 0.5rem;
-}
-
-.accident-meta span {
+.accident-pagination {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 4px;
 }
 
-.accident-meta i {
-  font-size: 0.75rem;
+.accident-pagination button {
+  min-width: 30px;
+  height: 30px;
+  border: 1px solid var(--border-color-1);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: pointer;
 }
 
-/* Status Badges */
-.status-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.accident-pagination button:hover:not(:disabled) {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
-.status-info {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+.accident-pagination button.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
 }
 
-.status-investigation {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
+.accident-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
-.status-resolved {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+@media (max-width: 1000px) {
+
+  .accident-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .accident-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .accident-search-box {
+    flex-basis: 100%;
+  }
+
+  .accident-filter {
+    flex: 1;
+  }
+
 }
 
-.status-open {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-}
+@media (max-width: 600px) {
 
-.status-and-action {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 1rem;
-}
+  .accidents-container {
+    margin: 0 12px 30px;
+  }
 
-.all-about-ticket-buttons {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(4px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  .accident-panel-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .accident-table-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
 }
