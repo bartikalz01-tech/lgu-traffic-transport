@@ -1,4 +1,9 @@
+import { insertAccidentReport } from "../../data/fetch_accidents.js";
+
 export function openAccidentModal(container, road) {
+
+  let snapshotFileName = null;
+
   container.innerHTML = `
     <div class="form-panel">
       <div class="accident-modal-header">
@@ -25,11 +30,11 @@ export function openAccidentModal(container, road) {
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Road/Street</label>
-            <input type="text" class="form-control" id="roadName" value="Susano Road" readonly>
+            <input type="text" class="form-control" id="roadName" value="${road.road_name}" readonly>
           </div>
           <div class="form-group">
             <label class="form-label">Camera Name</label>
-            <input type="text" class="form-control" id="cameraName" value="CAM-Susano Rd-NODE-01" readonly>
+            <input type="text" class="form-control" id="cameraName" value="CAM-${road.road_name}-${road.camera_name}" readonly>
           </div>
         </div>
 
@@ -145,7 +150,7 @@ export function openAccidentModal(container, road) {
         throw new Error(data.message);
       }
 
-      console.log("Snapshot captured:", data);
+      snapshotFileName = data.filename;
 
       snapshotImage.src = `http://127.0.0.1:5001/accident_snapshot/${encodeURIComponent(data.filename)}`;
 
@@ -166,6 +171,63 @@ export function openAccidentModal(container, road) {
         <i class="fas fa-camera"></i>
         Capture Snapshot
       `;
+    }
+  });
+
+
+  const submitAccidentBtn = document.getElementById("submitAccidentReport");
+
+  submitAccidentBtn.addEventListener("click", async () => {
+    
+    const accidentDate = container.querySelector("#accidentDate").value;
+    const accidentTime = container.querySelector("#accidentTime").value;
+    const accidentType = container.querySelector("#accidentType").value;
+    const specificLocation = container.querySelector("#specificLocation").value;
+
+    const accidentData = {
+      road_id: road.road_id,
+      accident_date: accidentDate,
+      accident_time: accidentTime,
+      accident_type: accidentType,
+      specific_location: specificLocation,
+      snapshot_filename: snapshotFileName
+    };
+
+    try {
+      submitAccidentBtn.disabled = true;
+
+      Swal.fire({
+        title: "Submitting Accident Report",
+        text: "Please wait...",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      const data = await insertAccidentReport(accidentData);
+
+      await Swal.fire({
+        icon: "success",
+        title: "Accident Report Submitted",
+        text: "The accident report has been successfully recorded",
+        confirmButtonText: "OK"
+      });
+
+      container.classList.add("accident-hidden-overlay");
+
+    } catch(error) {
+
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: error.message || "Unable to submit accident report.",
+        confirmButtonText: "OK"
+      });
+
+    } finally {
+      submitAccidentBtn.disabled = false;
     }
   });
 
