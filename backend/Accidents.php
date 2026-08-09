@@ -53,6 +53,35 @@ class Accidents extends config {
     } catch(PDOException $e) {
       throw new Exception("Database insert failed");
     }
-  } 
+  }
+  
+  public function getAccidentDetails() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        ac.accident_id,
+        ac.public_accident_id,
+        ac.road_id,
+        r.road_name,
+        ac.accident_date,
+        ac.accident_time,
+        ac.accident_type,
+        ac.specific_location,
+        ac.status,
+        ac.snapshot_filename,
+        ac.reported_at,
+        ac.updated_at
+      FROM accident_cases ac
+      INNER JOIN roads r
+        ON ac.road_id = r.road_id
+      
+      ORDER BY ac.reported_at DESC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 
 }

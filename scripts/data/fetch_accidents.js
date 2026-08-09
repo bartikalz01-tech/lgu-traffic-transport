@@ -17,3 +17,11 @@ export async function insertAccidentReport(accidentData) {
   return data;
 
 }
+
+export async function getAccidentDetails() {
+  const response = await fetch('../api/accidents/get_accident_details.php');
+
+  const result = await response.json();
+
+  return result;
+}

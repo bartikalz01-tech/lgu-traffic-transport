@@ -1,4 +1,4 @@
-export function renderAccidentReportsPanel(container) {
+export async function renderAccidentReportsPanel(container, accidentDetails) {
 
   container.innerHTML = `
     <div class="accident-panel-header">
@@ -53,151 +53,8 @@ export function renderAccidentReportsPanel(container) {
           <th>Action</th>
         </thead>
 
-        <tbody>
-          <tr>
-            <td>
-              <span class="accident-public-id">ACC-20260809-0001</span>
-            </td>
-            <td>
-              <div class="road-cell">
-                <i class="fas fa-road"></i>
-                <span>Susano Road</span>
-              </div>
-            </td>
-            <td>
-              <div class="date-cell">
-                <strong>Aug 09, 2026</strong>
-                <small>08:42 AM</small>
-              </div>
-            </td>
-            <td>Vehicle Collision</td>
-            <td>Susano Road Intersection</td>
-            <td>
-              <span class="accident-status reported">Reported</span>
-            </td>
-            <td>
-              <button class="accident-view-btn">
-                <i class="fas fa-eye"></i>
-                View
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <span class="accident-public-id">ACC-20260808-0009</span>
-            </td>
-            <td>
-              <div class="road-cell">
-                <i class="fas fa-road"></i>
-                <span>Quirino Highway</span>
-              </div>
-            </td>
-            <td>
-              <div class="date-cell">
-                <strong>Aug 08, 2026</strong>
-                <small>06:17 PM</small>
-              </div>
-            </td>
-            <td>Hit and Run</td>
-            <td>Near Barangay Hall</td>
-            <td>
-              <span class="accident-status investigating">Investigating</span>
-            </td>
-            <td>
-              <button class="accident-view-btn">
-                <i class="fas fa-eye"></i>
-                View
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <span class="accident-public-id">ACC-20260807-0007</span>
-            </td>
-            <td>
-              <div class="road-cell">
-                <i class="fas fa-road"></i>
-                <span>Novaliches Road</span>
-              </div>
-            </td>
-            <td>
-              <div class="date-cell">
-                <strong>Aug 07, 2026</strong>
-                <small>11:23 AM</small>
-              </div>
-            </td>
-            <td>Vehicle Collision</td>
-            <td>Near Market Area</td>
-            <td>
-              <span class="accident-status resolved">Resolved</span>
-            </td>
-            <td>
-              <button class="accident-view-btn">
-                <i class="fas fa-eye"></i>
-                View
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <span class="accident-public-id">ACC-20260806-0004</span>
-            </td>
-            <td>
-              <div class="road-cell">
-                <i class="fas fa-road"></i>
-                <span>Bagbag Road</span>
-              </div>
-            </td>
-            <td>
-              <div class="date-cell">
-                <strong>Aug 06, 2026</strong>
-                <small>09:05 PM</small>
-              </div>
-            </td>
-            <td>Road Obstruction</td>
-            <td>Bagbag Road Junction</td>
-            <td>
-              <span class="accident-status reported">Reported</span>
-            </td>
-            <td>
-              <button class="accident-view-btn">
-                <i class="fas fa-eye"></i>
-                View
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <span class="accident-public-id">ACC-20260805-0002</span>
-            </td>
-            <td>
-              <div class="road-cell">
-                <i class="fas fa-road"></i>
-                <span>General Luis Road</span>
-              </div>
-            </td>
-            <td>
-              <div class="date-cell">
-                <strong>Aug 05, 2026</strong>
-                <small>03:36 PM</small>
-              </div>
-            </td>
-            <td>Vehicle Collision</td>
-            <td>Near School Zone</td>
-            <td>
-              <span class="accident-status resolved">Resolved</span>
-            </td>
-            <td>
-              <button class="accident-view-btn">
-                <i class="fas fa-eye"></i>
-                View
-              </button>
-            </td>
-          </tr>
+        <tbody id="accidentTbody">
+          
         </tbody>
       </table>
     </div>
@@ -224,5 +81,40 @@ export function renderAccidentReportsPanel(container) {
       </div>
     </div>
   `;
+
+  const accidentTbody = document.getElementById("accidentTbody");
+
+  accidentDetails.forEach(accident => {
+    accidentTbody.innerHTML = `
+      <tr>
+        <td>
+          <span class="accident-public-id">${accident.public_accident_id}</span>
+        </td>
+        <td>
+          <div class="road-cell">
+            <i class="fas fa-road"></i>
+            <span>${accident.road_name}</span>
+          </div>
+        </td>
+        <td>
+          <div class="date-cell">
+            <strong>${accident.accident_date}</strong>
+            <small>${accident.accident_time}</small>
+          </div>
+        </td>
+        <td>${accident.accident_type}</td>
+        <td>${accident.specific_location}</td>
+        <td>
+          <span class="accident-status reported">${accident.status}</span>
+        </td>
+        <td>
+          <button class="accident-view-btn">
+            <i class="fas fa-eye"></i>
+            View
+          </button>
+        </td>
+      </tr>
+    `;
+  });
 
 }
