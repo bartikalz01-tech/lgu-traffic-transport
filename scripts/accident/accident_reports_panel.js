@@ -1,3 +1,5 @@
+import { detailedAccidentReport } from "./detailed_accident.js";
+
 export async function renderAccidentReportsPanel(container, accidentDetails) {
 
   container.innerHTML = `
@@ -53,9 +55,7 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
           <th>Action</th>
         </thead>
 
-        <tbody id="accidentTbody">
-          
-        </tbody>
+        <tbody id="accidentTbody"></tbody>
       </table>
     </div>
 
@@ -80,12 +80,15 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
         </button>
       </div>
     </div>
+
+    <div class="detailed-reports-overlay detailed-reports-hidden" id="detailAccidentContainer"></div>
   `;
 
   const accidentTbody = document.getElementById("accidentTbody");
+  const detailAccidentContainer = document.getElementById("detailAccidentContainer");
 
   accidentDetails.forEach(accident => {
-    accidentTbody.innerHTML = `
+    accidentTbody.innerHTML += `
       <tr>
         <td>
           <span class="accident-public-id">${accident.public_accident_id}</span>
@@ -108,13 +111,27 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
           <span class="accident-status reported">${accident.status}</span>
         </td>
         <td>
-          <button class="accident-view-btn">
+          <button class="accident-view-btn" id="viewAccidentDetailBtn" data-accident="${accident.accident_id}">
             <i class="fas fa-eye"></i>
             View
           </button>
         </td>
       </tr>
     `;
+  });
+
+  const viewAccidentDetailBtn = document.querySelectorAll(".accident-view-btn");
+
+  viewAccidentDetailBtn.forEach(btn => {
+
+    btn.addEventListener("click", () => {
+      const selectedAccident = accidentDetails.find(
+        accident => String(accident.accident_id) === String(btn.dataset.accident)
+      );
+
+      detailedAccidentReport(detailAccidentContainer, selectedAccident);
+    });
+
   });
 
 }
