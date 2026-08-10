@@ -21,22 +21,17 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
         <input type="text" id="accidentSearchInput" placeholder="Search accident ID, road, or location..." autocomplete="off">
       </div>
 
-      <select class="accident-filter">
-        <option>All statuses</option>
-        <option value="">Reported</option>
-        <option value="">Investigating</option>
-        <option value="">Resolved</option>
-      </select>
+      <div class="accident-date-filter">
+        <label for="accidentFromDate">From</label>
+        <input type="date" id="accidentFromDate">
+      </div>
 
-      <select class="accident-filter">
-        <option value="">All Accident Types</option>
-        <option value="">Vehicle Collision</option>
-        <option value="">Road Obstruction</option>
-        <option value="">Hit and Run</option>
-        <option value="">Other</option>
-      </select>
+      <div class="accident-date-filter">
+        <label for="accidentToDate">To</label>
+        <input type="date" id="accidentToDate">
+      </div>
 
-      <button class="accident-filter-btn">
+      <button type="button" class="accident-filter-btn" id="accidentFilterBtn">
         <i class=fas fa-filter></i>
         Filter
       </button>
@@ -87,6 +82,10 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
 
   const searchInput = container.querySelector("#accidentSearchInput");
   const tableCount = container.querySelector("#accidentTableCount");
+
+  const fromDateInput = container.querySelector("#accidentFromDate");
+  const toDateInput = container.querySelector("#accidentToDate");
+  const filterBtn = container.querySelector("#accidentFilterBtn");
 
   function renderTable(accidents) {
     accidentTbody.innerHTML = "";
@@ -183,16 +182,13 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
       });
     });
   }
+  
 
-  renderTable(accidentDetails);
-
-  searchInput.addEventListener("input", () => {
+  function applyFilters() {
     const searchTerm = searchInput.value.trim().toLowerCase();
 
-    if(!searchTerm) {
-      renderTable(accidentDetails);
-      return;
-    }
+    const fromDate = fromDateInput.value;
+    const toDate = toDateInput.value;
 
     const filteredAccidents = accidentDetails.filter(accident => {
       const publicId = String(accident.public_accident_id ?? "").toLowerCase();
@@ -203,15 +199,57 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
 
       const accidentType = String(accident.accident_type ?? "").toLowerCase();
 
-      return(
+      const status = String(accident.status ?? "").toLowerCase();
+
+      const matchesSearch =
+        !searchTerm ||
         publicId.includes(searchTerm) ||
         roadName.includes(searchTerm) ||
         location.includes(searchTerm) ||
-        accidentType.includes(searchTerm)
-      );
+        accidentType.includes(searchTerm) ||
+        status.includes(searchTerm);
+
+      const accidentDate = String(accident.accident_date ?? "");
+
+      const matchesFromDate = !fromDate || accidentDate >= fromDate;
+
+      const matchesToDate = !toDate || accidentDate <= toDate;
+
+      return (matchesSearch && matchesFromDate && matchesToDate);
     });
 
     renderTable(filteredAccidents);
+  }
+
+  renderTable(accidentDetails);
+
+  searchInput.addEventListener("input", () => {
+    applyFilters();
+  });
+
+  filterBtn.addEventListener("click", () => {
+    const fromDate = fromDateInput.value;
+    const toDate = toDateInput.value;
+
+    if(fromDate && toDate && fromDate > toDate) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Date Range",
+        text: "The From date cannot be later than the To date.",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+
+      fromDateInput.value = "";
+      toDateInput.value = "";
+
+      return;
+    }
+
+    applyFilters();
   });
 
 }
