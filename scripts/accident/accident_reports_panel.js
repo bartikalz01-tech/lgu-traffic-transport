@@ -118,11 +118,14 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
       if (status === "Reported") {
         statusClass = "reported";
       }
-      else if (status === "Investigating") {
-        statusClass = "investigating";
+      else if (status === "Dispatched") {
+        statusClass = "dispatched";
       }
-      else if (status === "Resolved") {
-        statusClass = "resolved";
+      else if (status === "On Scene") {
+        statusClass = "on-scene";
+      }
+      else if (status === "Cleared") {
+        statusClass = "cleared";
       }
 
       accidentTbody.innerHTML += `
