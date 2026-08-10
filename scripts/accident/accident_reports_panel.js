@@ -18,7 +18,7 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
     <div class="accident-toolbar">
       <div class="accident-search-box">
         <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search accident ID, road, or location...">
+        <input type="text" id="accidentSearchInput" placeholder="Search accident ID, road, or location..." autocomplete="off">
       </div>
 
       <select class="accident-filter">
@@ -60,9 +60,7 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
     </div>
 
     <div class="accident-table-footer">
-      <span>
-        Showing <strong>1-5</strong> of <strong>24</strong> accident reports
-      </span>
+      <span id="accidentTableCount"></span>
 
       <div class="accident-pagination">
         <button disabled>
@@ -87,51 +85,133 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
   const accidentTbody = document.getElementById("accidentTbody");
   const detailAccidentContainer = document.getElementById("detailAccidentContainer");
 
-  accidentDetails.forEach(accident => {
-    accidentTbody.innerHTML += `
-      <tr>
-        <td>
-          <span class="accident-public-id">${accident.public_accident_id}</span>
-        </td>
-        <td>
-          <div class="road-cell">
-            <i class="fas fa-road"></i>
-            <span>${accident.road_name}</span>
-          </div>
-        </td>
-        <td>
-          <div class="date-cell">
-            <strong>${accident.accident_date}</strong>
-            <small>${accident.accident_time}</small>
-          </div>
-        </td>
-        <td>${accident.accident_type}</td>
-        <td>${accident.specific_location}</td>
-        <td>
-          <span class="accident-status reported">${accident.status}</span>
-        </td>
-        <td>
-          <button class="accident-view-btn" id="viewAccidentDetailBtn" data-accident="${accident.accident_id}">
-            <i class="fas fa-eye"></i>
-            View
-          </button>
-        </td>
-      </tr>
-    `;
-  });
+  const searchInput = container.querySelector("#accidentSearchInput");
+  const tableCount = container.querySelector("#accidentTableCount");
 
-  const viewAccidentDetailBtn = document.querySelectorAll(".accident-view-btn");
+  function renderTable(accidents) {
+    accidentTbody.innerHTML = "";
 
-  viewAccidentDetailBtn.forEach(btn => {
+    if(accidents.length === 0) {
+      accidentTbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="accident-empty-state">
+            <div>
+              <i class="fas fa-search"></i>
+              <h3>No Accident reports found</h3>
+              <p>Try searching with a different accident ID, road, or location</p>
+            </div>
+          </td>
+        </tr>
+      `;
 
-    btn.addEventListener("click", () => {
-      const selectedAccident = accidentDetails.find(
-        accident => String(accident.accident_id) === String(btn.dataset.accident)
-      );
+      tableCount.innerHTML = `
+        Showing <strong>0</strong> accident reports
+      `;
 
-      detailedAccidentReport(detailAccidentContainer, selectedAccident);
+      return;
+    }
+
+    accidents.forEach(accident => {
+      let statusClass = null;
+      const status = accident.status;
+
+
+      if (status === "Reported") {
+        statusClass = "reported";
+      }
+      else if (status === "Investigating") {
+        statusClass = "investigating";
+      }
+      else if (status === "Resolved") {
+        statusClass = "resolved";
+      }
+
+      accidentTbody.innerHTML += `
+        <tr>
+          <td>
+            <span class="accident-public-id">${accident.public_accident_id}</span>
+          </td>
+          <td>
+            <div class="road-cell">
+              <i class="fas fa-road"></i>
+              <span>${accident.road_name}</span>
+            </div>
+          </td>
+          <td>
+            <div class="date-cell">
+              <strong>${accident.accident_date}</strong>
+              <small>${accident.accident_time}</small>
+            </div>
+          </td>
+          <td>${accident.accident_type}</td>
+          <td>${accident.specific_location}</td>
+          <td>
+            <span class="accident-status ${statusClass}">${status}</span>
+          </td>
+          <td>
+            <button class="accident-view-btn" id="viewAccidentDetailBtn" data-accident="${accident.accident_id}">
+              <i class="fas fa-eye"></i>
+              View
+            </button>
+          </td>
+        </tr>
+      `;
     });
 
+    tableCount.innerHTML = `
+      Showing
+      <strong>1-${accidents.length}</strong>
+      of
+      <strong>${accidents.length}</strong>
+      accident reports
+    `;
+
+    const viewButtons = accidentTbody.querySelectorAll(".accident-view-btn");
+
+    viewButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const selectedAccident = accidentDetails.find(
+          accident => String(accident.accident_id) === String(btn.dataset.accident)
+        );
+
+        if(!selectedAccident) {
+          console.error("Accident not found:", btn.dataset.accident);
+          return;
+        }
+
+        detailedAccidentReport(detailAccidentContainer, selectedAccident);
+      });
+    });
+  }
+
+  renderTable(accidentDetails);
+
+  searchInput.addEventListener("input", () => {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+
+    if(!searchTerm) {
+      renderTable(accidentDetails);
+      return;
+    }
+
+    const filteredAccidents = accidentDetails.filter(accident => {
+      const publicId = String(accident.public_accident_id ?? "").toLowerCase();
+
+      const roadName = String(accident.road_name ?? "").toLowerCase();
+
+      const location = String(accident.specific_location ?? "").toLowerCase();
+
+      const accidentType = String(accident.accident_type ?? "").toLowerCase();
+
+      return(
+        publicId.includes(searchTerm) ||
+        roadName.includes(searchTerm) ||
+        location.includes(searchTerm) ||
+        accidentType.includes(searchTerm)
+      );
+    });
+
+    renderTable(filteredAccidents);
   });
 
 }
