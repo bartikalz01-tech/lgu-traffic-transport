@@ -57,21 +57,7 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
     <div class="accident-table-footer">
       <span id="accidentTableCount"></span>
 
-      <div class="accident-pagination">
-        <button disabled>
-          <i class="fas fa-chevron-left"></i>
-        </button>
-
-        <button class="active">1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>4</button>
-        <button>5</button>
-
-        <button>
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
+      <div class="accident-pagination" id="accidentPagination"></div>
     </div>
 
     <div class="detailed-reports-overlay detailed-reports-hidden" id="detailAccidentContainer"></div>
@@ -87,10 +73,21 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
   const toDateInput = container.querySelector("#accidentToDate");
   const filterBtn = container.querySelector("#accidentFilterBtn");
 
+  const pagination = container.querySelector("#accidentPagination");
+  const ITEMS_PER_PAGE = 5;
+  let currentPage = 1;
+
   function renderTable(accidents) {
     accidentTbody.innerHTML = "";
 
-    if(accidents.length === 0) {
+    const totalAccidents = accidents.length;
+    const totalPages = Math.ceil(totalAccidents / ITEMS_PER_PAGE);
+
+    if(currentPage > totalPages && totalPages > 0) {
+      currentPage = totalPages;
+    }
+
+    if(totalAccidents === 0) {
       accidentTbody.innerHTML = `
         <tr>
           <td colspan="7" class="accident-empty-state">
@@ -107,10 +104,17 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
         Showing <strong>0</strong> accident reports
       `;
 
+      renderPagination(0);
+
       return;
     }
 
-    accidents.forEach(accident => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalAccidents);
+
+    const paginatedAccidents = accidents.slice(startIndex, endIndex);
+
+    paginatedAccidents.forEach(accident => {
       let statusClass = null;
       const status = accident.status;
 
@@ -162,11 +166,13 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
 
     tableCount.innerHTML = `
       Showing
-      <strong>1-${accidents.length}</strong>
+      <strong>${startIndex + 1}-${endIndex}</strong>
       of
-      <strong>${accidents.length}</strong>
+      <strong>${totalAccidents}</strong>
       accident reports
     `;
+
+    renderPagination(totalPages);
 
     const viewButtons = accidentTbody.querySelectorAll(".accident-view-btn");
 
@@ -184,6 +190,68 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
         detailedAccidentReport(detailAccidentContainer, selectedAccident);
       });
     });
+  }
+
+  function renderPagination(totalPages) {
+    pagination.innerHTML = "";
+
+    if(totalPages <= 1) {
+      return;
+    }
+
+    const previousButton = document.createElement("button");
+
+    previousButton.innerHTML = `
+      <i class="fas fa-chevron-left"></i>
+    `;
+
+    previousButton.disabled = currentPage === 1;
+
+    previousButton.addEventListener("click", () => {
+      if(currentPage > 1) {
+        currentPage--;
+
+        applyFilters();
+      }
+    });
+
+    pagination.appendChild(previousButton);
+
+    for(let page = 1; page <= totalPages; page++) {
+      const pageButton = document.createElement("button");
+
+      pageButton.textContent = page;
+
+      if(page === currentPage) {
+        pageButton.classList.add("active");
+      }
+
+      pageButton.addEventListener("click", () => {
+        currentPage = page;
+
+        applyFilters();
+      });
+
+      pagination.appendChild(pageButton);
+    }
+
+    const nextButton = document.createElement("button");
+
+    nextButton.innerHTML = `<i class="fas fa-chevron-right"></i>`;
+
+    nextButton.disabled = currentPage === totalPages;
+
+    nextButton.addEventListener("click", () => {
+
+      if (currentPage < totalPages) {
+        currentPage++;
+
+        applyFilters();
+      }
+
+    });
+
+    pagination.appendChild(nextButton);
   }
   
 
@@ -227,6 +295,8 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
   renderTable(accidentDetails);
 
   searchInput.addEventListener("input", () => {
+    currentPage = 1;
+
     applyFilters();
   });
 
@@ -248,6 +318,8 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
 
       fromDateInput.value = "";
       toDateInput.value = "";
+
+      currentPage = 1;
 
       return;
     }
