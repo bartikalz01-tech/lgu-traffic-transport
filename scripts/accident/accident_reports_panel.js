@@ -1,6 +1,7 @@
 import { detailedAccidentReport } from "./detailed_accident.js";
+import { subscribeAccidents } from "../data/accident_report/accidentStore.js";
 
-export async function renderAccidentReportsPanel(container, accidentDetails) {
+export async function renderAccidentReportsPanel(container) {
 
   container.innerHTML = `
     <div class="accident-panel-header">
@@ -63,8 +64,8 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
     <div class="detailed-reports-overlay detailed-reports-hidden" id="detailAccidentContainer"></div>
   `;
 
-  const accidentTbody = document.getElementById("accidentTbody");
-  const detailAccidentContainer = document.getElementById("detailAccidentContainer");
+  const accidentTbody = container.querySelector("#accidentTbody");
+  const detailAccidentContainer = container.querySelector("#detailAccidentContainer");
 
   const searchInput = container.querySelector("#accidentSearchInput");
   const tableCount = container.querySelector("#accidentTableCount");
@@ -76,6 +77,8 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
   const pagination = container.querySelector("#accidentPagination");
   const ITEMS_PER_PAGE = 5;
   let currentPage = 1;
+
+  let accidentDetails = [];
 
   function renderTable(accidents) {
     accidentTbody.innerHTML = "";
@@ -292,7 +295,11 @@ export async function renderAccidentReportsPanel(container, accidentDetails) {
     renderTable(filteredAccidents);
   }
 
-  renderTable(accidentDetails);
+  subscribeAccidents(accidents => {
+    accidentDetails = Array.isArray(accidents) ? accidents : [];
+
+    applyFilters();
+  })
 
   searchInput.addEventListener("input", () => {
     currentPage = 1;

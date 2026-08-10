@@ -1,12 +1,17 @@
-import { getAccidentDetails } from "../data/fetch_accidents.js";
+import { startAccidentStore, subscribeAccidents } from "../data/accident_report/accidentStore.js";
 import { renderAccidentReportsPanel } from "./accident_reports_panel.js";
 import { renderAccidentSummary } from "./accident_summary.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 	
-	const accidentDetails = await getAccidentDetails();
+	const summaryContainer = document.getElementById("accidentSummary");
+	const reportsContainer = document.getElementById("accidentReportsPanel");
 
-	renderAccidentSummary(document.getElementById("accidentSummary"), accidentDetails);
+	startAccidentStore();
 
-	await renderAccidentReportsPanel(document.getElementById("accidentReportsPanel"), accidentDetails);
+	await renderAccidentReportsPanel(reportsContainer);
+
+	subscribeAccidents(accidents => {
+		renderAccidentSummary(summaryContainer, accidents);
+	});
 });

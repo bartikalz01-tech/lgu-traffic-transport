@@ -19,9 +19,27 @@ export async function insertAccidentReport(accidentData) {
 }
 
 export async function getAccidentDetails() {
-  const response = await fetch('../api/accidents/get_accident_details.php');
 
-  const result = await response.json();
+  try {
 
-  return result;
+    const response = await fetch(
+      "../api/accidents/get_accident_details.php"
+    );
+
+    if(!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    return Array.isArray(result) ? result : [];
+
+  } catch(error) {
+
+    console.error("Failed to fetch accident details:", error);
+
+    return [];
+
+  }
+
 }
