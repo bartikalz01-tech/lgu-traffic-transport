@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	
 	const accidentDetails = await getAccidentDetails();
 
-	renderAccidentSummary(document.getElementById("accidentSummary"));
+	renderAccidentSummary(document.getElementById("accidentSummary"), accidentDetails);
 
 	await renderAccidentReportsPanel(document.getElementById("accidentReportsPanel"), accidentDetails);
 });

@@ -1,4 +1,22 @@
-export function renderAccidentSummary(container) {
+export function renderAccidentSummary(container, accidentDetails = []) {
+
+  const totalAccidents = accidentDetails.length;
+  
+  const reportedCount = accidentDetails.filter(
+    accident => String(accident.status ?? "").trim().toLowerCase() === "reported"
+  ).length;
+  
+  const dispatchedCount = accidentDetails.filter(
+    accident => String(accident.status ?? "").trim().toLowerCase() === "dispatched"
+  ).length;
+
+  const onSceneCount = accidentDetails.filter(
+    accident => String(accident.status ?? "").trim().toLowerCase() === "on scene"
+  ).length;
+
+  const clearedCount = accidentDetails.filter(
+    accident => String(accident.status ?? "").trim().toLowerCase() === "cleared"
+  ).length;
 
   container.innerHTML = `
     <div class="accident-summary-card total">
@@ -8,7 +26,7 @@ export function renderAccidentSummary(container) {
 
       <div class="accident-summary-info">
         <span>Total Accidents</span>
-        <strong>24</strong>
+        <strong>${totalAccidents}</strong>
         <small>All recorded reports</small>
       </div>
     </div>
@@ -21,7 +39,7 @@ export function renderAccidentSummary(container) {
 
       <div class="accident-summary-info">
         <span>Reported</span>
-        <strong>5</strong>
+        <strong>${reportedCount}</strong>
         <small>Awaiting response</small>
       </div>
     </div>
@@ -34,7 +52,7 @@ export function renderAccidentSummary(container) {
 
       <div class="accident-summary-info">
         <span>Dispatched</span>
-        <strong>4</strong>
+        <strong>${dispatchedCount}</strong>
         <small>Responders deployed</small>
       </div>
     </div>
@@ -47,7 +65,7 @@ export function renderAccidentSummary(container) {
 
       <div class="accident-summary-info">
         <span>On Scene</span>
-        <strong>3</strong>
+        <strong>${onSceneCount}</strong>
         <small>Responders arrived</small>
       </div>
     </div>
@@ -60,7 +78,7 @@ export function renderAccidentSummary(container) {
 
       <div class="accident-summary-info">
         <span>Cleared</span>
-        <strong>12</strong>
+        <strong>${clearedCount}</strong>
         <small>Response completed</small>
       </div>
     </div>
