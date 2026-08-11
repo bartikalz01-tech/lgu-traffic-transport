@@ -1,4 +1,4 @@
-import { insertAccidentReport } from "../../data/fetch_accidents.js";
+import { insertAccidentReport } from "../../data/accident_report/fetch_accidents.js";
 
 export function openAccidentModal(container, road) {
 

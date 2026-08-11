@@ -69,9 +69,38 @@ export function openRoadCondition(container, road) {
                     <i class="fas fa-sync"></i>
                   </button>
                 </div>
-                <!--<div class="time-display" id="currentTime">
-                  01/02/2026 12:00
-                </div>-->
+
+                <div class="recording-request hidden" id="recordingRequest">
+                  <div class="recording-request-title">
+                    <i class="fas fa-clock"></i>
+                    <span>Request Historical Recording</span>
+                  </div>
+
+                  <div class="recording-request-fields">
+                    <div class="recording-field">
+                      <label for="recordFromTime">From</label>
+                      <input type="datetime-local" id="recordFromTime" />
+                    </div>
+
+                    <div class="recording-field">
+                      <label for="recordingToTime">To</label>
+                      <input type="datetime-local" id="recordToTime" />
+                    </div>
+
+                    <button class="btn btn-warning" id="requestHistoricalRecordingBtn">
+                      <i class="fas fa-video"></i>
+                      <span>Request Recording</span>
+                    </button>
+
+                    <button class="btn btn-secondary" id="cancelRecordingRequestBtn">
+                      Cancel
+                    </button>
+                  </div>
+
+                  <div class="recording-request-status" id="recordingRequestStatus">
+                    <div id="historicalRecordingResult"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -184,8 +213,113 @@ export function openRoadCondition(container, road) {
 
       detailTrafficLevel: document.getElementById("detailTrafficLevel"),
       detailVehicleFlow: document.getElementById("detailVehicleFlow"),
-      detailAverageSpeed: document.getElementById("detailAverageSpeed")
+      detailAverageSpeed: document.getElementById("detailAverageSpeed"),
+
+      recordBtn: document.getElementById("recordBtn"),
+      recordingRequest: document.getElementById("recordingRequest"),
+      recordFromTime: document.getElementById("recordFromTime"),
+      recordToTime: document.getElementById("recordToTime"),
+      requestHistoricalRecordingBtn: document.getElementById("requestHistoricalRecordingBtn"),
+      cancelRecordingRequestBtn: document.getElementById("cancelRecordingRequestBtn"),
+      recordingRequestStatus: document.getElementById("recordingRequestStatus"),
+      historicalRecordingResult: document.getElementById("historicalRecordingResult")
     };
+
+    dom.recordBtn.addEventListener("click", () => {
+      dom.recordingRequest.classList.toggle("hidden");
+    });
+
+    dom.cancelRecordingRequestBtn.addEventListener("click", () => {
+      // Hide the historical recording request UI
+      dom.recordingRequest.classList.add("hidden");
+
+      // Clear the selected dates
+      dom.recordFromTime.value = "";
+      dom.recordToTime.value = "";
+
+      // Clear any previous status/result
+      dom.recordingRequestStatus.textContent = "";
+
+      // Reset the historical recording result
+      dom.historicalRecordingResult.innerHTML = "";
+    });
+
+    dom.requestHistoricalRecordingBtn.addEventListener("click", async () => {
+      const fromTime = dom.recordFromTime.value;
+      const toTime = dom.recordToTime.value;
+
+      if (!fromTime || !toTime) {
+        dom.recordingRequestStatus.textContent =
+          "Please select both start and end times.";
+        return;
+      }
+
+      const fromDate = new Date(fromTime);
+      const toDate = new Date(toTime);
+
+      if (fromDate >= toDate) {
+        dom.recordingRequestStatus.textContent =
+          "End time must be later than start time.";
+        return;
+      }
+
+      const cameraName = road.video_filename;
+
+      const formatDateTime = (value) => {
+        return value.replace("T", " ") + ":00";
+      };
+      
+      const formattedFromTime = formatDateTime(fromTime);
+      const formattedToTime = formatDateTime(toTime);
+
+      dom.recordingRequestStatus.textContent = "Preparing historical recording...";
+
+      dom.requestHistoricalRecordingBtn.disabled = true;
+
+      try {
+        const response = await fetch(`http://127.0.0.1:5001/recording/request/${encodeURIComponent(cameraName)}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from_time: formattedFromTime,
+            to_time: formattedToTime
+          })
+        });
+
+        const result = await response.json();
+
+        if(!response.ok || !result.success) {
+          dom.recordingRequestStatus.textContent = result.message || "Failed to create recording";
+          return;
+        }
+
+        dom.recordingRequestStatus.innerHTML = `
+          <div class="historical-recording-result">
+            <div class="historical-recording-header">
+              <i class="fas fa-video"></i>
+              <span>Historical Recording</span>
+            </div>
+
+            <video class="historical-recording-video" controls preload="metadata">
+              <source src="http://127.0.0.1:5001/recording/file/${encodeURIComponent(result.filename)}" type="video/mp4">
+              Your Browser does not support video playback
+            </video>
+
+            <div class="historical-recording-filename">
+              ${result.filename}
+            </div>
+          </div>
+        `;
+
+      } catch(error) {
+        console.error("Historical recording request error: ", error);
+        dom.recordingRequestStatus.textContent = "Unable to connect to CCTV AI server";
+
+      } finally {
+        dom.requestHistoricalRecordingBtn.disabled = false;
+      }
+    });
 
     getRoadDetailDom();
 
