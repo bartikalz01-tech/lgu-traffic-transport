@@ -1,0 +1,363 @@
+.quick-violation-report-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* 🔑 key fix */
+  padding: 2rem 1rem;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1006;
+}
+
+.violation-hidden-overlay {
+  display: none;
+}
+
+.violation-modal {
+  width: min(1000px, 100%);
+  max-height: calc(100vh - 4rem);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color-1);
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* HEADER */
+
+.violation-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color-1);
+  background: var(--header-bg);
+}
+
+.violation-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-color-1);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.violation-modal-title i {
+  color: var(--accent-color);
+}
+
+.violation-modal-subtitle {
+  margin-top: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.violation-close-btn {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.violation-close-btn:hover {
+  background: var(--light-color);
+  color: var(--danger-color);
+}
+
+
+/* BODY */
+
+.violation-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 12rem);
+}
+
+
+/* SECTION */
+
+.violation-section {
+  border: 1px solid var(--border-color-1);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  background: var(--card-bg);
+}
+
+.violation-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.violation-section-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-color-1);
+}
+
+.violation-section-header p {
+  margin: 0.25rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+
+/* FORM */
+
+.violation-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.violation-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.violation-form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.violation-form-group label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-color-1);
+}
+
+.required {
+  color: var(--danger-color);
+}
+
+.violation-form-group input,
+.violation-form-group select,
+.violation-form-group textarea {
+  width: 100%;
+  border: 1px solid var(--border-color-1);
+  border-radius: 7px;
+  padding: 0.65rem 0.75rem;
+  background: var(--light-color);
+  color: var(--text-color-1);
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.violation-form-group input:focus,
+.violation-form-group select:focus,
+.violation-form-group textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(76, 138, 137, 0.12);
+}
+
+.violation-form-group textarea {
+  resize: vertical;
+}
+
+
+/* READONLY ROAD/CAMERA */
+
+.violation-readonly-field {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border-color-1);
+  border-radius: 7px;
+  background: #f0f2f4;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+
+.violation-readonly-field i {
+  color: var(--primary-color);
+}
+
+
+/* EVIDENCE STATUS */
+
+.evidence-status {
+  padding: 0.3rem 0.55rem;
+  border-radius: 20px;
+  background: var(--light-color);
+  border: 1px solid var(--border-color-1);
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+}
+
+
+/* CCTV */
+
+.violation-cctv-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.violation-cctv-preview {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+  border-radius: 9px;
+  background: var(--dark-color);
+  border: 1px solid var(--border-color-1);
+}
+
+.violation-cctv-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.violation-cctv-overlay {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.violation-cctv-overlay span {
+  background: rgba(11, 19, 43, 0.75);
+  color: white;
+  border-radius: 5px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.7rem;
+}
+
+.violation-cctv-overlay i {
+  color: var(--danger-color);
+  font-size: 0.55rem;
+}
+
+
+/* SNAPSHOT */
+
+.violation-evidence-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.violation-snapshot-preview {
+  border: 1px solid var(--border-color-1);
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--light-color);
+}
+
+.snapshot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid var(--border-color-1);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-color-1);
+}
+
+.snapshot-remove-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.snapshot-remove-btn:hover {
+  color: var(--danger-color);
+}
+
+#capturedViolationSnapshot {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  display: block;
+}
+
+
+/* FOOTER */
+
+.violation-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color-1);
+  background: var(--header-bg);
+}
+
+.violation-footer-info {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+}
+
+.violation-footer-info i {
+  color: var(--accent-color);
+}
+
+.violation-footer-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .violation-modal {
+    max-height: calc(100vh - 2rem);
+  }
+
+  .violation-modal-body {
+    padding: 1rem;
+  }
+
+  .violation-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .violation-form-group.full-width {
+    grid-column: auto;
+  }
+
+  .violation-modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .violation-footer-actions {
+    justify-content: flex-end;
+  }
+
+  .violation-cctv-preview {
+    height: 250px;
+  }
+
+}

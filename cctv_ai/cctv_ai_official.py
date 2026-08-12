@@ -11,6 +11,7 @@ from ai_storage.update_traffic_status import update_traffic_status
 from .draw_tracking import draw_tracking
 from .cctv_clock import get_cctv_timestamp
 from .cctv_recording_v2 import (initialize_camera, add_frame, create_historical_recording, get_buffer_status)
+from .violation_evidence.violation_snapshot import (create_violation_snapshot)
 from flask import Flask, Response, request, send_file
 from flask_cors import CORS
 from datetime import datetime
@@ -209,6 +210,28 @@ def accident_snapshot(filename):
     filepath.read_bytes(),
     mimetype="image/jpeg"
   )
+
+
+@app.route("/violation/snapshot/<camera_name>", meethods=["POST"])
+def violation_snapshot(camera_name):
+
+  with frame_lock:
+    frame = shared_frames.get(camera_name)
+
+    if frame is None:
+      return {
+        "success": False,
+        "message": "No current frame available for this camera."
+      }, 404
+
+    frame = frame.copy()
+
+  result = create_violation_snapshot(camera_name, frame)
+
+  if not result["success"]:
+    return result, 500
+
+  return result
 
 
 @app.route("/recording/file/<filename>")

@@ -1,6 +1,7 @@
 import { subscribeTraffic } from "../data/road_condition/trafficStore.js";
 import { updateRoadCondition } from "./update_road_details.js";
 import { openAccidentModal } from "./accident_and_violation/accident_modal.js";
+import { openViolationModal } from "./accident_and_violation/violation_modal.js";
 
 let activeRoadId = null;
 //let subscribed = false;
@@ -168,7 +169,7 @@ export function openRoadCondition(container, road) {
                   <button class="btn btn-danger" id="accidentReportBtn"><i class="fas fa-car-crash"></i> Accident Report</button>
                 </div>
                 <div class="stat-card">
-                  <button class="btn btn-info"><i class="fas fa-triangle-exclamation"></i> Violation Report</button>
+                  <button class="btn btn-info" id="violationReportBtn"><i class="fas fa-triangle-exclamation"></i> Violation Report</button>
                 </div>
               </div>
 
@@ -202,6 +203,7 @@ export function openRoadCondition(container, road) {
       </div>
 
       <div class="quick-report-overlay accident-hidden-overlay" id="accidentModal"></div>
+      <div class="quick-violation-report-overlay violation-hidden-overlay" id="violationModal"></div>
     `;
 
     dom = {
@@ -350,6 +352,13 @@ export function openRoadCondition(container, road) {
 
   accidentReportBtn.addEventListener("click", () => {
     openAccidentModal(accidentModal, road);
+  });
+
+  const violationModal = document.getElementById("violationModal");
+  const violationReportBtn = document.getElementById("violationReportBtn");
+
+  violationReportBtn.addEventListener("click", () => {
+    openViolationModal(violationModal, road);
   });
 
 }
