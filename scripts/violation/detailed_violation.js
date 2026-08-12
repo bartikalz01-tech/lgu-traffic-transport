@@ -1,4 +1,101 @@
-export function renderViolationDetailModal(container) {
+export function renderViolationDetailModal(container, violation) {
+
+  function getStatusConfig(status) {
+    switch (String(status ?? "").trim()) {
+
+      case "Pending Review":
+        return {
+          className: "pending",
+          icon: "fas fa-clock",
+          label: "Pending Review",
+          footerMessage: "This report is currently under verification."
+        };
+
+      case "Verified":
+        return {
+          className: "verified",
+          icon: "fas fa-circle-check",
+          label: "Verified",
+          footerMessage: "This report has been verified."
+        };
+
+      case "Rejected":
+        return {
+          className: "rejected",
+          icon: "fas fa-circle-xmark",
+          label: "Rejected",
+          footerMessage: "This report has been rejected."
+        };
+
+      default:
+        return {
+          className: "",
+          icon: "fas fa-circle-question",
+          label: status || "Unknown",
+          footerMessage: "The status of this report is currently unavailable."
+        };
+    }
+  }
+
+
+  function getViolationTypeConfig(type) {
+    switch (String(type ?? "").trim()) {
+
+      case "Illegal Parking":
+        return {
+          className: "parking",
+          icon: "fas fa-square-parking",
+          label: "Illegal Parking"
+        };
+
+      case "Road Obstruction":
+        return {
+          className: "obstruction",
+          icon: "fas fa-road-barrier",
+          label: "Road Obstruction"
+        };
+
+      case "Route Violation":
+        return {
+          className: "route",
+          icon: "fas fa-route",
+          label: "Route Violation"
+        };
+
+      default:
+        return {
+          className: "",
+          icon: "fas fa-circle-question",
+          label: type || "Unknown Violation"
+        };
+    }
+  }
+
+
+  const dateTime = violation?.violation_datetime
+    ? new Date(violation.violation_datetime)
+    : null;
+
+  const dateText = dateTime
+    ? dateTime.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      })
+    : "-";
+
+  const timeText = dateTime
+    ? dateTime.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit"
+      })
+    : "-";
+
+  const statusConfig = getStatusConfig(violation?.status);
+  const typeConfig = getViolationTypeConfig(violation?.violation_type);
+
+  const evidenceFilename = violation?.file_name ?? null;
+
   container.innerHTML = `
     <div class="detailed-report-modal">
       <div class="detailed-report-header">
@@ -30,17 +127,17 @@ export function renderViolationDetailModal(container) {
           </span>
 
           <strong class="detailed-report-reference-id">
-            VIO-XXXXXXXXX
+            ${violation.public_violation_id ?? "-"}
           </strong>
         </div>
 
-        <div class="detailed-report-status pending">
-          <i class="fas fa-clock"></i>
+        <div class="detailed-report-status ${statusConfig.className}">
+          <i class="${statusConfig.icon}"></i>
           <div>
             <span clas="detailed-report-status-label">
               Status
             </span>
-            <strong>Pending Review</strong>
+            <strong>${statusConfig.label}</strong>
           </div>
         </div>
       </div>
@@ -61,14 +158,14 @@ export function renderViolationDetailModal(container) {
           <div class="detailed-report-grid">
             <div class="detailed-report-field">
               <span class="detailed-report-field-label">Violation ID</span>
-              <strong>#1</strong>
+              <strong>${violation.public_violation_id}</strong>
             </div>
 
             <div class="detailed-report-field">
               <span class="detailed-report-field-label">Violation Type</span>
-              <span class="detailed-report-type-badge parking">
-                <i class="fas fa-square-parking"></i>
-                Illegal Parking
+              <span class="detailed-report-type-badge ${typeConfig.className}">
+                <i class="${typeConfig.icon}"></i>
+                ${typeConfig.label}
               </span>
             </div>
 
@@ -77,21 +174,21 @@ export function renderViolationDetailModal(container) {
                 Road / Street
               </span>
 
-              <strong>Example Road</strong>
+              <strong>${violation.road_name}</strong>
             </div>
 
             <div class="detailed-report-field">
               <span class="detailed-report-field-label">Date & Time</span>
               <strong>
-                Aug 12, 2026
-                <small>5:42 PM</small>
+                ${dateText}
+                <small>${timeText}</small>
               </strong>
             </div>
 
             <div class="detailed-report-field full-width">
               <span class="detailed-report-field-label">Location Details</span>
               <div class="detailed-report-text-box">
-                Near the barangay entrance / eastbound lane
+                ${violation.location_details}
               </div>
             </div>
           </div>
@@ -115,7 +212,7 @@ export function renderViolationDetailModal(container) {
                 Plate Number
               </span>
 
-              <strong class="detailed-report-plate">ABC-123</strong>
+              <strong class="detailed-report-plate">${violation.plate_number}</strong>
             </div>
 
             <div class="detailed-report-field">
@@ -123,7 +220,7 @@ export function renderViolationDetailModal(container) {
                 Vehicle Type
               </span>
 
-              <strong>Private Car</strong>
+              <strong>${violation.vehicle_type}</strong>
             </div>
           </div>
         </section>
@@ -142,8 +239,7 @@ export function renderViolationDetailModal(container) {
           </div>
 
           <div class="detailed-report-description">
-            Vehicle was observed parked along the roadside and partially
-            obstructing the eastbound lane.
+            ${violation.description ?? ""}
           </div>
         </section>
 
@@ -165,6 +261,7 @@ export function renderViolationDetailModal(container) {
                 src=""
                 id="detailedViolationEvidenceImage"
                 alt="CCTV violation evidence"
+                style="display: none;"
               />
 
               <div class="detailed-report-no-evidence" id="detailedViolationNoEvidence">
@@ -182,12 +279,12 @@ export function renderViolationDetailModal(container) {
 
               <div class="detailed-report-evidence-row">
                 <span><i class="fas fa-file"></i> File Name</span>
-                <strong>example_snapshot.jpg</strong>
+                <strong>${violation.file_name}</strong>
               </div>
 
               <div class="detailed-report-evidence-row">
                 <span><i class="fas fa-folder-open"></i> File Path</span>
-                <strong>violation_evidence/snapshots/</strong>
+                <strong>${violation.file_path}</strong>
               </div>
             </div>
           </div>
@@ -197,7 +294,7 @@ export function renderViolationDetailModal(container) {
       <div class="detailed-report-footer">
         <div class="detailed-report-footer-info">
           <i class="fas fa-shield-halved"></i>
-          <span>This report is currently under verification.</span>
+          <span>${statusConfig.footerMessage}</span>
         </div>
 
         <div class="detailed-report-footer-actions">
@@ -208,6 +305,22 @@ export function renderViolationDetailModal(container) {
   `;
 
   container.classList.remove("detailed-reports-hidden");
+
+
+  const evidenceImage = container.querySelector("#detailedViolationEvidenceImage");
+  const noEvidence = container.querySelector("#detailedViolationNoEvidence");
+
+  if(evidenceFilename) {
+    evidenceImage.src = `http://localhost:5001/violation_evidence/snapshots/file/${encodeURIComponent(evidenceFilename)}`;
+
+    evidenceImage.style.display = "block";
+    noEvidence.style.display = "none";
+  } else {
+    evidenceImage.src = "";
+    evidenceImage.style.display = "none";
+    noEvidence.style.display = "flex";
+  }
+
 
   const closeBtn = container.querySelector("#closeDetailedViolationBtn");
   const closeFooterBtn = container.querySelector("#closeDetailedViolationFooterBtn");

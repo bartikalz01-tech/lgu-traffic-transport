@@ -237,7 +237,7 @@ export function renderViolationReportsPanel(container) {
           violation => String(violation.violation_report_id) == String(btn.dataset.violationId) 
         );
 
-        renderViolationDetailModal(violationModalContainer)
+        renderViolationDetailModal(violationModalContainer, selectedViolation);
       });
     });
 

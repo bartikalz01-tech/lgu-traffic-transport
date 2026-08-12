@@ -116,7 +116,7 @@ class Violations extends config {
 
         $filename = $data['evidence'];
 
-        $filepath = 'accident_snapshots/' . $filename;
+        $filepath = 'violation_evidence/snapshots/' . $filename;
 
         $evidenceStmt->bindParam(
           ':violation_report_id',
