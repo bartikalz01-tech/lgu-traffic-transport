@@ -1,4 +1,8 @@
+import { insertViolationReport } from "../../data/violation_report/fetch_violations.js";
+
 export async function openViolationModal(container, road) {
+
+  let snapshotFileName = null;
 
   container.innerHTML = `
     <div class="violation-modal">
@@ -407,47 +411,114 @@ export async function openViolationModal(container, road) {
     );
 
 
-  captureSnapshotBtn.addEventListener(
-    "click",
-    async () => {
+  captureSnapshotBtn.addEventListener("click", async () => {
 
-      // We'll connect this to your Python
-      // snapshot endpoint next.
+    evidenceStatus.textContent =
+      "Capturing snapshot...";
 
-      evidenceStatus.textContent =
-        "Capturing snapshot...";
+    captureSnapshotBtn.disabled = true;
+
+    try {
 
       captureSnapshotBtn.disabled = true;
 
-      try {
+      captureSnapshotBtn.innerHTML = `
+        <i class="fas fa-spinner fa-spin"></i>
+        Capturing...
+      `;
 
-        // TODO:
-        // const response = await fetch(...);
+      const response = await fetch(`http://127.0.0.1:5001/snapshot/${encodeURIComponent(road.video_filename)}`, {
+        method: "POST"
+      });
 
-        evidenceStatus.textContent =
-          "Snapshot ready";
+      const data = await response.json();
 
-        snapshotPreview.classList.remove(
-          "hidden"
-        );
-
-      } catch(error) {
-
-        console.error(
-          "Snapshot capture error:",
-          error
-        );
-
-        evidenceStatus.textContent =
-          "Failed to capture snapshot";
-
-      } finally {
-
-        captureSnapshotBtn.disabled = false;
-
+      if(!data.success) {
+        throw new Error(data.message);
       }
 
+      snapshotFileName = data.filename;
+
+      capturedSnapshot.src = `http://127.0.0.1:5001/accident_snapshot/${encodeURIComponent(data.filename)}`;
+
+      capturedSnapshot.dataset.filename = data.filename;
+
+      snapshotPreview.classList.remove("hidden");
+
+      evidenceStatus.textContent = `Snapshot Captured - ${data.captured_at}`;
+
+    } catch(error) {
+
+      console.error(
+        "Snapshot capture error:",
+        error
+      );
+
+      evidenceStatus.textContent =
+        "Failed to capture snapshot";
+
+    } finally {
+
+      captureSnapshotBtn.disabled = false;
+
+      captureSnapshotBtn.innerHTML = `<i class="fas fa-camera"></i> Capture Snapshot `;
+
     }
-  );
+
+  });
+
+  const submitViolationBtn = document.getElementById("submitViolationBtn");
+  submitViolationBtn.addEventListener("click", async () => {
+    const violationType = document.getElementById("violationType").value;
+    const violationDatetime = document.getElementById("violationDatetime").value;
+    const plateNumber = document.getElementById("plateNumber").value.trim();
+    const vehicleType = document.getElementById("vehicleType").value;
+    const locationDetails = document.getElementById("locationDetails").value;
+    const description = document.getElementById("violationDescription").value;
+
+    if(!violationType) {
+      alert("Please select a violation type");
+      return;
+    }
+
+    if(!violationDatetime) {
+      alert("Please select the violation date and time");
+      return;
+    }
+
+    const violationData = {
+      road_id: road.road_id,
+      violation_type: violationType,
+      violation_datetime: violationDatetime.replace("T", " ") + ":00",
+      location_details: locationDetails || null,
+      plate_number: plateNumber || null,
+      vehicle_type: vehicleType || null,
+      description: description || null,
+
+      evidence: capturedSnapshot.dataset.filename || null
+    };
+
+    submitViolationBtn.disabled = true;
+
+    submitViolationBtn.innerHTML = `
+      <i class="fas fa-spinner fa-spin"></i>
+      Submitting...
+    `;
+
+    try {
+      const result = await insertViolationReport(violationData);
+
+      console.log("Violation report submitted:", result);
+
+      alert("Violation report submitted successfully");
+
+      container.innerHTML = "";
+      container.classList.add("violation-hidden-overlay");
+
+    } catch(error) {
+      console.error("Failed to submit violation", error);
+      alert(error.message || "Failed to submit violation report");
+    }
+  });
 
 }

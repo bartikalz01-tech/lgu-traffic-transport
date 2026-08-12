@@ -212,7 +212,7 @@ def accident_snapshot(filename):
   )
 
 
-@app.route("/violation/snapshot/<camera_name>", meethods=["POST"])
+@app.route("/violation/snapshot/<camera_name>", methods=["POST"])
 def violation_snapshot(camera_name):
 
   with frame_lock:
