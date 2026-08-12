@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <link rel="stylesheet" href="../styles/violations/violation.css">
+  <link rel="stylesheet" href="../styles/violations/detailed_violaton_report.css">
   <title>Violations Reports</title>
 </head>
 

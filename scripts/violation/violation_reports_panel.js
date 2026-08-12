@@ -1,4 +1,5 @@
 import { subscribeViolations } from "../data/violation_report/violationStore.js"
+import { renderViolationDetailModal } from "./detailed_violation.js";
 
 export function renderViolationReportsPanel(container) {
 
@@ -72,6 +73,8 @@ export function renderViolationReportsPanel(container) {
   const statusFilter = container.querySelector("#violationStatusFilter");
   const typeFilter = container.querySelector("#violationTypeFilter");
   const dateFilter = container.querySelector("#violationDateFilter");
+
+  const violationModalContainer = container.querySelector("#detailViolationContainer");
 
   const ITEMS_PER_PAGE = 5;
 
@@ -234,7 +237,7 @@ export function renderViolationReportsPanel(container) {
           violation => String(violation.violation_report_id) == String(btn.dataset.violationId) 
         );
 
-        console.log(selectedViolation);
+        renderViolationDetailModal(violationModalContainer)
       });
     });
 
