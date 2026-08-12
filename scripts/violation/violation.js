@@ -16,6 +16,5 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderViolationSummaryReports(violationSummaryPanel, violations);
     }
   );
-
   
 });

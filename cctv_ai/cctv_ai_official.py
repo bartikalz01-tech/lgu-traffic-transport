@@ -212,7 +212,7 @@ def accident_snapshot(filename):
   )
 
 
-@app.route("/violation/snapshot/<camera_name>", methods=["POST"])
+@app.route("/violation_evidence/snapshots/<camera_name>", methods=["POST"])
 def violation_snapshot(camera_name):
 
   with frame_lock:
@@ -232,6 +232,24 @@ def violation_snapshot(camera_name):
     return result, 500
 
   return result
+
+
+@app.route("/violation_evidence/snapshots/file/<filename>", methods=["GET"])
+def get_violation_snapshot(filename):
+
+  filepath = (Path(__file__).parent / "violation_evidence" / "snapshots"/ filename)
+
+  if not filepath.exists():
+    return {
+      "success": False,
+      "message": "Violation snapshot not found"
+    }, 404
+
+  return send_file(
+    filepath,
+    mimetype="image/jpeg"
+  )
+
 
 
 @app.route("/recording/file/<filename>")

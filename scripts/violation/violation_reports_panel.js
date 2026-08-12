@@ -61,6 +61,8 @@ export function renderViolationReportsPanel(container) {
 
       <div class="violation-pagination" id="violationPagination"></div>
     </div>
+
+    <div class="detailed-reports-overlay detailed-reports-hidden" id="detailViolationContainer"></div>
   `
 
   const tbody = container.querySelector("#violationTbody");
@@ -100,7 +102,7 @@ export function renderViolationReportsPanel(container) {
       default:
         return {
           className: "",
-          icon: "fas fa-circle-question"
+          icon: "fa-circle-question"
         };
     }
   }
@@ -176,7 +178,7 @@ export function renderViolationReportsPanel(container) {
         minute: "2-digit"
       }) : "-";
 
-      tbody.innerHTML = `
+      tbody.insertAdjacentHTML("beforeend", `
         <tr>
           <td>
             <span class="violation-public-id">
@@ -207,12 +209,12 @@ export function renderViolationReportsPanel(container) {
             </span>
           </td>
           <td>
-            <button type="button" class="violation-action-btn" title="View Report">
+            <button type="button" class="violation-action-btn" title="View Report" data-violation-id=${violation.violation_report_id}>
               <i class="fas fa-eye"></i>
             </button>
           </td>
         </tr>
-      `;
+      `);
     });
 
     tableCount.innerHTML = `
@@ -223,6 +225,18 @@ export function renderViolationReportsPanel(container) {
     `;
 
     renderPagination(totalPages);
+
+    const violationViewDetailBtn = tbody.querySelectorAll(".violation-action-btn");
+
+    violationViewDetailBtn.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const selectedViolation = violationDetails.find(
+          violation => String(violation.violation_report_id) == String(btn.dataset.violationId) 
+        );
+
+        console.log(selectedViolation);
+      });
+    });
 
   }
 

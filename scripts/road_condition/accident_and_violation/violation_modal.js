@@ -427,7 +427,7 @@ export async function openViolationModal(container, road) {
         Capturing...
       `;
 
-      const response = await fetch(`http://127.0.0.1:5001/snapshot/${encodeURIComponent(road.video_filename)}`, {
+      const response = await fetch(`http://127.0.0.1:5001/violation_evidence/snapshots/${encodeURIComponent(road.video_filename)}`, {
         method: "POST"
       });
 
@@ -439,7 +439,7 @@ export async function openViolationModal(container, road) {
 
       snapshotFileName = data.filename;
 
-      capturedSnapshot.src = `http://127.0.0.1:5001/accident_snapshot/${encodeURIComponent(data.filename)}`;
+      capturedSnapshot.src = `http://127.0.0.1:5001/violation_evidence/snapshots/file/${encodeURIComponent(data.filename)}`;;
 
       capturedSnapshot.dataset.filename = data.filename;
 
