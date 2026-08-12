@@ -11,9 +11,8 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
-  <link rel="stylesheet" href="../styles//violations/violation.css">
-  <link rel="stylesheet" href="../styles/violations/quick_report.css">
-  <title>Violations and Ticketing</title>
+  <link rel="stylesheet" href="../styles/violations/violation.css">
+  <title>Violations Reports</title>
 </head>
 
 <body>
@@ -22,270 +21,234 @@
 
     <?php include '../includes/accident_header.php' ?>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <!--<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
       <div class="module-title-container">
         <p class="module-title">Violation and Ticketing System</p>
         <h1 class="sub-module-title">Violation Reports</h1>
-        <p class="sub-module-description">Report violations and record their tickets</p>
+        <p class="sub-module-description">Violation and ticketing system</p>
       </div>
-      <!--<button class="btn btn-primary" id="quickReportsBtn" style="margin-top: var(--header-h); margin-right: 20px;">
-        <i class="fas fa-plus"></i> Quick Reports
-      </button>-->
-    </div>
+    </div>-->
 
-    <section class="violation-system">
-      <div class="violation-content">
-        <div class="quick-actions-panel">
-          <div class="quick-action-card">
-            <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
-            <div class="action-buttons">
-              <button class="btn btn-primary action-btn" id="quickIssueBtn">
-                <i class="fas fa-ticket-alt"></i> Issue Violation Report
-              </button>
-              <button class="btn btn-secondary action-btn" id="openCasesReports">
-                <i class="fa-solid fa-magnifying-glass"></i> Open Cases Reports
-              </button>
-              <button class="btn btn-secondary action-btn" id="escalatedReportsBtn">
-                <i class="fas fa-chart-bar"></i> Escalated Reports <!-- To create violatios based on barangay ordinance -->
-              </button>
-              <button class="btn btn-secondary action-btn" id="resolvedCases">
-                <i class="fa-solid fa-lock"></i> Resolved Cases
-              </button>
-              <!--<button class="btn btn-secondary action-btn" id="sendRemindersBtn">
-                <i class="fas fa-user-group"></i> Dispatch Officers
-              </button>-->
-            </div>
+    <section class="violation-container">
+      <div class="violation-summary-grid">
+        <div class="violation-summary-card total">
+          <div class="violation-summary-icon total">
+            <i class="fas fa-file-lines"></i>
           </div>
 
-          <div class="quick-action-card">
-            <h4><i class="fas fa-chart-pie"></i> Today's Statistics</h4>
-            <div class="statistics-grid">
-              <div class="stat-item">
-                <div class="stat-value">23</div>
-                <div class="stat-label">New Violations</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">18</div>
-                <div class="stat-label">Tickets Issued</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">15</div>
-                <div class="stat-label">Payments Processed</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">₱12,350</div>
-                <div class="stat-label">Total Collected</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="quick-action-card">
-            <h4><i class="fas fa-exclamation-circle"></i> Barangay Violations</h4>
-            <div style="margin-top: 1rem;">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span>Obstruction of Roads</span>
-                <span class="stat-value">45</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span>Illegal Parking</span>
-                <span class="stat-value">38</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span>Route Violations</span>
-                <span class="stat-value">32</span>
-              </div>
-              <!--<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span>Red Light</span>
-                <span class="stat-value">24</span>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span>No License</span>
-                <span class="stat-value">18</span>
-              </div>-->
-            </div>
+          <div class="violation-summary-content">
+            <span>Total Reports</span>
+            <strong>128</strong>
+            <small>All violation reports</small>
           </div>
         </div>
 
-        <div class="violation-list-panel">
-          <div class="panel-header">
-            <h3><i class="fas fa-list"></i> Recent Violations</h3>
-            <div class="panel-controls">
-              <select class="filter-select" id="violationFilter">
-                <option value="all">All Violations</option>
-                <option value="pending">Pending</option>
-                <option value="issued">Issued</option>
-                <option value="paid">Paid</option>
-                <option value="overdue">Overdue</option>
-              </select>
-              <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchViolations" placeholder="Search violations...">
-              </div>
-            </div>
+        <div class="violation-summary-card">
+          <div class="violation-summary-icon pending">
+            <i class="fas fa-clock"></i>
           </div>
 
-          <div class="violations-container">
-            <!--<div class="violations-table-wrapper">
-              <table class="violations-table">
-                <thead>
-                  <tr>
-                    <th>Violation ID</th>
-                    <th>Vehicle</th>
-                    <th>Person</th>
-                    <th>Violation Type</th>
-                    <th>Fine Amount</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="violationsTableBody">
-                  
-                  <tr>
-                    <td>VIO-20240115-001</td>
-                    <td>ABC-1234 (Toyota)</td>
-                    <td>Juan Dela Cruz</td>
-                    <td>Speeding</td>
-                    <td>₱1,500</td>
-                    <td>2024-01-15 10:30</td>
-                    <td><span class="violation-status status-paid">Paid</span></td>
-                    <td>
-                      <div class="table-actions">
-                        <button class="btn btn-success" title="View Details">
-                          View Details
-                        </button>
-                        <button class="btn btn-info" title="Print Receipt">
-                          Print Receipt
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>VIO-20240114-002</td>
-                    <td>XYZ-5678 (Motorcycle)</td>
-                    <td>Maria Santos</td>
-                    <td>No Helmet</td>
-                    <td>₱750</td>
-                    <td>2024-01-14 14:15</td>
-                    <td><span class="violation-status status-issued">Issued</span></td>
-                    <td>
-                      <div class="table-actions">
-                        <button class="btn btn-success" title="View Details">
-                          View Details
-                        </button>
-                        <button class="btn btn-info" title="Print Receipt">
-                          Print Receipt
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>VIO-20240113-003</td>
-                    <td>DEF-9012 (Van)</td>
-                    <td>Pedro Reyes</td>
-                    <td>Illegal Parking</td>
-                    <td>₱1,000</td>
-                    <td>2024-01-13 09:45</td>
-                    <td><span class="violation-status status-overdue">Overdue</span></td>
-                    <td>
-                      <div class="table-actions">
-                        <button class="btn btn-success" title="View Details">
-                          View Details
-                        </button>
-                        <button class="btn btn-info" title="Print Receipt">
-                          Print Receipt
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>VIO-20240112-004</td>
-                    <td>GHI-3456 (Sedan)</td>
-                    <td>Ana Torres</td>
-                    <td>Red Light</td>
-                    <td>₱2,000</td>
-                    <td>2024-01-12 16:20</td>
-                    <td><span class="violation-status status-pending">Pending</span></td>
-                    <td>
-                      <div class="table-actions">
-                        <button class="btn btn-success" title="View Details">
-                          View Details
-                        </button>
-                        <button class="btn btn-info" title="Print Receipt">
-                          Print Receipt
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>VIO-20240111-005</td>
-                    <td>JKL-7890 (Truck)</td>
-                    <td>Carlos Gomez</td>
-                    <td>Overloading</td>
-                    <td>₱3,500</td>
-                    <td>2024-01-11 11:10</td>
-                    <td><span class="violation-status status-paid">Paid</span></td>
-                    <td>
-                      <div class="table-actions">
-                        <button class="btn btn-success" title="View Details">
-                          View Details
-                        </button>
-                        <button class="btn btn-info" title="Print Receipt">
-                          Print Receipt
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>-->
-            <div class="list-body" id="violationList">
-              <div class="violation-item active">
-                <div class="violation-header">
-                  <span class="violation-id">VIOLATION-20240115-001</span>
-                  <span class="violation-time">Today, 10:15 AM</span>
-                </div>
-                <div class="violation-details">
-                  <h4>Vehicle Collision at Road 123</h4>
-                  <div class="violation-meta">
-                    <span><i class="fas fa-road"></i> Road 123</span>
-                    <span><i class="fas fa-users"></i> 3 People</span>
-                    <span><i class="fas fa-car"></i> 2 Vehicles</span>
-                  </div>
-                  <div class="status-and-action">
-                    <span class="status-badge status-investigation">Under Investigation</span>
-                    <div class="all-about-ticket-buttons">
-                      <button class="btn btn-info js-modify-report" data-accident-id="">Modfiy Report</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="violation-summary-content">
+            <span>Pending Review</span>
+            <strong>24</strong>
+            <small>Awaiting hearing</small>
+          </div>
+        </div>
 
-            <div class="pagination">
-              <button class="page-btn">
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              <button class="page-btn active">1</button>
-              <button class="page-btn">2</button>
-              <button class="page-btn">3</button>
-              <span class="page-info">of 12</span>
-              <button class="page-btn">
-                <i class="fas fa-chevron-right"></i>
-              </button>
-            </div>
+        <div class="violation-summary-card">
+          <div class="violation-summary-icon verified">
+            <i class="fas fa-circle-check"></i>
+          </div>
+
+          <div class="violation-summary-content">
+            <span>Verified</span>
+            <strong>91</strong>
+            <small>Confirmed violations</small>
+          </div>
+        </div>
+
+        <div class="violation-summary-card">
+          <div class="violation-summary-icon rejected">
+            <i class="fas fa-circle-xmark"></i>
+          </div>
+
+          <div class="violation-summary-content">
+            <span>Rejected</span>
+            <strong>13</strong>
+            <small>Not confirmed</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="violation-report-panel">
+        <div class="violation-panel-header">
+          <div>
+            <h2>Violation Reports</h2>
+            <p>Review and manage reported traffic and transport violations</p>
+          </div>
+        </div>
+
+        <div class="violation-filters">
+          <div class="violation-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search violation reports..." />
+          </div>
+
+          <div class="violation-filter-group">
+            <select>
+              <option value="">All Status</option>
+              <option value="Pending Review">Pending Review</option>
+              <option value="Verified">Verified</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div class="violation-filter-group">
+            <select>
+              <option value="">All Violation Types</option>
+              <option value="Illegal Parking">Illegal Parking</option>
+              <option value="Road Obstruction">Road Obstruction</option>
+              <option value="Route Violation">Route Violation</option>
+            </select>
+          </div>
+
+          <div class="violation-filter-group">
+            <input type="date" title="Filter by date" />
+          </div>
+        </div>
+
+        <div class="violation-table-wrapper">
+          <table class="violation-table">
+            <thead>
+              <tr>
+                <th>Violation ID</th>
+                <th>Violation Type</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>
+                  <span class="violation-public-id">
+                    VIO-20260809-A84F21
+                  </span>
+                </td>
+                <td>
+                  <span class="violation-type-badge parking">
+                    Illegal Parking
+                  </span>
+                </td>
+                <td>
+                  <div class="violation-datetime">
+                    <strong>Aug 9, 2026</strong>
+                    <small>10:42 AM</small>
+                  </div>
+                </td>
+                <td>
+                  <span class="violation-status pending">
+                    <i class="fas fa-clock"></i>
+                    Pending Review
+                  </span>
+                </td>
+                <td>
+                  <button type="button" class="violation-action-btn" title="View Report">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="violation-public-id">
+                    VIO-20260809-B72C19
+                  </span>
+                </td>
+                <td>
+                  <span class="violation-type-badge obstruction">
+                    Road Obstruction
+                  </span>
+                </td>
+                <td>
+                  <div class="violation-datetime">
+                    <strong>Aug 9, 2026</strong>
+                    <small>09:18 AM</small>
+                  </div>
+                </td>
+                <td>
+                  <span class="violation-status verified">
+                    <i class="fas fa-circle-check"></i>
+                    Verified
+                  </span>
+                </td>
+                <td>
+                  <button type="button" class="violation-action-btn" title="View Report">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <span class="violation-public-id">
+                    VIO-20260808-C51D03
+                  </span>
+                </td>
+                <td>
+                  <span class="violation-type-badge route">
+                    Route Violation
+                  </span>
+                </td>
+                <td>
+                  <div class="violation-datetime">
+                    <strong>Aug 8, 2026</strong>
+                    <small>04:45 AM</small>
+                  </div>
+                </td>
+                <td>
+                  <span class="violation-status rejected">
+                    <i class="fas fa-circle-xmark"></i>
+                    Rejected
+                  </span>
+                </td>
+                <td>
+                  <button type="button" class="violation-action-btn" title="View Report">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="violation-table-footer">
+          <span>Showing 1-4 of 128 reports</span>
+          <div class="violation-pagination">
+            <button disabled>
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <button class="active">1</button>
+            <button>2</button>
+            <button>3</button>
+
+            <span>...</span>
+            <button>32</button>
+
+            <button>
+              <i class="fas fa-chevron-right"></i>
+            </button>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="quick-report-overlay hidden"></div>
-
-    <div class="detailed-reports-overlay detailed-reports-hidden"></div>
-
     <?php include '../includes/admin-footer.php'; ?>
   </main>
 
+  <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/violation/violation.js"></script>
 </body>
 
