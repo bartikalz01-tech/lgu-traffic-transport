@@ -167,6 +167,40 @@ class Violations extends config {
       );
     }
   }
+
+  public function getViolationDetails() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        vr.violation_report_id,
+        vr.public_violation_id,
+        r.road_name,
+        vr.violation_type,
+        vr.violation_datetime,
+        vr.location_details,
+        vr.plate_number,
+        vr.vehicle_type,
+        vr.description,
+        vr.status,
+        ve.file_name,
+        ve.file_path
+
+      FROM violation_reports vr
+
+      LEFT JOIN roads r
+        ON vr.road_id = r.road_id
+
+      LEFT JOIN violation_evidence ve
+        ON vr.violation_report_id = ve.violation_report_id
+
+      ORDER BY vr.created_at DESC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }
 
 ?>

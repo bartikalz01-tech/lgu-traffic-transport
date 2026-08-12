@@ -19,3 +19,25 @@ export async function insertViolationReport(violationData) {
     throw error;
   }
 }
+
+export async function getViolationDetails() {
+  try {
+
+    const response = await fetch('../api/violations/get_violation_details.php');
+
+     if(!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    return Array.isArray(result) ? result : [];
+
+  } catch(error) {
+
+    console.error("Failed to fetch violation details:", error);
+
+    return [];
+
+  }
+}
