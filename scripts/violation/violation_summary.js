@@ -1,4 +1,18 @@
-export function renderViolationSummaryReports(container) {
+export function renderViolationSummaryReports(container, violationDetails= []) {
+
+  const totalViolations = violationDetails.length;
+
+  const pendingCount = violationDetails.filter(
+    violation => String(violation.status ?? "").trim().toLowerCase() === "pending review"
+  ).length;
+
+  const verifiedCount = violationDetails.filter(
+    violation => String(violation.status ?? "").trim().toLowerCase() === "verified"
+  ).length;
+
+  const rejectedCount = violationDetails.filter(
+    violation => String(violation.status ?? "").trim().toLowerCase() === "rejected"
+  ).length;
 
   container.innerHTML = `
     <div class="violation-summary-card total">
@@ -8,7 +22,7 @@ export function renderViolationSummaryReports(container) {
 
       <div class="violation-summary-content">
         <span>Total Reports</span>
-        <strong>128</strong>
+        <strong>${totalViolations}</strong>
         <small>All violation reports</small>
       </div>
     </div>
@@ -20,7 +34,7 @@ export function renderViolationSummaryReports(container) {
 
       <div class="violation-summary-content">
         <span>Pending Review</span>
-        <strong>24</strong>
+        <strong>${pendingCount}</strong>
         <small>Awaiting hearing</small>
       </div>
     </div>
@@ -32,7 +46,7 @@ export function renderViolationSummaryReports(container) {
 
       <div class="violation-summary-content">
         <span>Verified</span>
-        <strong>91</strong>
+        <strong>${verifiedCount}</strong>
         <small>Confirmed violations</small>
       </div>
     </div>
@@ -44,7 +58,7 @@ export function renderViolationSummaryReports(container) {
 
       <div class="violation-summary-content">
         <span>Rejected</span>
-        <strong>13</strong>
+        <strong>${rejectedCount}</strong>
         <small>Not confirmed</small>
       </div>
     </div>

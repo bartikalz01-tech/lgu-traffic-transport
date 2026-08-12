@@ -290,6 +290,20 @@
   color: #7c3aed;
 }
 
+.violation-road-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+
+  white-space: nowrap;
+}
+
+
+.violation-road-cell i {
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
 .violation-datetime {
   display: flex;
   flex-direction: column;

@@ -21,14 +21,6 @@
 
     <?php include '../includes/accident_header.php' ?>
 
-    <!--<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-      <div class="module-title-container">
-        <p class="module-title">Violation and Ticketing System</p>
-        <h1 class="sub-module-title">Violation Reports</h1>
-        <p class="sub-module-description">Violation and ticketing system</p>
-      </div>
-    </div>-->
-
     <section class="violation-container">
       <div class="violation-summary-grid" id="violationSummaryPanel"></div>
 
