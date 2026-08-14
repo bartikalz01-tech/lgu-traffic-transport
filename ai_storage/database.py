@@ -5,5 +5,5 @@ def get_connection():
     host="localhost",
     user="root",
     password="",
-    database="lgu4_traffic_transport"
+    database="lgu-traffic"
   )
