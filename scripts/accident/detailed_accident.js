@@ -144,7 +144,7 @@ export function detailedAccidentReport(
           </div>
 
           <div class="recorded-video-container">
-            <div class="recorded-video-empty" id="recordedVideoEmpty"">
+            <div class="recorded-video-empty" id="recordedVideoEmpty">
               <div class="recorded-video-icon">
                 <i class="fas fa-film"></i>
               </div>
@@ -162,8 +162,6 @@ export function detailedAccidentReport(
             </div>
 
             <video id="accidentRecordingVideo" class="recorded-accident-video" controls preload="metadata">
-              <source src="..." type="video/mp4">
-
               Your browser does not support HTML5 video playback.
             </video>
           </div>
@@ -427,5 +425,110 @@ export function detailedAccidentReport(
     }
 
   });
+
+  const recordedVideo = container.querySelector("#accidentRecordingVideo");
+  const recordedVideoEmpty = container.querySelector("#recordedVideoEmpty");
+  const recordingLoadingMessage = container.querySelector("#recordingLoadingMessage");
+  const recordingLoadingSpinner = container.querySelector("#recordingLoadingSpinner");
+  const loadRecordingBtn = container.querySelector("#loadAccidentRecordingBtn");
+  
+  recordedVideo.style.display = "none";
+
+  loadRecordingBtn.style.display = "none";
+
+  async function loadAccidentRecording() {
+    const cameraName = accidentDetail.recording_camera;
+    const reportedAt = accidentDetail.reported_at;
+
+    if(!cameraName) {
+      recordingLoadingMessage.textContent = "No CCTV camera is associated with this accident report.";
+      recordingLoadingSpinner.style.display = "none";
+      loadRecordingBtn.style.display = "inline-flex";
+      loadRecordingBtn.innerHTML = ` <i class="fas fa-video"></i> Retry Recording `;
+
+      return;
+    }
+
+    if(!reportedAt) {
+      recordingLoadingMessage.textContent = "The accident report does not contain a valid report timestamp.";
+      recordingLoadingSpinner.style.display = "none";
+      loadRecordingBtn.style.display = "inline-flex";
+
+      return;
+    }
+
+    recordingLoadingMessage.textContent = "Generating the CCTV footage covering the two minutes before the accident report...";
+
+    recordingLoadingSpinner.style.display = "block";
+
+    loadRecordingBtn.style.display = "none";
+
+    try {
+      const response = await fetch(`http://127.0.0.1:5001/accident_evidence/recording/${encodeURIComponent(cameraName)}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            reported_at: reportedAt
+          })
+        }
+      );
+
+      const result = await response.json();
+
+      if(!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to create accident recording");
+      }
+
+      console.log("[ACCIDENT] Recording generated: ", result);
+
+      const recordingUrl = `http://127.0.0.1:5001/recording/file/${encodeURIComponent(result.filename)}`;
+
+      const recordingFromTime = container.querySelector("#recordingFromTime");
+      
+      const recordingToTime = container.querySelector("#recordingToTime");;
+      
+      if(recordingFromTime) {
+        recordingFromTime.textContent = result.from_time;
+      }
+
+      if(recordingToTime) {
+        recordingToTime.textContent = result.to_time;
+      }
+
+      const recordingFileName = container.querySelector("recordingFileName");
+
+      if(recordingFileName) {
+        recordingFilename.textContent = result.filename;
+      }
+
+      recordedVideo.src = recordingUrl;
+
+      recordedVideo.load();
+
+      recordedVideoEmpty.style.display = "none";
+
+      recordedVideo.style.display = "block";
+
+    } catch(error) {
+      console.error( "[ACCIDENT] Failed to load recording:", error );
+
+      recordingLoadingMessage.textContent = error.message || "Unable to generate the accident recording.";
+
+      recordingLoadingSpinner.style.display = "none";
+
+      loadRecordingBtn.style.display = "inline-flex";
+
+      loadRecordingBtn.innerHTML = ` <i class="fas fa-redo"></i> Retry Recording `;
+    }
+  }
+
+  loadRecordingBtn.addEventListener("click", () => {
+    loadAccidentRecording
+  });
+
+  loadAccidentRecording();
 
 }
