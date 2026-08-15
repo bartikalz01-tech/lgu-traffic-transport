@@ -102,6 +102,104 @@ export function detailedAccidentReport(
 
         </div>
 
+        <div class="detailed-accident-recording">
+          <div class="detailed-section-header">
+            <div class="recording-section-heading">
+              <div>
+                <h3><i class="fas fa-video"></i> Recorded CCTV Evidence</h3>
+                <p>Historical CCTV footage surrounding the reported accident time.</p>
+              </div>
+
+              <span class="recording-status-badge">
+                <i class="fas fa-clock"></i>
+                2-Minute Window
+              </span>
+            </div>
+          </div>
+
+          <div class="recording-time-window">
+            <div class="recording-time-item">
+              <span class="recording-time-label">
+                Recording Start
+              </span>
+
+              <strong id="recordingFromTime">
+                2 mins before report 
+              </strong>
+            </div>
+
+            <div class="recording-time-arrow">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <div class="recording-time-item">
+              <span class="recording-time-label">
+                Accident Report Time
+              </span>
+
+              <strong id="recordingToTime">
+                ${accidentDetail.reported_at}
+              </strong>
+            </div>
+          </div>
+
+          <div class="recorded-video-container">
+            <div class="recorded-video-empty" id="recordedVideoEmpty"">
+              <div class="recorded-video-icon">
+                <i class="fas fa-film"></i>
+              </div>
+
+              <h4>Accident Recording Not Loaded</h4>
+
+              <p>
+                The CCTV recording covering the two minutes 
+                before the accident report will appear here.
+              </p>
+
+              <button type="button" class="recording-load-btn" id="loadAccidentRecordingBtn">
+                <i class="fas fa-video"></i> Load Accident Recording
+              </button>
+            </div>
+
+            <video id="accidentRecordingVideo" class="recorded-accident-video" controls preload="metadata">
+              <source src="..." type="video/mp4">
+
+              Your browser does not support HTML5 video playback.
+            </video>
+          </div>
+        </div>
+
+        <div class="recording-information">
+          <div class="recording-information-item">
+            <i class="fas fa-camera"></i>
+
+            <div>
+              <span>Camera</span>
+
+              <strong>${accidentDetail.recording_camera || "Associated CCTV Camera"}</strong>
+            </div>
+          </div>
+
+          <div class="recording-information-item">
+            <i class="fas fa-clock"></i>
+
+            <div>
+              <span>Requested Window</span>
+              <strong>2 minutes before accident report</strong>
+            </div>
+          </div>
+
+          <div class="recording-information-item">
+            <i class="fas fa-file-video"></i>
+
+            <div>
+              <span>Recording File</span>
+
+              <strong>${accidentDetail.recording_filename || "Not generated yet"}</strong>
+            </div>
+          </div>
+        </div>
+
 
         <!-- ACCIDENT INFORMATION -->
 

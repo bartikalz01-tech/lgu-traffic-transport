@@ -14,7 +14,11 @@ class Accidents extends config {
         accident_time,
         accident_type,
         specific_location,
-        snapshot_filename
+        snapshot_filename,
+        recording_filename,
+        recording_from,
+        recording_to,
+        recording_camera
       )
       VALUES (
         :public_accident_id,
@@ -23,7 +27,11 @@ class Accidents extends config {
         :accident_time,
         :accident_type,
         :specific_location,
-        :snapshot_filename
+        :snapshot_filename,
+        :recording_filename,
+        :recording_from,
+        :recording_to,
+        :recording_camera
       )
     ";
 
@@ -42,6 +50,14 @@ class Accidents extends config {
     $stmt->bindParam(':specific_location', $data['specific_location']);
 
     $stmt->bindParam(':snapshot_filename', $data['snapshot_filename']);
+
+    $stmt->bindParam(':recording_filename', $data['recording_filename']);
+
+    $stmt->bindParam(':recording_from', $data['recording_from']);
+
+    $stmt->bindParam(':recording_to', $data['recording_to']);
+
+    $stmt->bindParam(':recording_camera', $data['recording_camera']);
 
     try {
       $stmt->execute();

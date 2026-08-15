@@ -15,7 +15,7 @@ from .violation_evidence.violation_snapshot import (create_violation_snapshot)
 from .accident_evidence.accident_snapshot import (create_accident_snapshots)
 from flask import Flask, Response, request, send_file
 from flask_cors import CORS
-from datetime import datetime
+from datetime import datetime, timedelta
 import cv2
 import time
 
@@ -194,6 +194,48 @@ def get_accident_snapshot(filename):
     mimetype="image/jpeg"
   )
 
+@app.route("/accident_evidence/recording/<camera_name>", methods=["POST"])
+def accident_recording(camera_name):
+  try:
+    cctv_timestamp = get_cctv_timestamp()
+
+    to_datetime = datetime.strptime(cctv_timestamp, "%Y-%m-%d %H:%M:%S")
+
+    from_datetime = to_datetime - timedelta(minutes=2)
+
+    print(f"[ACCIDENT] Preparing recording for ")
+    print(f"{camera_name}")
+
+    print(f"[ACCIDENT] From: ")
+    print(f"{from_datetime}")
+
+    print(f"[ACCIDENT] To: ")
+    print(f"{to_datetime}")
+
+    results = create_historical_recording(camera_name=camera_name, from_time=from_datetime, to_time=to_datetime)
+
+    if not results:
+      return results, 404
+
+    return {
+      "success": True,
+      "filename": results["filename"],
+      "filepath": results["filepath"],
+      "camera": camera_name,
+      "from_time": from_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+      "to_time": to_datetime.strftime("%Y-%m-%d %H:%M:%S"),
+      "segment_used": results.get("segments_used", 0)
+    }
+
+  except Exception as error:
+
+    print(f"[ACCIDENT] Recording error: {error}")
+
+    return {
+      "success": False,
+      "message": "Unable to create accident recording"
+    }, 500
+
 
 
 @app.route("/violation_evidence/snapshots/<camera_name>", methods=["POST"])
@@ -222,6 +264,7 @@ def violation_snapshot(camera_name):
 def get_violation_snapshot(filename):
 
   filepath = (Path(__file__).parent / "violation_evidence" / "snapshots"/ filename)
+
 
   if not filepath.exists():
     return {
