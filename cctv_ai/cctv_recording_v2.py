@@ -1,6 +1,5 @@
 import cv2
 import threading
-import subprocess
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -230,36 +229,70 @@ def create_historical_recording(camera_name, from_time, to_time):
         "than the start time."
     }
 
+
   camera_prefix = (
     Path(camera_name).stem + "_"
   )
 
+
   segment_files = sorted(
-    RECORDING_FOLDER.glob(f"{camera_prefix}*.mp4")
+    RECORDING_FOLDER.glob(
+      f"{camera_prefix}*.mp4"
+    )
   )
+
 
   if not segment_files:
 
     return {
       "success": False,
-      "message": "No historical footage available."
+      "message":
+        "No historical footage available."
     }
 
+
   selected_files = []
+
 
   for filepath in segment_files:
 
     try:
-      filename_time = filepath.stem.replace(camera_prefix, "")
 
-      segment_start = datetime.strptime(filename_time, "%Y%m%d_%H%M%S")
+      filename_time = (
+        filepath.stem.replace(
+          camera_prefix,
+          ""
+        )
+      )
 
-      segment_end = (segment_start + timedelta(seconds=SEGMENT_SECONDS))
 
-      if(segment_end >= from_time and segment_start <= to_time):
-        selected_files.append(filepath)
+      segment_start = datetime.strptime(
+        filename_time,
+        "%Y%m%d_%H%M%S"
+      )
+
+
+      segment_end = (
+        segment_start
+        + timedelta(
+            seconds=SEGMENT_SECONDS
+          )
+      )
+
+
+      if (
+        segment_end >= from_time
+        and
+        segment_start <= to_time
+      ):
+
+        selected_files.append(
+          filepath
+        )
+
 
     except ValueError:
+
       continue
 
 
@@ -267,10 +300,11 @@ def create_historical_recording(camera_name, from_time, to_time):
 
     return {
       "success": False,
-      "message": 
+      "message":
         "No footage found for the "
         "requested time range."
     }
+
 
   output_filename = (
     f"{Path(camera_name).stem}_"
@@ -279,49 +313,75 @@ def create_historical_recording(camera_name, from_time, to_time):
     f"{to_time.strftime('%Y%m%d_%H%M%S')}.mp4"
   )
 
-  temporary_output_path = (RECORDING_FOLDER /f"temp_{output_filename}")
 
-  output_path = (RECORDING_FOLDER / output_filename)
+  output_path = (
+    RECORDING_FOLDER
+    / output_filename
+  )
+
 
   writer = None
+
 
   try:
 
     for segment_file in selected_files:
 
-      capture = cv2.VideoCapture(str(segment_file))
+      capture = cv2.VideoCapture(
+        str(segment_file)
+      )
+
 
       if not capture.isOpened():
+
         print(
-          f"[HISTORICAL]"
-          f"Could not open {segment_file}"
+          f"[HISTORICAL] "
+          f"Could not open "
+          f"{segment_file}"
         )
 
         continue
+
 
       fps = capture.get(
         cv2.CAP_PROP_FPS
       )
 
+
       if fps <= 0:
+
         fps = 30
 
-      width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
 
-      height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+      width = int(
+        capture.get(
+          cv2.CAP_PROP_FRAME_WIDTH
+        )
+      )
+
+
+      height = int(
+        capture.get(
+          cv2.CAP_PROP_FRAME_HEIGHT
+        )
+      )
+
 
       if writer is None:
 
-        fourcc = (
-          cv2.VideoWriter_fourcc(*"mp4v")
+        # Browser-friendly codec attempt:
+        fourcc = cv2.VideoWriter_fourcc(
+          *"avc1"
         )
 
+
         writer = cv2.VideoWriter(
-          str(temporary_output_path),
+          str(output_path),
           fourcc,
           fps,
           (width, height)
         )
+
 
         if not writer.isOpened():
 
@@ -329,76 +389,73 @@ def create_historical_recording(camera_name, from_time, to_time):
 
           return {
             "success": False,
-            "message": 
-              "Failed to create_"
-              "historical recording."
+            "message":
+              "OpenCV could not create "
+              "an H.264 MP4 recording. "
+              "The installed OpenCV build "
+              "may not contain an H.264 encoder."
           }
+
 
       while True:
 
-        success, frame = capture.read()
+        success, frame = (
+          capture.read()
+        )
+
 
         if not success:
+
           break
+
 
         writer.write(frame)
 
+
       capture.release()
+
 
   finally:
 
     if writer is not None:
+
       writer.release()
 
-
-  try:
-    subprocess.run(
-      [
-        "ffmpeg",
-        "-y",
-        "-i", str(temporary_output_path),
-        "-c:v", "libx264",
-        "-preset", "fast",
-        "-crf", "23",
-        "-pix_fmt", "yuv420p",
-        "-movflags", "+faststart",
-        "-an",
-
-        str(output_path)
-      ],
-      check=True
-    )
-  except subprocess.CalledProcessError as e:
-
-    if temporary_output_path.exists():
-      temporary_output_path.unlink()
-
-    return {
-      "success": False,
-      "message": "Failed to convert historical recording to browser-compatible MP4."
-    }
-
-  finally:
-
-    if temporary_output_path.exists():
-      temporary_output_path.unlink()
-  
 
   if not output_path.exists():
 
     return {
       "success": False,
       "message":
-        "Failed to generate"
-        "historical recording"
+        "Historical recording was "
+        "not created."
     }
 
+
   return {
+
     "success": True,
-    "filename": output_filename,
-    "filepath": str(output_path),
-    "camera": camera_name,
-    "from_time": from_time.strftime("%Y-%m-%d %H:%M:%S"),
-    "to_time": to_time.strftime("%Y-%m-%d %H:%M:%S"),
-    "segments_used": len(selected_files)
+
+    "filename":
+      output_filename,
+
+    "filepath":
+      str(output_path),
+
+    "camera":
+      camera_name,
+
+    "from_time":
+      from_time.strftime(
+        "%Y-%m-%d %H:%M:%S"
+      ),
+
+    "to_time":
+      to_time.strftime(
+        "%Y-%m-%d %H:%M:%S"
+      ),
+
+    "segments_used":
+      len(selected_files)
+
   }
