@@ -138,7 +138,7 @@ export function openAccidentModal(container, road) {
         Capturing...
       `;
 
-      const response = await fetch(`http://127.0.0.1:5001/snapshot/${encodeURIComponent(road.video_filename)}`,
+      const response = await fetch(`http://127.0.0.1:5001/accident_evidence/snapshots/${encodeURIComponent(road.video_filename)}`,
         {
           method: "POST"
         }
@@ -152,7 +152,7 @@ export function openAccidentModal(container, road) {
 
       snapshotFileName = data.filename;
 
-      snapshotImage.src = `http://127.0.0.1:5001/accident_snapshot/${encodeURIComponent(data.filename)}`;
+      snapshotImage.src = `http://127.0.0.1:5001/accident_evidence/snapshots/file/${encodeURIComponent(data.filename)}`;
 
       snapshotCapturedAt.textContent = data.captured_at;
 

@@ -12,6 +12,7 @@ from .draw_tracking import draw_tracking
 from .cctv_clock import get_cctv_timestamp
 from .cctv_recording_v2 import (initialize_camera, add_frame, create_historical_recording, get_buffer_status)
 from .violation_evidence.violation_snapshot import (create_violation_snapshot)
+from .accident_evidence.accident_snapshot import (create_accident_snapshots)
 from flask import Flask, Response, request, send_file
 from flask_cors import CORS
 from datetime import datetime
@@ -37,9 +38,6 @@ shared_statistics = {}
 stats_lock = threading.Lock()
 
 VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
-
-SNAPSHOT_FOLDER = Path(__file__).parent / "accident_snapshots"
-SNAPSHOT_FOLDER.mkdir(parents=True, exist_ok=True)
 
 MODEL_NAME = "yolov8s.pt"
 
@@ -158,58 +156,44 @@ def video(camera_name):
   )
 
 
-@app.route("/snapshot/<camera_name>", methods=["POST"])
-def snapshot(camera_name):
-
+@app.route("/accident_evidence/snapshots/<camera_name>", methods=["POST"])
+def accident_snapshot(camera_name):
+   
   with frame_lock:
     frame = shared_frames.get(camera_name)
 
     if frame is None:
       return {
         "success": False,
-        "message": "No current frame available for this camera."
+        "message": "No Current frame available for this camera."
       }, 404
 
     frame = frame.copy()
 
-  timestamp = time.strftime("%Y%m%d_%H%M%S")
+  result = create_accident_snapshots(camera_name, frame)
 
-  filename = f"{Path(camera_name).stem}_{timestamp}.jpg"
+  if not result["success"]:
+    return result, 500
 
-  filepath = SNAPSHOT_FOLDER / filename
-
-  success = cv2.imwrite(str(filepath), frame)
-
-  if not success:
-    return {
-      "success": False,
-      "message": "Failed to save snapshot"
-    }, 500
-
-  captured_at = time.strftime("%Y-%m-%d %H:%M:%S")
-
-  return {
-    "success": True,
-    "filename": filename,
-    "captured_at": captured_at
-  }
+  return result
 
 
-@app.route("/accident_snapshot/<filename>")
-def accident_snapshot(filename):
-   
-  filepath = SNAPSHOT_FOLDER / filename
+
+@app.route("/accident_evidence/snapshots/file/<filename>", methods=["GET"])
+def get_accident_snapshot(filename):
+  filepath = (Path(__file__).parent / "accident_evidence" / "snapshots" / filename)
 
   if not filepath.exists():
     return {
       "success": False,
-      "message": "Snapshot not found"
+      "message": "Accident Snapshot not found"
     }, 404
 
-  return Response(
-    filepath.read_bytes(),
+  return send_file(
+    filepath,
     mimetype="image/jpeg"
   )
+
 
 
 @app.route("/violation_evidence/snapshots/<camera_name>", methods=["POST"])

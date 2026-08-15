@@ -4,7 +4,7 @@ export function detailedAccidentReport(
 ) {
 
   const snapshotUrl = accidentDetail.snapshot_filename
-    ? `http://127.0.0.1:5001/accident_snapshot/${encodeURIComponent(
+    ? `http://127.0.0.1:5001/accident_evidence/snapshots/file/${encodeURIComponent(
         accidentDetail.snapshot_filename
       )}`
     : null;
