@@ -97,13 +97,13 @@ class Violations extends config {
 
         $evidenceSql = "
           INSERT INTO violation_evidence (
-            violation_report_id,
+            violation_id,
             evidence_type,
             file_name,
             file_path
           )
           VALUES (
-            :violation_report_id,
+            :violation_id,
             :evidence_type,
             :file_name,
             :file_path
@@ -119,7 +119,7 @@ class Violations extends config {
         $filepath = 'violation_evidence/snapshots/' . $filename;
 
         $evidenceStmt->bindParam(
-          ':violation_report_id',
+          ':violation_id',
           $violationReportId
         );
 
@@ -151,7 +151,7 @@ class Violations extends config {
 
       return [
         'success' => true,
-        'violation_report_id' => $violationReportId,
+        'violation_id' => $violationReportId,
         'public_violation_id' => $publicViolationId
       ];
 
@@ -172,7 +172,7 @@ class Violations extends config {
     $conn = $this->conn();
     $sql = "
       SELECT
-        vr.violation_report_id,
+        vr.violation_id,
         vr.public_violation_id,
         r.road_name,
         vr.violation_type,
@@ -191,7 +191,7 @@ class Violations extends config {
         ON vr.road_id = r.road_id
 
       LEFT JOIN violation_evidence ve
-        ON vr.violation_report_id = ve.violation_report_id
+        ON vr.violation_id = ve.violation_id
 
       ORDER BY vr.created_at DESC
     ";
