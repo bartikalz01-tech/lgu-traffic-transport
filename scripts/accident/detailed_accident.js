@@ -144,7 +144,7 @@ export function detailedAccidentReport(
           </div>
 
           <div class="recorded-video-container">
-            <div class="recorded-video-empty" id="recordedVideoEmpty">
+            <div class="recorded-video-empty" id="recordedVideoEmpty"">
               <div class="recorded-video-icon">
                 <i class="fas fa-film"></i>
               </div>
@@ -162,6 +162,8 @@ export function detailedAccidentReport(
             </div>
 
             <video id="accidentRecordingVideo" class="recorded-accident-video" controls preload="metadata">
+              <source src="..." type="video/mp4">
+
               Your browser does not support HTML5 video playback.
             </video>
           </div>

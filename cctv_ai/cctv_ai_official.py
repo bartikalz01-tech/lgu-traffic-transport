@@ -197,78 +197,43 @@ def get_accident_snapshot(filename):
 @app.route("/accident_evidence/recording/<camera_name>", methods=["POST"])
 def accident_recording(camera_name):
   try:
-    data = request.get_json()
+    cctv_timestamp = get_cctv_timestamp()
 
-    if not data:
-      return {
-        "success": False,
-        "message": "Request body is required."
-      }, 400
+    to_datetime = datetime.strptime(cctv_timestamp, "%Y-%m-%d %H:%M:%S")
 
-    reported_at = data.get("reported_at")
+    from_datetime = to_datetime - timedelta(minutes=2)
 
-    if not reported_at:
-      return {
-        "success": False,
-        "message": "reported_at is required"
-      },400
+    print(f"[ACCIDENT] Preparing recording for ")
+    print(f"{camera_name}")
 
-    try :
-      accident_datetime = datetime.strptime(reported_at, "%Y-%m-%d %H:%M:%S")
+    print(f"[ACCIDENT] From: ")
+    print(f"{from_datetime}")
 
-    except ValueError:
-      return {
-        "success": False,
-        "message": (
-          "Invalid reported_at format. "
-          "Expected YYYY-MM-DD HH:MM:SS."
-        )
-      }, 400
+    print(f"[ACCIDENT] To: ")
+    print(f"{to_datetime}")
 
-    from_datetime = (accident_datetime - timedelta(minutes=2))
+    results = create_historical_recording(camera_name=camera_name, from_time=from_datetime, to_time=to_datetime)
 
-    to_datetime = accident_datetime
-
-    print("[ACCIDENT] Preparing automatic recording")
-
-    print(f"[ACCIDENT] Camera: {camera_name}")
-
-    print(
-      f"[ACCIDENT] Accident report time: "
-      f"{accident_datetime}"
-    )
-
-    print(
-      f"[ACCIDENT] Recording from: " 
-      f"{from_datetime}" 
-    )
-
-    print(
-      f"[ACCIDENT Recording To: "
-      f"{to_datetime}"
-    )
-
-    result = create_historical_recording(camera_name=camera_name, from_time=from_datetime, to_time=to_datetime)
-
-    if not result["success"]:
-      return result, 404
+    if not results:
+      return results, 404
 
     return {
       "success": True,
-      "filename": result["filename"],
-      "filepath": result["filepath"],
+      "filename": results["filename"],
+      "filepath": results["filepath"],
       "camera": camera_name,
       "from_time": from_datetime.strftime("%Y-%m-%d %H:%M:%S"),
       "to_time": to_datetime.strftime("%Y-%m-%d %H:%M:%S"),
-      "segments_used": result.get("segments_used", 0)
+      "segment_used": results.get("segments_used", 0)
     }
 
   except Exception as error:
+
     print(f"[ACCIDENT] Recording error: {error}")
 
     return {
       "success": False,
-      "message": "Unable to create accident recording."
+      "message": "Unable to create accident recording"
     }, 500
 
 
@@ -299,7 +264,6 @@ def violation_snapshot(camera_name):
 def get_violation_snapshot(filename):
 
   filepath = (Path(__file__).parent / "violation_evidence" / "snapshots"/ filename)
-
 
   if not filepath.exists():
     return {
