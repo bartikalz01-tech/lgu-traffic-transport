@@ -5,7 +5,11 @@ class Accidents extends config {
 
   public function insertAccidentReport($data) {
     $conn = $this->conn();
+
+    $conn->beginTransaction();
+
     $publicAccidentId = 'ACC-' . date('Ymd') . '-' .  strtoupper(substr(uniqid(), -6));
+    
     $sql = "
       INSERT INTO accident_cases (
         public_accident_id,
@@ -13,8 +17,7 @@ class Accidents extends config {
         accident_date,
         accident_time,
         accident_type,
-        specific_location,
-        snapshot_filename
+        specific_location
       )
       VALUES (
         :public_accident_id,
@@ -22,8 +25,7 @@ class Accidents extends config {
         :accident_date,
         :accident_time,
         :accident_type,
-        :specific_location,
-        :snapshot_filename
+        :specific_location
       )
     ";
 
@@ -41,16 +43,54 @@ class Accidents extends config {
 
     $stmt->bindParam(':specific_location', $data['specific_location']);
 
-    $stmt->bindParam(':snapshot_filename', $data['snapshot_filename']);
-
     try {
       $stmt->execute();
 
+      $accidentId = $conn->lastInsertId();
+
+      $snapshotFileName = !empty($data['snapshot_filename']) ? $data['snapshot_filename'] : null;
+
+      $sqlEvidence = "
+        INSERT INTO accident_evidence (
+          accident_id,
+          snapshot_filename,
+          recording_filename,
+          recording_from,
+          recording_to 
+        ) VALUES (
+          :accident_id,
+          :snapshot_filename,
+          NULL,
+          NULL,
+          NULL
+        )
+      ";
+
+      $stmtEvidence = $conn->prepare($sqlEvidence);
+
+      $stmtEvidence->bindValue(':accident_id', $accidentId, PDO::PARAM_INT);
+      $stmtEvidence->bindValue(':snapshot_filename', $snapshotFileName);
+
+      $stmtEvidence->execute();
+
+      $conn->commit();
+
       return [
-        'accident_id' => $conn->lastInsertId(),
+        'success' => True,
+        'accident_id' => $accidentId,
         'public_accident_id' => $publicAccidentId
       ];
+
     } catch(PDOException $e) {
+      if ($conn->inTransaction()) {
+        $conn->rollBack();
+      }
+
+      error_log(
+        "[ACCIDENT] Database error: " .
+        $e->getMessage()
+      );
+
       throw new Exception("Database insert failed");
     }
   }
@@ -68,12 +108,18 @@ class Accidents extends config {
         ac.accident_type,
         ac.specific_location,
         ac.status,
-        ac.snapshot_filename,
+        ae.snapshot_filename,
+        ae.recording_filename,
+        ae.recording_from,
+        ae.recording_to,
         ac.reported_at,
         ac.updated_at
       FROM accident_cases ac
       INNER JOIN roads r
         ON ac.road_id = r.road_id
+
+      LEFT JOIN accident_evidence ae
+        ON ac.accident_id = ae.accident_id
       
       ORDER BY ac.reported_at DESC
     ";
