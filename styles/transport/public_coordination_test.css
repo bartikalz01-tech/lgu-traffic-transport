@@ -2,6 +2,11 @@
    PUBLIC TRANSPORT COORDINATION
    ========================================= */
 
+.public-transport-coordination-container {
+  margin-top: 5.7rem;
+  min-height: 700px;
+}
+
 .ptc-page {
   padding: 25px 20px 40px;
 }

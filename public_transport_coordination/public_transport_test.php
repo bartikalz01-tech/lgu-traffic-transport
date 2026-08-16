@@ -15,6 +15,9 @@
   <title>Public Transport Coordination</title>
 </head>
 <body>
+  <?php include '../includes/official_sidebar.php' ?>
+
+  <?php include '../includes/accident_header.php' ?>
   
   <main class="app">
     <section id="publicTransportCoordinationContainer" class="public-transport-coordination-container"></section>
