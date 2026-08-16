@@ -470,6 +470,15 @@ class Routing extends config {
 
   public function getNodes() {
     $conn = $this->conn();
+
+    $required_points = [1, 15, 32];
+
+    if(empty($required_points)) {
+      return [];
+    }
+
+    $placeholders = implode(',', array_fill(0, count($required_points), '?'));
+
     $sql = "
       SELECT
         rn.node_id,
@@ -490,13 +499,15 @@ class Routing extends config {
       LEFT JOIN roads r
         ON rs.road_id = r.road_id
       
+      WHERE rn.node_id IN ($placeholders)
+      
       GROUP BY rn.node_id
 
       ORDER BY rn.node_id ASC
     ";
 
     $stmt = $conn->prepare($sql);
-    $stmt->execute();
+    $stmt->execute($required_points);
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
