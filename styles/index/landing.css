@@ -40,7 +40,8 @@ html {
 }
 
 .section-heading h2 { 
-  color: var(--text-color-1); 
+  /*color: var(--text-color-1); */
+  color: #ffffff;
   font-size: clamp(30px, 4vw, 46px); 
   line-height: 1.15; 
   margin-bottom: 14px; 
@@ -48,11 +49,11 @@ html {
 }
 
 .section-heading h2 span { 
-  color: var(--primary-color); 
+  color: #74c8c4; 
 }
 
 .section-heading p { 
-  color: var(--text-secondary); 
+  color: rgba(255, 255, 255, 0.68);
   font-size: 14px; 
   line-height: 1.8; 
 }
@@ -63,9 +64,10 @@ html {
   left: 0; 
   right: 0; 
   z-index: 1000; 
-  background: rgba(255, 255, 255, 0.94); 
+  /*background: rgba(255, 255, 255, 0.94);*/
+  background: rgba(11, 19, 43, 0.94);
   backdrop-filter: blur(14px); 
-  border-bottom: 1px solid var(--border-color-1); 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
 }
 
 .landing-nav-container { 
@@ -81,7 +83,7 @@ html {
   display: inline-flex; 
   align-items: center; 
   gap: 9px; 
-  color: var(--dark-color); 
+  color: #ffffff; 
   text-decoration: none; 
   font-size: 19px; 
   font-weight: 700; 
@@ -113,7 +115,7 @@ html {
 .nav-link { 
   position: relative; 
   padding: 9px 13px; 
-  color: var(--text-secondary); 
+  color: rgba(255, 255, 255, 0.65); 
   text-decoration: none; 
   font-size: 13px; 
   font-weight: 500; 
@@ -122,8 +124,8 @@ html {
 }
 
 .nav-link:hover, .nav-link.active { 
-  color: var(--primary-color); 
-  background: var(--sidebar-hover-bg-1); 
+  color: #ffffff; 
+  background: rgba(76, 138, 137, 0.18); 
 }
 
 .hero-section { 
@@ -133,8 +135,8 @@ html {
   align-items: center; 
   padding: 130px 0 90px; 
   overflow: hidden; 
-  /*background: linear-gradient( 135deg, #0b132b 0%, #10253e 58%, #163c4a 100% );*/
-  background: var(--light-color);
+  background: linear-gradient( 135deg, #0b132b 0%, #10253e 58%, #163c4a 100% );
+  /*background: var(--light-color);*/
   color: #10253e; 
 }
 
@@ -195,7 +197,8 @@ html {
   line-height: 1.03; 
   font-weight: 600; 
   margin-bottom: 23px; 
-  letter-spacing: -0.035em; 
+  letter-spacing: -0.035em;
+  color: var(--light-color); 
 }
 
 .hero-content h1 span { 
@@ -406,7 +409,14 @@ html {
 
 .about-section { 
   padding: 100px 0; 
-  background: var(--light-color); 
+  background:
+    linear-gradient(
+      135deg,
+      #0b132b 0%,
+      #10253e 58%,
+      #163c4a 100%
+    );
+  color: #ffffff;
 }
 
 .about-grid { 
@@ -418,10 +428,19 @@ html {
 
 .about-card { 
   padding: 27px; 
-  background: var(--card-bg); 
-  border: 1px solid var(--border-color-1); 
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 11px; 
   box-shadow: 0 4px 18px var(--shadow-1); 
+  transition: all 0.2s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-3px);
+
+  background: rgba(255, 255, 255, 0.075);
+
+  border-color: rgba(116, 200, 196, 0.25);
 }
 
 .about-icon { 
@@ -432,18 +451,18 @@ html {
   justify-content: center; 
   margin-bottom: 18px; 
   border-radius: 10px;
-  background: var(--sidebar-hover-bg-1); 
-  color: var(--primary-color); 
+  background: rgba(76, 138, 137, 0.16);
+  color: #74c8c4;
 }
 
 .about-card h3 { 
-  color: var(--text-color-1); 
+  color: #ffffff; 
   font-size: 16px; 
   margin-bottom: 7px;
 }
 
 .about-card p { 
-  color: var(--text-secondary); 
+  color: rgba(255, 255, 255, 0.64);
   font-size: 12px; 
   line-height: 1.8; 
 }
@@ -465,11 +484,13 @@ html {
 .mission-card {
   background: linear-gradient( 135deg, #123c3b, #205858 ); 
   color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .vision-card {
   background: linear-gradient( 135deg, #10233a, #1b3851 );
   color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .mv-icon { 
@@ -508,7 +529,15 @@ html {
 
 .systems-section { 
   padding: 100px 0; 
-  background: #ffffff; 
+  background:
+    linear-gradient(
+      135deg,
+      #0b132b 0%,
+      #10253e 58%,
+      #163c4a 100%
+    );
+
+  color: #ffffff;
 }
 
 .systems-grid { 
@@ -520,16 +549,17 @@ html {
 .system-card { 
   position: relative; 
   padding: 25px; 
-  border: 1px solid var(--border-color-1); 
+  border: 1px solid rgba(255, 255, 255, 0.1); 
   border-radius: 12px; 
-  background: var(--card-bg); 
-  box-shadow: 0 4px 18px var(--shadow-1); 
-  transition: transform 0.2s ease, box-shadow 0.2s ease; 
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.16); 
+  transition: transform 0.2s ease, box-shadow 0.2s ease background 0.2s ease; 
 }
 
 .system-card:hover { 
   transform: translateY(-3px); 
-  box-shadow: 0 12px 28px rgba(11, 19, 43, 0.08); 
+  box-shadow: 0 12px 28px rgba(11, 19, 43, 0.08);
+  background: rgba(255, 255, 255, 0.075);
 }
 
 .system-card-top { 
@@ -558,18 +588,19 @@ html {
 .system-icon.red { background: rgba(231, 76, 60, 0.1); color: var(--danger-color); }
 
 .system-number { 
-  color: var(--border-color-1); 
-  font-size: 28px; font-weight: 700; 
+  color: rgba(255, 255, 255, 0.18); 
+  font-size: 28px; 
+  font-weight: 700; 
 }
 
 .system-card h3 { 
-  color: var(--text-color-1); 
+  color: #ffffff; 
   font-size: 18px; 
   margin-bottom: 8px; 
 }
 
 .system-card p { 
-  color: var(--text-secondary); 
+  color: rgba(255, 255, 255, 0.64); 
   font-size: 12px; 
   line-height: 1.8; 
   min-height: 68px; 
@@ -578,20 +609,20 @@ html {
 .system-card-footer { 
   margin-top: 20px; 
   padding-top: 13px; 
-  border-top: 1px solid var(--border-color-1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .system-card-footer span { 
   display: inline-flex; 
   align-items: center; 
   gap: 6px; 
-  color: var(--text-secondary); 
+  color: rgba(255, 255, 255, 0.55); 
   font-size: 10px; 
   font-weight: 600; 
 }
 
 .system-card-footer i { 
-  color: var(--primary-color); 
+  color: #74c8c4;
   font-size: 8px; 
 }
 
