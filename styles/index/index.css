@@ -564,7 +564,7 @@
         /* Extra Details */
         .extra-links {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             margin-top: 15px;
             font-size: 14px;
         }

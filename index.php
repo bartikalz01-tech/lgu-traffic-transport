@@ -13,11 +13,11 @@
 
 <body>
 
-  <div class="background-shapes">
+  <!--<div class="background-shapes">
     <div class="shape shape-1"></div>
     <div class="shape shape-2"></div>
     <div class="shape shape-3"></div>
-  </div>
+  </div>-->
 
   <div class="container">
     <!-- Enhanced Logo -->
@@ -26,10 +26,9 @@
         <img src="images/tara.png" alt="Alertara Logo" class="logo-image">
         <div class="logo-text">
           <div class="logo-main">ALERTARA</div>
-          <div class="logo-sub">Barangay System</div>
+          <div class="logo-sub">Traffic and Transport System</div>
         </div>
       </div>
-      <div class="logo-tagline">lorem ipsum</div>
     </div>
 
 
