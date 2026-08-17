@@ -56,9 +56,9 @@
         </div>
 
         <div class="extra-links">
-          <label class="remember-me">
+          <!--<label class="remember-me">
             <input type="checkbox" name="remember"> Remember me
-          </label>
+          </label>-->
           <a href="#" onclick="alert('Password reset feature would be implemented here')">Forgot password?</a>
         </div>
 
@@ -107,13 +107,13 @@
           <div class="role-options">
             <div class="role-option" onclick="selectRole('employee', this)">
               <i class="fas fa-user-tie"></i>
-              <div class="role-text">Employee</div>
-              <input type="radio" name="role" value="employee" style="display: none;" required>
+              <div class="role-text">Admin</div>
+              <input type="radio" name="role" value="admin" style="display: none;" required>
             </div>
             <div class="role-option" onclick="selectRole('admin', this)">
               <i class="fas fa-user-shield"></i>
-              <div class="role-text">Admin</div>
-              <input type="radio" name="role" value="admin" style="display: none;" required>
+              <div class="role-text">Super Admin</div>
+              <input type="radio" name="role" value="super-admin" style="display: none;" required>
             </div>
             <div class="role-option" onclick="selectRole('resident', this)">
               <i class="fas fa-home"></i>

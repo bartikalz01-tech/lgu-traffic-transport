@@ -23,14 +23,14 @@ class LoginValidation extends config {
       ];
     }
 
-    if(!password_verify($password, $user['pass'])) {
+    if(!password_verify($password, $user['password'])) {
       return [
         'status' => 'error',
         'message' => 'Invalid passowrd'
       ];
     }
 
-    unset($user['pass']);
+    unset($user['password']);
 
     return [
       'status' => 'success',

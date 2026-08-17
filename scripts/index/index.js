@@ -182,7 +182,13 @@ signUpForm.addEventListener("submit", async (e) => {
       })
     });
 
-    const data = await response.json();
+    //const data = await response.json();
+
+    const text = await response.text();
+
+    console.log("Signup response:", text);
+
+    const data = JSON.parse(text);
 
     if(data.status === "success") {
       alert("Account Created Successfully!");
@@ -225,7 +231,7 @@ loginForm.addEventListener("submit", async (e) => {
     if(data.status === "success") {
       alert("Login Successful!");
 
-      window.location.href = "road_condition/road_conditions.php";
+      window.location.href = "dashboard/dashboard.php";
     } else {
       alert(data.message);
     }

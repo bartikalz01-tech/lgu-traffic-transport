@@ -9,15 +9,15 @@ class InsertUser extends config{
     $hashedPassword = password_hash($pass, PASSWORD_DEFAULT);
 
     $sql = "
-      INSERT INTO users (full_name, email, pass, role)
-      VALUES (:full_name, :email, :pass, :role)
+      INSERT INTO users (full_name, email, password, role)
+      VALUES (:full_name, :email, :password, :role)
     ";
 
     $stmt = $conn->prepare($sql); 
     $stmt->execute([
       ':full_name' => $full_name,
       ':email' => $email,
-      ':pass' => $hashedPassword,
+      ':password' => $hashedPassword,
       ':role' => $role
     ]);
 
