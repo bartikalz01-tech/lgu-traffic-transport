@@ -1,6 +1,8 @@
 <?php
 require_once '../backend/LoginValidation.php';
 
+session_start();
+
 header('Content-Type: application/json');
 
 if($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -24,6 +26,19 @@ if(empty($email) || empty($password)) {
 
 $login = new LoginValidation();
 $result = $login->validateLogin($email, $password);
+
+if($result['status'] === 'success') {
+  session_regenerate_id(true);
+
+  $user = $result['user'];
+
+  $_SESSION['user_id'] = $user['user_id'];
+  $_SESSION['email'] = $user['email'];
+  $_SESSION['role'] = $user['role'];
+  $_SESSION['full_name'] = $user['full_name'];
+
+  $_SESSION['login-time'] = time();
+}
 
 echo json_encode($result);
 

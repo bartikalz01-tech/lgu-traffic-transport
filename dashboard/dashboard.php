@@ -1,3 +1,14 @@
+<?php
+
+session_start();
+
+if(!isset($_SESSION['user_id'])) {
+  header("Location: ../login.php");
+  exit;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -175,6 +186,7 @@
 
   <?php include '../includes/admin-footer.php'; ?>
 
+  <script src="../scripts/header.js"></script>
   <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/dashboard/dashboard.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

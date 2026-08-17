@@ -215,7 +215,7 @@ loginForm.addEventListener("submit", async (e) => {
   const password = loginForm.querySelector('input[name="password"]').value;
 
   try {
-    const response = await fetch('api/login.php', {
+    const response = await fetch('api/login_validate.php', {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -229,11 +229,32 @@ loginForm.addEventListener("submit", async (e) => {
     const data = await response.json();
 
     if(data.status === "success") {
-      alert("Login Successful!");
+      Swal.fire({
+        toast: true,
+        icon: "success",
+        title: "Login Successful",
+        text: "Redirecting to your dashboard...",
+        showConfirmButton: false,
+        timer: 900,
+        timerProgressBar: true
+      });
 
-      window.location.href = "dashboard/dashboard.php";
+      setTimeout(() => {
+        window.location.replace("dashboard/dashboard.php");
+      }, 900);
+
+      
     } else {
-      alert(data.message);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Login Failed",
+        text: data.message || "Invalid email or password",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
     }
   } catch(error) {
     console.error("Login error", error);

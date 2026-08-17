@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+if(isset($_SESSION['user_id'])) {
+  header("Location: dashboard/dashboard.php");
+  exit;
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,11 +24,11 @@
 
 <body>
 
-  <!--<div class="background-shapes">
+  <div class="background-shapes">
     <div class="shape shape-1"></div>
     <div class="shape shape-2"></div>
     <div class="shape shape-3"></div>
-  </div>-->
+  </div>
 
   <div class="container">
     <!-- Enhanced Logo -->
@@ -136,7 +147,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="scripts/index/index.js"></script>
 </body>
-
 </html>

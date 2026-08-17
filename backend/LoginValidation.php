@@ -26,7 +26,7 @@ class LoginValidation extends config {
     if(!password_verify($password, $user['password'])) {
       return [
         'status' => 'error',
-        'message' => 'Invalid passowrd'
+        'message' => 'Invalid password'
       ];
     }
 
