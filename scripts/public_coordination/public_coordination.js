@@ -1,7 +1,7 @@
 //import { openPublicTransportCoordination } from "./public_groups.js";
 import { renderPuvReportPanel } from "./puv_report_panel.js";
 import { renderPuvSummaryCards } from "./puv_summary.js";
-import { renderSchedulePuvModal } from "./register_puv_modal.js";
+import { renderSchedulePuvModal } from "./schedule_puv_modal.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   //openPublicTransportCoordination(document.getElementById("publicTransportCoordinationContainer"));
