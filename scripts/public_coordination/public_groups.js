@@ -327,10 +327,7 @@ export function openPublicTransportCoordination(container) {
 
 
     <!-- REGISTER PUV MODAL -->
-    <div
-      class="ptc-modal-overlay ptc-modal-hidden"
-      id="registerPuvModal"
-    >
+    <div class="ptc-modal-overlay ptc-modal-hidden" id="registerPuvModal">
 
       <div class="ptc-modal">
 
@@ -682,8 +679,7 @@ export function openPublicTransportCoordination(container) {
   const registerBtn =
     container.querySelector("#registerPuvGroupBtn");
 
-  const emptyRegisterBtn =
-    container.querySelector("#emptyRegisterPuvBtn");
+  //const emptyRegisterBtn = container.querySelector("#emptyRegisterPuvBtn");
 
   const closeModalBtn =
     container.querySelector("#closeRegisterPuvModal");
@@ -716,10 +712,10 @@ export function openPublicTransportCoordination(container) {
     openRegisterModal
   );
 
-  emptyRegisterBtn.addEventListener(
+  /*emptyRegisterBtn.addEventListener(
     "click",
     openRegisterModal
-  );
+  );*/
 
   closeModalBtn.addEventListener(
     "click",

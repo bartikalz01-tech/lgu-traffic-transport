@@ -32,6 +32,7 @@ export function renderViolationReportsPanel(container) {
           <option value="Illegal Parking">Illegal Parking</option>
           <option value="Road Obstruction">Road Obstruction</option>
           <option value="Route Violation">Route Violation</option>
+          <option value="Colorum Group">Colorum Group</option>
         </select>
       </div>
 

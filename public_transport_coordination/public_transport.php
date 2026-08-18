@@ -20,13 +20,42 @@
   <?php include '../includes/accident_header.php' ?>
   
   <main class="app">
-    <section id="publicTransportCoordinationContainer" class="public-transport-coordination-container"></section>
+    <section id="publicTransportCoordinationContainer" class="public-transport-coordination-container">
+      <div class="ptc-page">
+        <div class="ptc-page-header">
+          <div>
+            <span class="ptc-module-label">
+              Public Transport Coordination
+            </span>
+
+            <h2 class="ptc-page-title">
+              PUV Group Coordination
+            </h2>
+
+            <p class="ptc-page-description">
+              Register and manage public transport groups
+              operating within the barangay.
+            </p>
+          </div>
+
+          <button type="button" class="ptc-primary-btn" id="registerPuvGroupBtn">
+            <i class="fas fa-plus"></i> Register PUV Group
+          </button>
+        </div>
+
+        <div id="ptcSummaryContainer"></div>
+
+        <div id="ptcReportPanelContainer"></div>
+
+        <div id="ptcRegisterModalContainer"></div>
+      </div>
+    </section>
   </main>
 
   <?php include '../includes/admin-footer.php' ?>
 
   <script src="../scripts/sidebar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script type="module" src="../scripts/public_coordination/public_coordination_test.js"></script>
+  <script type="module" src="../scripts/public_coordination/public_coordination.js"></script>
 </body>
 </html>

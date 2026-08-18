@@ -40,7 +40,7 @@
         </div>
       </div>
     </div>
-    <a href="../public_transport_coordination/public_transport_test.php" class="sidebar-link">
+    <a href="../public_transport_coordination/public_transport.php" class="sidebar-link">
       <i class="fas fa-car"></i>
       <span>Public Transport</span>
       <!--<span class="purpose">Coordination</span>-->

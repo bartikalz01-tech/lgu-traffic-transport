@@ -1,50 +1,22 @@
-import { renderPuvDiversion } from "./render_puv_diversion.js";
-import { renderPuvManagement } from "./render_puv_management.js";
+//import { openPublicTransportCoordination } from "./public_groups.js";
+import { renderPuvReportPanel } from "./puv_report_panel.js";
+import { renderPuvSummaryCards } from "./puv_summary.js";
+import { renderRegisterPuvModal } from "./register_puv_modal.js";
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
+  //openPublicTransportCoordination(document.getElementById("publicTransportCoordinationContainer"));
 
-  const puvManagementBtn = document.getElementById("puvManagementBtn");
-  const puvDiversionBtn = document.getElementById("puvDiversionBtn");
+  const summaryContainer = document.getElementById("ptcSummaryContainer");
+  const reportContainer = document.getElementById("ptcReportPanelContainer");
+  const modalContainer = document.getElementById("ptcRegisterModalContainer");
 
-  const ptcContainers = document.getElementById("ptcContainers");
+  renderPuvSummaryCards(summaryContainer);
+  renderPuvReportPanel(reportContainer);
 
-  function setActiveBtn(activeBtnClicked) {
-    [puvManagementBtn, puvDiversionBtn].forEach(btn => {
-      btn.classList.remove("active");
-    });
+  const registerModal = renderRegisterPuvModal(modalContainer);
+  const registerBtn = document.getElementById("registerPuvGroupBtn");
 
-    activeBtnClicked.classList.add("active");
-  }
-
-  /*function showContainer(target) {
-    puvManagementContainer.classList.add("hidden-container");
-    puvDiversionContainer.classList.add("hidden-container");
-
-    target.classList.remove("hidden-container");
-  }*/
-
-  setActiveBtn(puvManagementBtn);
-  puvManagementBtn.classList.add("expanded");
-  await renderPuvManagement(ptcContainers);
-
-  puvManagementBtn.addEventListener("click", async () => {
-
-    if(!puvManagementBtn.classList.contains("active")) {
-      setActiveBtn(puvManagementBtn);
-      await renderPuvManagement(ptcContainers);
-
-      puvManagementBtn.classList.add("expanded");
-      return;
-    }
-
-    puvManagementBtn.classList.toggle("expanded");
+  registerBtn.addEventListener("click", () => {
+    registerModal.openModal();
   });
-
-  puvDiversionBtn.addEventListener("click", async () => {
-    setActiveBtn(puvDiversionBtn);
-    await renderPuvDiversion(ptcContainers);
-
-    puvManagementBtn.classList.remove("expanded");
-  });
-
 });
