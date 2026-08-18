@@ -1,4 +1,4 @@
-export function renderRegisterPuvModal(container) {
+export function renderSchedulePuvModal(container) {
 
   container.innerHTML = `
     <div
