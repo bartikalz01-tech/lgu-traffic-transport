@@ -13,16 +13,15 @@ export function renderRegisterPuvModal(container) {
           <div>
 
             <span class="ptc-modal-label">
-              Public Transport
+              Public Transport Coordination
             </span>
 
             <h3>
-              Register PUV Group
+              Schedule Coordination Meeting
             </h3>
 
             <p>
-              Record the basic information of a PUV group
-              operating within the barangay.
+              Schedule a coordination meeting with the PUV Group
             </p>
 
           </div>
@@ -82,7 +81,7 @@ export function renderRegisterPuvModal(container) {
               </div>
 
 
-              <div class="ptc-form-group">
+              <div class="ptc-form-group ptc-full-width">
 
                 <label>
                   PUV Type
@@ -120,23 +119,6 @@ export function renderRegisterPuvModal(container) {
                   </option>
 
                 </select>
-
-              </div>
-
-
-              <div class="ptc-form-group">
-
-                <label>
-                  Number of Units
-                </label>
-
-                <input
-                  type="number"
-                  id="puvUnitCount"
-                  class="ptc-form-control"
-                  min="0"
-                  placeholder="e.g. 25"
-                >
 
               </div>
 
@@ -220,97 +202,42 @@ export function renderRegisterPuvModal(container) {
 
           </div>
 
-
           <div class="ptc-form-section">
-
             <div class="ptc-form-section-header">
-
               <div>
                 <h4>
-                  <i class="fas fa-location-dot"></i>
-                  Operation Information
-                </h4>
+                  <i class="fas fa-calendar-days"></i> Meeting Schedule
+                <h4>
 
                 <p>
-                  Record where the group operates or coordinates
-                  its local loading / terminal activity.
+                  Select the date and time for the coordination meeting.
                 </p>
               </div>
 
+              <span class="ptc-required-badge">
+                Required Information
+              </span>
             </div>
-
 
             <div class="ptc-form-grid">
-
               <div class="ptc-form-group">
-
                 <label>
-                  Assigned Area / Destination
+                  Meeting Date
                   <span>*</span>
                 </label>
 
-                <input
-                  type="text"
-                  id="puvAssignedArea"
-                  class="ptc-form-control"
-                  placeholder="e.g. Barangay Public Market"
-                  required
-                >
-
+                <input type="date" id="meetingDate" class="ptc-form-control" required>
               </div>
 
-
               <div class="ptc-form-group">
-
                 <label>
-                  Street / Road
+                  Meeting Time
                   <span>*</span>
                 </label>
 
-                <input
-                  type="text"
-                  id="puvStreet"
-                  class="ptc-form-control"
-                  placeholder="e.g. Rizal Street"
-                  required
-                >
-
+                <input type="date" id="meetingTime" class="ptc-form-control" required>
               </div>
-
-
-              <div class="ptc-form-group ptc-full-width">
-
-                <label>
-                  Current Terminal / Loading Area
-                </label>
-
-                <input
-                  type="text"
-                  id="puvTerminal"
-                  class="ptc-form-control"
-                  placeholder="Optional — e.g. Barangay Market Entrance"
-                >
-
-              </div>
-
-
-              <div class="ptc-form-group ptc-full-width">
-
-                <label>
-                  Remarks
-                </label>
-
-                <textarea
-                  id="puvRemarks"
-                  class="ptc-form-control ptc-textarea"
-                  rows="3"
-                  placeholder="Additional information or coordination notes..."
-                ></textarea>
-
-              </div>
-
             </div>
-
           </div>
 
 
@@ -389,37 +316,7 @@ export function renderRegisterPuvModal(container) {
       event.preventDefault();
 
       const formData = {
-
-        group_name:
-          form.querySelector("#puvGroupName").value.trim(),
-
-        puv_type:
-          form.querySelector("#puvType").value,
-
-        unit_count:
-          form.querySelector("#puvUnitCount").value,
-
-        representative:
-          form.querySelector("#puvRepresentative").value.trim(),
-
-        contact_number:
-          form.querySelector("#puvContact").value.trim(),
-
-        email:
-          form.querySelector("#puvEmail").value.trim(),
-
-        assigned_area:
-          form.querySelector("#puvAssignedArea").value.trim(),
-
-        street:
-          form.querySelector("#puvStreet").value.trim(),
-
-        terminal:
-          form.querySelector("#puvTerminal").value.trim(),
-
-        remarks:
-          form.querySelector("#puvRemarks").value.trim()
-
+        // Based on database table design
       };
 
 
