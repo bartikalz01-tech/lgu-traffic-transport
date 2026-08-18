@@ -1,0 +1,622 @@
+.puv-group-detail-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1006;
+  background-color: rgba(11, 19, 43, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.detail-hidden {
+  display: none;
+}
+
+/* =========================================
+   PUV GROUP DETAILS
+   ========================================= */
+
+.puv-group-details-container {
+  width: min(1200px, 94vw);
+  height: min(900px, 92vh);
+
+  background: var(--light-color);
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.22);
+}
+
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.puv-details-header {
+  min-height: 78px;
+
+  padding: 16px 22px;
+
+  background: var(--card-bg);
+
+  border-bottom: 1px solid var(--border-color-1);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+.puv-details-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+
+.puv-details-back-btn {
+  width: 36px;
+  height: 36px;
+
+  border: 1px solid var(--border-color-1);
+  border-radius: 7px;
+
+  background: var(--header-bg);
+
+  color: var(--text-secondary);
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.2s ease;
+}
+
+
+.puv-details-back-btn:hover {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  background: var(--sidebar-hover-bg-1);
+}
+
+
+.puv-details-module-label {
+  display: block;
+
+  color: var(--primary-color);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 0.04em;
+
+  margin-bottom: 1px;
+}
+
+
+.puv-details-title {
+  color: var(--text-color-1);
+
+  font-size: 20px;
+  font-weight: 600;
+
+  margin: 0;
+}
+
+
+.puv-details-subtitle {
+  color: var(--text-secondary);
+
+  font-size: 12px;
+}
+
+
+.puv-details-status {
+  flex-shrink: 0;
+}
+
+
+/* =========================================
+   CONTENT
+   ========================================= */
+
+.puv-details-content {
+
+  flex: 1 1 auto;
+
+  min-height: 0;
+
+  overflow-y: auto;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+
+/* =========================================
+   CARDS
+   ========================================= */
+
+.puv-details-card {
+
+  flex: 0 0 auto;
+
+  width: 100%;
+
+  background: var(--card-bg);
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 10px;
+
+  box-shadow: 0 3px 12px var(--shadow-1);
+
+  overflow: hidden;
+}
+
+.puv-details-card:first-child {
+  min-height: 180px;
+}
+
+.puv-details-card:nth-child(2) {
+  min-height: 150px;
+}
+
+
+.puv-details-card-header {
+
+  padding: 16px 18px;
+
+  border-bottom: 1px solid var(--border-color-1);
+}
+
+
+.puv-details-card-header h3 {
+
+  color: var(--text-color-1);
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  margin-bottom: 2px;
+}
+
+
+.puv-details-card-header h3 i {
+
+  color: var(--primary-color);
+
+  margin-right: 7px;
+}
+
+
+.puv-details-card-header p {
+
+  color: var(--text-secondary);
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   INFORMATION
+   ========================================= */
+
+.puv-info-grid {
+
+  padding: 18px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 18px;
+}
+
+
+.puv-info-item {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+
+.puv-info-label {
+
+  color: var(--text-secondary);
+
+  font-size: 10px;
+
+  font-weight: 500;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.03em;
+}
+
+
+.puv-info-item strong {
+
+  color: var(--text-color-1);
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================
+   CLEARANCE
+   ========================================= */
+
+.puv-clearance-content {
+
+  padding: 18px;
+
+  display: grid;
+
+  grid-template-columns: 1.2fr 2fr auto;
+
+  align-items: center;
+
+  gap: 22px;
+}
+
+
+.puv-clearance-status {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+
+.puv-clearance-icon {
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 9px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(46, 204, 113, 0.1);
+
+  color: var(--success-color);
+
+  font-size: 16px;
+}
+
+
+.puv-clearance-approved {
+
+  color: var(--success-color);
+
+  font-size: 13px;
+}
+
+
+.puv-clearance-details {
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+}
+
+
+.puv-clearance-actions {
+
+  display: flex;
+
+  gap: 8px;
+
+  justify-content: flex-end;
+}
+
+
+/* =========================================
+   MAP
+   ========================================= */
+
+.puv-location-card {
+
+  min-height: 420px;
+}
+
+
+.puv-map-container {
+
+  height: 300px;
+
+  margin: 18px;
+
+  border-radius: 9px;
+
+  border: 1px solid var(--border-color-1);
+
+  background: #e8edf0;
+
+  overflow: hidden;
+
+  position: relative;
+}
+
+
+.puv-map-placeholder {
+
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  color: var(--text-secondary);
+
+  gap: 6px;
+}
+
+
+.puv-map-placeholder i {
+
+  font-size: 30px;
+
+  color: var(--primary-color);
+
+  margin-bottom: 4px;
+}
+
+
+.puv-map-placeholder span {
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+
+.puv-map-placeholder small {
+
+  font-size: 10px;
+}
+
+
+/* =========================================
+   MAP LEGEND
+   ========================================= */
+
+.puv-map-legend {
+
+  padding: 0 18px 16px;
+
+  display: flex;
+
+  gap: 20px;
+
+  align-items: center;
+}
+
+
+.puv-map-legend-item {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  color: var(--text-secondary);
+
+  font-size: 10px;
+}
+
+
+.puv-map-marker {
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 13px;
+}
+
+
+.puv-map-marker.vehicle {
+
+  color: var(--danger-color);
+}
+
+
+.puv-map-marker.loading {
+
+  color: var(--primary-color);
+}
+
+
+/* =========================================
+   LOCATION DETAILS
+   ========================================= */
+
+.puv-location-details {
+
+  border-top: 1px solid var(--border-color-1);
+
+  padding: 16px 18px;
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+}
+
+
+.puv-location-item {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+
+.puv-location-item strong {
+
+  color: var(--text-color-1);
+
+  font-size: 12px;
+}
+
+
+.puv-location-address {
+
+  color: var(--text-secondary);
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+.puv-details-footer {
+
+  min-height: 58px;
+
+  padding: 11px 20px;
+
+  background: var(--card-bg);
+
+  border-top: 1px solid var(--border-color-1);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+
+.puv-details-footer span {
+
+  color: var(--text-secondary);
+
+  font-size: 10px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 900px) {
+
+  .puv-info-grid {
+
+    grid-template-columns: 1fr 1fr;
+
+  }
+
+  .puv-clearance-content {
+
+    grid-template-columns: 1fr;
+
+  }
+
+  .puv-clearance-actions {
+
+    justify-content: flex-start;
+
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .puv-group-details-container {
+
+    width: 96vw;
+
+    height: 94vh;
+
+    border-radius: 10px;
+
+  }
+
+
+  .puv-details-header {
+
+    padding: 14px;
+
+  }
+
+
+  .puv-details-content {
+
+    padding: 12px;
+
+  }
+
+
+  .puv-info-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .puv-clearance-details {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .puv-location-details {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .puv-map-container {
+
+    height: 250px;
+
+  }
+
+}

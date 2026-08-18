@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/transport/public_coordination_test.css">
+  <link rel="stylesheet" href="../styles/transport/puv_group_details.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Public Transport Coordination</title>
 </head>

@@ -1,3 +1,5 @@
+import { puvGroupDetails } from "./puv_group_details.js";
+
 export function renderPuvReportPanel(container) {
 
   container.innerHTML = `
@@ -8,7 +10,7 @@ export function renderPuvReportPanel(container) {
         <div>
           <h3>
             <i class="fas fa-bus"></i>
-            Registered PUV Groups
+            PUV Groups
           </h3>
 
           <p>
@@ -179,6 +181,7 @@ export function renderPuvReportPanel(container) {
                   type="button"
                   class="ptc-action-btn"
                   title="View Details"
+                  id="viewPuvGroupBtn"
                 >
                   <i class="fas fa-eye"></i>
                 </button>
@@ -192,12 +195,15 @@ export function renderPuvReportPanel(container) {
       </div>
 
     </div>
+
+    <div id="puvGroupDetailsModal" class="puv-group-detail-modal detail-hidden"></div>
   `;
 
 
-  const searchInput =
-    container.querySelector("#ptcSearchInput");
+  const searchInput = container.querySelector("#ptcSearchInput");
 
+  const puvGroupDetailsModal = container.querySelector("#puvGroupDetailsModal")
+  const puvGroupDetailsBtn = container.querySelectorAll("#viewPuvGroupBtn");
 
   searchInput.addEventListener(
     "input",
@@ -229,5 +235,13 @@ export function renderPuvReportPanel(container) {
 
     }
   );
+
+  puvGroupDetailsBtn.forEach(btn => {
+    btn.addEventListener("click", () => {
+      puvGroupDetailsModal.classList.remove("detail-hidden");
+
+      puvGroupDetails(puvGroupDetailsModal);
+    });
+  });
 
 }
