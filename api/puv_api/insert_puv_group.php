@@ -1,5 +1,5 @@
 <?php
-require_once '../../backend/PublicTransportCoordination.php';
+require_once '../../backend/Ptc.php';
 
 header('Content-Type: application/json');
 
@@ -14,10 +14,10 @@ if(!$data) {
 }
 
 if(
-  empty($data['puv_group_name']) ||
-  empty($data['puv_vehicle_type']) ||
-  empty($data['latitude']) ||
-  empty($data['longitude'])
+  empty($data['group_name']) ||
+  empty($data['puv_type']) ||
+  empty($data['representative_name']) ||
+  empty($data['contact_number'])
 ) {
 
   echo json_encode([
@@ -28,23 +28,15 @@ if(
   exit;
 }
 
-$puvGroup = new PublicTransportCoordination();
+$puvGroup = new Ptc();
 
-$latitude = (float)$data['latitude'];
-$longitude = (float)$data['longitude'];
 
 try {
-  $puvGroupId = $puvGroup->insertPuvGroup(
-    $data['puv_group_name'],
-    $data['puv_group_address'],
-    $data['puv_vehicle_type'],
-    $latitude,
-    $longitude
-  );
+  $result = $puvGroup->insertPuvGroupPending($data);
 
   echo json_encode([
     "status" => "success",
-    "puv_group_id" => $puvGroupId
+    "puv_group_id" => $result['puv_group_id']
   ]);
 } catch(Exception $e) {
   echo json_encode([

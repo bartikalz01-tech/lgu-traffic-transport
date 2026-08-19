@@ -1,3 +1,5 @@
+import { insertPuvGroup } from "../data/fetch_public_group_trans.js";
+
 export function renderSchedulePuvModal(container) {
 
   container.innerHTML = `
@@ -235,7 +237,7 @@ export function renderSchedulePuvModal(container) {
                   <span>*</span>
                 </label>
 
-                <input type="date" id="meetingTime" class="ptc-form-control" required>
+                <input type="time" id="meetingTime" class="ptc-form-control" required>
               </div>
             </div>
           </div>
@@ -253,7 +255,7 @@ export function renderSchedulePuvModal(container) {
 
             <button type="submit" class="ptc-primary-btn">
               <i class="fas fa-save"></i>
-              Register PUV Group
+              Schedule PUV Group
             </button>
           </div>
         </form>
@@ -309,37 +311,59 @@ export function renderSchedulePuvModal(container) {
   );
 
 
-  form.addEventListener(
-    "submit",
-    event => {
-
+  form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const formData = {
-        // Based on database table design
+      const puvGroupName = container.querySelector('#puvGroupName').value;
+      const puvType = container.querySelector('#puvType').value;
+      const puvRepresentative = container.querySelector('#puvRepresentative').value;
+      const puvContactNum = container.querySelector('#puvContact').value;
+      const puvEmail = container.querySelector('#puvEmail').value || null;
+      const meetingDate = container.querySelector('#meetingDate').value;
+      const meetingTime = container.querySelector('#meetingTime').value;
+
+      const payload = {
+        group_name: puvGroupName,
+        puv_type: puvType,
+        representative_name: puvRepresentative,
+        contact_number: puvContactNum,
+        meeting_date: meetingDate,
+        meeting_time: meetingTime
       };
 
 
       console.log(
         "[PUV] Registration data:",
-        formData
+        payload
       );
 
+      try {
 
-      Swal.fire({
-        icon: "success",
-        title: "PUV Group Registered",
-        text: `${formData.group_name} has been registered successfully.`,
-        confirmButtonText: "OK"
-      });
+        const data = await insertPuvGroup(payload);
 
 
-      form.reset();
+        await Swal.fire({
+          icon: "success",
+          title: "PUV Group Registered",
+          text: `${payload.group_name} has been registered successfully.`,
+          confirmButtonText: "OK"
+        });
 
-      closeModal();
 
-    }
-  );
+        form.reset();
+
+        closeModal();
+
+      } catch(error) {
+        Swal.fire({
+          icon: "error",
+          title: "Submission Failed",
+          text: error.message || "Unable to schedule PUV Group.",
+          confirmButtonText: "OK"
+        });
+      }
+
+  });
 
 
   return {
