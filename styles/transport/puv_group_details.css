@@ -230,6 +230,11 @@
   gap: 18px;
 }
 
+.bottom-part {
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, 1fr);
+}
+
 
 .puv-info-item {
 
@@ -319,6 +324,16 @@
   font-size: 13px;
 }
 
+
+.puv-clearance-icon.not-created {
+  background: rgba(243, 156, 18, 0.1);
+  color: var(--warning-color);
+}
+
+.puv-clearance-not-created {
+  color: var(--warning-color);
+  font-size: 13px;
+}
 
 .puv-clearance-details {
 
@@ -460,7 +475,7 @@
 
 .puv-map-marker.loading {
 
-  color: var(--primary-color);
+  color: var(--accent-color);
 }
 
 
@@ -505,6 +520,68 @@
   color: var(--text-secondary);
 
   font-size: 11px;
+}
+
+.puv-location-action-btn {
+
+  margin-top: 8px;
+
+  width: fit-content;
+
+  padding: 8px 12px;
+
+  border: 1px solid var(--border-color-1);
+  border-radius: 7px;
+
+  background: var(--header-bg);
+
+  color: var(--text-color-1);
+
+  font-size: 11px;
+  font-weight: 600;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+#puvVehicleStaging i {
+  color: #e74c3c;
+}
+
+#puvVehicleStaging:hover {
+  background: rgba(231, 76, 60, 0.08);
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+#puvPassengerLoading {
+  border-color: rgba(52, 152, 219, 0.35);
+  color: #3498db;
+}
+
+
+#puvPassengerLoading i {
+  color: #3498db;
+}
+
+
+#puvPassengerLoading:hover {
+  background: rgba(52, 152, 219, 0.08);
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.puv-location-action-btn:active {
+  transform: translateY(1px);
 }
 
 

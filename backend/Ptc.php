@@ -84,6 +84,19 @@ class Ptc extends config {
     }
   }
 
+  public function getPuvGroups() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        puvg.puv_group_id,
+        puvg.puv_type,
+        puvg.representative_namne,
+        puvg.contact_number,
+        puvg.email_address,
+        puv
+    ";
+  }
+
 }
 
 ?>

@@ -126,7 +126,7 @@ export function puvGroupDetails(container) {
             <div class="puv-info-item">
 
               <span class="puv-info-label">
-                Assigned Area
+                Destination Area
               </span>
 
               <strong>
@@ -139,7 +139,7 @@ export function puvGroupDetails(container) {
             <div class="puv-info-item">
 
               <span class="puv-info-label">
-                Street / Location
+                Vehicle Staging
               </span>
 
               <strong>

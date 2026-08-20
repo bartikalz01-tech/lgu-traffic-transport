@@ -46,8 +46,8 @@ export function renderPuvReportPanel(container) {
               <th>PUV Type</th>
               <th>Representative</th>
               <th>Contact</th>
-              <th>Assigned Area</th>
-              <th>Street / Location</th>
+              <th>Vehicle Staging</th>
+              <th>Passenger Loading Locations</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -73,11 +73,11 @@ export function renderPuvReportPanel(container) {
               </td>
 
               <td>
-                Barangay Public Market
+                Del Rey Street
               </td>
 
               <td>
-                Rizal Street
+                3
               </td>
 
               <td>
@@ -118,11 +118,11 @@ export function renderPuvReportPanel(container) {
               </td>
 
               <td>
-                Municipal Transport Terminal
+                Don Alejandro Street
               </td>
 
               <td>
-                Mabini Avenue
+                5
               </td>
 
               <td>
@@ -163,11 +163,11 @@ export function renderPuvReportPanel(container) {
               </td>
 
               <td>
-                City Transport Hub
+                Pending
               </td>
 
               <td>
-                Bonifacio Street
+                Pending
               </td>
 
               <td>
