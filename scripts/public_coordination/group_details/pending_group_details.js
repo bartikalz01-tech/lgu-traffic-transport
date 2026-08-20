@@ -1,4 +1,19 @@
-export function renderPendingGroupDetails(container) {
+import { renderPuvGroupMap } from "./puv_group_map.js";
+
+export function renderPendingGroupDetails(container, group) {
+
+  const locations = Array.isArray(group.locations) ? group.locations : [];
+
+  const vehicleStaging = locations.find(location => location.location_type === "Vehicle Staging");
+
+  const passengerLoading = locations.filter(location => location.location_type === "Passenger Loading");
+
+  const meetingDate = formatMeetingDate(group.meeting_date);
+
+  const meetingTime = formatMeetingTime(group.meeting_time);
+
+  const meetingStatus = group.meeting_status || "Pending";
+
   container.innerHTML = `
     <div class="puv-details-header">
       <div class="puv-details-header-left">
@@ -16,12 +31,12 @@ export function renderPendingGroupDetails(container) {
           </span>
 
           <h2 class="puv-details-title">
-            Mabini TODA
+            ${escapeHtml(group.group_name)}
           </h2>
 
 
           <p class="puv-details-subtitle">
-            Tricycle / TODA
+            ${escapeHtml(group.puv_type || "N/A")}
           </p>
         </div>
       </div>
@@ -49,7 +64,7 @@ export function renderPendingGroupDetails(container) {
             </span>
 
             <strong>
-              Mabini TODA
+              ${escapeHtml(group.group_name)}
             </strong>
 
           </div>
@@ -62,7 +77,7 @@ export function renderPendingGroupDetails(container) {
             </span>
 
             <strong>
-              Tricycle
+              ${escapeHtml(group.puv_type || "N/A")}
             </strong>
 
           </div>
@@ -73,9 +88,10 @@ export function renderPendingGroupDetails(container) {
             </span>
 
             <strong>
-              Juan Dela Cruz
+              ${escapeHtml(group.representative_name ||"N/A")}
             </strong>
           </div>
+
           <div class="puv-info-grid bottom-part">
             <div class="puv-info-item">
               <span class="puv-info-label">
@@ -83,7 +99,7 @@ export function renderPendingGroupDetails(container) {
               </span>
 
               <strong>
-                0917 123 4567
+                ${escapeHtml(group.contact_number ||"N/A")}
               </strong>
             </div>
             <div class="puv-info-item">
@@ -92,7 +108,7 @@ export function renderPendingGroupDetails(container) {
               </span>
 
               <strong>
-                Jan 1, 2026
+                ${escapeHtml(meetingDate)}
               </strong>
             </div>
 
@@ -102,7 +118,7 @@ export function renderPendingGroupDetails(container) {
               </span>
 
               <strong>
-                12:00 pm
+                ${escapeHtml(meetingTime)}
               </strong>
             </div>
 
@@ -111,7 +127,7 @@ export function renderPendingGroupDetails(container) {
                 Meeting Status
               </span>
 
-              <strong>Scheduled</strong>
+              <strong>${escapeHtml(meetingStatus)}</strong>
             </div>
           </div>
         </div>
@@ -143,7 +159,7 @@ export function renderPendingGroupDetails(container) {
               </span>
 
               <strong class="puv-clearance-not-created">
-                Not Created
+                ${escapeHtml(group.clearance_status ||"N/A")}
               </strong>
             </div>
           </div>
@@ -156,7 +172,7 @@ export function renderPendingGroupDetails(container) {
               </span>
 
               <strong>
-                Pending
+                 ${escapeHtml(group.clearance_number ||"N/A")}
               </strong>
 
             </div>
@@ -169,7 +185,7 @@ export function renderPendingGroupDetails(container) {
               </span>
 
               <strong>
-                Pending
+                ${escapeHtml(group.expiration_date ||"N/A")}
               </strong>
 
             </div>
@@ -202,7 +218,7 @@ export function renderPendingGroupDetails(container) {
 
         <div class="puv-map-container" id="puvGroupMap">
 
-          <div class="puv-map-placeholder">
+          <!--<div class="puv-map-placeholder">
 
             <i class="fas fa-map"></i>
 
@@ -214,7 +230,7 @@ export function renderPendingGroupDetails(container) {
               Vehicle and passenger loading locations
             </small>
 
-          </div>
+          </div>-->
         </div>
 
         <div class="puv-map-legend">
@@ -253,11 +269,14 @@ export function renderPendingGroupDetails(container) {
             <span class="puv-info-label">
               Official Vehicle Location
             </span>
-
-            <button type="button" class="puv-location-action-btn" id="puvVehicleStaging">
-              <i class="fas fa-location-dot"></i>
-              Set Vehicle Staging
-            </button>
+            ${vehicleStaging ? `
+              <strong>${escapeHtml(vehicleStaging.location_name)}</strong>  
+            ` : `
+              <button type="button" class="puv-location-action-btn" id="puvVehicleStaging">
+                <i class="fas fa-location-dot"></i>
+                Set Vehicle Staging
+              </button>
+            `}
           </div>
 
 
@@ -267,13 +286,95 @@ export function renderPendingGroupDetails(container) {
               Passenger Loading Area
             </span>
 
-            <button type="button" class="puv-location-action-btn" id="puvPassengerLoading">
-              <i class="fas fa-map-location-dot"></i>
-              Set Loading Areas
-            </button>
+            ${passengerLoading.length > 0 ? `
+              <strong>
+                ${passengerLoading.length}
+                loading area(s) configured
+              </strong>
+            ` : `
+              <button type="button" class="puv-location-action-btn" id="puvPassengerLoading">
+                <i class="fas fa-map-location-dot"></i>
+                Set Loading Areas
+              </button>
+            `}
           </div>
         </div>
       </section>
     </div>
+
+    <!-- FOOTER -->
+    <div class="puv-details-footer">
+
+      <span>
+        PUV Group Record
+      </span>
+
+      <button
+        type="button"
+        class="ptc-cancel-btn"
+        id="closePuvGroupDetailsFooter"
+      >
+        <i class="fas fa-xmark"></i>
+        Close
+      </button>
+
+    </div>
   `;
+
+  const mapContainer = container.querySelector("#puvGroupMap");
+
+  renderPuvGroupMap(mapContainer);
+}
+
+function formatMeetingDate(value) {
+
+  if (!value) {
+    return "Pending";
+  }
+
+  const date = new Date(value + "T00:00:00");
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+function formatMeetingTime(value) {
+
+  if (!value) {
+    return "Pending";
+  }
+
+  const [hours, minutes] = value.split(":");
+
+  const date = new Date();
+
+  date.setHours(
+    Number(hours),
+    Number(minutes),
+    0,
+    0
+  );
+
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function escapeHtml(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
 }

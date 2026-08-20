@@ -1,4 +1,25 @@
-export function renderActiveGroupDetails(container) {
+import { renderPuvGroupMap } from "./puv_group_map.js";
+
+
+export function renderActiveGroupDetails(container, group) {
+
+  const locations = Array.isArray(group.locations) ? group.locations : [];
+
+  const vehicleStaging = locations.find(location => location.location_type === "Vehicle Staging");
+
+  const passengerLoading = locations.filter(location => location.location_type === "Passenger Loading");
+
+  const vehicleStagingName = vehicleStaging?.location_name || "Not specified";
+
+  const passengerLoadingName = passengerLoading.length > 0 
+    ? passengerLoading.map(location => location.location_name).join(", ") : "Not Specified";
+
+  const clearanceStatus = group.clearance_status || "Not Created";
+
+  const clearanceNumber = group.clearance_number || "Pending";
+
+  const expirationDate = group.expiration_date || "Pending";
+
   container.innerHTML = `
     <!-- HEADER -->
     <div class="puv-details-header">
@@ -21,11 +42,11 @@ export function renderActiveGroupDetails(container) {
           </span>
 
           <h2 class="puv-details-title">
-            Mabini TODA
+            ${escapeHtml(group.group_name)}
           </h2>
 
           <p class="puv-details-subtitle">
-            Tricycle / TODA
+            ${escapeHtml(group.puv_type || "N/A")}
           </p>
 
         </div>
@@ -74,7 +95,7 @@ export function renderActiveGroupDetails(container) {
             </span>
 
             <strong>
-              Mabini TODA
+              ${escapeHtml(group.group_name)}
             </strong>
 
           </div>
@@ -87,7 +108,7 @@ export function renderActiveGroupDetails(container) {
             </span>
 
             <strong>
-              Tricycle
+              ${escapeHtml(group.puv_type || "N/A")}
             </strong>
 
           </div>
@@ -100,7 +121,7 @@ export function renderActiveGroupDetails(container) {
             </span>
 
             <strong>
-              Juan Dela Cruz
+              ${escapeHtml(group.representative_name || "N/A")}
             </strong>
 
           </div>
@@ -113,7 +134,7 @@ export function renderActiveGroupDetails(container) {
             </span>
 
             <strong>
-              0917 123 4567
+              ${escapeHtml(group.contact_number || "N/A")}
             </strong>
 
           </div>
@@ -126,7 +147,7 @@ export function renderActiveGroupDetails(container) {
             </span>
 
             <strong>
-              Barangay Public Market
+              ${escapeHtml(group.destination_name || "N/A")}
             </strong>
 
           </div>
@@ -139,7 +160,7 @@ export function renderActiveGroupDetails(container) {
             </span>
 
             <strong>
-              Rizal Street
+              ${escapeHtml(vehicleStagingName || "N/A")}
             </strong>
 
           </div>
@@ -187,7 +208,7 @@ export function renderActiveGroupDetails(container) {
               </span>
 
               <strong class="puv-clearance-approved">
-                Cleared
+                ${escapeHtml(clearanceStatus)}
               </strong>
 
             </div>
@@ -204,7 +225,7 @@ export function renderActiveGroupDetails(container) {
               </span>
 
               <strong>
-                BGY-2026-00124
+                ${escapeHtml(clearanceNumber)}
               </strong>
 
             </div>
@@ -217,7 +238,7 @@ export function renderActiveGroupDetails(container) {
               </span>
 
               <strong>
-                December 31, 2026
+                ${escapeHtml(clearanceNumber)}
               </strong>
 
             </div>
@@ -275,7 +296,7 @@ export function renderActiveGroupDetails(container) {
 
         <div class="puv-map-container" id="puvGroupMap">
 
-          <div class="puv-map-placeholder">
+          <!--<div class="puv-map-placeholder">
 
             <i class="fas fa-map"></i>
 
@@ -287,7 +308,7 @@ export function renderActiveGroupDetails(container) {
               Vehicle and passenger loading locations
             </small>
 
-          </div>
+          </div>-->
 
         </div>
 
@@ -333,11 +354,11 @@ export function renderActiveGroupDetails(container) {
             </span>
 
             <strong>
-              Barangay Public Market
+              ${escapeHtml(vehicleStagingName?.road_id || "")}
             </strong>
 
             <span class="puv-location-address">
-              Rizal Street
+              ${escapeHtml(vehicleStagingName)}
             </span>
 
           </div>
@@ -350,7 +371,7 @@ export function renderActiveGroupDetails(container) {
             </span>
 
             <strong>
-              Rizal Street Terminal
+              ${escapeHtml(passengerLoadingName)}
             </strong>
 
             <span class="puv-location-address">
@@ -362,8 +383,39 @@ export function renderActiveGroupDetails(container) {
         </div>
 
       </section>
+    </div>
 
+    <!-- FOOTER -->
+    <div class="puv-details-footer">
+
+      <span>
+        PUV Group Record
+      </span>
+
+      <button
+        type="button"
+        class="ptc-cancel-btn"
+        id="closePuvGroupDetailsFooter"
+      >
+        <i class="fas fa-xmark"></i>
+        Close
+      </button>
 
     </div>
   `;
+
+  const mapContainer = container.querySelector("#puvGroupMap");
+
+  renderPuvGroupMap(mapContainer);
+}
+
+function escapeHtml(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
 }
