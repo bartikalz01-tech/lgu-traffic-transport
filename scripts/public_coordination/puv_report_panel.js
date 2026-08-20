@@ -1,6 +1,6 @@
 import { puvGroupDetails } from "./puv_group_details.js";
 
-export function renderPuvReportPanel(container) {
+export function renderPuvReportPanel(container, puvGroups) {
 
   container.innerHTML = `
     <div class="ptc-content-card">
@@ -56,135 +56,9 @@ export function renderPuvReportPanel(container) {
           <tbody id="ptcGroupsTableBody">
 
             <tr>
-              <td>
-                <strong>Mabini TODA</strong>
-              </td>
-
-              <td>
-                Tricycle / TODA
-              </td>
-
-              <td>
-                Juan Dela Cruz
-              </td>
-
-              <td>
-                09171234567
-              </td>
-
-              <td>
-                Del Rey Street
-              </td>
-
-              <td>
-                3
-              </td>
-
-              <td>
-                <span class="ptc-status-badge active">
-                  Active
-                </span>
-              </td>
-
-              <td>
-                <button
-                  type="button"
-                  class="ptc-action-btn"
-                  title="View Details"
-                >
-                  <i class="fas fa-eye"></i>
-                </button>
-              </td>
-            </tr>
-
-
-            <tr>
-              <td>
-                <strong>
-                  San Isidro Jeepney Operators Association
-                </strong>
-              </td>
-
-              <td>
-                Jeepney
-              </td>
-
-              <td>
-                Pedro Santos
-              </td>
-
-              <td>
-                09181234567
-              </td>
-
-              <td>
-                Don Alejandro Street
-              </td>
-
-              <td>
-                5
-              </td>
-
-              <td>
-                <span class="ptc-status-badge active">
-                  Active
-                </span>
-              </td>
-
-              <td>
-                <button
-                  type="button"
-                  class="ptc-action-btn"
-                  title="View Details"
-                >
-                  <i class="fas fa-eye"></i>
-                </button>
-              </td>
-            </tr>
-
-
-            <tr>
-              <td>
-                <strong>
-                  Central UV Express Association
-                </strong>
-              </td>
-
-              <td>
-                UV Express
-              </td>
-
-              <td>
-                Maria Garcia
-              </td>
-
-              <td>
-                09201234567
-              </td>
-
-              <td>
-                Pending
-              </td>
-
-              <td>
-                Pending
-              </td>
-
-              <td>
-                <span class="ptc-status-badge pending">
-                  Pending
-                </span>
-              </td>
-
-              <td>
-                <button
-                  type="button"
-                  class="ptc-action-btn"
-                  title="View Details"
-                  id="viewPuvGroupBtn"
-                >
-                  <i class="fas fa-eye"></i>
-                </button>
+              <td colspan="8" class="ptc-loading-row">
+                <i class="fas fa-spinner fa-spin"></i>
+                Loading PUV groups...
               </td>
             </tr>
 
@@ -203,7 +77,24 @@ export function renderPuvReportPanel(container) {
   const searchInput = container.querySelector("#ptcSearchInput");
 
   const puvGroupDetailsModal = container.querySelector("#puvGroupDetailsModal")
-  const puvGroupDetailsBtn = container.querySelectorAll("#viewPuvGroupBtn");
+  //const puvGroupDetailsBtn = container.querySelectorAll("#viewPuvGroupBtn");
+
+  const tableBody = container.querySelector("#ptcGroupsTableBody");
+
+  if(!puvGroups || puvGroups.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="8" class="ptc-empty-row">
+          <i class="fas fa-bus"></i>
+          <span>No PUV groups found.</span>
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  tableBody.innerHTML = puvGroups.map(group => renderPuvGroupRow(group)).join("");
 
   searchInput.addEventListener(
     "input",
@@ -215,11 +106,7 @@ export function renderPuvReportPanel(container) {
           .trim();
 
 
-      const rows =
-        container.querySelectorAll(
-          "#ptcGroupsTableBody tr"
-        );
-
+      const rows = tableBody.querySelectorAll("tr");
 
       rows.forEach(row => {
 
@@ -236,12 +123,131 @@ export function renderPuvReportPanel(container) {
     }
   );
 
-  puvGroupDetailsBtn.forEach(btn => {
-    btn.addEventListener("click", () => {
-      puvGroupDetailsModal.classList.remove("detail-hidden");
+  tableBody.addEventListener("click", event => {
+    const button = event.target.closest(".view-puv-group-btn");
 
-      puvGroupDetails(puvGroupDetailsModal);
-    });
+    if(!button) {
+      return;
+    }
+
+    const puvGroupId = button.dataset.puvGroupId;
+
+    const group = puvGroups.find(item => String(item.puv_group_id) === String(puvGroupId));
+
+    if(!group) {
+      console.error("PUV group not found:", puvGroupId);
+
+      return;
+    }
+
+    puvGroupDetailsModal.classList.remove("detail-hidden");
+
+    puvGroupDetails(puvGroupDetailsModal, group)
   });
+
+}
+
+function renderPuvGroupRow(group) {
+  const locations = Array.isArray(group.locations) ? group.locations : [];
+
+  const vehicleStaging = locations.filter(location => location.location_type === "Vehicle Staging");
+
+  const passengerLoading = locations.filter(location => location.location_type === "Passenger Loading");
+
+  let vehicleStagingDisplay = "Pending";
+
+  if (vehicleStaging.length > 0) {
+    vehicleStagingDisplay = vehicleStaging.map(location => location.location_name).join(", ");
+  }
+
+  let passengerLoadingDisplay = "Pending";
+
+  if (passengerLoading.length > 0) {
+    passengerLoadingDisplay = passengerLoading.length;
+  }
+
+  const status = group.status || "Pending";
+
+  const statusClass = getStatusClass(status);
+
+  return `
+    <tr data-puv-group-id="${escapeHtml(group.puv_group_id)}">
+      <td>
+        <strong>
+          ${escapeHtml(group.group_name)}
+        </strong>
+      </td>
+
+      <td>
+        ${escapeHtml(group.puv_type || "N/A")}
+      </td>
+
+      <td>
+        ${escapeHtml(group.representative_name || "N/A")}
+      </td>
+
+      <td>
+        ${escapeHtml(group.contact_number || "N/A")}
+      </td>
+
+      <td>
+        ${escapeHtml(vehicleStagingDisplay)}
+      </td>
+
+      <td>
+        ${escapeHtml(passengerLoadingDisplay)}
+      </td>
+
+      <td>
+        <span class="ptc-status-badge ${statusClass}">
+          ${escapeHtml(status)}
+        </span>
+      </td>
+
+      <td>
+        <button
+          type="button"
+          class="ptc-action-btn view-puv-group-btn"
+          title="View Details"
+          data-puv-group-id="${escapeHtml(group.puv_group_id)}"
+        >
+          <i class="fas fa-eye"></i>
+        </button>
+      </td>
+    </tr>
+  `;
+}
+
+function getStatusClass(status) {
+
+  switch (status) {
+
+    case "Active":
+      return "active";
+
+    case "Pending":
+      return "pending";
+
+    case "Inactive":
+      return "inactive";
+
+    case "Rejected":
+      return "rejected";
+
+    default:
+      return "pending";
+
+  }
+
+}
+
+function escapeHtml(value) {
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 
 }

@@ -1,21 +1,26 @@
 <?php
-require_once '../../backend/PublicTransportCoordination.php';
+require_once '../../backend/Ptc.php';
 
-header("Content-Type: application/json");
-
-$puvGroups = new PublicTransportCoordination();
+header('Content-Type: application/json');
 
 try {
-  $data = $puvGroups->getPuvGroups();
+
+  $ptc = new Ptc();
+
+  $groups = $ptc->getPuvGroups();
 
   echo json_encode([
-    "status" => "success",
-    "data" => $data
+    'success' => true,
+    'data' => $groups
   ]);
-} catch(Exception $e) {
+
+} catch (Exception $e) {
+
+  http_response_code(500);
+
   echo json_encode([
-    "status" => "error",
-    "message" => $e->getMessage()
+    'success' => false,
+    'message' => $e->getMessage()
   ]);
 }
 

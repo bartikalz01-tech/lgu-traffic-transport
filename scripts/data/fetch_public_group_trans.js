@@ -126,9 +126,21 @@ export async function getPuvGroup() {
   try {
     const response = await fetch("../api/puv_api/get_puv_groups.php");
 
+    if (!response.ok) {
+      throw new Error(
+        `HTTP error: ${response.status}`
+      );
+    }
+
     const result = await response.json();
 
-    return result;
+    if (!result.success) {
+      throw new Error(
+        result.message || "Failed to fetch PUV groups."
+      );
+    }
+
+    return result.data;
   } catch(error) {
     console.error("Failed to get puv groups data");
     return [];

@@ -341,14 +341,12 @@ export function renderSchedulePuvModal(container) {
 
         const data = await insertPuvGroup(payload);
 
-
         await Swal.fire({
           icon: "success",
           title: "PUV Group Registered",
           text: `${payload.group_name} has been registered successfully.`,
           confirmButtonText: "OK"
         });
-
 
         form.reset();
 
