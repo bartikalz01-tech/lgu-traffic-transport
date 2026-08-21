@@ -1,4 +1,9 @@
 import { renderPuvGroupMap } from "./puv_group_map.js";
+import { formatMeetingDate, formatMeetingTime } from "./group_detail_utils/meeting_formatters.js";
+import { updateMeetingStatusColor } from "./group_detail_utils/meeting_status.js";
+import { renderVehicleStagingSelection } from "./group_detail_utils/vehicle_staging.js";
+import { renderPassengerLoadingSelection } from "./group_detail_utils/passenger_loading.js";
+import { escapeHtml } from "./group_detail_utils/html.js";
 
 export function renderPendingGroupDetails(container, group) {
 
@@ -127,7 +132,24 @@ export function renderPendingGroupDetails(container, group) {
                 Meeting Status
               </span>
 
-              <strong>${escapeHtml(meetingStatus)}</strong>
+              <select id="puvMeetingStatus" class="puv-meeting-status-select">
+                <option value="Scheduled" ${meetingStatus === "Scheduled" ? "selected" : ""}>
+                  Scheduled
+                </option>
+                <option value="Meeting Today" ${meetingStatus === "Meeting Today" ? "selected" : ""}>
+                  Meeting Today
+                </option>
+
+                <option value="Re-schedule" ${meetingStatus === "Re-schedule" ? "selected" : ""}>
+                  Re-schedule
+                </option>
+
+                <option value="Rejected" ${meetingStatus === "Rejected" ? "selected" : ""}>
+                  Rejected
+                </option>
+              </select>
+
+              <!--<strong>${escapeHtml(meetingStatus)}</strong>-->
             </div>
           </div>
         </div>
@@ -264,13 +286,13 @@ export function renderPendingGroupDetails(container, group) {
 
         <div class="puv-location-details">
 
-          <div class="puv-location-item">
+          <div class="puv-location-item" id="puvVehicleStagingItem">
 
             <span class="puv-info-label">
               Official Vehicle Location
             </span>
             ${vehicleStaging ? `
-              <strong>${escapeHtml(vehicleStaging.location_name)}</strong>  
+              ...
             ` : `
               <button type="button" class="puv-location-action-btn" id="puvVehicleStaging">
                 <i class="fas fa-location-dot"></i>
@@ -280,7 +302,7 @@ export function renderPendingGroupDetails(container, group) {
           </div>
 
 
-          <div class="puv-location-item">
+          <div class="puv-location-item" id="puvPassengerLoadingItem">
 
             <span class="puv-info-label">
               Passenger Loading Area
@@ -297,6 +319,14 @@ export function renderPendingGroupDetails(container, group) {
                 Set Loading Areas
               </button>
             `}
+          </div>
+
+          <div class="puv-location-item">
+            <span class="puv-info-label">
+              Destination Name
+            </span>
+
+            <input type="text" id="puvDestinationName" placeholder="Enter destination name" required>
           </div>
         </div>
       </section>
@@ -324,57 +354,31 @@ export function renderPendingGroupDetails(container, group) {
   const mapContainer = container.querySelector("#puvGroupMap");
 
   renderPuvGroupMap(mapContainer);
-}
 
-function formatMeetingDate(value) {
+  const meetingStatusSelect = container.querySelector("#puvMeetingStatus");
 
-  if (!value) {
-    return "Pending";
+  if(meetingStatusSelect) {
+    updateMeetingStatusColor(meetingStatusSelect);
+
+     meetingStatusSelect.addEventListener("change", () => {
+      updateMeetingStatusColor(meetingStatusSelect);
+    });
   }
 
-  const date = new Date(value + "T00:00:00");
+  const vehicleStagingButton = container.querySelector("#puvVehicleStaging");
 
-  if (Number.isNaN(date.getTime())) {
-    return value;
+  if (vehicleStagingButton) {
+    vehicleStagingButton.addEventListener("click", () => {
+      renderVehicleStagingSelection(container);
+    });
   }
 
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
-}
+  const passengerLoadingButton = container.querySelector("#puvPassengerLoading");
 
-function formatMeetingTime(value) {
-
-  if (!value) {
-    return "Pending";
+  if(passengerLoadingButton) {
+    passengerLoadingButton.addEventListener("click", () => {
+      renderPassengerLoadingSelection(container);
+    });
   }
-
-  const [hours, minutes] = value.split(":");
-
-  const date = new Date();
-
-  date.setHours(
-    Number(hours),
-    Number(minutes),
-    0,
-    0
-  );
-
-  return date.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit"
-  });
-}
-
-function escapeHtml(value) {
-
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 
 }

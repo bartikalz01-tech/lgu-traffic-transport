@@ -132,11 +132,16 @@ class Ptc extends config {
         pl.puv_location_id,
         pl.puv_group_id,
         pl.road_id,
+        r.road_name,
         pl.location_type,
         pl.location_name,
         pl.latitude,
         pl.longitude
       FROM puv_locations pl
+
+      LEFT JOIN roads r
+        ON pl.road_id = r.road_id
+
       WHERE pl.puv_group_id = :puv_group_id
       ORDER BY pl.puv_location_id ASC
     ";

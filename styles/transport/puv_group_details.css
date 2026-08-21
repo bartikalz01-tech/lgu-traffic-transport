@@ -269,6 +269,69 @@
   font-weight: 600;
 }
 
+.puv-meeting-status-select {
+
+  width: fit-content;
+  min-width: 130px;
+
+  padding: 6px 28px 6px 9px;
+
+  border: 1px solid var(--border-color-1);
+  border-radius: 6px;
+
+  background: var(--header-bg);
+  color: var(--text-color-1);
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.puv-meeting-status-select:hover {
+  border-color: var(--primary-color);
+}
+
+
+.puv-meeting-status-select:focus {
+  border-color: var(--primary-color);
+
+  box-shadow:
+    0 0 0 2px rgba(52, 152, 219, 0.10);
+}
+
+.puv-meeting-status-select.status-scheduled {
+  color: #3498db;
+  border-color: rgba(52, 152, 219, 0.35);
+  background: rgba(52, 152, 219, 0.06);
+}
+
+.puv-meeting-status-select.status-today {
+  color: #2ecc71;
+  border-color: rgba(46, 204, 113, 0.35);
+  background: rgba(46, 204, 113, 0.06);
+}
+
+.puv-meeting-status-select.status-reschedule {
+  color: #f39c12;
+  border-color: rgba(243, 156, 18, 0.35);
+  background: rgba(243, 156, 18, 0.06);
+}
+
+.puv-meeting-status-select.status-rejected {
+  color: #e74c3c;
+  border-color: rgba(231, 76, 60, 0.35);
+  background: rgba(231, 76, 60, 0.06);
+}
+
 
 /* =========================================
    CLEARANCE
@@ -366,7 +429,7 @@
 
 
 .puv-map-container {
-  width: 100%;
+  
   height: 400px;
 
   margin: 18px;
@@ -491,7 +554,7 @@
 
   display: grid;
 
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
 
   gap: 20px;
 }
@@ -512,6 +575,56 @@
   color: var(--text-color-1);
 
   font-size: 12px;
+}
+
+.puv-location-item input[type="text"] {
+
+  width: 100%;
+
+  padding: 9px 11px;
+
+  border: 1px solid var(--border-color-1);
+  border-radius: 7px;
+
+  background: var(--header-bg);
+
+  color: var(--text-color-1);
+
+  font-size: 11px;
+  font-weight: 500;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.puv-location-item input[type="text"]::placeholder {
+
+  color: var(--text-secondary);
+
+  opacity: 0.7;
+}
+
+
+.puv-location-item input[type="text"]:hover {
+
+  border-color: var(--primary-color);
+
+}
+
+
+.puv-location-item input[type="text"]:focus {
+
+  border-color: var(--primary-color);
+
+  background: var(--card-bg);
+
+  box-shadow: 
+    0 0 0 3px rgba(52, 152, 219, 0.08);
 }
 
 
@@ -582,6 +695,82 @@
 
 .puv-location-action-btn:active {
   transform: translateY(1px);
+}
+
+
+.puv-location-fields {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 8px;
+}
+
+
+.puv-location-field {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+.puv-location-input {
+
+  width: 100%;
+
+  height: 34px;
+
+  padding: 7px 10px;
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 7px;
+
+  background: var(--header-bg);
+
+  color: var(--text-color-1);
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  outline: none;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.puv-location-input::placeholder {
+
+  color: var(--text-secondary);
+
+  opacity: 0.7;
+}
+
+
+.puv-location-input:read-only {
+
+  cursor: default;
+
+  background: var(--header-bg);
+}
+
+
+.puv-location-input:focus {
+
+  border-color: var(--primary-color);
+
+  background: var(--card-bg);
 }
 
 
