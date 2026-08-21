@@ -1,6 +1,7 @@
 import {
   disablePuvLocationSelection,
-  enablePuvLocationSelection
+  enablePuvLocationSelection,
+  removePuvLocationMarker,
 } from "../puv_group_map.js";
 
 
@@ -140,6 +141,7 @@ function addLoadingArea(listContainer) {
   area.className =
     "puv-loading-area";
 
+  area.dataset.markerId = `loading-area-${areaCount}`;
 
   area.innerHTML = `
 
@@ -220,7 +222,13 @@ function addLoadingArea(listContainer) {
 
     removeButton.addEventListener("click", () => {
 
+      const markerId = area.dataset.markerId;
+
       disablePuvLocationSelection();
+
+      if(markerId) {
+        removePuvLocationMarker(markerId);
+      }
 
       area.remove();
 
@@ -259,119 +267,129 @@ function addLoadingArea(listContainer) {
 function selectPassengerLoadingLocation(area) {
 
   const roadInput =
-    area.querySelector(".puv-loading-road");
+    area.querySelector(
+      ".puv-loading-road"
+    );
+
 
   const specificInput =
-    area.querySelector(".puv-loading-specific");
+    area.querySelector(
+      ".puv-loading-specific"
+    );
 
 
-  if (!roadInput || !specificInput) {
+  if (
+    !roadInput ||
+    !specificInput
+  ) {
 
     console.error(
       "Passenger loading inputs not found."
     );
 
     return;
-
   }
 
 
-  /*
-   * Tell the map that the next click
-   * belongs to this loading area.
-   */
-  enablePuvLocationSelection((location) => {
-
-    console.log(
-      "Passenger loading location selected:",
-      location
-    );
+  const markerId =
+    area.dataset.markerId;
 
 
-    /*
-     * Display road name
-     */
-    roadInput.value =
-      location.roadName ||
-      "Unnamed Road";
+  enablePuvLocationSelection(
+    (location) => {
+
+      console.log(
+        "Passenger loading location selected:",
+        location
+      );
 
 
-    /*
-     * Display specific location
-     */
-    specificInput.value =
-      location.locationName ||
-      location.displayName ||
-      "Selected map location";
+      /*
+       * Road
+       */
+
+      roadInput.value =
+        location.roadName ||
+        "Unnamed Road";
 
 
-    /*
-     * Store coordinates
-     */
-    area.dataset.latitude =
-      location.latitude;
+      /*
+       * Specific location
+       */
 
-    area.dataset.longitude =
-      location.longitude;
-
-
-    /*
-     * Store road information
-     */
-    area.dataset.roadName =
-      location.roadName || "";
+      specificInput.value =
+        location.locationName ||
+        location.displayName ||
+        "Selected map location";
 
 
-    /*
-     * Store location information
-     */
-    area.dataset.locationName =
-      location.locationName ||
-      "";
+      /*
+       * Coordinates
+       */
+
+      area.dataset.latitude =
+        location.latitude;
 
 
-    /*
-     * Store complete Nominatim result
-     */
-    area.dataset.displayName =
-      location.displayName ||
-      "";
+      area.dataset.longitude =
+        location.longitude;
 
 
-    /*
-     * Store selection as complete object
-     *
-     * This makes future saving easier.
-     */
-    area.puvLocationData = {
+      /*
+       * Location data
+       */
 
-      latitude:
-        location.latitude,
-
-      longitude:
-        location.longitude,
-
-      roadName:
-        location.roadName || "",
-
-      locationName:
-        location.locationName || "",
-
-      displayName:
-        location.displayName || ""
-
-    };
+      area.dataset.roadName =
+        location.roadName || "";
 
 
-    /*
-     * Stop selecting after one click.
-     *
-     * User can click "Select on Map"
-     * again if they want to change it.
-     */
-    disablePuvLocationSelection();
+      area.dataset.locationName =
+        location.locationName || "";
 
-  });
+
+      area.dataset.displayName =
+        location.displayName || "";
+
+
+      /*
+       * Complete object
+       */
+
+      area.puvLocationData = {
+
+        latitude:
+          location.latitude,
+
+        longitude:
+          location.longitude,
+
+        roadName:
+          location.roadName || "",
+
+        locationName:
+          location.locationName || "",
+
+        displayName:
+          location.displayName || ""
+
+      };
+
+
+      /*
+       * Selection finished
+       */
+
+      disablePuvLocationSelection();
+
+    },
+    {
+      markerId:
+        markerId,
+
+      markerColor:
+        "blue"
+    }
+  );
 
 }
 

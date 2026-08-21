@@ -73,23 +73,52 @@ export function renderVehicleStagingSelection(container) {
   const locationInput =
     container.querySelector("#puvVehicleSpecificLocation");
 
-  enablePuvLocationSelection((location) => {
-    roadInput.value =
-      location.roadName || "unnamed Road";
+  enablePuvLocationSelection(
+    (location) => {
 
-    locationInput.value =
-      location.locationName ||
-      "Selected map location";
+      roadInput.value =
+        location.roadName ||
+        "Unnamed Road";
 
-    vehicleLocationItem.dataset.latitude = 
-      location.latitude;
-    
-    vehicleLocationItem.dataset.longitude =
-      location.longitude;
 
-    vehicleLocationItem.dataset.roadName =
-      location.roadName || "";
-  });
+      locationInput.value =
+        location.locationName ||
+        location.displayName ||
+        "Selected map location";
+
+
+      vehicleLocationItem.dataset.latitude =
+        location.latitude;
+
+
+      vehicleLocationItem.dataset.longitude =
+        location.longitude;
+
+
+      vehicleLocationItem.dataset.roadName =
+        location.roadName || "";
+
+
+      vehicleLocationItem.dataset.locationName =
+        location.locationName || "";
+
+
+      vehicleLocationItem.dataset.displayName =
+        location.displayName || "";
+
+
+      /*
+      * Stop map selection after one click.
+      */
+
+      disablePuvLocationSelection();
+
+    },
+    {
+      markerId: "vehicle-staging",
+      markerColor: "red"
+    }
+  );
 
   const cancelButton = container.querySelector("#cancelPuvVehicleStaging");
 

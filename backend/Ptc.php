@@ -84,6 +84,145 @@ class Ptc extends config {
     }
   }
 
+  public function insertPuvLocations($data) {
+
+    $conn = $this->conn();
+
+    $conn->beginTransaction();
+
+    try {
+      
+      $puvGroupId = (int)$data['puv-group-id'];
+
+      if(!empty($data['vehicle_staging'])) {
+
+        $vehicle = $data['vehicle_staging'];
+
+        $roadId = null;
+
+        if(!empty($vehicle['road_name'])) {
+
+          $roadSql = "
+            SELECT road_id
+            FROM roads
+            WHERE road_name = :road_name
+            LIMIT 1
+          ";
+
+          $roadStmt = $conn->prepare($roadSql);
+
+          $roadStmt->execute([
+            'road_name' => $vehicle['road_name']
+          ]);
+
+          $road = $roadStmt->fetch(PDO::FETCH_ASSOC);
+
+          if($road) {
+            $roadId = $road['road_id'];
+          }
+        }
+
+        $vehicleSql = "
+          INSERT INTO puv_locations (
+            puv_group_id,
+            road_id,
+            location_type,
+            location_name,
+            latitude,
+            longitude
+          )
+          VALUES (
+            :puv_group_id,
+            :road_id,
+            'Vehicle Staging',
+            :location_name,
+            :latitude,
+            :longitude
+          )
+        ";
+
+        $vehicleStmt = $conn->prepare($vehicleSql);
+
+        $vehicleStmt->execute([
+          ':puv_group_id' => $puvGroupId,
+          ':road_id' => $roadId,
+          'location_name' =>$vehicle['location_name'],
+          'latitude' => $vehicle['latitude'],
+          'longitude' => $vehicle['longitude']
+        ]);
+      }
+
+      if(!empty($data['passenger_loading'])) {
+
+        foreach($data['passenger_loading'] as $loadingArea) {
+          $roadId = null;
+
+          if(!empty($loadingArea['road_name'])) {
+            $roadSql = "
+              SELECT road_id
+              FROM roads
+              WHERE road_name = :road_name
+              LIMIT 1
+            ";
+
+            $roadStmt = $conn->prepare($roadSql);
+
+            $roadStmt->execute([
+              ':road_name' => $loadingArea['road_name']
+            ]);
+
+            $road = $roadStmt->fetch(PDO::FETCH_ASSOC);
+
+            if($road) {
+              $roadId = $road['road_id'];
+            }
+          }
+
+          $loadingSql = "
+            INSERT INTO puv_locations (
+              puv_group_id,
+              road_id,
+              location_type,
+              location_name,
+              latitude,
+              longitude
+            ) VALUES (
+              :puv_group_id,
+              :road_id,
+              'Passenger Loading',
+              :location_name,
+              :latitude,
+              :longitude
+            )
+          ";
+
+          $loadingStmt = $conn->prepare($loadingSql);
+
+          $loadingStmt->execute([
+            ':puv_group_id' => $puvGroupId,
+            ':road_id' => $roadId,
+            ':location_name' => $loadingArea['location_name'],
+            ':latitude' => $loadingArea['latitude'],
+            ':longitude' => $loadingArea['longitude']
+          ]);
+        }
+      }
+
+      $conn->commit();
+
+      return ['success' => true];
+
+    } catch(PDOException $e) {
+      if ($conn->inTransaction()) {
+        $conn->rollBack();
+      }
+
+      error_log("PUV Location database error: " . $e->getMessage());
+
+      throw new Exception("Failed to save PUV locations.");
+    }
+  }
+
   public function getPuvGroups() {
     $conn = $this->conn();
     $sql = "
