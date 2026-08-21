@@ -3,6 +3,8 @@ import {
   disablePuvLocationSelection
 } from "../puv_group_map.js";
 
+let vehicleStagingLocation = null;
+
 export function renderVehicleStagingSelection(container) {
 
   const vehicleLocationItem =
@@ -62,6 +64,10 @@ export function renderVehicleStagingSelection(container) {
           Cancel
         </button>
 
+        <button type="button" class="puv-location-save-btn" id="savePuvVehicleStaging">
+          <i class="fas fa-check"></i>
+          Save Vehicle Staging
+        </button>
       </div>
 
     </div>
@@ -111,12 +117,12 @@ export function renderVehicleStagingSelection(container) {
       * Stop map selection after one click.
       */
 
-      disablePuvLocationSelection();
+      //disablePuvLocationSelection();
 
     },
     {
       markerId: "vehicle-staging",
-      markerColor: "red"
+      markerColor: "#e74c3c"
     }
   );
 
@@ -128,6 +134,14 @@ export function renderVehicleStagingSelection(container) {
       renderVehicleStagingButton(container);
     });
 
+  }
+  
+  const saveButton = container.querySelector("#savePuvVehicleStaging");
+
+  if(saveButton) {
+    saveButton.addEventListener("click", () => {
+      saveVehicleStagingLocation(container);
+    });
   }
 }
 
@@ -152,7 +166,7 @@ export function renderVehicleStagingButton(container) {
       id="puvVehicleStaging"
     >
       <i class="fas fa-location-dot"></i>
-      Set Vehicle Staging
+      ${vehicleStagingLocation ? "Edit Vehicle Staging Location" : "Set Vehicle Staging"}
     </button>
   `;
 
@@ -166,4 +180,76 @@ export function renderVehicleStagingButton(container) {
     });
 
   }
+}
+
+function saveVehicleStagingLocation(container) {
+
+  const vehicleLocationItem =
+    container.querySelector("#puvVehicleStagingItem");
+
+  if (!vehicleLocationItem) {
+    return;
+  }
+
+
+  const latitude =
+    vehicleLocationItem.dataset.latitude;
+
+  const longitude =
+    vehicleLocationItem.dataset.longitude;
+
+  if (!latitude || !longitude) {
+
+    alert(
+      "Please select a vehicle staging location on the map."
+    );
+
+    return;
+  }
+
+
+  /*
+   * Hold the vehicle staging data.
+   */
+  vehicleStagingLocation = {
+
+    location_type:
+      "Vehicle Staging",
+
+    road_name:
+      vehicleLocationItem.dataset.roadName || "",
+
+    location_name:
+      vehicleLocationItem.dataset.locationName || "",
+
+    display_name:
+      vehicleLocationItem.dataset.displayName || "",
+
+    latitude:
+      Number(latitude),
+
+    longitude:
+      Number(longitude)
+
+  };
+
+
+  console.log(
+    "Vehicle staging location saved:",
+    vehicleStagingLocation
+  );
+
+
+  /*
+   * Stop map selection.
+   */
+  disablePuvLocationSelection();
+
+
+  /*
+   * Return to the default button,
+   * but now it will be the EDIT button.
+   */
+  renderVehicleStagingButton(container);
+
 }

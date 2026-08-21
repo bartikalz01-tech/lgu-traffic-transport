@@ -5,7 +5,17 @@ let selectionMarkerId = null;
 let selectionMarkerColor = "blue";
 
 const locationMarkers = new Map();
+const markerPopupData = new Map();
 
+let markerClickCallback = null;
+
+
+export function setPuvLocationMarkerClickCallback(callback) {
+
+  markerClickCallback =
+    callback;
+
+}
 
 // ============================================================
 // RENDER MAP
@@ -116,19 +126,9 @@ export function enablePuvLocationSelection(
   }
 
 
-  /*
-   * Store callback
-   */
-
   selectionCallback =
     callback;
 
-
-  /*
-   * Store marker information separately.
-   *
-   * Do NOT attach properties to the callback function.
-   */
 
   selectionMarkerId =
     options.markerId || null;
@@ -139,8 +139,18 @@ export function enablePuvLocationSelection(
 
 
   /*
-   * Add selecting visual state
+   * Store popup information.
    */
+
+  if (options.markerPopup) {
+
+    markerPopupData.set(
+      selectionMarkerId,
+      options.markerPopup
+    );
+
+  }
+
 
   puvGroupMap
     .getContainer()
@@ -303,19 +313,6 @@ function showLocationMarker(
     return;
   }
 
-
-  /*
-   * If this location already has a marker,
-   * remove the old one first.
-   *
-   * Example:
-   *
-   * loading-area-1
-   * loading-area-1
-   *
-   * The second selection replaces the first marker.
-   */
-
   if (locationMarkers.has(markerId)) {
 
     const existingMarker =
@@ -331,36 +328,36 @@ function showLocationMarker(
 
   }
 
+  let marker;
 
-  /*
-   * Create new marker
-   */
-
-  const marker =
-    L.circleMarker(
-      [
-        latitude,
-        longitude
-      ],
+  if(markerId === "vehicle-staging") {
+    marker = L.marker(
+      [latitude, longitude],
       {
-
-        radius: 9,
-
-        color: "#ffffff",
-
-        weight: 2,
-
-        fillColor: color,
-
-        fillOpacity: 1
-
+        icon: L.divIcon({
+          className: "puv-vehicle-marker",
+          html: `
+            <div class="puv-vehicle-marker-inner">
+              <i class="fas fa-bus"></i>
+            </div>
+          `,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18]
+        })
       }
     );
-
-
-  /*
-   * Add marker to map
-   */
+  } else {
+    marker = L.circleMarker(
+      [latitude, longitude],
+      {
+        radius: 9,
+        color: "#ffffff",
+        weight: 2,
+        fillColor: color,
+        fillOpacity: 1
+      }
+    );
+  }
 
   marker.addTo(
     puvGroupMap
@@ -376,6 +373,41 @@ function showLocationMarker(
     marker
   );
 
+  const popupData = markerPopupData.get(markerId);
+
+  if(popupData) {
+    marker.bindPopup(`
+      <div class="puv-loading-marker-popup">
+
+        <strong>
+          ${popupData.title}
+        </strong>
+
+        <div>
+          <small>
+            ${popupData.roadName || "Unnamed Road"}
+          </small>
+        </div>
+
+        <div>
+          <small>
+            ${
+              popupData.locationName ||
+              "Selected map location"
+            }
+          </small>
+        </div>
+
+      </div>
+    `);
+  }
+
+  marker.on("click", () => {
+    if (typeof markerClickCallback === "function") {
+      markerClickCallback(markerId);
+    }
+  });
+
 }
 
 
@@ -388,25 +420,30 @@ export function removePuvLocationMarker(
 ) {
 
   if (
-    !locationMarkers.has(
+    locationMarkers.has(
       markerId
     )
   ) {
 
-    return;
-  }
+    const marker =
+      locationMarkers.get(
+        markerId
+      );
 
+    marker.remove();
 
-  const marker =
-    locationMarkers.get(
+    locationMarkers.delete(
       markerId
     );
 
+  }
 
-  marker.remove();
 
+  /*
+   * Remove popup information too.
+   */
 
-  locationMarkers.delete(
+  markerPopupData.delete(
     markerId
   );
 
@@ -613,5 +650,67 @@ function buildLocationName(
 
 
   return "Selected map location";
+
+}
+
+// ============================================================
+// UPDATE MARKER POPUP
+// ============================================================
+
+export function updatePuvLocationMarkerPopup(
+  markerId,
+  popupData
+) {
+
+  if (!markerId) {
+    return;
+  }
+
+
+  markerPopupData.set(
+    markerId,
+    popupData
+  );
+
+
+  const marker =
+    locationMarkers.get(
+      markerId
+    );
+
+
+  if (!marker) {
+    return;
+  }
+
+
+  marker.bindPopup(`
+    <div class="puv-loading-marker-popup">
+
+      <strong>
+        ${popupData.title}
+      </strong>
+
+      <div>
+        <small>
+          ${
+            popupData.roadName ||
+            "Unnamed Road"
+          }
+        </small>
+      </div>
+
+      <div>
+        <small>
+          ${
+            popupData.locationName ||
+            popupData.displayName ||
+            "Selected map location"
+          }
+        </small>
+      </div>
+
+    </div>
+  `);
 
 }

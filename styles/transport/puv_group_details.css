@@ -803,6 +803,818 @@
   font-size: 10px;
 }
 
+#puvVehicleStagingItem {
+  min-width: 0;
+}
+
+#puvVehicleStagingItem > .puv-info-label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+#puvVehicleStagingItem .puv-location-fields {
+  width: 100%;
+  max-width: 520px;
+}
+
+.puv-location-input {
+  cursor: default;
+}
+
+.puv-location-input:read-only {
+  color: var(--text-color-1);
+}
+
+.puv-location-input:read-only {
+  cursor: default;
+  background: var(--header-bg);
+}
+
+.puv-location-actions {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  margin-top: 4px;
+
+  padding-top: 4px;
+}
+
+.puv-location-cancel-btn {
+
+  padding: 8px 12px;
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 7px;
+
+  background: var(--header-bg);
+
+  color: var(--text-secondary);
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+
+.puv-location-cancel-btn:hover {
+
+  background: rgba(231, 76, 60, 0.06);
+
+  border-color: rgba(231, 76, 60, 0.35);
+
+  color: #e74c3c;
+}
+
+
+.puv-location-cancel-btn:active {
+  transform: translateY(1px);
+}
+
+
+.puv-location-cancel-btn i {
+  font-size: 10px;
+}
+
+.puv-location-save-btn {
+
+  padding: 8px 14px;
+
+  border: 1px solid transparent;
+
+  border-radius: 7px;
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.puv-location-save-btn:active {
+  transform: translateY(1px);
+}
+
+.puv-location-save-btn i {
+  color: #ffffff;
+  font-size: 10px;
+}
+
+#puvVehicleStagingItem .puv-location-save-btn {
+
+  border-color: #e74c3c;
+
+  background: #e74c3c;
+
+  color: #ffffff;
+}
+
+#puvVehicleStagingItem .puv-location-save-btn:hover {
+
+  background: #d63c2e;
+
+  border-color: #d63c2e;
+
+  box-shadow:
+    0 3px 8px rgba(231, 76, 60, 0.18);
+}
+
+#puvVehicleStagingItem .puv-location-save-btn i {
+  color: #ffffff;
+}
+
+
+#puvPassengerLoadingItem .puv-location-save-btn {
+
+  border-color: #3498db;
+
+  background: #3498db;
+
+  color: #ffffff;
+}
+
+#puvPassengerLoadingItem .puv-location-save-btn:hover {
+
+  background: #2980b9;
+
+  border-color: #2980b9;
+
+  box-shadow:
+    0 3px 8px rgba(52, 152, 219, 0.18);
+}
+
+#puvPassengerLoadingItem .puv-location-save-btn i {
+
+  color: #ffffff;
+}
+
+.puv-loading-area-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-top: 10px;
+
+}
+
+.puv-loading-area {
+
+  padding: 14px;
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 9px;
+
+  background: var(--header-bg);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.puv-loading-area:hover {
+
+  border-color: rgba(52, 152, 219, 0.35);
+
+  box-shadow:
+    0 2px 8px rgba(52, 152, 219, 0.06);
+
+}
+
+.puv-loading-area-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+}
+
+
+.puv-loading-area-header strong {
+
+  color: var(--text-color-1);
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+}
+
+
+.puv-loading-area-header strong::before {
+
+  content: "\f3c5";
+
+  font-family: "Font Awesome 6 Free";
+
+  font-weight: 900;
+
+  color: #3498db;
+
+  margin-right: 7px;
+
+}
+
+.puv-loading-area-remove {
+
+  width: 27px;
+
+  height: 27px;
+
+  padding: 0;
+
+  border: 1px solid rgba(231, 76, 60, 0.25);
+
+  border-radius: 6px;
+
+  background: rgba(231, 76, 60, 0.06);
+
+  color: #e74c3c;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+
+.puv-loading-area-remove:hover {
+
+  background: rgba(231, 76, 60, 0.12);
+
+  border-color: #e74c3c;
+
+  color: #e74c3c;
+
+}
+
+
+.puv-loading-area-remove:active {
+
+  transform: translateY(1px);
+
+}
+
+.puv-loading-area .puv-location-field {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+}
+
+
+.puv-loading-area .puv-location-input {
+
+  width: 100%;
+
+  height: 34px;
+
+  padding: 7px 10px;
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 7px;
+
+  background: var(--card-bg);
+
+  color: var(--text-color-1);
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 500;
+
+  outline: none;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.puv-loading-area .puv-location-input::placeholder {
+
+  color: var(--text-secondary);
+
+  opacity: 0.7;
+
+}
+
+
+.puv-loading-area .puv-location-input:hover {
+
+  border-color: rgba(52, 152, 219, 0.45);
+
+}
+
+
+.puv-loading-area .puv-location-input:focus {
+
+  border-color: #3498db;
+
+  background: var(--card-bg);
+
+  box-shadow:
+    0 0 0 3px rgba(52, 152, 219, 0.08);
+
+}
+
+.puv-location-select-btn {
+
+  width: fit-content;
+
+  padding: 7px 11px;
+
+  border: 1px solid rgba(52, 152, 219, 0.35);
+
+  border-radius: 7px;
+
+  background: rgba(52, 152, 219, 0.06);
+
+  color: #3498db;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+
+.puv-location-select-btn i {
+
+  color: #3498db;
+
+}
+
+
+.puv-location-select-btn:hover {
+
+  background: rgba(52, 152, 219, 0.12);
+
+  border-color: #3498db;
+
+  color: #3498db;
+
+}
+
+
+.puv-location-select-btn:active {
+
+  transform: translateY(1px);
+
+}
+
+
+.puv-loading-area .puv-location-actions {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 2px;
+
+}
+
+.puv-location-add-btn {
+
+  padding: 8px 12px;
+
+  border: 1px solid rgba(52, 152, 219, 0.35);
+
+  border-radius: 7px;
+
+  background: rgba(52, 152, 219, 0.06);
+
+  color: #3498db;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+
+.puv-location-add-btn i {
+
+  color: #3498db;
+
+}
+
+
+.puv-location-add-btn:hover {
+
+  background: rgba(52, 152, 219, 0.12);
+
+  border-color: #3498db;
+
+  color: #3498db;
+
+}
+
+
+.puv-location-add-btn:active {
+
+  transform: translateY(1px);
+
+}
+
+
+.puv-location-cancel-btn {
+
+  padding: 8px 12px;
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 7px;
+
+  background: var(--header-bg);
+
+  color: var(--text-secondary);
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+
+.puv-location-cancel-btn i {
+
+  color: var(--text-secondary);
+
+}
+
+
+.puv-location-cancel-btn:hover {
+
+  background: rgba(231, 76, 60, 0.06);
+
+  border-color: rgba(231, 76, 60, 0.35);
+
+  color: #e74c3c;
+
+}
+
+
+.puv-location-cancel-btn:hover i {
+
+  color: #e74c3c;
+
+}
+
+
+.puv-location-cancel-btn:active {
+
+  transform: translateY(1px);
+
+}
+
+.puv-loading-area-summary {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+  margin-top: 10px;
+
+}
+
+
+.puv-loading-area-summary-item {
+
+  padding: 10px 12px;
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 7px;
+
+  background: var(--header-bg);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+
+.puv-loading-area-summary-item strong {
+
+  color: var(--text-color-1);
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+}
+
+
+.puv-loading-area-summary-item strong::before {
+
+  content: "\f3c5";
+
+  font-family: "Font Awesome 6 Free";
+
+  font-weight: 900;
+
+  color: #3498db;
+
+  margin-right: 6px;
+
+}
+
+
+.puv-loading-area-summary-item span {
+
+  color: var(--text-color-1);
+
+  font-size: 11px;
+
+}
+
+
+.puv-loading-area-summary-item small {
+
+  color: var(--text-secondary);
+
+  font-size: 10px;
+
+}
+
+
+#editPuvPassengerLoading {
+
+  border-color: rgba(52, 152, 219, 0.35);
+
+  color: #3498db;
+
+}
+
+
+#editPuvPassengerLoading i {
+
+  color: #3498db;
+
+}
+
+
+#editPuvPassengerLoading:hover {
+
+  background: rgba(52, 152, 219, 0.08);
+
+  border-color: #3498db;
+
+  color: #3498db;
+
+}
+
+.puv-loading-area.is-map-selecting {
+
+  border-color: rgba(52, 152, 219, 0.55);
+
+  box-shadow:
+    0 0 0 2px rgba(52, 152, 219, 0.08);
+
+}
+
+
+.puv-location-select-btn.is-selecting {
+
+  background: rgba(52, 152, 219, 0.12);
+
+  border-color: #3498db;
+
+  color: #3498db;
+
+}
+
+
+.puv-location-select-btn.is-selecting i {
+
+  color: #3498db;
+
+}
+
+
+.puv-location-select-btn.is-disabled {
+
+  opacity: 0.45;
+
+  cursor: not-allowed;
+
+}
+
+
+/*
+ * Prevent hover behavior while disabled.
+ */
+.puv-location-select-btn:disabled {
+
+  cursor: not-allowed;
+
+}
+
+
+.puv-location-select-btn:disabled:hover {
+
+  background: var(--header-bg);
+
+  border-color: var(--border-color-1);
+
+  color: var(--text-secondary);
+
+}
+
+.puv-vehicle-marker {
+  background: transparent;
+  border: none;
+}
+
+.puv-vehicle-marker-inner {
+  width: 36px;
+  height: 36px;
+
+  background: #e74c3c;
+
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.puv-vehicle-marker-inner i {
+  color: #ffffff;
+  font-size: 17px;
+}
+
+.puv-loading-area-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  max-height: min(360px, 42vh);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding-right: 6px;
+
+  min-height: 0;
+}
+
+.puv-loading-area-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.puv-loading-area-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.puv-loading-area-list::-webkit-scrollbar-thumb {
+  background: #c7c7c7;
+  border-radius: 10px;
+}
+
+.puv-loading-area-list::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
 
 /* =========================================
    RESPONSIVE

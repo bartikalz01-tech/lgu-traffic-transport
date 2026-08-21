@@ -2,6 +2,8 @@ import {
   disablePuvLocationSelection,
   enablePuvLocationSelection,
   removePuvLocationMarker,
+  setPuvLocationMarkerClickCallback,
+  updatePuvLocationMarkerPopup
 } from "../puv_group_map.js";
 
 
@@ -58,8 +60,11 @@ export function renderPassengerLoadingSelection(container) {
   `;
 
 
-  const loadingAreaList =
-    passengerLocationItem.querySelector("#puvLoadingAreaList");
+  const loadingAreaList = passengerLocationItem.querySelector("#puvLoadingAreaList");
+
+  setPuvLocationMarkerClickCallback((markerId) => {
+    focusLoadingAreaByMarkerId(loadingAreaList, markerId);
+  });
 
 
   /*
@@ -131,9 +136,9 @@ export function renderPassengerLoadingSelection(container) {
 
 function addLoadingArea(listContainer) {
 
-  const areaCount =
-    listContainer.querySelectorAll(".puv-loading-area").length + 1;
+  const areaNumber = listContainer.querySelectorAll(".puv-loading-area").length + 1;
 
+  const markerId = `loading-area-${crypto.randomUUID()}`;
 
   const area =
     document.createElement("div");
@@ -141,14 +146,14 @@ function addLoadingArea(listContainer) {
   area.className =
     "puv-loading-area";
 
-  area.dataset.markerId = `loading-area-${areaCount}`;
+  area.dataset.markerId = markerId;
 
   area.innerHTML = `
 
     <div class="puv-loading-area-header">
 
       <strong>
-        Loading Area ${areaCount}
+        Loading Area ${areaNumber}
       </strong>
 
       <button
@@ -232,7 +237,7 @@ function addLoadingArea(listContainer) {
 
       area.remove();
 
-      renumberLoadingAreas(listContainer);
+      //renumberLoadingAreas(listContainer);
 
     });
 
@@ -295,7 +300,21 @@ function selectPassengerLoadingLocation(area) {
     area.dataset.markerId;
 
 
+  /*
+   * Activate this loading area's
+   * map-selection state.
+   */
+  setLoadingAreaSelectingState(
+    area,
+    true
+  );
+
+
+  /*
+   * Enable map selection.
+   */
   enablePuvLocationSelection(
+
     (location) => {
 
       console.log(
@@ -305,7 +324,7 @@ function selectPassengerLoadingLocation(area) {
 
 
       /*
-       * Road
+       * Update Road Name
        */
 
       roadInput.value =
@@ -314,7 +333,7 @@ function selectPassengerLoadingLocation(area) {
 
 
       /*
-       * Specific location
+       * Update Specific Location
        */
 
       specificInput.value =
@@ -324,7 +343,7 @@ function selectPassengerLoadingLocation(area) {
 
 
       /*
-       * Coordinates
+       * Update coordinates
        */
 
       area.dataset.latitude =
@@ -336,7 +355,7 @@ function selectPassengerLoadingLocation(area) {
 
 
       /*
-       * Location data
+       * Update location information
        */
 
       area.dataset.roadName =
@@ -350,9 +369,18 @@ function selectPassengerLoadingLocation(area) {
       area.dataset.displayName =
         location.displayName || "";
 
+      
+      updatePuvLocationMarkerPopup(markerId, 
+        {
+          title: getLoadingAreaTitle(area),
+          roadName: location.roadName || "",
+          locationName: location.locationName || "",
+          displayName: location.displayName || ""
+        }
+      );
 
       /*
-       * Complete object
+       * Store complete location object
        */
 
       area.puvLocationData = {
@@ -376,20 +404,190 @@ function selectPassengerLoadingLocation(area) {
 
 
       /*
-       * Selection finished
+       * IMPORTANT:
+       *
+       * Map selection is finished.
        */
 
       disablePuvLocationSelection();
 
-    },
-    {
-      markerId:
-        markerId,
 
-      markerColor:
-        "blue"
+      /*
+       * Restore this area's button.
+       */
+
+      setLoadingAreaSelectingState(
+        area,
+        false
+      );
+
+    },
+
+    {
+      markerId: markerId,
+      markerColor: "blue",
+      markerPopUp: {
+        title: getLoadingAreaTitle(area),
+        roadName: area.dataset.roadName || "",
+        locationName: area.dataset.locationName || ""
+      }
     }
+
   );
+
+}
+
+
+function setLoadingAreaSelectingState(
+  activeArea,
+  isSelecting
+) {
+
+  const listContainer =
+    activeArea.closest(
+      "#puvLoadingAreaList"
+    );
+
+
+  if (!listContainer) {
+    return;
+  }
+
+
+  const areas =
+    listContainer.querySelectorAll(
+      ".puv-loading-area"
+    );
+
+
+  areas.forEach((area) => {
+
+    const button =
+      area.querySelector(
+        ".puv-location-select-btn"
+      );
+
+
+    if (!button) {
+      return;
+    }
+
+
+    /*
+     * ------------------------------------------------------
+     * ACTIVE AREA + MAP SELECTION
+     * ------------------------------------------------------
+     */
+
+    if (
+      area === activeArea &&
+      isSelecting
+    ) {
+
+      area.classList.add(
+        "is-map-selecting"
+      );
+
+
+      button.classList.add(
+        "is-selecting"
+      );
+
+
+      button.classList.remove(
+        "is-disabled"
+      );
+
+
+      button.disabled =
+        false;
+
+
+      button.innerHTML = `
+        <i class="fas fa-crosshairs"></i>
+        Click on Map
+      `;
+
+
+      return;
+    }
+
+
+    /*
+     * ------------------------------------------------------
+     * OTHER AREAS WHILE SELECTING
+     * ------------------------------------------------------
+     */
+
+    if (
+      isSelecting &&
+      area !== activeArea
+    ) {
+
+      button.disabled =
+        true;
+
+
+      button.classList.add(
+        "is-disabled"
+      );
+
+
+      return;
+    }
+
+
+    /*
+     * ------------------------------------------------------
+     * NORMAL STATE
+     * ------------------------------------------------------
+     */
+
+    area.classList.remove(
+      "is-map-selecting"
+    );
+
+
+    button.classList.remove(
+      "is-selecting"
+    );
+
+
+    button.classList.remove(
+      "is-disabled"
+    );
+
+
+    button.disabled =
+      false;
+
+
+    /*
+     * If this area already has a
+     * selected location, show
+     * "Change on Map".
+     */
+
+    if (
+      area.dataset.latitude &&
+      area.dataset.longitude
+    ) {
+
+      button.innerHTML = `
+        <i class="fas fa-arrows-rotate"></i>
+        Change on Map
+      `;
+
+    } else {
+
+      button.innerHTML = `
+        <i class="fas fa-location-dot"></i>
+        Select on Map
+      `;
+
+    }
+
+  });
 
 }
 
@@ -400,7 +598,7 @@ function selectPassengerLoadingLocation(area) {
 |--------------------------------------------------------------------------
 */
 
-function renumberLoadingAreas(listContainer) {
+/*function renumberLoadingAreas(listContainer) {
 
   const areas =
     listContainer.querySelectorAll(".puv-loading-area");
@@ -422,7 +620,7 @@ function renumberLoadingAreas(listContainer) {
 
   });
 
-}
+}*.
 
 
 /*
@@ -689,5 +887,115 @@ export function renderPassengerLoadingButton(container) {
     );
 
   }
+
+}
+
+function focusLoadingAreaByMarkerId(
+  listContainer,
+  markerId
+) {
+
+  if (!listContainer) {
+    return;
+  }
+
+
+  const areas =
+    listContainer.querySelectorAll(
+      ".puv-loading-area"
+    );
+
+
+  let targetArea = null;
+
+
+  areas.forEach((area) => {
+
+    if (
+      area.dataset.markerId ===
+      markerId
+    ) {
+
+      targetArea =
+        area;
+
+    }
+
+  });
+
+
+  if (!targetArea) {
+
+    console.warn(
+      "No loading area found for marker:",
+      markerId
+    );
+
+    return;
+
+  }
+
+
+  /*
+   * Remove previous focus.
+   */
+
+  areas.forEach((area) => {
+
+    area.classList.remove(
+      "is-marker-focused"
+    );
+
+  });
+
+
+  /*
+   * Highlight selected card.
+   */
+
+  targetArea.classList.add(
+    "is-marker-focused"
+  );
+
+
+  /*
+   * Scroll the card into view.
+   */
+
+  targetArea.scrollIntoView({
+    behavior:
+      "smooth",
+
+    block:
+      "center"
+  });
+
+
+  /*
+   * Automatically remove
+   * the highlight after a few seconds.
+   */
+
+  setTimeout(() => {
+
+    targetArea.classList.remove(
+      "is-marker-focused"
+    );
+
+  }, 3000);
+
+}
+
+function getLoadingAreaTitle(area) {
+
+  const title =
+    area.querySelector(
+      ".puv-loading-area-header strong"
+    );
+
+
+  return title
+    ? title.textContent
+    : "Passenger Loading Area";
 
 }
