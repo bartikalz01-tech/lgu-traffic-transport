@@ -1,3 +1,8 @@
+import {
+  enablePuvLocationSelection,
+  disablePuvLocationSelection
+} from "../puv_group_map.js";
+
 export function renderVehicleStagingSelection(container) {
 
   const vehicleLocationItem =
@@ -62,8 +67,31 @@ export function renderVehicleStagingSelection(container) {
     </div>
   `;
 
-  const cancelButton =
-    container.querySelector("#cancelPuvVehicleStaging");
+  const roadInput = 
+    container.querySelector("#puvVehicleRoadName");
+
+  const locationInput =
+    container.querySelector("#puvVehicleSpecificLocation");
+
+  enablePuvLocationSelection((location) => {
+    roadInput.value =
+      location.roadName || "unnamed Road";
+
+    locationInput.value =
+      location.locationName ||
+      "Selected map location";
+
+    vehicleLocationItem.dataset.latitude = 
+      location.latitude;
+    
+    vehicleLocationItem.dataset.longitude =
+      location.longitude;
+
+    vehicleLocationItem.dataset.roadName =
+      location.roadName || "";
+  });
+
+  const cancelButton = container.querySelector("#cancelPuvVehicleStaging");
 
   if (cancelButton) {
 
