@@ -130,4 +130,31 @@ class Accidents extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function accidentReportApi() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        ac.public_accident_id,
+        r.road_name,
+        ac.accident_date,
+        ac.accident_time,
+        ac.accident_type,
+        ac.specific_location,
+        ac.status,
+        ac.reported_at,
+        ac.updated_at
+      FROM accident_cases ac
+
+      LEFT JOIN roads r
+        ON ac.road_id = r.road_id
+      
+      ORDER BY ac.reported_at DESC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 }
