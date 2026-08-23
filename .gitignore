@@ -8,3 +8,5 @@ cctv_historical_records/
 # Ignore Python cache
 __pycache__/
 *.pyc
+
+.env

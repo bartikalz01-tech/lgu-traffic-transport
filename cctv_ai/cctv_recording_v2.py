@@ -2,12 +2,15 @@ import cv2
 import threading
 from pathlib import Path
 from datetime import datetime, timedelta
+from .cloudinary_uploader import upload_video_background
 
 RECORDING_FOLDER = Path(__file__).parent / "cctv_recording"
 RECORDING_FOLDER.mkdir(parents=True, exist_ok=True)
 
 HISTORICAL_RECORDING_FOLDER = (Path(__file__).parent / "cctv_historical_records")
 HISTORICAL_RECORDING_FOLDER.mkdir(parents=True, exist_ok=True)
+
+CLOUDINARY_RECORDING_FOLDER = ("alertara_test/cctv/recordings")
 
 SEGMENT_SECONDS = 60
 
@@ -86,14 +89,36 @@ class CameraRecorder:
       timestamp - self.segment_start
     ).total_seconds() >= SEGMENT_SECONDS:
 
+      finished_file = self.filepath
+
       self.writer.release()
 
       self.writer = None
 
       print(
         f"[RECORDING] Finished segment: "
-        f"{self.filepath.name}"
+        f"{finished_file.name}"
       )
+
+
+      try:
+        upload_video_background(
+          file_path=finished_file,
+          cloudinary_folder=CLOUDINARY_RECORDING_FOLDER,
+          overwrite=False,
+          delete_after_upload=True
+        )
+
+        print(
+          f"[CLOUDINARY] Upload queued: "
+          f"{finished_file.name}"
+        )
+
+      except Exception as error:
+        print(
+          f"[CLOUDINARY] Failed to queue upload"
+          f"for {finished_file.name}: {error}"
+        )
 
       self._create_segment(
         frame, timestamp
