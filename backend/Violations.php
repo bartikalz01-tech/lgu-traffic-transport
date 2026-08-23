@@ -201,6 +201,90 @@ class Violations extends config {
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  public function violationReportApi() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        vr.violation_id,
+        vr.public_violation_id,
+        r.road_name,
+        vr.violation_type,
+        vr.violation_datetime,
+        vr.location_details,
+        vr.plate_number,
+        vr.vehicle_type,
+        vr.description,
+        vr.status,
+        ve.file_name,
+        ve.file_path
+
+      FROM violation_reports vr
+
+      LEFT JOIN roads r
+        ON vr.road_id = r.road_id
+
+      LEFT JOIN violation_evidence ve
+        ON vr.violation_id = ve.violation_id
+      
+      WHERE vr.status = 'Verified'
+
+      ORDER BY vr.created_at DESC
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function updateViolationStatus($violationId, $status) {
+
+    $conn = $this->conn();
+
+    $allowedStatuses = [
+      'Pending Review',
+      'Verified',
+      'Rejected'
+    ];
+
+    if(!in_array($status, $allowedStatuses, true)) {
+
+      throw new Exception(
+        "Invalid violation status."
+      );
+
+    }
+
+    $sql = "
+      UPDATE violation_reports
+
+      SET status = :status
+
+      WHERE violation_id = :violation_id
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->execute([
+      ':status' => $status,
+      ':violation_id' => $violationId
+    ]);
+
+    if($stmt->rowCount() === 0) {
+
+      throw new Exception(
+        "Violation report not found or status was unchanged."
+      );
+
+    }
+
+    return [
+      'success' => true,
+      'violation_id' => $violationId,
+      'status' => $status
+    ];
+  }
 }
 
 ?>

@@ -32,6 +32,8 @@
   </main>
 
   <script src="../scripts/sidebar.js"></script>
+  <script src="../scripts/header.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="../scripts/violation/violation.js"></script>
 </body>
 

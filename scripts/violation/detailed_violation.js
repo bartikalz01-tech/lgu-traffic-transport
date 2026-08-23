@@ -1,3 +1,5 @@
+import { updateViolationStatus } from "../data/violation_report/fetch_violations.js";
+
 export function renderViolationDetailModal(container, violation) {
 
   function getStatusConfig(status) {
@@ -131,13 +133,25 @@ export function renderViolationDetailModal(container, violation) {
           </strong>
         </div>
 
-        <div class="detailed-report-status ${statusConfig.className}">
-          <i class="${statusConfig.icon}"></i>
+        <div id="violationStatusContainer" class="detailed-report-status ${statusConfig.className}">
+          <i id="violationStatusIcon" class="${statusConfig.icon}"></i>
           <div>
-            <span clas="detailed-report-status-label">
+            <span class="detailed-report-status-label">
               Status
             </span>
-            <strong>${statusConfig.label}</strong>
+            <select id="violationStatusSelect" class="detailed-report-status-select">
+              <option value="Pending Review" ${statusConfig.label === "Pending Review" ? "selected" : ""}>
+                Pending Review
+              </option>
+
+              <option value="Verified" ${statusConfig.label === "Verified" ? "selected" : ""}>
+                Verified
+              </option>
+
+              <option value="Rejected" ${statusConfig.label === "Rejected" ? "selected" : ""}>
+                Rejected
+              </option>
+            </select>
           </div>
         </div>
       </div>
@@ -324,6 +338,104 @@ export function renderViolationDetailModal(container, violation) {
 
   const closeBtn = container.querySelector("#closeDetailedViolationBtn");
   const closeFooterBtn = container.querySelector("#closeDetailedViolationFooterBtn");
+
+  const statusContainer = container.querySelector("#violationStatusContainer");
+  const statusIcon = container.querySelector("#violationStatusIcon");
+  const statusSelect = container.querySelector("#violationStatusSelect");
+
+
+  statusSelect.addEventListener("change", async () => {
+
+    const newStatus = statusSelect.value;
+
+    const previousStatus = violation.status;
+
+    statusSelect.disabled = true;
+
+    try {
+      const result = await updateViolationStatus(violation.violation_id, newStatus);
+
+      if(!result.success) {
+        throw new Error(
+          result.message ||
+          "Failed to update status."
+        );
+      }
+
+      const newStatusConfig = getStatusConfig(newStatus);
+
+      violation.status = newStatus;
+
+      // Update container class
+      statusContainer.classList.remove(
+        "pending",
+        "verified",
+        "rejected"
+      );
+
+      if(newStatusConfig.className) {
+        statusContainer.classList.add(
+          newStatusConfig.className
+        );
+      }
+
+      // Update icon
+      statusIcon.className = newStatusConfig.icon;
+
+      const footerMessage =
+        container.querySelector(
+          ".detailed-report-footer-info span"
+        );
+      
+      if(footerMessage) {
+        footerMessage.textContent = newStatusConfig.footerMessage;
+      }
+
+      Swal.fire({
+
+        toast: true,
+
+        position: "top-end",
+
+        icon: "success",
+
+        title: "Status Updated",
+
+        text:
+          `Violation status changed to ${newStatus}.`,
+
+        showConfirmButton: false,
+
+        timer: 2200
+
+      });
+
+    } catch(error) {
+      console.error(
+        "Failed to update violation status:",
+        error
+      );
+
+      statusSelect.value = previousStatus || "Pending Review";
+
+      Swal.fire({
+
+        icon: "error",
+
+        title: "Update Failed",
+
+        text:
+          error.message ||
+          "Unable to update the violation status."
+
+      });
+
+    } finally {
+      statusSelect.disabled = false;
+    }
+
+  });
+
 
   const closeModal = () => {
     container.classList.add("detailed-reports-hidden");

@@ -151,6 +151,37 @@
   font-size: 0.8rem; 
 }
 
+.detailed-report-status-select {
+
+  border: none;
+
+  background: transparent;
+
+  color: inherit;
+
+  font-size: 0.8rem;
+
+  font-weight: 700;
+
+  font-family: inherit;
+
+  cursor: pointer;
+
+  outline: none;
+
+  padding: 0;
+
+  margin: 0;
+}
+
+
+.detailed-report-status-select option {
+
+  background: #ffffff;
+
+  color: #1e293b;
+}
+
 .detailed-report-status.pending { 
   background: #fff7ed; 
   color: #c2410c;

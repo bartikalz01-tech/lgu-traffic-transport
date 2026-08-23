@@ -41,3 +41,61 @@ export async function getViolationDetails() {
 
   }
 }
+
+export async function updateViolationStatus(
+  violationId,
+  status
+) {
+
+  try {
+
+    const response = await fetch(
+      "../api/violations/update_violation_status.php",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          violation_id:
+            violationId,
+
+          status:
+            status
+
+        })
+      }
+    );
+
+
+    const result =
+      await response.json();
+
+
+    if(!response.ok || !result.success) {
+
+      throw new Error(
+        result.message ||
+        "Failed to update violation status."
+      );
+
+    }
+
+
+    return result;
+
+  } catch(error) {
+
+    console.error(
+      "Violation status update error:",
+      error
+    );
+
+    throw error;
+
+  }
+
+}
