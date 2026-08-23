@@ -1,3 +1,49 @@
+export async function insertCctvHistoricalRecord(data) {
+
+  try {
+
+    const response = await fetch(
+      "../api/road_condition/insert_cctv_historical_record.php",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(data)
+      }
+    );
+
+
+    const result = await response.json();
+
+
+    if (!response.ok || !result.success) {
+
+      throw new Error(
+        result.message ||
+        "Failed to save historical CCTV recording."
+      );
+
+    }
+
+
+    return result;
+
+  } catch (error) {
+
+    console.error(
+      "Failed to save CCTV historical record:",
+      error
+    );
+
+    throw error;
+
+  }
+
+}
+
 export async function getCctvAiDetails() {
   try {
     const response = await fetch("../api/road_condition/get_cctv_ai.php");

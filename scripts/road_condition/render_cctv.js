@@ -7,6 +7,7 @@ import { renderTrafficTrend } from "./road_reports/traffic_trend_overtime.js";
 import { renderAverageSpeedHistory } from "./road_reports/average_speed_history.js";
 import { updateRoadCondition } from "./update_road_details.js";
 import { renderPeakHour } from "./road_reports/peak_hour_analytics.js";
+import { renderCctvRecords } from "./render_cctv_records.js";
 
 const subModuleTitle = document.getElementById("subModuleTitle");
 
@@ -73,6 +74,15 @@ export async function renderCctvAi(container) {
         </div>
       </div>
 
+      <div class="cctv-sidebar-controller" style="cursor: pointer;" id="cctvRecordsController">
+        <div class="cctv-sidebar-header">
+          <div class="logo-container">
+            <i class="fas fa-film"></i>
+          </div>
+          <h4>CCTV Records</h4>
+        </div>
+      </div>
+
       <div class="cctv-sidebar-controller reports-controller" id="reportsController">
         <div class="cctv-sidebar-header reports-header">
           <div class="logo-container reports-logo">
@@ -115,6 +125,8 @@ export async function renderCctvAi(container) {
       
     </div>
 
+    <div class="cctv-content hidden" id="cctvRecordsContainer"></div>
+
     <div class="road-reports-content hidden" id="roadReportsView"></div>
   `;
 
@@ -147,12 +159,12 @@ export async function renderCctvAi(container) {
 
   const cctvItems = container.querySelectorAll(".cctv-road");
   const reportItems = container.querySelectorAll(".report-link");
+  const cctvRecordControl = container.querySelector("#cctvRecordsController");
 
   const reportsController = container.querySelector("#reportsController");
 
-  const reportsHeader = container.querySelector("#reportsController .reports-header");
-
   const cctvContent = container.querySelector(".cctv-content");
+  const cctvRecordsContainer = container.querySelector("#cctvRecordsContainer");
   const reportsView = container.querySelector("#roadReportsView");
 
   cctvItems.forEach(item => item.classList.remove("active-stream"));
@@ -235,6 +247,19 @@ export async function renderCctvAi(container) {
 
     });
 
+  });
+
+  cctvRecordControl.addEventListener("click", () => {
+    subModuleTitle.textContent = "CCTV Records";
+
+    cctvContent.classList.add("hidden");
+    reportsView.classList.add("hidden");
+
+    cctvRecordsContainer.classList.remove("hidden");
+
+    cctvItems.forEach(item => item.classList.remove("active-stream"));
+
+    renderCctvRecords(cctvRecordsContainer);
   });
 
 }

@@ -1,4 +1,5 @@
 import { subscribeTraffic } from "../data/road_condition/trafficStore.js";
+import { insertCctvHistoricalRecord } from "../data/road_condition/fetch_road_condition.js"; 
 import { updateRoadCondition } from "./update_road_details.js";
 import { openAccidentModal } from "./accident_and_violation/accident_modal.js";
 import { openViolationModal } from "./accident_and_violation/violation_modal.js";
@@ -298,21 +299,129 @@ export function openRoadCondition(container, road) {
 
         dom.recordingRequestStatus.innerHTML = `
           <div class="historical-recording-result">
+
             <div class="historical-recording-header">
-              <i class="fas fa-video"></i>
-              <span>Historical Recording</span>
+
+              <div>
+                <i class="fas fa-video"></i>
+                <span>Historical Recording</span>
+              </div>
+
+              <span class="historical-recording-status">
+                Generated
+              </span>
+
             </div>
 
-            <video class="historical-recording-video" controls preload="metadata">
-              <source src="http://127.0.0.1:5001/recording/file/${encodeURIComponent(result.filename)}" type="video/mp4">
-              Your Browser does not support video playback
+
+            <div class="historical-recording-time">
+
+              <div>
+                <span>From</span>
+                <strong>${result.from_time}</strong>
+              </div>
+
+              <div>
+                <span>To</span>
+                <strong>${result.to_time}</strong>
+              </div>
+
+            </div>
+
+
+            <video
+              class="historical-recording-video"
+              controls
+              preload="metadata"
+            >
+
+              <source
+                src="http://127.0.0.1:5001/recording/file/${encodeURIComponent(result.filename)}"
+                type="video/mp4"
+              >
+
+              Your browser does not support video playback.
+
             </video>
 
+
             <div class="historical-recording-filename">
+
+              <i class="fas fa-file-video"></i>
+
               ${result.filename}
+
             </div>
+
+
+            <div class="historical-recording-actions">
+
+              <button
+                type="button"
+                class="btn btn-success"
+                id="saveHistoricalRecordingBtn"
+              >
+                <i class="fas fa-database"></i>
+                Save to CCTV Records
+              </button>
+
+            </div>
+
           </div>
         `;
+
+        const saveHistoricalRecordingBtn = dom.recordingRequestStatus.querySelector("#saveHistoricalRecordingBtn");
+        
+        saveHistoricalRecordingBtn.addEventListener("click", async () => {
+          saveHistoricalRecordingBtn.disabled = true;
+
+          saveHistoricalRecordingBtn.innerHTML = `
+            <i class="fas fa-spinner fa-spin"></i>
+            Saving...
+          `;
+
+          const saveResult = await insertCctvHistoricalRecord({
+            camera_name:
+              cameraName,
+
+            recording_filename:
+              result.filename,
+
+            recording_from:
+              result.from_time,
+
+            recording_to:
+              result.to_time
+          });
+
+          if(!saveResult.success) {
+            throw new Error(saveResult.message || "Failed to save recording");
+          }
+
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "CCTV Recording Saved",
+            text: "The historical recording was added to the CCTV Records Library.",
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true
+          });
+
+          saveHistoricalRecordingBtn.innerHTML = `
+            <i class="fas fa-check"></i>
+            Saved to CCTV Records
+          `;
+
+          saveHistoricalRecordingBtn.classList.remove(
+            "btn-success"
+          );
+
+          saveHistoricalRecordingBtn.classList.add(
+            "btn-secondary"
+          );
+        });
 
       } catch(error) {
         console.error("Historical recording request error: ", error);

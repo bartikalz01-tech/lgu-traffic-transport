@@ -280,7 +280,7 @@ def get_violation_snapshot(filename):
 
 @app.route("/recording/file/<filename>")
 def historical_recording(filename):
-  filepath = Path(__file__).parent / "cctv_recording" / filename
+  filepath = Path(__file__).parent / "cctv_historical_records" / filename
 
   if not filepath.exists():
     return {

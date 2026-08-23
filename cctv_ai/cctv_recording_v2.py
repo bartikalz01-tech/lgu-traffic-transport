@@ -6,6 +6,9 @@ from datetime import datetime, timedelta
 RECORDING_FOLDER = Path(__file__).parent / "cctv_recording"
 RECORDING_FOLDER.mkdir(parents=True, exist_ok=True)
 
+HISTORICAL_RECORDING_FOLDER = (Path(__file__).parent / "cctv_historical_records")
+HISTORICAL_RECORDING_FOLDER.mkdir(parents=True, exist_ok=True)
+
 SEGMENT_SECONDS = 60
 
 RETENTION_SECONDS = 60 * 60
@@ -315,7 +318,7 @@ def create_historical_recording(camera_name, from_time, to_time):
 
 
   output_path = (
-    RECORDING_FOLDER
+    HISTORICAL_RECORDING_FOLDER
     / output_filename
   )
 

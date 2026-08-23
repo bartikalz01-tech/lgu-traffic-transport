@@ -3,6 +3,63 @@ require_once 'config.php';
 
 class RoadMapStatus extends config{
 
+  public function insertCctvHistoricalRecord($data) {
+
+    $conn = $this->conn();
+
+    $sql = "
+      INSERT INTO cctv_historical_records (
+        camera_name,
+        recording_filename,
+        recording_from,
+        recording_to,
+        duration_seconds
+      )
+      VALUES (
+        :camera_name,
+        :recording_filename,
+        :recording_from,
+        :recording_to,
+        :duration_seconds
+      )
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindValue(
+      ':camera_name',
+      $data['camera_name']
+    );
+
+    $stmt->bindValue(
+      ':recording_filename',
+      $data['recording_filename']
+    );
+
+    $stmt->bindValue(
+      ':recording_from',
+      $data['recording_from']
+    );
+
+    $stmt->bindValue(
+      ':recording_to',
+      $data['recording_to']
+    );
+
+    $stmt->bindValue(
+      ':duration_seconds',
+      $data['duration_seconds'],
+      PDO::PARAM_INT
+    );
+
+    $stmt->execute();
+
+    return [
+      'success' => true,
+      'cctv_record_id' => $conn->lastInsertId()
+    ];
+  }
+
   public function roadStatusCctv() {
     $conn =  $this->conn();
     $sql = "
