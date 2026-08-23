@@ -11,6 +11,8 @@ class RoadMapStatus extends config{
       INSERT INTO cctv_historical_records (
         camera_name,
         recording_filename,
+        cloudinary_public_id,
+        cloudinary_url,
         recording_from,
         recording_to,
         duration_seconds
@@ -18,6 +20,8 @@ class RoadMapStatus extends config{
       VALUES (
         :camera_name,
         :recording_filename,
+        :cloudinary_public_id,
+        :cloudinary_url,
         :recording_from,
         :recording_to,
         :duration_seconds
@@ -26,33 +30,28 @@ class RoadMapStatus extends config{
 
     $stmt = $conn->prepare($sql);
 
-    $stmt->bindValue(
-      ':camera_name',
-      $data['camera_name']
-    );
+    $stmt->execute([
+      ':camera_name' =>
+        $data['camera_name'],
 
-    $stmt->bindValue(
-      ':recording_filename',
-      $data['recording_filename']
-    );
+      ':recording_filename' =>
+        $data['recording_filename'],
 
-    $stmt->bindValue(
-      ':recording_from',
-      $data['recording_from']
-    );
+      ':cloudinary_public_id' =>
+        $data['cloudinary_public_id'],
 
-    $stmt->bindValue(
-      ':recording_to',
-      $data['recording_to']
-    );
+      ':cloudinary_url' =>
+        $data['cloudinary_url'],
 
-    $stmt->bindValue(
-      ':duration_seconds',
-      $data['duration_seconds'],
-      PDO::PARAM_INT
-    );
+      ':recording_from' =>
+        $data['recording_from'],
 
-    $stmt->execute();
+      ':recording_to' =>
+        $data['recording_to'],
+
+      ':duration_seconds' =>
+        (int)$data['duration_seconds']
+    ]);
 
     return [
       'success' => true,

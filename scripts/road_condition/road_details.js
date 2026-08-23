@@ -336,7 +336,7 @@ export function openRoadCondition(container, road) {
             >
 
               <source
-                src="http://127.0.0.1:5001/recording/file/${encodeURIComponent(result.filename)}"
+                src="${result.cloudinary_url}"
                 type="video/mp4"
               >
 
@@ -386,12 +386,21 @@ export function openRoadCondition(container, road) {
 
             recording_filename:
               result.filename,
+            
+            cloudinary_public_id:
+              result.cloudinary_public_id,
+
+            cloudinary_url:
+              result.cloudinary_url,
 
             recording_from:
               result.from_time,
 
             recording_to:
-              result.to_time
+              result.to_time,
+            
+            duration_seconds:
+              result.duration_seconds
           });
 
           if(!saveResult.success) {
