@@ -39,6 +39,7 @@
   <?php include '../includes/admin-footer.php' ?>
 
   <script src="../scripts/sidebar.js"></script>
+  <script src="../scripts/header.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="../scripts/road_condition/road_condition.js"></script>
 </body>

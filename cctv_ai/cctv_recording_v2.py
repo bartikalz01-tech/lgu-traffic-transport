@@ -2,7 +2,12 @@ import cv2
 import threading
 from pathlib import Path
 from datetime import datetime, timedelta
-from .cloudinary_uploader import upload_video_background
+from .cloudinary_uploader import (
+  upload_video_background,
+  get_cloudinary_recordings,
+  get_cloudinary_segment_info,
+  download_cloudinary_video
+)
 
 RECORDING_FOLDER = Path(__file__).parent / "cctv_recording"
 RECORDING_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -210,254 +215,680 @@ def add_frame(camera_name, frame, timestamp):
 
 def get_buffer_status(camera_name):
 
-  camera_prefix = (Path(camera_name).stem + "_")
+  camera_stem = Path(camera_name).stem
 
-  files = sorted(
-    RECORDING_FOLDER.glob(f"{camera_prefix}*.mp4")
-  )
+  # =====================================================
+  # 1. CHECK LOCAL SEGMENTS
+  # =====================================================
 
-  if not files:
-    return {
-      "success": False,
-      "message": "No historical footage available."
-    }
-
-  def get_segment_time(filepath):
-
-    filename_time = filepath.stem.replace(camera_prefix, "")
-
-    return datetime.strptime(
-      filename_time, "%Y%m%d_%H%M%S"
-    )
-
-  first_file = files[0]
-  last_file = files[-1]
-
-  first_time = get_segment_time(first_file)
-  last_time = get_segment_time(last_file)
-
-  last_end = (last_time + timedelta(seconds=SEGMENT_SECONDS))
-
-  return {
-    "success": True,
-    "camera": camera_name,
-    "from": first_time.strftime("%Y-%m-%d %H:%M:%S"),
-    "to": last_end.strftime("%Y-%m-%d %H:%M:%S")
-  }
-
-
-def create_historical_recording(camera_name, from_time, to_time):
-
-  if from_time >= to_time:
-
-    return {
-      "success": False,
-      "message":
-        "The end time must be later "
-        "than the start time."
-    }
-
-
-  camera_prefix = (
-    Path(camera_name).stem + "_"
-  )
-
-
-  segment_files = sorted(
+  local_files = sorted(
     RECORDING_FOLDER.glob(
-      f"{camera_prefix}*.mp4"
+      f"{camera_stem}_*.mp4"
     )
   )
 
+  local_segments = []
 
-  if not segment_files:
-
-    return {
-      "success": False,
-      "message":
-        "No historical footage available."
-    }
-
-
-  selected_files = []
-
-
-  for filepath in segment_files:
+  for filepath in local_files:
 
     try:
 
       filename_time = (
         filepath.stem.replace(
-          camera_prefix,
+          f"{camera_stem}_",
           ""
         )
       )
-
 
       segment_start = datetime.strptime(
         filename_time,
         "%Y%m%d_%H%M%S"
       )
 
-
       segment_end = (
         segment_start
         + timedelta(
-            seconds=SEGMENT_SECONDS
-          )
+          seconds=SEGMENT_SECONDS
+        )
       )
 
-
-      if (
-        segment_end >= from_time
-        and
-        segment_start <= to_time
-      ):
-
-        selected_files.append(
-          filepath
-        )
-
+      local_segments.append({
+        "segment_start": segment_start,
+        "segment_end": segment_end,
+        "source": "local"
+      })
 
     except ValueError:
 
       continue
 
 
-  if not selected_files:
+  # =====================================================
+  # 2. CHECK CLOUDINARY SEGMENTS
+  # =====================================================
+
+  cloudinary_segments = []
+
+  try:
+
+    resources = get_cloudinary_recordings(
+      CLOUDINARY_RECORDING_FOLDER,
+      camera_name
+    )
+
+    for resource in resources:
+
+      info = get_cloudinary_segment_info(
+        resource,
+        camera_name
+      )
+
+      if not info:
+        continue
+
+      cloudinary_segments.append({
+        "segment_start":
+          info["segment_start"],
+
+        "segment_end":
+          info["segment_end"],
+
+        "source":
+          "cloudinary"
+      })
+
+  except Exception as error:
+
+    print(
+      "[CLOUDINARY] Failed to retrieve "
+      f"buffer status for {camera_name}: "
+      f"{error}"
+    )
+
+
+  # =====================================================
+  # 3. COMBINE LOCAL + CLOUDINARY
+  # =====================================================
+
+  all_segments = (
+    local_segments +
+    cloudinary_segments
+  )
+
+
+  # Remove duplicate segment timestamps.
+  # Prefer local copy if it still exists.
+  unique_segments = {}
+
+  for segment in all_segments:
+
+    segment_start = segment["segment_start"]
+
+    if segment_start not in unique_segments:
+
+      unique_segments[
+        segment_start
+      ] = segment
+
+    elif (
+      unique_segments[
+        segment_start
+      ]["source"] == "cloudinary"
+      and
+      segment["source"] == "local"
+    ):
+
+      unique_segments[
+        segment_start
+      ] = segment
+
+
+  all_segments = list(
+    unique_segments.values()
+  )
+
+
+  # =====================================================
+  # 4. NO FOOTAGE
+  # =====================================================
+
+  if not all_segments:
 
     return {
       "success": False,
-      "message":
-        "No footage found for the "
-        "requested time range."
+      "message": "No historical footage available."
     }
 
 
+  # =====================================================
+  # 5. SORT BY TIME
+  # =====================================================
+
+  all_segments.sort(
+    key=lambda segment:
+      segment["segment_start"]
+  )
+
+
+  first_segment = all_segments[0]
+  last_segment = all_segments[-1]
+
+
+  # =====================================================
+  # 6. BUFFER RANGE
+  # =====================================================
+
+  return {
+
+    "success":
+      True,
+
+    "camera":
+      camera_name,
+
+    "segments":
+      len(all_segments),
+
+    "local_segments":
+      len([
+        segment
+        for segment in all_segments
+        if segment["source"] == "local"
+      ]),
+
+    "cloudinary_segments":
+      len([
+        segment
+        for segment in all_segments
+        if segment["source"] == "cloudinary"
+      ]),
+
+    "from":
+      first_segment[
+        "segment_start"
+      ].strftime(
+        "%Y-%m-%d %H:%M:%S"
+      ),
+
+    "to":
+      last_segment[
+        "segment_end"
+      ].strftime(
+        "%Y-%m-%d %H:%M:%S"
+      )
+  }
+
+
+def create_historical_recording(
+    camera_name,
+    from_time,
+    to_time
+):
+
+  if from_time >= to_time:
+
+      return {
+          "success": False,
+          "message":
+              "The end time must be later "
+              "than the start time."
+      }
+
+
+  camera_prefix = (
+      Path(camera_name).stem + "_"
+  )
+
+
+  # =====================================================
+  # 1. SEARCH LOCAL RECORDING SEGMENTS
+  # =====================================================
+
+  local_files = sorted(
+      RECORDING_FOLDER.glob(
+          f"{camera_prefix}*.mp4"
+      )
+  )
+
+
+  available_segments = []
+
+
+  for filepath in local_files:
+
+      try:
+
+          filename_time = filepath.stem.replace(
+              camera_prefix,
+              ""
+          )
+
+          segment_start = datetime.strptime(
+              filename_time,
+              "%Y%m%d_%H%M%S"
+          )
+
+          segment_end = (
+              segment_start
+              + timedelta(
+                  seconds=SEGMENT_SECONDS
+              )
+          )
+
+          if (
+              segment_end >= from_time
+              and
+              segment_start <= to_time
+          ):
+
+              available_segments.append({
+                  "segment_start":
+                      segment_start,
+
+                  "segment_end":
+                      segment_end,
+
+                  "filepath":
+                      filepath,
+
+                  "source":
+                      "local"
+              })
+
+      except ValueError:
+
+          continue
+
+
+  print(
+      f"[HISTORICAL] Found "
+      f"{len(available_segments)} "
+      f"local segments."
+  )
+
+
+  # =====================================================
+  # 2. SEARCH CLOUDINARY FOR MISSING SEGMENTS
+  # =====================================================
+
+  try:
+
+    cloudinary_resources = (
+        get_cloudinary_recordings(
+            CLOUDINARY_RECORDING_FOLDER,
+            camera_name
+        )
+    )
+
+    print(
+        f"[HISTORICAL] Found "
+        f"{len(cloudinary_resources)} "
+        f"Cloudinary recordings."
+    )
+
+  except Exception as error:
+
+      print(
+          f"[CLOUDINARY] Unable to list "
+          f"recordings: {error}"
+      )
+
+      cloudinary_resources = []
+
+
+  existing_times = {
+      segment["segment_start"]
+      for segment in available_segments
+  }
+
+
+  cloudinary_segments = []
+
+
+  for resource in cloudinary_resources:
+
+      info = get_cloudinary_segment_info(
+          resource,
+          camera_name
+      )
+
+      if not info:
+          continue
+
+
+      segment_start = info["segment_start"]
+
+      segment_end = info["segment_end"]
+
+
+      if (
+          segment_end >= from_time
+          and
+          segment_start <= to_time
+      ):
+
+          # Local copy takes priority.
+          if segment_start in existing_times:
+              continue
+
+
+          cloudinary_segments.append({
+              "segment_start":
+                  segment_start,
+
+              "segment_end":
+                  segment_end,
+
+              "secure_url":
+                  info["secure_url"],
+
+              "public_id":
+                  info["public_id"],
+
+              "filename":
+                  info["filename"],
+
+              "source":
+                  "cloudinary"
+          })
+
+
+  print(
+      f"[HISTORICAL] Found "
+      f"{len(cloudinary_segments)} "
+      f"additional Cloudinary segments."
+  )
+
+
+  # =====================================================
+  # 3. COMBINE LOCAL + CLOUDINARY SOURCES
+  # =====================================================
+
+  all_segments = (
+      available_segments
+      +
+      cloudinary_segments
+  )
+
+
+  all_segments.sort(
+      key=lambda item:
+          item["segment_start"]
+  )
+
+
+  if not all_segments:
+
+      return {
+          "success": False,
+          "message":
+              "No footage found for the "
+              "requested time range."
+      }
+
+
+  print(
+      f"[HISTORICAL] Total segments "
+      f"available: {len(all_segments)}"
+  )
+
+
+  # =====================================================
+  # 4. OUTPUT FILE
+  # =====================================================
+
   output_filename = (
-    f"{Path(camera_name).stem}_"
-    f"{from_time.strftime('%Y%m%d_%H%M%S')}_"
-    f"to_"
-    f"{to_time.strftime('%Y%m%d_%H%M%S')}.mp4"
+      f"{Path(camera_name).stem}_"
+      f"{from_time.strftime('%Y%m%d_%H%M%S')}_"
+      f"to_"
+      f"{to_time.strftime('%Y%m%d_%H%M%S')}.mp4"
   )
 
 
   output_path = (
-    HISTORICAL_RECORDING_FOLDER
-    / output_filename
+      HISTORICAL_RECORDING_FOLDER
+      /
+      output_filename
   )
 
 
   writer = None
 
 
+  # =====================================================
+  # 5. TEMPORARY CLOUDINARY DOWNLOADS
+  # =====================================================
+
+  temporary_files = []
+
+
   try:
 
-    for segment_file in selected_files:
+      for index, segment in enumerate(
+          all_segments
+      ):
 
-      capture = cv2.VideoCapture(
-        str(segment_file)
-      )
-
-
-      if not capture.isOpened():
-
-        print(
-          f"[HISTORICAL] "
-          f"Could not open "
-          f"{segment_file}"
-        )
-
-        continue
+          segment_file = None
 
 
-      fps = capture.get(
-        cv2.CAP_PROP_FPS
-      )
+          # ---------------------------------------------
+          # LOCAL SEGMENT
+          # ---------------------------------------------
+
+          if segment["source"] == "local":
+
+              segment_file = (
+                  segment["filepath"]
+              )
 
 
-      if fps <= 0:
+          # ---------------------------------------------
+          # CLOUDINARY SEGMENT
+          # ---------------------------------------------
 
-        fps = 30
+          elif (
+              segment["source"]
+              ==
+              "cloudinary"
+          ):
 
+              temporary_filename = (
+                  f"cloud_segment_"
+                  f"{index}.mp4"
+              )
 
-      width = int(
-        capture.get(
-          cv2.CAP_PROP_FRAME_WIDTH
-        )
-      )
-
-
-      height = int(
-        capture.get(
-          cv2.CAP_PROP_FRAME_HEIGHT
-        )
-      )
-
-
-      if writer is None:
-
-        # Browser-friendly codec attempt:
-        fourcc = cv2.VideoWriter_fourcc(
-          *"avc1"
-        )
+              temporary_path = (
+                  HISTORICAL_RECORDING_FOLDER
+                  /
+                  temporary_filename
+              )
 
 
-        writer = cv2.VideoWriter(
-          str(output_path),
-          fourcc,
-          fps,
-          (width, height)
-        )
+              try:
+
+                  segment_file = (
+                      download_cloudinary_video(
+                          segment["secure_url"],
+                          temporary_path
+                      )
+                  )
+
+                  temporary_files.append(
+                      segment_file
+                  )
+
+              except Exception as error:
+
+                  print(
+                      f"[CLOUDINARY] Failed to "
+                      f"download "
+                      f"{segment['filename']}: "
+                      f"{error}"
+                  )
+
+                  continue
 
 
-        if not writer.isOpened():
+          if (
+              segment_file is None
+              or
+              not Path(segment_file).exists()
+          ):
+              continue
+
+
+          # =================================================
+          # OPEN SEGMENT
+          # =================================================
+
+          capture = cv2.VideoCapture(
+              str(segment_file)
+          )
+
+
+          if not capture.isOpened():
+
+              print(
+                  f"[HISTORICAL] Could not open "
+                  f"{segment_file}"
+              )
+
+              continue
+
+
+          fps = capture.get(
+              cv2.CAP_PROP_FPS
+          )
+
+
+          if fps <= 0:
+              fps = 30
+
+
+          width = int(
+              capture.get(
+                  cv2.CAP_PROP_FRAME_WIDTH
+              )
+          )
+
+
+          height = int(
+              capture.get(
+                  cv2.CAP_PROP_FRAME_HEIGHT
+              )
+          )
+
+
+          # =================================================
+          # CREATE OUTPUT
+          # =================================================
+
+          if writer is None:
+
+              fourcc = cv2.VideoWriter_fourcc(
+                  *"avc1"
+              )
+
+
+              writer = cv2.VideoWriter(
+                  str(output_path),
+                  fourcc,
+                  fps,
+                  (width, height)
+              )
+
+
+              if not writer.isOpened():
+
+                  capture.release()
+
+                  return {
+                      "success": False,
+                      "message":
+                          "OpenCV could not create "
+                          "an H.264 MP4 recording. "
+                          "The installed OpenCV build "
+                          "may not contain an H.264 encoder."
+                  }
+
+
+          # =================================================
+          # COPY FRAMES
+          # =================================================
+
+          while True:
+
+              success, frame = (
+                  capture.read()
+              )
+
+
+              if not success:
+                  break
+
+
+              writer.write(frame)
+
 
           capture.release()
-
-          return {
-            "success": False,
-            "message":
-              "OpenCV could not create "
-              "an H.264 MP4 recording. "
-              "The installed OpenCV build "
-              "may not contain an H.264 encoder."
-          }
-
-
-      while True:
-
-        success, frame = (
-          capture.read()
-        )
-
-
-        if not success:
-
-          break
-
-
-        writer.write(frame)
-
-
-      capture.release()
 
 
   finally:
 
-    if writer is not None:
+      if writer is not None:
 
-      writer.release()
+          writer.release()
 
+
+      # =====================================================
+      # DELETE TEMPORARY CLOUDINARY DOWNLOADS
+      # =====================================================
+
+      for temporary_file in temporary_files:
+
+          try:
+
+              if temporary_file.exists():
+
+                  temporary_file.unlink()
+
+                  print(
+                      "[HISTORICAL] Deleted "
+                      "temporary Cloudinary file: "
+                      f"{temporary_file.name}"
+                  )
+
+          except Exception as error:
+
+              print(
+                  "[HISTORICAL] Failed to delete "
+                  f"temporary file "
+                  f"{temporary_file.name}: "
+                  f"{error}"
+              )
+
+
+  # =====================================================
+  # 6. VERIFY OUTPUT
+  # =====================================================
 
   if not output_path.exists():
 
-    return {
-      "success": False,
-      "message":
-        "Historical recording was "
-        "not created."
-    }
+      return {
+          "success": False,
+          "message":
+              "Historical recording was "
+              "not created."
+      }
+
+
+  duration_seconds = int(
+      (
+          to_time
+          -
+          from_time
+      ).total_seconds()
+  )
 
 
   return {
@@ -465,25 +896,28 @@ def create_historical_recording(camera_name, from_time, to_time):
     "success": True,
 
     "filename":
-      output_filename,
+        output_filename,
 
     "filepath":
-      str(output_path),
+        str(output_path),
 
     "camera":
-      camera_name,
+        camera_name,
 
     "from_time":
-      from_time.strftime(
-        "%Y-%m-%d %H:%M:%S"
-      ),
+        from_time.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        ),
 
     "to_time":
-      to_time.strftime(
-        "%Y-%m-%d %H:%M:%S"
-      ),
+        to_time.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        ),
+
+    "duration_seconds":
+        duration_seconds,
 
     "segments_used":
-      len(selected_files)
+        len(all_segments)
 
   }

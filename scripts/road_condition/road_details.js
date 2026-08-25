@@ -336,7 +336,7 @@ export function openRoadCondition(container, road) {
             >
 
               <source
-                src="${result.cloudinary_url}"
+                src="http://127.0.0.1:5001/recording/file/${encodeURIComponent(result.filename)}"
                 type="video/mp4"
               >
 
@@ -370,6 +370,33 @@ export function openRoadCondition(container, road) {
           </div>
         `;
 
+        const historicalVideo =
+          dom.recordingRequestStatus.querySelector(
+            ".historical-recording-video"
+          );
+
+        const historicalSource =
+          dom.recordingRequestStatus.querySelector(
+            ".historical-recording-video source"
+          );
+
+        console.log(
+          "[HISTORICAL] Filename:",
+          result.filename
+        );
+
+        console.log(
+          "[HISTORICAL] Source URL:",
+          historicalSource?.src
+        );
+
+        console.log(
+          "[HISTORICAL] Video element:",
+          historicalVideo
+        );
+
+        historicalVideo.load();
+
         const saveHistoricalRecordingBtn = dom.recordingRequestStatus.querySelector("#saveHistoricalRecordingBtn");
         
         saveHistoricalRecordingBtn.addEventListener("click", async () => {
@@ -386,12 +413,6 @@ export function openRoadCondition(container, road) {
 
             recording_filename:
               result.filename,
-            
-            cloudinary_public_id:
-              result.cloudinary_public_id,
-
-            cloudinary_url:
-              result.cloudinary_url,
 
             recording_from:
               result.from_time,

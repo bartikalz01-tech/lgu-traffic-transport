@@ -11,8 +11,6 @@ class RoadMapStatus extends config{
       INSERT INTO cctv_historical_records (
         camera_name,
         recording_filename,
-        cloudinary_public_id,
-        cloudinary_url,
         recording_from,
         recording_to,
         duration_seconds
@@ -20,8 +18,6 @@ class RoadMapStatus extends config{
       VALUES (
         :camera_name,
         :recording_filename,
-        :cloudinary_public_id,
-        :cloudinary_url,
         :recording_from,
         :recording_to,
         :duration_seconds
@@ -36,13 +32,7 @@ class RoadMapStatus extends config{
 
       ':recording_filename' =>
         $data['recording_filename'],
-
-      ':cloudinary_public_id' =>
-        $data['cloudinary_public_id'],
-
-      ':cloudinary_url' =>
-        $data['cloudinary_url'],
-
+        
       ':recording_from' =>
         $data['recording_from'],
 
