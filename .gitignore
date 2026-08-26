@@ -2,8 +2,7 @@
 cctv_feeds/
 
 
-# Ignore CCTV historical records
-cctv_historical_records/
+
 
 # Ignore Python cache
 __pycache__/
