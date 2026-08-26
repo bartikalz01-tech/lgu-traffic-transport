@@ -104,6 +104,27 @@ export async function openViolationModal(container, road) {
 
             </div>
 
+            <div class="violation-form-group">
+              <label for="subjectType">
+                Subject Type
+                <span class="required"> * </span>
+              </label>
+
+              <select id="subjectType" required>
+                <option value="Vehicle">
+                  Vehicle
+                </option>
+
+                <option value="Person">
+                  Person
+                </option>
+
+                <option value="Unknown">
+                  Unknown
+                </option>
+              </select>
+            </div>
+
 
             <!-- DATE/TIME -->
             <div class="violation-form-group">
@@ -123,10 +144,12 @@ export async function openViolationModal(container, road) {
 
 
             <!-- PLATE -->
-            <div class="violation-form-group">
+            <div class="violation-form-group subject-field vehicle-field hidden" id="vehiclePlateField">
 
               <label for="plateNumber">
                 Plate Number
+
+                <span class="required"> * </span>
               </label>
 
               <input
@@ -140,7 +163,7 @@ export async function openViolationModal(container, road) {
 
 
             <!-- VEHICLE TYPE -->
-            <div class="violation-form-group">
+            <div class="violation-form-group subject-field vehicle-field hidden" id="vehicleTypeField">
 
               <label for="vehicleType">
                 Vehicle Type
@@ -373,6 +396,39 @@ export async function openViolationModal(container, road) {
   // Open modal
   container.classList.remove("violation-hidden-overlay");
 
+  const subjectType = container.querySelector("#subjectType");
+
+  const vehiclePlateField = container.querySelector("#vehiclePlateField");
+  const vehicleTypeField = container.querySelector("#vehicleTypeField");
+
+  const plateNumber = container.querySelector("#plateNumber");
+
+  const vehicleType = container.querySelector("#vehicleType");
+
+  const captureSnapshotBtn = container.querySelector("#captureViolationSnapshotBtn");
+
+  const snapshotPreview = container.querySelector("#violationSnapshotPreview");
+
+  const capturedSnapshot = container.querySelector("#capturedViolationSnapshot");
+
+  const evidenceStatus = container.querySelector("#evidenceStatus");
+
+  subjectType.addEventListener("change", () => {
+    const type = subjectType.value;
+
+    vehiclePlateField.classList.add("hidden");
+
+    vehicleTypeField.classList.add("hidden");
+
+    plateNumber.required = false;
+
+    if(type === "Vehicle") {
+      vehiclePlateField.classList.remove("hidden");
+      vehicleTypeField.classList.remove("hidden");
+
+      plateNumber.required = true;
+    }
+  });
 
   // Set current date/time
   const now = new Date();
@@ -384,32 +440,7 @@ export async function openViolationModal(container, road) {
       .toISOString()
       .slice(0, 16);
 
-  document.getElementById(
-    "violationDatetime"
-  ).value = localDateTime;
-
-
-  // Snapshot
-  const captureSnapshotBtn =
-    document.getElementById(
-      "captureViolationSnapshotBtn"
-    );
-
-  const snapshotPreview =
-    document.getElementById(
-      "violationSnapshotPreview"
-    );
-
-  const capturedSnapshot =
-    document.getElementById(
-      "capturedViolationSnapshot"
-    );
-
-  const evidenceStatus =
-    document.getElementById(
-      "evidenceStatus"
-    );
-
+  container.querySelector("#violationDatetime").value = localDateTime;
 
   captureSnapshotBtn.addEventListener("click", async () => {
 
@@ -467,18 +498,34 @@ export async function openViolationModal(container, road) {
 
   });
 
+  container.querySelector('#removeViolationSnapshotBtn').addEventListener("click", () => {
+    snapshotFileName = null;
+
+    capturedSnapshot.removeAttribute("src");
+    delete capturedSnapshot.dataset.filename;
+
+    snapshotPreview.classList.add("hidden");
+
+    evidenceStatus.textContent = "No snapshot captured";
+  });
+
   const submitViolationBtn = document.getElementById("submitViolationBtn");
   submitViolationBtn.addEventListener("click", async () => {
     const violationType = document.getElementById("violationType").value;
     const violationDatetime = document.getElementById("violationDatetime").value;
-    const plateNumber = document.getElementById("plateNumber").value.trim();
-    const vehicleType = document.getElementById("vehicleType").value;
-    const locationDetails = document.getElementById("locationDetails").value;
-    const description = document.getElementById("violationDescription").value;
+    const locationDetails = document.getElementById("locationDetails").value.trim();
+    const description = document.getElementById("violationDescription").value.trim();
+    const selectedSubjectType = subjectType.value;
 
     if(!violationType) {
       alert("Please select a violation type");
       return;
+    }
+
+    if(!selectedSubjectType) {
+      alert("Please Select the subject type.");
+
+      return
     }
 
     if(!violationDatetime) {
@@ -488,13 +535,15 @@ export async function openViolationModal(container, road) {
 
     const violationData = {
       road_id: road.road_id,
+      subject_type: selectedSubjectType,
       violation_type: violationType,
       violation_datetime: violationDatetime.replace("T", " ") + ":00",
       location_details: locationDetails || null,
-      plate_number: plateNumber || null,
-      vehicle_type: vehicleType || null,
+      plate_number: selectedSubjectType === "Vehicle" 
+        ? plateNumber.value.trim().toUpperCase() : null,
+      vehicle_type: selectedSubjectType === "Vehicle"
+        ? (vehicleType.value || null) : null,
       description: description || null,
-
       evidence: capturedSnapshot.dataset.filename || null
     };
 

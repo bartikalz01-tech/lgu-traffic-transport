@@ -15,83 +15,159 @@ class Violations extends config {
 
       $conn->beginTransaction();
 
-      // ----------------------------------------
-      // 1. INSERT VIOLATION REPORT
-      // ----------------------------------------
+      $subjectType = $data['subject_type'] ?? 'Unknown';
+
+      $vehicleId = null;
+      $personId = null;
+
+      if ($subjectType === 'Vehicle') {
+
+        $plateNumber =
+          strtoupper(
+            trim(
+              $data['plate_number'] ?? ''
+            )
+          );
+
+        $vehicleType =
+          $data['vehicle_type'] ?? null;
+
+
+        if ($plateNumber === '') {
+
+          throw new Exception(
+            "Plate number is required for vehicle violations."
+          );
+
+        }
+
+        $vehicleSql = "
+          SELECT vehicle_id
+          FROM vehicles
+          WHERE plate_number = :plate_number
+          LIMIT 1
+        ";
+
+        $vehicleStmt =
+          $conn->prepare($vehicleSql);
+
+        $vehicleStmt->execute([
+          ':plate_number' => $plateNumber
+        ]);
+
+        $vehicle =
+          $vehicleStmt->fetch(PDO::FETCH_ASSOC);
+
+
+        // -----------------------------------------------
+        // Vehicle already exists
+        // -----------------------------------------------
+
+        if ($vehicle) {
+
+          $vehicleId =
+            (int)$vehicle['vehicle_id'];
+
+        } else {
+
+          $insertVehicleSql = "
+            INSERT INTO vehicles (
+              plate_number,
+              vehicle_type
+            )
+            VALUES (
+              :plate_number,
+              :vehicle_type
+            )
+          ";
+
+          $insertVehicleStmt =
+            $conn->prepare(
+              $insertVehicleSql
+            );
+
+          $insertVehicleStmt->execute([
+
+            ':plate_number' =>
+              $plateNumber,
+
+            ':vehicle_type' =>
+              $vehicleType
+
+          ]);
+
+          $vehicleId =
+            (int)$conn->lastInsertId();
+
+        }
+
+      }
+
+      if ($subjectType !== 'Vehicle') {
+        $vehicleId = null;
+      }
 
       $sql = "
         INSERT INTO violation_reports (
           public_violation_id,
           road_id,
+          vehicle_id,
+          person_id,
+          subject_type,
           violation_type,
           violation_datetime,
           location_details,
-          plate_number,
-          vehicle_type,
           description
         )
         VALUES (
           :public_violation_id,
           :road_id,
+          :vehicle_id,
+          :person_id,
+          :subject_type,
           :violation_type,
           :violation_datetime,
           :location_details,
-          :plate_number,
-          :vehicle_type,
           :description
         )
       ";
 
+
       $stmt = $conn->prepare($sql);
 
-      $stmt->bindParam(
-        ':public_violation_id',
-        $publicViolationId
-      );
+      $stmt->execute([
 
-      $stmt->bindParam(
-        ':road_id',
-        $data['road_id']
-      );
+        ':public_violation_id' =>
+          $publicViolationId,
 
-      $stmt->bindParam(
-        ':violation_type',
-        $data['violation_type']
-      );
+        ':road_id' =>
+          $data['road_id'],
 
-      $stmt->bindParam(
-        ':violation_datetime',
-        $data['violation_datetime']
-      );
+        ':vehicle_id' =>
+          $vehicleId,
 
-      $stmt->bindParam(
-        ':location_details',
-        $data['location_details']
-      );
+        ':person_id' =>
+          $personId,
 
-      $stmt->bindParam(
-        ':plate_number',
-        $data['plate_number']
-      );
+        ':subject_type' =>
+          $subjectType,
 
-      $stmt->bindParam(
-        ':vehicle_type',
-        $data['vehicle_type']
-      );
+        ':violation_type' =>
+          $data['violation_type'],
 
-      $stmt->bindParam(
-        ':description',
-        $data['description']
-      );
+        ':violation_datetime' =>
+          $data['violation_datetime'],
 
-      $stmt->execute();
+        ':location_details' =>
+          $data['location_details'] ?? null,
+
+        ':description' =>
+          $data['description'] ?? null
+
+      ]);
+
 
       $violationReportId = $conn->lastInsertId();
-
-
-      // ----------------------------------------
-      // 2. INSERT CCTV EVIDENCE
-      // ----------------------------------------
 
       if (!empty($data['evidence'])) {
 
@@ -110,62 +186,95 @@ class Violations extends config {
           )
         ";
 
-        $evidenceStmt = $conn->prepare($evidenceSql);
+        $evidenceStmt =
+          $conn->prepare(
+            $evidenceSql
+          );
 
-        $evidenceType = 'CCTV_Snapshot';
 
-        $filename = $data['evidence'];
+        $filename =
+          $data['evidence'];
 
-        $filepath = 'violation_evidence/snapshots/' . $filename;
+        $filepath =
+          'violation_evidence/snapshots/'
+          . $filename;
 
-        $evidenceStmt->bindParam(
-          ':violation_id',
-          $violationReportId
-        );
 
-        $evidenceStmt->bindParam(
-          ':evidence_type',
-          $evidenceType
-        );
+        $evidenceStmt->execute([
 
-        $evidenceStmt->bindParam(
-          ':file_name',
-          $filename
-        );
+          ':violation_id' =>
+            $violationReportId,
 
-        $evidenceStmt->bindParam(
-          ':file_path',
-          $filepath
-        );
+          ':evidence_type' =>
+            'CCTV_Snapshot',
 
-        $evidenceStmt->execute();
+          ':file_name' =>
+            $filename,
+
+          ':file_path' =>
+            $filepath
+
+        ]);
+
       }
-
-
-      // ----------------------------------------
-      // 3. COMMIT
-      // ----------------------------------------
 
       $conn->commit();
 
-
       return [
-        'success' => true,
-        'violation_id' => $violationReportId,
-        'public_violation_id' => $publicViolationId
+        'success' =>
+          true,
+
+        'violation_id' =>
+          $violationReportId,
+
+        'public_violation_id' =>
+          $publicViolationId,
+
+        'vehicle_id' =>
+          $vehicleId,
+
+        'person_id' =>
+          $personId,
+
+        'subject_type' =>
+          $subjectType
       ];
+
 
     } catch (PDOException $e) {
 
-      if ($conn->inTransaction()) {
+      if (
+        $conn->inTransaction()
+      ) {
+
         $conn->rollBack();
+
       }
 
-      // TEMPORARILY expose the real database error
-      throw new Exception(
-        "Database insert failed: " . $e->getMessage()
+      error_log(
+        "[VIOLATION] Database error: "
+        . $e->getMessage()
       );
+
+      throw new Exception(
+        "Database insert failed: "
+        . $e->getMessage()
+      );
+
+    } catch (Exception $e) {
+
+      if (
+        $conn->inTransaction()
+      ) {
+
+        $conn->rollBack();
+
+      }
+
+      throw $e;
+
     }
+
   }
 
   public function getViolationDetails() {
