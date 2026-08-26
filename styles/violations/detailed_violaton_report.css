@@ -182,19 +182,24 @@
   color: #1e293b;
 }
 
-.detailed-report-status.pending { 
-  background: #fff7ed; 
+.detailed-report-status.pending {
+  background: #fff7ed;
   color: #c2410c;
 }
 
-.detailed-report-status.verified { 
-  background: #f0fdf4; 
-  color: #15803d; 
+.detailed-report-status.first-offense {
+  background: #eff6ff;
+  color: #2563eb;
 }
 
-.detailed-report-status.rejected { 
-  background: #fef2f2; 
-  color: #dc2626; 
+.detailed-report-status.second-offense {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.detailed-report-status.third-offense {
+  background: #fef2f2;
+  color: #dc2626;
 }
 
 .detailed-report-body { 

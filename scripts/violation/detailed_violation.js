@@ -3,6 +3,7 @@ import { updateViolationStatus } from "../data/violation_report/fetch_violations
 export function renderViolationDetailModal(container, violation) {
 
   function getStatusConfig(status) {
+
     switch (String(status ?? "").trim()) {
 
       case "Pending Review":
@@ -10,23 +11,35 @@ export function renderViolationDetailModal(container, violation) {
           className: "pending",
           icon: "fas fa-clock",
           label: "Pending Review",
-          footerMessage: "This report is currently under verification."
+          footerMessage:
+            "This violation report is awaiting review."
         };
 
-      case "Verified":
+      case "First Offense":
         return {
-          className: "verified",
-          icon: "fas fa-circle-check",
-          label: "Verified",
-          footerMessage: "This report has been verified."
+          className: "first-offense",
+          icon: "fas fa-triangle-exclamation",
+          label: "First Offense",
+          footerMessage:
+            "This violation has been recorded as a first offense."
         };
 
-      case "Rejected":
+      case "Second Offense":
         return {
-          className: "rejected",
-          icon: "fas fa-circle-xmark",
-          label: "Rejected",
-          footerMessage: "This report has been rejected."
+          className: "second-offense",
+          icon: "fas fa-triangle-exclamation",
+          label: "Second Offense",
+          footerMessage:
+            "This violation has been recorded as a second offense."
+        };
+
+      case "Third Offense":
+        return {
+          className: "third-offense",
+          icon: "fas fa-gavel",
+          label: "Third Offense",
+          footerMessage:
+            "This violation has reached the third offense level and may require escalation."
         };
 
       default:
@@ -34,11 +47,11 @@ export function renderViolationDetailModal(container, violation) {
           className: "",
           icon: "fas fa-circle-question",
           label: status || "Unknown",
-          footerMessage: "The status of this report is currently unavailable."
+          footerMessage:
+            "The status of this violation is currently unavailable."
         };
     }
   }
-
 
   function getViolationTypeConfig(type) {
     switch (String(type ?? "").trim()) {
@@ -144,12 +157,25 @@ export function renderViolationDetailModal(container, violation) {
                 Pending Review
               </option>
 
-              <option value="Verified" ${statusConfig.label === "Verified" ? "selected" : ""}>
-                Verified
+              <option
+                value="First Offense"
+                ${statusConfig.label === "First Offense" ? "selected" : ""}
+              >
+                First Offense
               </option>
 
-              <option value="Rejected" ${statusConfig.label === "Rejected" ? "selected" : ""}>
-                Rejected
+              <option
+                value="Second Offense"
+                ${statusConfig.label === "Second Offense" ? "selected" : ""}
+              >
+                Second Offense
+              </option>
+
+              <option
+                value="Third Offense"
+                ${statusConfig.label === "Third Offense" ? "selected" : ""}
+              >
+                Third Offense
               </option>
             </select>
           </div>
@@ -369,8 +395,9 @@ export function renderViolationDetailModal(container, violation) {
       // Update container class
       statusContainer.classList.remove(
         "pending",
-        "verified",
-        "rejected"
+        "first-offense",
+        "second-offense",
+        "third-offense"
       );
 
       if(newStatusConfig.className) {

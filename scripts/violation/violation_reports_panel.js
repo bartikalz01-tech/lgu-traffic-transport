@@ -21,8 +21,9 @@ export function renderViolationReportsPanel(container) {
         <select id="violationStatusFilter">
           <option value="">All Status</option>
           <option value="Pending Review">Pending Review</option>
-          <option value="Verified">Verified</option>
-          <option value="Rejected">Rejected</option>
+          <option value="First Offense">First Offense</option>
+          <option value="Second Offense">Second Offense</option>
+          <option value="Third Offense">Third Offense</option>
         </select>
       </div>
 
@@ -84,29 +85,37 @@ export function renderViolationReportsPanel(container) {
   let violationDetails = [];
 
   function getStatusClass(status) {
-    switch(String(status ?? "").trim()) {
+
+    switch (String(status ?? "").trim()) {
+
       case "Pending Review":
         return {
           className: "pending",
           icon: "fas fa-clock"
         };
 
-      case "Verified":
+      case "First Offense":
         return {
-          className: "verified",
-          icon: "fas fa-circle-check"
+          className: "first-offense",
+          icon: "fas fa-triangle-exclamation"
         };
 
-      case "Rejected":
-        return { 
-          className: "rejected",
-          icon: "fas fa-circle-xmark"
+      case "Second Offense":
+        return {
+          className: "second-offense",
+          icon: "fas fa-triangle-exclamation"
+        };
+
+      case "Third Offense":
+        return {
+          className: "third-offense",
+          icon: "fas fa-gavel"
         };
 
       default:
         return {
           className: "",
-          icon: "fa-circle-question"
+          icon: "fas fa-circle-question"
         };
     }
   }

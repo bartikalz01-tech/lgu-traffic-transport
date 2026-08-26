@@ -9,7 +9,7 @@
 
 .violation-summary-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
   box-sizing: border-box;
@@ -56,14 +56,19 @@
   color: #ea580c;
 }
 
-.violation-summary-icon.verified {
-  background: #ecfdf5;
-  color: #059669;
+.violation-summary-icon.first-offense { 
+  background: #eff6ff; 
+  color: #2563eb; 
 }
 
-.violation-summary-icon.rejected {
-  background: #fef2f2;
-  color: #dc2626;
+.violation-summary-icon.second-offense { 
+  background: #fff7ed; 
+  color: #ea580c; 
+}
+
+.violation-summary-icon.third-offense { 
+  background: #fef2f2; 
+  color: #dc2626; 
 }
 
 .violation-summary-content {
@@ -346,14 +351,17 @@
   color: #c2410c;
 }
 
-
-.violation-status.verified {
-  background: #ecfdf5;
-  color: #047857;
+.violation-status.first-offense {
+  background: #eff6ff;
+  color: #2563eb;
 }
 
+.violation-status.second-offense {
+  background: #fff7ed;
+  color: #c2410c;
+}
 
-.violation-status.rejected {
+.violation-status.third-offense {
   background: #fef2f2;
   color: #b91c1c;
 }
@@ -456,7 +464,7 @@
 @media (max-width: 1100px) {
 
   .violation-summary-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .violation-filters {
@@ -464,6 +472,8 @@
   }
 
 }
+
+@media (max-width: 900px) { .violation-summary-grid { grid-template-columns: repeat(2, 1fr); } }
 
 
 @media (max-width: 650px) {

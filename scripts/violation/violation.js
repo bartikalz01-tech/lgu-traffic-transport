@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   startViolationStore();
 
-  await renderViolationReportsPanel(violationReportsPanel);
+  renderViolationReportsPanel(violationReportsPanel);
 
   subscribeViolations(
     violations => {

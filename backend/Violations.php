@@ -244,11 +244,12 @@ class Violations extends config {
 
     $allowedStatuses = [
       'Pending Review',
-      'Verified',
-      'Rejected'
+      'First Offense',
+      'Second Offense',
+      'Third Offense'
     ];
 
-    if(!in_array($status, $allowedStatuses, true)) {
+    if (!in_array($status, $allowedStatuses, true)) {
 
       throw new Exception(
         "Invalid violation status."
@@ -258,20 +259,21 @@ class Violations extends config {
 
     $sql = "
       UPDATE violation_reports
-
       SET status = :status
-
       WHERE violation_id = :violation_id
     ";
 
     $stmt = $conn->prepare($sql);
 
     $stmt->execute([
-      ':status' => $status,
-      ':violation_id' => $violationId
+      ':status' =>
+        $status,
+
+      ':violation_id' =>
+        $violationId
     ]);
 
-    if($stmt->rowCount() === 0) {
+    if ($stmt->rowCount() === 0) {
 
       throw new Exception(
         "Violation report not found or status was unchanged."

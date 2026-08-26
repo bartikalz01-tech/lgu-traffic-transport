@@ -6,12 +6,16 @@ export function renderViolationSummaryReports(container, violationDetails= []) {
     violation => String(violation.status ?? "").trim().toLowerCase() === "pending review"
   ).length;
 
-  const verifiedCount = violationDetails.filter(
-    violation => String(violation.status ?? "").trim().toLowerCase() === "verified"
+  const firstOffenseCount = violationDetails.filter(
+    violation => String(violation.status ?? "").trim().toLowerCase() === "first offense"
   ).length;
 
-  const rejectedCount = violationDetails.filter(
-    violation => String(violation.status ?? "").trim().toLowerCase() === "rejected"
+  const secondOffenseCount = violationDetails.filter(
+    violation => String(violation.status ?? "").trim().toLowerCase() === "second offense"
+  ).length;
+
+  const thirdOffenseCount = violationDetails.filter(
+    violation => String(violation.status ?? "").trim().toLowerCase() === "third offense"
   ).length;
 
   container.innerHTML = `
@@ -40,26 +44,38 @@ export function renderViolationSummaryReports(container, violationDetails= []) {
     </div>
 
     <div class="violation-summary-card">
-      <div class="violation-summary-icon verified">
-        <i class="fas fa-circle-check"></i>
+      <div class="violation-summary-icon first-offense">
+        <i class="fas fa-triangle-exclamation"></i>
       </div>
 
       <div class="violation-summary-content">
-        <span>Verified</span>
-        <strong>${verifiedCount}</strong>
-        <small>Confirmed violations</small>
+        <span>First Offense</span>
+        <strong>${firstOffenseCount}</strong>
+        <small>First verified offense</small>
       </div>
     </div>
 
     <div class="violation-summary-card">
-      <div class="violation-summary-icon rejected">
-        <i class="fas fa-circle-xmark"></i>
+      <div class="violation-summary-icon second-offense">
+        <i class="fas fa-triangle-exclamation"></i>
       </div>
 
       <div class="violation-summary-content">
         <span>Rejected</span>
-        <strong>${rejectedCount}</strong>
-        <small>Not confirmed</small>
+        <strong>${secondOffenseCount}</strong>
+        <small>Second verified offense</small>
+      </div>
+    </div>
+
+    <div class="violation-summary-card">
+      <div class="violation-summary-icon third-offense">
+        <i class="fas fa-gavel"></i>
+      </div>
+
+      <div class="violation-summary-content">
+        <span>Third Offense</span>
+        <strong>${thirdOffenseCount}</strong>
+        <small>Subject to escalation</small>
       </div>
     </div>
   `;
