@@ -125,3 +125,69 @@ export async function getPeakHourAnalyticsLogs(filters = {}) {
     return [];
   }
 }
+
+export async function getCctvHistoricalRecords(filters = {}) {
+
+  try {
+
+    const params = new URLSearchParams();
+
+    if (filters.camera_name) {
+      params.set(
+        "camera_name",
+        filters.camera_name
+      );
+    }
+
+    if (filters.start_date) {
+      params.set(
+        "start_date",
+        filters.start_date
+      );
+    }
+
+    if (filters.end_date) {
+      params.set(
+        "end_date",
+        filters.end_date
+      );
+    }
+
+    if (filters.search) {
+      params.set(
+        "search",
+        filters.search
+      );
+    }
+
+    const response = await fetch(
+      `../api/road_condition/get_cctv_historical_records.php?${params.toString()}`
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `HTTP error: ${response.status}`
+      );
+    }
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(
+        result.message ||
+        "Failed to load CCTV records."
+      );
+    }
+
+    return result.records || [];
+
+  } catch (error) {
+
+    console.error(
+      "Failed to fetch CCTV historical records:",
+      error
+    );
+
+    throw error;
+  }
+}

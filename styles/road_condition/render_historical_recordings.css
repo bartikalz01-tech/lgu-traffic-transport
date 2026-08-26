@@ -1,0 +1,721 @@
+/* =========================================================
+   CCTV RECORDS
+   ========================================================= */
+
+.cctv-records-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+
+/* HEADER */
+
+.cctv-records-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+
+.cctv-records-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+
+.cctv-records-title-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: rgba(52, 152, 219, 0.1);
+
+  color: var(--accent-color);
+
+  border: 1px solid rgba(52, 152, 219, 0.2);
+}
+
+
+.cctv-records-title {
+  margin: 0;
+
+  font-size: 1.25rem;
+
+  color: var(--secondary-color);
+}
+
+
+.cctv-records-subtitle {
+  margin: 4px 0 0;
+
+  font-size: 0.8rem;
+
+  color: var(--text-secondary);
+}
+
+
+.cctv-records-refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+
+/* SUMMARY */
+
+.cctv-records-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+
+.cctv-record-summary-card {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 16px;
+
+  background: var(--card-bg);
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 12px;
+
+  box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+
+.cctv-record-summary-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: var(--light-color);
+
+  color: var(--accent-color);
+
+  font-size: 15px;
+}
+
+
+.cctv-record-summary-card span {
+  display: block;
+
+  font-size: 0.7rem;
+
+  color: var(--text-secondary);
+
+  margin-bottom: 3px;
+}
+
+
+.cctv-record-summary-card strong {
+  font-size: 1rem;
+
+  color: var(--secondary-color);
+}
+
+
+/* FILTERS */
+
+.cctv-records-filter-card {
+  display: grid;
+
+  grid-template-columns:
+    minmax(200px, 1.4fr)
+    minmax(160px, 0.9fr)
+    minmax(140px, 0.8fr)
+    minmax(140px, 0.8fr)
+    auto;
+
+  gap: 12px;
+
+  align-items: end;
+
+  padding: 16px;
+
+  background: var(--card-bg);
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 12px;
+
+  box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+
+.cctv-records-filter-group {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+
+.cctv-records-filter-group label {
+  font-size: 0.7rem;
+
+  font-weight: 600;
+
+  color: var(--text-secondary);
+}
+
+
+.cctv-records-filter-group input,
+.cctv-records-filter-group select {
+  width: 100%;
+
+  min-height: 38px;
+
+  padding: 8px 10px;
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: var(--text-color-1);
+
+  font-size: 0.8rem;
+
+  outline: none;
+}
+
+
+.cctv-records-filter-group input:focus,
+.cctv-records-filter-group select:focus {
+  border-color: var(--accent-color);
+}
+
+
+.cctv-record-input-wrap {
+  position: relative;
+}
+
+
+.cctv-record-input-wrap i {
+  position: absolute;
+
+  left: 11px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: var(--text-secondary);
+
+  font-size: 0.75rem;
+
+  pointer-events: none;
+}
+
+
+.cctv-record-input-wrap input {
+  padding-left: 31px;
+}
+
+
+.cctv-record-reset-btn {
+  min-height: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  justify-content: center;
+}
+
+
+/* RECORDINGS */
+
+.cctv-records-list-card {
+  background: var(--card-bg);
+
+  border: 1px solid var(--border-color-1);
+
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  box-shadow: 0 4px 12px var(--shadow-1);
+}
+
+
+.cctv-record-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+
+.cctv-record-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 900px;
+}
+
+
+.cctv-record-table thead th {
+  padding: 13px 15px;
+
+  background: #f8fafc;
+
+  border-bottom: 1px solid var(--border-color-1);
+
+  color: var(--text-secondary);
+
+  font-size: 0.68rem;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.04rem;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+
+.cctv-record-table tbody td {
+  padding: 13px 15px;
+
+  border-bottom: 1px solid #edf2f7;
+
+  color: var(--text-color-1);
+
+  font-size: 0.78rem;
+
+  vertical-align: middle;
+}
+
+
+.cctv-record-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+
+.cctv-record-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+
+.cctv-record-camera {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.cctv-record-camera-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: rgba(52, 152, 219, 0.08);
+
+  color: var(--accent-color);
+}
+
+
+.cctv-record-camera strong {
+  display: block;
+
+  font-size: 0.78rem;
+}
+
+
+.cctv-record-camera small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--text-secondary);
+
+  font-size: 0.65rem;
+}
+
+
+.cctv-record-filename {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  max-width: 270px;
+}
+
+
+.cctv-record-filename i {
+  color: var(--accent-color);
+
+  flex-shrink: 0;
+}
+
+
+.cctv-record-filename span {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+.cctv-duration-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  background: #f1f5f9;
+
+  color: #475569;
+
+  font-size: 0.68rem;
+
+  font-weight: 600;
+}
+
+
+/* EMPTY */
+
+.cctv-records-empty {
+  min-height: 320px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 40px;
+
+  text-align: center;
+}
+
+
+.cctv-records-empty-icon {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: #f1f5f9;
+
+  color: #94a3b8;
+
+  font-size: 1.5rem;
+
+  margin-bottom: 12px;
+}
+
+
+.cctv-records-empty h3 {
+  margin: 0;
+
+  font-size: 1rem;
+
+  color: var(--secondary-color);
+}
+
+
+.cctv-records-empty p {
+  margin: 6px 0 0;
+
+  max-width: 440px;
+
+  font-size: 0.75rem;
+
+  color: var(--text-secondary);
+}
+
+
+/* LOADING */
+
+.cctv-records-loading {
+  min-height: 260px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  color: var(--text-secondary);
+
+  font-size: 0.8rem;
+}
+
+
+/* ERROR */
+
+.cctv-records-error {
+  min-height: 260px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  text-align: center;
+
+  padding: 30px;
+}
+
+
+.cctv-records-error i {
+  font-size: 1.8rem;
+
+  color: var(--danger-color);
+}
+
+
+.cctv-records-error strong {
+  color: var(--secondary-color);
+}
+
+
+.cctv-records-error span {
+  color: var(--text-secondary);
+
+  font-size: 0.75rem;
+}
+
+
+/* MODAL */
+
+.cctv-recording-modal {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1500;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+}
+
+
+.cctv-recording-modal-backdrop {
+  position: absolute;
+
+  inset: 0;
+
+  background: rgba(11, 19, 43, 0.78);
+}
+
+
+.cctv-recording-modal-content {
+  position: relative;
+
+  z-index: 1;
+
+  width: min(1000px, 100%);
+
+  background: #ffffff;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+}
+
+
+.cctv-recording-modal-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 14px 18px;
+
+  border-bottom: 1px solid var(--border-color-1);
+
+  background: #f8fafc;
+}
+
+
+.cctv-recording-modal-header strong {
+  display: block;
+
+  color: var(--secondary-color);
+
+  font-size: 0.9rem;
+}
+
+
+.cctv-recording-modal-header span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--text-secondary);
+
+  font-size: 0.7rem;
+}
+
+
+.cctv-recording-modal-close {
+  width: 34px;
+  height: 34px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #e2e8f0;
+
+  color: #475569;
+
+  cursor: pointer;
+}
+
+
+.cctv-recording-modal-close:hover {
+  background: #cbd5e1;
+}
+
+
+.cctv-recording-player {
+  background: #020617;
+
+  padding: 12px;
+}
+
+
+.cctv-recording-player video {
+  width: 100%;
+
+  max-height: 70vh;
+
+  display: block;
+
+  border-radius: 8px;
+
+  background: #000000;
+}
+
+
+.cctv-recording-modal-footer {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 12px 18px;
+
+  color: var(--text-secondary);
+
+  font-size: 0.72rem;
+}
+
+
+.cctv-modal-separator {
+  margin: 0 6px;
+
+  color: #94a3b8;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+
+  .cctv-records-filter-card {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .cctv-record-reset-btn {
+    width: 100%;
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .cctv-records-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+
+  .cctv-records-summary {
+    grid-template-columns: 1fr;
+  }
+
+
+  .cctv-records-filter-card {
+    grid-template-columns: 1fr;
+  }
+
+
+  .cctv-recording-modal {
+    padding: 10px;
+  }
+
+}

@@ -32,7 +32,7 @@ class RoadMapStatus extends config{
 
       ':recording_filename' =>
         $data['recording_filename'],
-        
+
       ':recording_from' =>
         $data['recording_from'],
 
@@ -305,7 +305,79 @@ class RoadMapStatus extends config{
         "lowest" => $lowestHour,
         "hourly_data" => $hourlyData
     ];
-}
+  }
+
+  public function getCctvHistoricalRecords($filters = []) {
+
+    $conn = $this->conn();
+
+    $sql = "
+      SELECT
+        cctv_record_id,
+        camera_name,
+        recording_filename,
+        recording_from,
+        recording_to,
+        duration_seconds,
+        created_at
+      FROM cctv_historical_records
+      WHERE 1=1
+    ";
+
+    $params = [];
+
+    if (!empty($filters['camera_name']) && $filters['camera_name'] !== 'all') {
+
+      $sql .= "
+        AND camera_name = ?
+      ";
+
+      $params[] = $filters['camera_name'];
+    }
+
+    if (!empty($filters['start_date'])) {
+
+      $sql .= "
+        AND DATE(recording_from) >= ?
+      ";
+
+      $params[] = $filters['start_date'];
+    }
+
+    if (!empty($filters['end_date'])) {
+
+      $sql .= "
+        AND DATE(recording_to) <= ?
+      ";
+
+      $params[] = $filters['end_date'];
+    }
+
+    if (!empty($filters['search'])) {
+
+      $sql .= "
+        AND (
+          camera_name LIKE ?
+          OR recording_filename LIKE ?
+        )
+      ";
+
+      $search = '%' . $filters['search'] . '%';
+
+      $params[] = $search;
+      $params[] = $search;
+    }
+
+    $sql .= "
+      ORDER BY recording_from DESC
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->execute($params);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }
 
 ?>

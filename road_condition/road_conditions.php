@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_test.css">
   <link rel="stylesheet" href="../styles/road_condition/detailed_cctv.css">
+  <link rel="stylesheet" href="../styles/road_condition/render_historical_recordings.css">
   <link rel="stylesheet" href="../styles/accident/quick_report.css">
   <link rel="stylesheet" href="../styles/violations/violation_quick_report.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">

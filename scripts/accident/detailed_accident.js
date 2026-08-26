@@ -8,7 +8,12 @@ export function detailedAccidentReport(
         accidentDetail.snapshot_filename
       )}`
     : null;
-
+  
+  const recordingUrl = accidentDetail.recording_filename
+    ? `http://127.0.0.1:5001/recording/file/${encodeURIComponent(
+        accidentDetail.recording_filename
+      )}`
+    : null;
 
   const statusClass = accidentDetail.status
     .toLowerCase()
@@ -100,6 +105,104 @@ export function detailedAccidentReport(
 
           </div>
 
+        </div>
+
+        <div class="detailed-accident-recording">
+          <div class="detailed-section-header">
+            <div>
+              <h3>
+                <i class="fas fa-film"></i>
+                CCTV Historical Recording
+              </h3>
+
+              <p>
+                Historical footage associated with this accident.
+              </p>
+            </div>
+          </div>
+
+          <div class="detailed-recording-container">
+            ${
+            recordingUrl
+              ? `
+                <video
+                  class="detailed-accident-recording-video"
+                  controls
+                  preload="metadata"
+                  playsinline
+                >
+                
+                <source
+                  src="${recordingUrl}"
+                  type="video/mp4"
+                >
+
+                Your browser does not support
+                HTML5 video playback.
+
+                </video>
+              ` : `
+                <div class="no-recording-film">
+                  <i class="fas fa-film"></i>
+
+                  <h4>No Historical Recording Available</h4>
+
+                  <p>
+                    A CCTV recording has not yet been
+                    attached to this accident case.
+                  </p>
+                </div>
+              `
+            }
+          </div>
+
+          ${
+          recordingUrl
+            ? `
+              <div class="detailed-recording-meta">
+
+                <div>
+
+                  <span>
+                    Recording File
+                  </span>
+
+                  <strong>
+                    ${accidentDetail.recording_filename}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    From
+                  </span>
+
+                  <strong>
+                    ${accidentDetail.recording_from || "-"}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    To
+                  </span>
+
+                  <strong>
+                    ${accidentDetail.recording_to || "-"}
+                  </strong>
+
+                </div>
+
+              </div>
+            `
+            : ""
+          }
         </div>
 
         <!-- ACCIDENT INFORMATION -->
