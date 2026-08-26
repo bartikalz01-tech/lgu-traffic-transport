@@ -182,6 +182,33 @@
   color: #1e293b;
 }
 
+.detailed-report-status.verification-pending {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.detailed-report-status.verification-verified {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.detailed-report-status.verification-rejected {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.detailed-report-status.verification-pending .detailed-report-status-select {
+  color: #c2410c;
+}
+
+.detailed-report-status.verification-verified .detailed-report-status-select {
+  color: #047857;
+}
+
+.detailed-report-status.verification-rejected .detailed-report-status-select {
+  color: #b91c1c;
+}
+
 .detailed-report-status.pending {
   background: #fff7ed;
   color: #c2410c;

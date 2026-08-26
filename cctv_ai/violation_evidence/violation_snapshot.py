@@ -1,4 +1,5 @@
 import cv2
+from ..cloudinary_uploader import upload_image
 from pathlib import Path
 from datetime import datetime
 
@@ -9,6 +10,10 @@ SNAPSHOT_FOLDER = (
 SNAPSHOT_FOLDER.mkdir(
   parents=True,
   exist_ok=True
+)
+
+CLOUDINARY_VIOLATION_FOLDER = (
+  "alertara_test/cctv/violation_snapshots"
 )
 
 
@@ -42,11 +47,19 @@ def create_violation_snapshot(camera_name, frame):
       "message": "Failed to save CCTV snapshot."
     }
 
+  cloudinary_result = upload_image(
+    file_path=filepath,
+    cloudinary_folder=CLOUDINARY_VIOLATION_FOLDER,
+    overwrite=False
+  )
+
   return {
     "success": True,
     "filename": filename,
     "filepath": str(filepath),
     "captured_at": timestamp.strftime(
-        "%Y-%m-%d %H:%M:%S"
-    )
+      "%Y-%m-%d %H:%M:%S"
+    ),
+    "cloudinary_public_id": cloudinary_result["public_id"],
+    "cloudinary_url": cloudinary_result["secure_url"]
   }

@@ -42,7 +42,7 @@ export async function getViolationDetails() {
   }
 }
 
-export async function updateViolationStatus(
+export async function updateVerificationStatus(
   violationId,
   status
 ) {

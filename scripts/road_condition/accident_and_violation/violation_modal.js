@@ -4,6 +4,8 @@ export async function openViolationModal(container, road) {
 
   let snapshotFileName = null;
 
+  let snapshotCloudinaryUrl = null;
+
   container.innerHTML = `
     <div class="violation-modal">
 
@@ -470,6 +472,8 @@ export async function openViolationModal(container, road) {
 
       snapshotFileName = data.filename;
 
+      snapshotCloudinaryUrl = data.cloudinary_url || null;
+
       capturedSnapshot.src = `http://127.0.0.1:5001/violation_evidence/snapshots/file/${encodeURIComponent(data.filename)}`;;
 
       capturedSnapshot.dataset.filename = data.filename;
@@ -544,7 +548,8 @@ export async function openViolationModal(container, road) {
       vehicle_type: selectedSubjectType === "Vehicle"
         ? (vehicleType.value || null) : null,
       description: description || null,
-      evidence: capturedSnapshot.dataset.filename || null
+      evidence: capturedSnapshot.dataset.filename || null,
+      cloudinary_url: snapshotCloudinaryUrl,
     };
 
     submitViolationBtn.disabled = true;

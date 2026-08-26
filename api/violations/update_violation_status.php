@@ -71,7 +71,7 @@ try {
   $violations = new Violations();
 
   $result =
-    $violations->updateViolationStatus(
+    $violations->updateVerificationStatus(
       $violationId,
       $status
     );

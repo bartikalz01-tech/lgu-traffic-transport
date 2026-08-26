@@ -66,6 +66,55 @@ def upload_video(file_path, cloudinary_folder, overwrite=False):
   }
 
 
+def upload_image(
+  file_path,
+  cloudinary_folder,
+  overwrite=False
+):
+
+  file_path = Path(file_path)
+
+  if not file_path.exists():
+    raise FileNotFoundError(
+      f"Image file not found: {file_path}"
+    )
+
+  upload_options = {
+    "resource_type": "image",
+    "folder": cloudinary_folder,
+    "public_id": file_path.stem,
+    "overwrite": overwrite,
+    "unique_filename": False
+  }
+
+  print(
+    f"[CLOUDINARY] Uploading image: "
+    f"{file_path.name}"
+  )
+
+  result = uploader.upload(
+    str(file_path),
+    **upload_options
+  )
+
+  print(
+    f"[CLOUDINARY] Image upload completed: "
+    f"{file_path.name}"
+  )
+
+  return {
+    "success": True,
+    "filename": file_path.name,
+    "public_id": result.get("public_id"),
+    "secure_url": result.get("secure_url"),
+    "resource_type": result.get("resource_type"),
+    "bytes": result.get("bytes"),
+    "format": result.get("format"),
+    "cloud_name": CLOUDINARY_CLOUD_NAME
+  }
+
+
+
 def upload_video_background(file_path, cloudinary_folder, overwrite=False, delete_after_upload=False):
 
   import threading

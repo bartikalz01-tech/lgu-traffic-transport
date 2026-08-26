@@ -28,6 +28,30 @@ export function renderViolationReportsPanel(container) {
       </div>
 
       <div class="violation-filter-group">
+
+        <select id="violationOffenseFilter">
+
+          <option value="">
+            All Offense Levels
+          </option>
+
+          <option value="First Offense">
+            First Offense
+          </option>
+
+          <option value="Second Offense">
+            Second Offense
+          </option>
+
+          <option value="Third Offense">
+            Third Offense
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="violation-filter-group">
         <select id="violationTypeFilter">
           <option value="">All Violation Types</option>
           <option value="Illegal Parking">Illegal Parking</option>
@@ -48,9 +72,10 @@ export function renderViolationReportsPanel(container) {
           <tr>
             <th>Violation ID</th>
             <th>Violation Type</th>
-            <td>Road / Street</td>
+            <th>Road / Street</th>
             <th>Date & Time</th>
-            <th>Status</th>
+            <th>Verification</th>
+            <th>Offense Level</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -75,6 +100,7 @@ export function renderViolationReportsPanel(container) {
   const statusFilter = container.querySelector("#violationStatusFilter");
   const typeFilter = container.querySelector("#violationTypeFilter");
   const dateFilter = container.querySelector("#violationDateFilter");
+  const offenseFilter = container.querySelector("#violationOffenseFilter")
 
   const violationModalContainer = container.querySelector("#detailViolationContainer");
 
@@ -84,26 +110,51 @@ export function renderViolationReportsPanel(container) {
 
   let violationDetails = [];
 
-  function getStatusClass(status) {
+  function getVerificationStatusClass(status) {
 
     switch (String(status ?? "").trim()) {
 
       case "Pending Review":
         return {
-          className: "pending",
+          className: "verification-pending",
           icon: "fas fa-clock"
         };
+
+      case "Verified":
+        return {
+          className: "verification-verified",
+          icon: "fas fa-circle-check"
+        };
+
+      case "Rejected":
+        return {
+          className: "verification-rejected",
+          icon: "fas fa-circle-xmark"
+        };
+
+      default:
+        return {
+          className: "",
+          icon: "fas fa-circle-question"
+        };
+    }
+  }
+
+
+  function getOffenseLevelClass(level) {
+
+    switch (String(level ?? "").trim()) {
 
       case "First Offense":
         return {
           className: "first-offense",
-          icon: "fas fa-triangle-exclamation"
+          icon: "fas fa-1"
         };
 
       case "Second Offense":
         return {
           className: "second-offense",
-          icon: "fas fa-triangle-exclamation"
+          icon: "fas fa-2"
         };
 
       case "Third Offense":
@@ -114,8 +165,8 @@ export function renderViolationReportsPanel(container) {
 
       default:
         return {
-          className: "",
-          icon: "fas fa-circle-question"
+          className: "not-assigned",
+          icon: "fas fa-minus"
         };
     }
   }
@@ -174,7 +225,9 @@ export function renderViolationReportsPanel(container) {
     const paginatedViolations = violations.slice(startIndex, endIndex);
 
     paginatedViolations.forEach(violation => {
-      const statusConfig = getStatusClass(violation.status);
+      const verificationConfig = getVerificationStatusClass(violation.verification_status);
+
+      const offenseConfig = getOffenseLevelClass(violation.offense_level);
 
       const typeClass = getViolationTypeClass(violation.violation_type);
 
@@ -216,13 +269,21 @@ export function renderViolationReportsPanel(container) {
             </div>
           </td>
           <td>
-            <span class="violation-status ${statusConfig.className}">
-              <i class="fas ${statusConfig.icon}"></i>
-              ${violation.status ?? "-"}
+            <span class="violation-status ${verificationConfig.className}">
+              <i class="${verificationConfig.icon}"></i>
+              ${violation.verification_status ?? "-"}
             </span>
           </td>
+
           <td>
-            <button type="button" class="violation-action-btn" title="View Report" data-violation-id=${violation.violation_report_id}>
+            <span class="violation-status ${offenseConfig.className}">
+              <i class="${offenseConfig.icon}"></i>
+              ${violation.offense_level ?? "Not Assigned"}
+            </span>
+          </td>
+
+          <td>
+            <button type="button" class="violation-action-btn" title="View Report" data-violation-id=${violation.violation_id}>
               <i class="fas fa-eye"></i>
             </button>
           </td>
@@ -244,7 +305,7 @@ export function renderViolationReportsPanel(container) {
     violationViewDetailBtn.forEach(btn => {
       btn.addEventListener("click", () => {
         const selectedViolation = violationDetails.find(
-          violation => String(violation.violation_report_id) == String(btn.dataset.violationId) 
+          violation => String(violation.violation_id) == String(btn.dataset.violationId) 
         );
 
         renderViolationDetailModal(violationModalContainer, selectedViolation);
@@ -315,11 +376,13 @@ export function renderViolationReportsPanel(container) {
   function applyFilters() {
     const searchTerm = searchInput.value.trim().toLowerCase();
 
-    const selectedStatus = statusFilter.value.trim().toLowerCase();
+    const selectedVerification = statusFilter.value.trim().toLowerCase();
 
     const selectedType = typeFilter.value.trim().toLowerCase();
 
     const selectedDate = dateFilter.value;
+
+    const selectedOffense = offenseFilter.value.trim().toLowerCase();
 
     const filteredViolations = violationDetails.filter(violation => {
       const publicId = String(violation.public_violation_id ?? "").toLowerCase();
@@ -332,17 +395,21 @@ export function renderViolationReportsPanel(container) {
 
       const violationType =String(violation.violation_type ?? "").toLowerCase();
 
-      const status =String(violation.status ?? "").toLowerCase();
+      const verificationStatus =String(violation.verification_status ?? "").toLowerCase();
+
+      const offenseLevel = String(violation.offense_level ?? "").toLowerCase();
 
       const matchesSearch = 
         !searchTerm ||
+        publicId.includes(searchTerm) |
         roadName.includes(searchTerm) ||
         location.includes(searchTerm) ||
         plateNumber.includes(searchTerm) ||
         violationType.includes(searchTerm) ||
-        status.includes(searchTerm);
+        verificationStatus.includes(searchTerm) ||
+        offenseLevel.includes(searchTerm);
 
-      const matchesStatus = !selectedStatus || status === selectedStatus;
+      const matchesVerification = !selectedVerification || verificationStatus === selectedVerification;
 
       const matchesType = !selectedType || violationType === selectedType;
 
@@ -350,9 +417,12 @@ export function renderViolationReportsPanel(container) {
 
       const matchesDate = !selectedDate || violationDate === selectedDate;
 
+      const matchesOffense = !selectedOffense || offenseLevel === selectedOffense;
+
       return (
         matchesSearch &&
-        matchesStatus &&
+        matchesVerification &&
+        matchesOffense &&
         matchesType &&
         matchesDate
       );

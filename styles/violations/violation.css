@@ -345,6 +345,41 @@
   white-space: nowrap;
 }
 
+.violation-status.verification-pending {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.violation-status.verification-verified {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.violation-status.verification-rejected {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.violation-status.first-offense {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.violation-status.second-offense {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.violation-status.third-offense {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.violation-status.not-assigned {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
 
 .violation-status.pending {
   background: #fff7ed;

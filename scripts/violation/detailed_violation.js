@@ -1,54 +1,70 @@
-import { updateViolationStatus } from "../data/violation_report/fetch_violations.js";
+import { updateVerificationStatus } from "../data/violation_report/fetch_violations.js";
 
 export function renderViolationDetailModal(container, violation) {
 
-  function getStatusConfig(status) {
+  function getVerificationConfig(status) {
 
     switch (String(status ?? "").trim()) {
 
       case "Pending Review":
         return {
-          className: "pending",
+          className: "verification-pending",
           icon: "fas fa-clock",
           label: "Pending Review",
-          footerMessage:
-            "This violation report is awaiting review."
+          footerMessage: "This violation report is awaiting verification."
         };
 
-      case "First Offense":
+      case "Verified":
         return {
-          className: "first-offense",
-          icon: "fas fa-triangle-exclamation",
-          label: "First Offense",
-          footerMessage:
-            "This violation has been recorded as a first offense."
+          className: "verification-verified",
+          icon: "fas fa-circle-check",
+          label: "Verified",
+          footerMessage: "This violation has been verified and the offense level has been determined."
         };
 
-      case "Second Offense":
+      case "Rejected":
         return {
-          className: "second-offense",
-          icon: "fas fa-triangle-exclamation",
-          label: "Second Offense",
-          footerMessage:
-            "This violation has been recorded as a second offense."
-        };
-
-      case "Third Offense":
-        return {
-          className: "third-offense",
-          icon: "fas fa-gavel",
-          label: "Third Offense",
-          footerMessage:
-            "This violation has reached the third offense level and may require escalation."
+          className: "verification-rejected",
+          icon: "fas fa-circle-xmark",
+          label: "Rejected",
+          footerMessage: "This violation report was rejected and will not proceed as a confirmed violation."
         };
 
       default:
         return {
           className: "",
           icon: "fas fa-circle-question",
-          label: status || "Unknown",
-          footerMessage:
-            "The status of this violation is currently unavailable."
+          label: "Unknown"
+        };
+    }
+  }
+
+  function getOffenseConfig(level) {
+
+    switch (String(level ?? "").trim()) {
+
+      case "First Offense":
+        return {
+          className: "first-offense",
+          icon: "fas fa-1"
+        };
+
+      case "Second Offense":
+        return {
+          className: "second-offense",
+          icon: "fas fa-2"
+        };
+
+      case "Third Offense":
+        return {
+          className: "third-offense",
+          icon: "fas fa-gavel"
+        };
+
+      default:
+        return {
+          className: "not-assigned",
+          icon: "fas fa-minus"
         };
     }
   }
@@ -106,10 +122,13 @@ export function renderViolationDetailModal(container, violation) {
       })
     : "-";
 
-  const statusConfig = getStatusConfig(violation?.status);
+  const verificationConfig = getVerificationConfig(violation?.verification_status);
+
+  const offenseConfig = getOffenseConfig(violation?.offense_level);
   const typeConfig = getViolationTypeConfig(violation?.violation_type);
 
-  const evidenceFilename = violation?.file_name ?? null;
+  //const evidenceFilename = violation?.file_name ?? null;
+  const evidenceUrl = violation?.cloudinary_url ?? null;
 
   container.innerHTML = `
     <div class="detailed-report-modal">
@@ -146,38 +165,36 @@ export function renderViolationDetailModal(container, violation) {
           </strong>
         </div>
 
-        <div id="violationStatusContainer" class="detailed-report-status ${statusConfig.className}">
-          <i id="violationStatusIcon" class="${statusConfig.icon}"></i>
+        <div id="violationStatusContainer" class="detailed-report-status ${verificationConfig.className}">
+          <i id="violationStatusIcon" class="${verificationConfig.icon}"></i>
           <div>
             <span class="detailed-report-status-label">
               Status
             </span>
             <select id="violationStatusSelect" class="detailed-report-status-select">
-              <option value="Pending Review" ${statusConfig.label === "Pending Review" ? "selected" : ""}>
+              <option value="Pending Review" ${violation.verification_status === "Pending Review" ? "selected" : ""}>
                 Pending Review
               </option>
-
-              <option
-                value="First Offense"
-                ${statusConfig.label === "First Offense" ? "selected" : ""}
-              >
-                First Offense
+              <option value="Verified" ${violation.verification_status === "Verified" ? "selected" : ""}>
+                Verified
               </option>
-
-              <option
-                value="Second Offense"
-                ${statusConfig.label === "Second Offense" ? "selected" : ""}
-              >
-                Second Offense
-              </option>
-
-              <option
-                value="Third Offense"
-                ${statusConfig.label === "Third Offense" ? "selected" : ""}
-              >
-                Third Offense
+              <option value="Rejected" ${violation.verification_status === "Rejected" ? "selected" : ""}>
+                Rejected
               </option>
             </select>
+          </div>
+        </div>
+
+        <div id="violationOffenseContainer" class="detailed-report-status ${offenseConfig.className}">
+          <i id="violationOffenseIcon" class="${offenseConfig.icon}"></i>
+          <div>
+            <span class="detailed-report-status-label">
+              Offense Level
+            </span>
+
+            <strong id="violationOffenseLevel">
+              ${violation.offense_level ?? "Not Assigned"}
+            </strong>
           </div>
         </div>
       </div>
@@ -252,7 +269,7 @@ export function renderViolationDetailModal(container, violation) {
                 Plate Number
               </span>
 
-              <strong class="detailed-report-plate">${violation.plate_number}</strong>
+              <strong class="detailed-report-plate">${violation.plate_number ?? "N/A"}</strong>
             </div>
 
             <div class="detailed-report-field">
@@ -260,7 +277,7 @@ export function renderViolationDetailModal(container, violation) {
                 Vehicle Type
               </span>
 
-              <strong>${violation.vehicle_type}</strong>
+              <strong>${violation.vehicle_type ?? "N/A"}</strong>
             </div>
           </div>
         </section>
@@ -318,14 +335,14 @@ export function renderViolationDetailModal(container, violation) {
               </div>
 
               <div class="detailed-report-evidence-row">
-                <span><i class="fas fa-file"></i> File Name</span>
-                <strong>${violation.file_name}</strong>
+                <span><i class="fas fa-link"></i> Evidence URL</span>
+                <strong>${violation.cloudinary_url ?? "-"}</strong>
               </div>
 
-              <div class="detailed-report-evidence-row">
+              <!--<div class="detailed-report-evidence-row">
                 <span><i class="fas fa-folder-open"></i> File Path</span>
                 <strong>${violation.file_path}</strong>
-              </div>
+              </div>-->
             </div>
           </div>
         </section>
@@ -334,7 +351,7 @@ export function renderViolationDetailModal(container, violation) {
       <div class="detailed-report-footer">
         <div class="detailed-report-footer-info">
           <i class="fas fa-shield-halved"></i>
-          <span>${statusConfig.footerMessage}</span>
+          <span>${verificationConfig.footerMessage}</span>
         </div>
 
         <div class="detailed-report-footer-actions">
@@ -350,8 +367,8 @@ export function renderViolationDetailModal(container, violation) {
   const evidenceImage = container.querySelector("#detailedViolationEvidenceImage");
   const noEvidence = container.querySelector("#detailedViolationNoEvidence");
 
-  if(evidenceFilename) {
-    evidenceImage.src = `http://localhost:5001/violation_evidence/snapshots/file/${encodeURIComponent(evidenceFilename)}`;
+  if(evidenceUrl) {
+    evidenceImage.src = evidenceUrl;
 
     evidenceImage.style.display = "block";
     noEvidence.style.display = "none";
@@ -368,18 +385,25 @@ export function renderViolationDetailModal(container, violation) {
   const statusContainer = container.querySelector("#violationStatusContainer");
   const statusIcon = container.querySelector("#violationStatusIcon");
   const statusSelect = container.querySelector("#violationStatusSelect");
+  const offenseContainer = container.querySelector("#violationOffenseContainer");
+
+  const offenseIcon =
+    container.querySelector("#violationOffenseIcon");
+
+  const offenseLevel =
+    container.querySelector("#violationOffenseLevel");
 
 
   statusSelect.addEventListener("change", async () => {
 
-    const newStatus = statusSelect.value;
+    const newVerificationStatus = statusSelect.value;
 
-    const previousStatus = violation.status;
+    const previousStatus = violation.verification_status;
 
     statusSelect.disabled = true;
 
     try {
-      const result = await updateViolationStatus(violation.violation_id, newStatus);
+      const result = await updateVerificationStatus(violation.violation_id, newVerificationStatus);
 
       if(!result.success) {
         throw new Error(
@@ -388,26 +412,48 @@ export function renderViolationDetailModal(container, violation) {
         );
       }
 
-      const newStatusConfig = getStatusConfig(newStatus);
+      violation.verification_status = result.verification_status;
 
-      violation.status = newStatus;
+      violation.offense_level = result.offense_level;
+
+      const newOffenseConfig = getOffenseConfig(result.offense_level);
+
+      offenseContainer.classList.remove(
+        "first-offense",
+        "second-offense",
+        "third-offense",
+        "not-assigned"
+      );
+
+      offenseContainer.classList.add(
+        newOffenseConfig.className
+      );
+
+      offenseIcon.className =
+        newOffenseConfig.icon;
+
+      offenseLevel.textContent =
+        result.offense_level || "Not Assigned";
+
+      const newVerificationConfig = getVerificationConfig(newVerificationStatus);
+
+      violation.verification_status = newVerificationStatus;
 
       // Update container class
       statusContainer.classList.remove(
-        "pending",
-        "first-offense",
-        "second-offense",
-        "third-offense"
+        "verification-pending",
+        "verification-verified",
+        "verification-rejected"
       );
 
-      if(newStatusConfig.className) {
+      if(newVerificationConfig.className) {
         statusContainer.classList.add(
-          newStatusConfig.className
+          newVerificationConfig.className
         );
       }
 
       // Update icon
-      statusIcon.className = newStatusConfig.icon;
+      statusIcon.className = newVerificationConfig.icon;
 
       const footerMessage =
         container.querySelector(
@@ -415,7 +461,7 @@ export function renderViolationDetailModal(container, violation) {
         );
       
       if(footerMessage) {
-        footerMessage.textContent = newStatusConfig.footerMessage;
+        footerMessage.textContent = newVerificationConfig.footerMessage || "Verification status updated.";
       }
 
       Swal.fire({
@@ -428,8 +474,7 @@ export function renderViolationDetailModal(container, violation) {
 
         title: "Status Updated",
 
-        text:
-          `Violation status changed to ${newStatus}.`,
+        text: `Verification: ${result.verification_status}. Offense: ${result.offense_level || "Not Assigned"}.`,
 
         showConfirmButton: false,
 
