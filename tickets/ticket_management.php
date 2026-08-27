@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/ticket/tickets.css">
+  <link rel="stylesheet" href="../styles/ticket/create_ticket.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Ticketing System</title>
 </head>
@@ -157,6 +158,7 @@
 
       <div class="tickets-panel" id="ticketPanelContainer"></div>
 
+      <div class="create-ticket-overlay create-ticket-hidden"></div>
     </section>
 
     <?php include '../includes/admin-footer.php'; ?>

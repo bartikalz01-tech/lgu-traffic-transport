@@ -1,0 +1,1019 @@
+.create-ticket-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1006;
+}
+
+.create-ticket-hidden {
+  display: none;
+}
+
+.create-ticket-modal {
+
+  width: min(900px, 100%);
+
+  background: var(--card-bg);
+
+  border:
+    1px solid
+    var(--border-color-1);
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.18);
+
+  overflow: hidden;
+
+  margin-bottom: 2rem;
+
+}
+
+
+/* ==========================================================================
+   MODAL HEADER
+   ========================================================================== */
+
+.create-ticket-modal-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 20px 24px;
+
+  border-bottom:
+    1px solid
+    var(--border-color-1);
+
+  background:
+    var(--card-bg);
+
+}
+
+
+.create-ticket-modal-title {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+}
+
+
+.create-ticket-modal-icon {
+
+  width: 42px;
+
+  height: 42px;
+
+  border-radius: 10px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background:
+    var(--sidebar-hover-bg-1);
+
+  color:
+    var(--primary-color);
+
+  font-size: 1rem;
+
+}
+
+
+.create-ticket-modal-title h2 {
+
+  margin: 0 0 3px;
+
+  font-size: 1.2rem;
+
+  font-weight: 650;
+
+  color:
+    var(--text-color-1);
+
+}
+
+
+.create-ticket-modal-title p {
+
+  margin: 0;
+
+  font-size: 0.78rem;
+
+  color:
+    var(--text-secondary);
+
+}
+
+
+.create-ticket-close {
+
+  width: 34px;
+
+  height: 34px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background: transparent;
+
+  color:
+    var(--text-secondary);
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  transition: all 0.15s ease;
+
+}
+
+
+.create-ticket-close:hover {
+
+  background:
+    rgba(231, 76, 60, 0.08);
+
+  color:
+    var(--danger-color);
+
+}
+
+
+/* ==========================================================================
+   MODAL BODY
+   ========================================================================== */
+
+.create-ticket-modal-body {
+
+  padding: 22px 24px;
+
+}
+
+
+/* ==========================================================================
+   FORM SECTION
+   ========================================================================== */
+
+.ticket-form-section {
+
+  padding-bottom: 24px;
+
+  margin-bottom: 24px;
+
+  border-bottom:
+    1px solid
+    var(--border-color-1);
+
+}
+
+
+.ticket-form-section:last-child {
+
+  border-bottom: none;
+
+  margin-bottom: 0;
+
+  padding-bottom: 0;
+
+}
+
+
+.ticket-section-header {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 17px;
+
+}
+
+
+.ticket-section-header h3 {
+
+  margin: 0 0 4px;
+
+  font-size: 0.95rem;
+
+  font-weight: 650;
+
+  color:
+    var(--text-color-1);
+
+}
+
+
+.ticket-section-header p {
+
+  margin: 0;
+
+  color:
+    var(--text-secondary);
+
+  font-size: 0.77rem;
+
+}
+
+
+.ticket-required-label {
+
+  padding: 4px 8px;
+
+  border-radius: 5px;
+
+  background:
+    rgba(231, 76, 60, 0.08);
+
+  color:
+    var(--danger-color);
+
+  font-size: 0.68rem;
+
+  font-weight: 600;
+
+}
+
+
+/* ==========================================================================
+   VIOLATION SEARCH
+   ========================================================================== */
+
+.ticket-violation-search label {
+
+  display: block;
+
+  margin-bottom: 7px;
+
+  color:
+    var(--text-color-1);
+
+  font-size: 0.78rem;
+
+  font-weight: 600;
+
+}
+
+
+.ticket-violation-search label {
+
+  display: block;
+
+  margin-bottom: 7px;
+
+  color:
+    var(--text-color-1);
+
+  font-size: 0.78rem;
+
+  font-weight: 600;
+
+}
+
+
+.ticket-violation-search .ticket-select-with-icon {
+
+  position: relative;
+
+  width: 100%;
+
+}
+
+
+.ticket-violation-search .ticket-select-with-icon i {
+
+  position: absolute;
+
+  left: 12px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color:
+    var(--text-secondary);
+
+  font-size: 0.78rem;
+
+  pointer-events: none;
+
+  z-index: 1;
+
+}
+
+
+.ticket-violation-search select {
+
+  width: 100%;
+
+  height: 40px;
+
+  box-sizing: border-box;
+
+  padding:
+    0 34px;
+
+  border:
+    1px solid
+    var(--border-color-1);
+
+  border-radius: 7px;
+
+  background:
+    var(--card-bg);
+
+  color:
+    var(--text-color-1);
+
+  font-family: inherit;
+
+  font-size: 0.8rem;
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+}
+
+
+.ticket-violation-search select:focus {
+
+  border-color:
+    var(--primary-color);
+
+  box-shadow:
+    0 0 0 3px
+    var(--sidebar-hover-bg-1);
+
+}
+
+
+.ticket-violation-search select:hover {
+
+  border-color:
+    var(--primary-color);
+
+}
+
+
+.ticket-violation-search select option {
+
+  background:
+    var(--card-bg);
+
+  color:
+    var(--text-color-1);
+
+}
+
+
+.ticket-field-help {
+
+  display: block;
+
+  margin-top: 6px;
+
+  color: #8a8a8a;
+
+  font-size: 0.68rem;
+
+}
+
+
+/* ==========================================================================
+   VIOLATION CARD
+   ========================================================================== */
+
+.ticket-violation-card {
+
+  margin-top: 15px;
+
+  padding: 16px;
+
+  border:
+    1px solid
+    var(--border-color-1);
+
+  border-left:
+    3px solid
+    var(--primary-color);
+
+  border-radius: 9px;
+
+  background:
+    #fbfcfc;
+
+}
+
+
+.ticket-violation-card-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding-bottom: 13px;
+
+  margin-bottom: 14px;
+
+  border-bottom:
+    1px solid
+    var(--border-color-1);
+
+}
+
+
+.ticket-card-label {
+
+  display: block;
+
+  margin-bottom: 3px;
+
+  color:
+    var(--text-secondary);
+
+  font-size: 0.68rem;
+
+}
+
+
+.ticket-violation-card-header strong {
+
+  color:
+    var(--primary-color);
+
+  font-size: 0.88rem;
+
+}
+
+
+.ticket-verified-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 5px 9px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(46, 204, 113, 0.1);
+
+  color:
+    #219653;
+
+  font-size: 0.68rem;
+
+  font-weight: 600;
+
+}
+
+
+.ticket-violation-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 15px;
+
+}
+
+
+.ticket-detail-item {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+}
+
+
+.ticket-detail-label {
+
+  color:
+    var(--text-secondary);
+
+  font-size: 0.68rem;
+
+}
+
+
+.ticket-detail-item strong {
+
+  color:
+    var(--text-color-1);
+
+  font-size: 0.78rem;
+
+  font-weight: 600;
+
+}
+
+
+.ticket-violation-description {
+
+  margin-top: 15px;
+
+  padding-top: 13px;
+
+  border-top:
+    1px solid
+    var(--border-color-1);
+
+}
+
+
+.ticket-violation-description p {
+
+  margin: 5px 0 0;
+
+  color:
+    var(--text-color-1);
+
+  font-size: 0.77rem;
+
+  line-height: 1.5;
+
+}
+
+
+/* ==========================================================================
+   PERSON NOTICE
+   ========================================================================== */
+
+.ticket-person-notice {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  padding: 10px 12px;
+
+  margin-bottom: 17px;
+
+  border-radius: 7px;
+
+  background:
+    rgba(52, 152, 219, 0.07);
+
+  color:
+    var(--accent-color);
+
+  font-size: 0.72rem;
+
+  line-height: 1.45;
+
+}
+
+
+.ticket-person-notice i {
+
+  margin-top: 2px;
+
+}
+
+
+/* ==========================================================================
+   FORM GRID
+   ========================================================================== */
+
+.ticket-form-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 15px;
+
+}
+
+
+.ticket-form-group {
+
+  display: flex;
+
+  flex-direction: column;
+
+}
+
+
+.ticket-form-group-full {
+
+  grid-column: 1 / -1;
+
+}
+
+
+.ticket-form-group label {
+
+  margin-bottom: 7px;
+
+  color:
+    var(--text-color-1);
+
+  font-size: 0.77rem;
+
+  font-weight: 600;
+
+}
+
+
+.ticket-form-group input,
+.ticket-form-group textarea,
+.ticket-form-group select {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid
+    var(--border-color-1);
+
+  border-radius: 7px;
+
+  background:
+    var(--card-bg);
+
+  color:
+    var(--text-color-1);
+
+  font-family: inherit;
+
+  font-size: 0.8rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+}
+
+
+.ticket-form-group input,
+.ticket-form-group select {
+
+  height: 40px;
+
+  padding: 0 11px;
+
+}
+
+
+.ticket-form-group textarea {
+
+  padding: 10px 11px;
+
+  resize: vertical;
+
+  min-height: 90px;
+
+}
+
+
+.ticket-form-group input:focus,
+.ticket-form-group textarea:focus,
+.ticket-form-group select:focus {
+
+  border-color:
+    var(--primary-color);
+
+  box-shadow:
+    0 0 0 3px
+    var(--sidebar-hover-bg-1);
+
+}
+
+
+.ticket-select-with-icon {
+
+  position: relative;
+
+}
+
+
+.ticket-select-with-icon i {
+
+  position: absolute;
+
+  left: 12px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color:
+    var(--text-secondary);
+
+  font-size: 0.78rem;
+
+  pointer-events: none;
+
+}
+
+
+.ticket-select-with-icon select {
+
+  padding-left: 34px;
+
+  appearance: auto;
+
+}
+
+
+/* ==========================================================================
+   MODAL FOOTER
+   ========================================================================== */
+
+.create-ticket-modal-footer {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 15px 24px;
+
+  background:
+    #fafbfc;
+
+  border-top:
+    1px solid
+    var(--border-color-1);
+
+}
+
+
+.ticket-footer-note {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  color:
+    var(--text-secondary);
+
+  font-size: 0.68rem;
+
+}
+
+
+.ticket-footer-note i {
+
+  color:
+    var(--primary-color);
+
+}
+
+
+.create-ticket-footer-actions {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+}
+
+
+.btn-ticket-cancel,
+.btn-ticket-create {
+
+  height: 38px;
+
+  padding: 0 15px;
+
+  border-radius: 7px;
+
+  font-size: 0.78rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  transition: all 0.15s ease;
+
+}
+
+
+.btn-ticket-cancel {
+
+  border:
+    1px solid
+    var(--border-color-1);
+
+  background:
+    var(--card-bg);
+
+  color:
+    var(--text-secondary);
+
+}
+
+
+.btn-ticket-cancel:hover {
+
+  background:
+    var(--light-color);
+
+  color:
+    var(--text-color-1);
+
+}
+
+
+.btn-ticket-create {
+
+  border: none;
+
+  background:
+    var(--primary-color);
+
+  color: #ffffff;
+
+  box-shadow:
+    0 3px 7px
+    var(--shadow-1);
+
+}
+
+
+.btn-ticket-create:hover {
+
+  background:
+    #3f7776;
+
+  transform:
+    translateY(-1px);
+
+}
+
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 700px) {
+
+  .create-ticket-overlay {
+
+    padding:
+      1rem 0.6rem;
+
+  }
+
+
+  .create-ticket-modal-header {
+
+    padding:
+      17px;
+
+  }
+
+
+  .create-ticket-modal-body {
+
+    padding:
+      18px;
+
+  }
+
+
+  .ticket-violation-grid {
+
+    grid-template-columns:
+      repeat(2, 1fr);
+
+  }
+
+
+  .ticket-form-grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .ticket-form-group-full {
+
+    grid-column:
+      auto;
+
+  }
+
+
+  .create-ticket-modal-footer {
+
+    flex-direction:
+      column;
+
+    align-items:
+      stretch;
+
+  }
+
+
+  .ticket-footer-note {
+
+    justify-content:
+      center;
+
+  }
+
+
+  .create-ticket-footer-actions {
+
+    justify-content:
+      flex-end;
+
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .ticket-violation-grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .create-ticket-footer-actions {
+
+    flex-direction:
+      column;
+
+  }
+
+
+  .btn-ticket-cancel,
+  .btn-ticket-create {
+
+    width:
+      100%;
+
+  }
+
+}

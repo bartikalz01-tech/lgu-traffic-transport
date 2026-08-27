@@ -112,6 +112,10 @@ export function renderTicketPanel(container) {
             </th>
 
             <th>
+              Assigned Officer
+            </th>
+
+            <th>
               Action
             </th>
 
@@ -180,6 +184,10 @@ export function renderTicketPanel(container) {
 
               </div>
 
+            </td>
+
+            <td>
+              John Doe
             </td>
 
             <td>
@@ -269,6 +277,10 @@ export function renderTicketPanel(container) {
             </td>
 
             <td>
+              Pedro Penduko
+            </td>
+
+            <td>
 
               <div class="action-buttons">
 
@@ -352,6 +364,10 @@ export function renderTicketPanel(container) {
 
               </div>
 
+            </td>
+
+            <td>
+              Mario Balasbas
             </td>
 
             <td>
