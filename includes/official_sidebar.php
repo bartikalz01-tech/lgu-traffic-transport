@@ -51,9 +51,13 @@
       <!--<span class="purpose">Violations</span>-->
     </a>
     <a href="../violation_reports/violation.php" class="sidebar-link">
-      <i class="fas fa-ticket-alt"></i>
-      <span>Violation Ticketing</span>
+      <i class="fas fa-triangle-exclamation"></i>
+      <span>Violation Reports</span>
       <!--<span class="purpose">Permits</span>-->
+    </a>
+    <a href="../tickets/ticket_management.php" class="sidebar-link">
+      <i class="fas fa-ticket-alt"></i>
+      <span>Ticketing Management</span>
     </a>
   </div>
 

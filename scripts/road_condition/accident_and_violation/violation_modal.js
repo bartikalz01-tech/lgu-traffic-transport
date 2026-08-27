@@ -117,8 +117,8 @@ export async function openViolationModal(container, road) {
                   Vehicle
                 </option>
 
-                <option value="Person">
-                  Person
+                <option value="Vendor">
+                  Vendor
                 </option>
 
                 <option value="Unknown">
