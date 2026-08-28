@@ -229,3 +229,82 @@ export async function fetchCreateTicket(ticketData) {
   }
 
 }
+
+export async function fetchTickets() {
+
+  try {
+
+    const response =
+      await fetch(
+        "../api/tickets_api/get_tickets.php"
+      );
+
+
+    const responseText =
+      await response.text();
+
+
+    console.log(
+      "Get tickets raw response:",
+      responseText
+    );
+
+
+    let result;
+
+    try {
+
+      result =
+        JSON.parse(responseText);
+
+    } catch (jsonError) {
+
+      console.error(
+        "Server returned invalid JSON:",
+        responseText
+      );
+
+      throw new Error(
+        "Server returned an invalid response while loading tickets."
+      );
+
+    }
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        result.message ||
+        `HTTP error: ${response.status}`
+      );
+
+    }
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.message ||
+        "Failed to fetch tickets."
+      );
+
+    }
+
+
+    return Array.isArray(result.tickets)
+      ? result.tickets
+      : [];
+
+
+  } catch(error) {
+
+    console.error(
+      "Failed to fetch tickets:",
+      error
+    );
+
+    throw error;
+
+  }
+
+}

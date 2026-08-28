@@ -486,6 +486,66 @@ class Tickets extends config {
 
   }
 
+
+  public function getTickets() {
+
+    $conn = $this->conn();
+
+    $sql = "
+      SELECT
+
+        t.ticket_id,
+        t.public_ticket_id,
+
+        t.violation_id,
+
+        vr.public_violation_id,
+        vr.violation_type,
+        vr.violation_datetime,
+        vr.offense_level,
+        vr.subject_type,
+        vr.description,
+        vr.location_details,
+
+        r.road_name,
+
+        v.plate_number,
+        v.vehicle_type,
+
+        t.person_id,
+
+        t.officer_id,
+        o.officer_name,
+        o.contact_number,
+
+        t.issued_at,
+        t.due_date,
+        t.notes
+
+      FROM tickets t
+
+      INNER JOIN violation_reports vr
+        ON t.violation_id = vr.violation_id
+
+      LEFT JOIN roads r
+        ON vr.road_id = r.road_id
+
+      LEFT JOIN vehicles v
+        ON vr.vehicle_id = v.vehicle_id
+
+      LEFT JOIN officers o
+        ON t.officer_id = o.officer_id
+
+      ORDER BY t.issued_at DESC
+    ";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 }
 
 ?>

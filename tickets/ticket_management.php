@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/ticket/tickets.css">
   <link rel="stylesheet" href="../styles/ticket/create_ticket.css">
+  <link rel="stylesheet" href="../styles/ticket/detailed_ticket.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <title>Ticketing System</title>
 </head>

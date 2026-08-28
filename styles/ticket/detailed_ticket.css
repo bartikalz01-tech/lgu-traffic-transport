@@ -1,0 +1,332 @@
+.ticket-detail-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: flex-start;
+
+  padding: 2rem 1rem;
+
+  overflow-y: auto;
+
+  background: rgba(0, 0, 0, 0.6);
+
+  z-index: 1006;
+
+}
+
+.detail-overlay-hidden {
+  display: none;
+}
+
+
+.ticket-detail-modal {
+
+  width: min(900px, 100%);
+
+  background: #ffffff;
+
+  border-radius: 12px;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+
+  overflow: hidden;
+
+}
+
+
+.ticket-detail-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 1.25rem 1.5rem;
+
+  border-bottom: 1px solid #e5e7eb;
+
+}
+
+
+.ticket-detail-label {
+
+  display: block;
+
+  margin-bottom: 0.25rem;
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+
+  color: #6b7280;
+
+  letter-spacing: 0.08em;
+
+}
+
+
+.ticket-detail-header h2 {
+
+  margin: 0;
+
+  font-size: 1.35rem;
+
+}
+
+
+.ticket-detail-close {
+
+  width: 36px;
+
+  height: 36px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  font-size: 1rem;
+
+}
+
+
+.ticket-detail-close:hover {
+
+  background: #f3f4f6;
+
+}
+
+
+.ticket-detail-body {
+
+  padding: 1.5rem;
+
+}
+
+
+.ticket-detail-section {
+
+  margin-bottom: 1.5rem;
+
+}
+
+
+.ticket-detail-section:last-child {
+
+  margin-bottom: 0;
+
+}
+
+
+.ticket-detail-section-title {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+  margin-bottom: 1rem;
+
+  font-size: 0.95rem;
+
+  font-weight: 700;
+
+}
+
+
+.ticket-detail-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 1rem;
+
+}
+
+
+.ticket-detail-field {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.35rem;
+
+}
+
+
+.ticket-detail-field.full {
+
+  grid-column: 1 / -1;
+
+}
+
+
+.field-label {
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+
+  color: #6b7280;
+
+}
+
+
+.field-value {
+
+  font-size: 0.9rem;
+
+  color: #111827;
+
+}
+
+
+.field-value.description {
+
+  line-height: 1.5;
+
+}
+
+
+.ticket-officer-card {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.85rem;
+
+  padding: 1rem;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 10px;
+
+}
+
+
+.ticket-officer-icon {
+
+  width: 42px;
+
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #f3f4f6;
+
+}
+
+
+.ticket-officer-info {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.2rem;
+
+  flex: 1;
+
+}
+
+
+.ticket-officer-info strong {
+
+  font-size: 0.9rem;
+
+}
+
+
+.ticket-officer-info span {
+
+  font-size: 0.8rem;
+
+  color: #6b7280;
+
+}
+
+
+.officer-status {
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+
+}
+
+
+.ticket-notes {
+
+  padding: 1rem;
+
+  border-radius: 8px;
+
+  background: #f9fafb;
+
+  font-size: 0.9rem;
+
+  line-height: 1.5;
+
+}
+
+
+.ticket-evidence img {
+
+  display: block;
+
+  width: 100%;
+
+  max-height: 400px;
+
+  object-fit: contain;
+
+  border-radius: 8px;
+
+}
+
+
+.ticket-detail-footer {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  padding: 1rem 1.5rem;
+
+  border-top: 1px solid #e5e7eb;
+
+}
+
+
+.ticket-detail-close-btn {
+
+  padding: 0.6rem 1.2rem;
+
+  border: none;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+}
