@@ -164,29 +164,29 @@
               </ul>
             </div>
 
-            <div class="status-item distance">
+            <!--<div class="status-item distance">
               <div class="status-info">
                 <i class="fas fa-road"></i>
                 <span>Distance</span>
               </div>
               <span class="status-count" id="routeDistance"></span>
-            </div>
+            </div>-->
 
-            <div class="status-item vehicle-count">
+            <!--<div class="status-item vehicle-count">
               <div class="status-info">
                 <i class="fas fa-car"></i>
                 <span>Vehicle per min</span>
               </div>
               <span class="status-count" id="vehicleCount"></span>
-            </div>
+            </div>-->
 
-            <div class="status-item avg-speed">
+            <!--<div class="status-item avg-speed">
               <div class="status-info">
                 <i class="fas fa-tachometer-alt"></i>
                 <p>Average Speed</p>
               </div>
               <span class="status-count" id="avgSpeed"></span>
-            </div>
+            </div>-->
 
             <!--<div class="status-item congestion-reduced">
               <div class="status-info">
@@ -196,7 +196,7 @@
               <span class="status-count" id="congestionValue">24%</span>
             </div>-->
 
-            <div class="incident-log-container">
+            <!--<div class="incident-log-container">
               <h4>Recent Activity Log</h4>
               <div class="log-entry">
                 <span class="log-time">2:20pm</span>
@@ -206,7 +206,7 @@
                 <span class="log-time">2:20pm</span>
                 <p>Officer on MMDA arrvied at Tagaytay St.</p>
               </div>
-            </div>
+            </div>-->
           </div>
 
         </div>

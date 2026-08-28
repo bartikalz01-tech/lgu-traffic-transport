@@ -181,11 +181,12 @@ export async function renderDiversionMaps(container) {
   }
 
   function loadDiversionStatus(diversion, points) {
-    document.getElementById("routeDistance").textContent = `${diversion.distance} km`;
+    // Temporarily disabled while the corresponding status elements remain hidden in the page.
+    // document.getElementById("routeDistance").textContent = `${diversion.distance} km`;
 
-    document.getElementById("vehicleCount").textContent = diversion.vehicle_per_min ?? 0;
+    // document.getElementById("vehicleCount").textContent = diversion.vehicle_per_min ?? 0;
 
-    document.getElementById("avgSpeed").textContent = diversion.avg_speed ?? 0;
+    // document.getElementById("avgSpeed").textContent = diversion.avg_speed ?? 0;
 
     const affectedRoads = document.getElementById("affectedRoads");
 
