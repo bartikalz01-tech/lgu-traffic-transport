@@ -308,3 +308,92 @@ export async function fetchTickets() {
   }
 
 }
+
+
+export async function fetchSaveTicketReportDetails(ticketData) {
+
+  try {
+
+    const response =
+      await fetch(
+        "../api/tickets_api/save_ticket_report.php",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify(ticketData)
+        }
+      );
+
+
+    const responseText =
+      await response.text();
+
+
+    console.log(
+      "Save ticket report raw response:",
+      responseText
+    );
+
+
+    let result;
+
+
+    try {
+
+      result =
+        JSON.parse(responseText);
+
+    } catch (jsonError) {
+
+      console.error(
+        "Server returned invalid JSON:",
+        responseText
+      );
+
+      throw new Error(
+        "Server returned an invalid response while saving report details."
+      );
+
+    }
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        result.message ||
+        `HTTP error: ${response.status}`
+      );
+
+    }
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.message ||
+        "Failed to save report details."
+      );
+
+    }
+
+
+    return result;
+
+
+  } catch(error) {
+
+    console.error(
+      "Failed to save ticket report details:",
+      error
+    );
+
+    throw error;
+
+  }
+
+}

@@ -1,4 +1,9 @@
-import { fetchVerifiedViolations, fetchAvailableOfficers, fetchCreateTicket } from "../data/tickets/fetch_tickets.js";
+import {
+  fetchVerifiedViolations,
+  fetchAvailableOfficers,
+  fetchCreateTicket
+} from "../data/tickets/fetch_tickets.js";
+
 
 export async function createTicketModal(container) {
 
@@ -24,6 +29,7 @@ export async function createTicketModal(container) {
 
         </div>
 
+
         <button
           type="button"
           class="create-ticket-close"
@@ -47,11 +53,13 @@ export async function createTicketModal(container) {
           <div class="ticket-section-header">
 
             <div>
+
               <h3>Violation Report</h3>
 
               <p>
                 Find the verified violation that this ticket will be issued for.
               </p>
+
             </div>
 
             <span class="ticket-required-label">
@@ -68,17 +76,24 @@ export async function createTicketModal(container) {
             </label>
 
             <div class="ticket-select-with-icon">
+
               <i class="fas fa-ticket"></i>
 
               <select id="ticketViolationSelect">
+
                 <option value="">
                   Select a verified violation
                 </option>
+
               </select>
+
             </div>
 
+
             <small class="ticket-field-help">
+
               Only verified violation reports can be issued as tickets.
+
             </small>
 
           </div>
@@ -107,9 +122,13 @@ export async function createTicketModal(container) {
 
               </div>
 
+
               <span class="ticket-verified-badge">
+
                 <i class="fas fa-circle-check"></i>
+
                 Verified
+
               </span>
 
             </div>
@@ -215,119 +234,6 @@ export async function createTicketModal(container) {
 
 
         <!-- =========================================================
-            PERSON INFORMATION
-            ========================================================= -->
-
-        <!--<section class="ticket-form-section">
-
-          <div class="ticket-section-header">
-
-            <div>
-              <h3>Person Information</h3>
-
-              <p>
-                Enter the information collected by the barangay officer
-                at the violation location.
-              </p>
-            </div>
-
-          </div>
-
-
-          <div class="ticket-person-notice">
-
-            <i class="fas fa-circle-info"></i>
-
-            <span>
-              The person record will be associated with this ticket.
-              Existing persons can be reused when available.
-            </span>
-
-          </div>
-
-
-          <div class="ticket-form-grid">
-
-            <div class="ticket-form-group">
-
-              <label for="ticketFirstName">
-                First Name
-              </label>
-
-              <input
-                type="text"
-                id="ticketFirstName"
-                placeholder="Enter first name"
-              >
-
-            </div>
-
-
-            <div class="ticket-form-group">
-
-              <label for="ticketMiddleName">
-                Middle Name
-              </label>
-
-              <input
-                type="text"
-                id="ticketMiddleName"
-                placeholder="Enter middle name"
-              >
-
-            </div>
-
-
-            <div class="ticket-form-group">
-
-              <label for="ticketLastName">
-                Last Name
-              </label>
-
-              <input
-                type="text"
-                id="ticketLastName"
-                placeholder="Enter last name"
-              >
-
-            </div>
-
-
-            <div class="ticket-form-group">
-
-              <label for="ticketContactNumber">
-                Contact Number
-              </label>
-
-              <input
-                type="text"
-                id="ticketContactNumber"
-                placeholder="09XXXXXXXXX"
-              >
-
-            </div>
-
-
-            <div class="ticket-form-group ticket-form-group-full">
-
-              <label for="ticketAddress">
-                Address
-              </label>
-
-              <input
-                type="text"
-                id="ticketAddress"
-                placeholder="Enter complete address"
-              >
-
-            </div>
-
-          </div>
-
-        </section>-->
-
-
-        <!-- =========================================================
             OFFICER ASSIGNMENT
             ========================================================= -->
 
@@ -336,11 +242,13 @@ export async function createTicketModal(container) {
           <div class="ticket-section-header">
 
             <div>
+
               <h3>Officer Assignment</h3>
 
               <p>
                 Assign an available barangay officer to handle this ticket.
               </p>
+
             </div>
 
           </div>
@@ -354,20 +262,26 @@ export async function createTicketModal(container) {
                 Assigned Officer
               </label>
 
+
               <div class="ticket-select-with-icon">
 
                 <i class="fas fa-user-shield"></i>
 
                 <select id="ticketOfficer">
+
                   <option value="">
                     Select an available officer
                   </option>
+
                 </select>
 
               </div>
 
+
               <small class="ticket-field-help">
+
                 Only officers with an Available status should be selectable.
+
               </small>
 
             </div>
@@ -386,11 +300,13 @@ export async function createTicketModal(container) {
           <div class="ticket-section-header">
 
             <div>
+
               <h3>Ticket Details</h3>
 
               <p>
-                Set the settlement deadline and add any relevant notes.
+                Set the settlement deadline and ticket issue time.
               </p>
+
             </div>
 
           </div>
@@ -404,13 +320,17 @@ export async function createTicketModal(container) {
                 Issued At
               </label>
 
+
               <input
                 type="datetime-local"
                 id="ticketIssuedAt"
-              >
+              />
+
 
               <small class="ticket-field-help">
+
                 Automatically set when the ticket is created.
+
               </small>
 
             </div>
@@ -422,25 +342,11 @@ export async function createTicketModal(container) {
                 Due Date
               </label>
 
+
               <input
                 type="datetime-local"
                 id="ticketDueDate"
-              >
-
-            </div>
-
-
-            <div class="ticket-form-group ticket-form-group-full">
-
-              <label for="ticketNotes">
-                Notes
-              </label>
-
-              <textarea
-                id="ticketNotes"
-                rows="4"
-                placeholder="Enter additional notes regarding this ticket..."
-              ></textarea>
+              />
 
             </div>
 
@@ -478,13 +384,17 @@ export async function createTicketModal(container) {
             Cancel
           </button>
 
+
           <button
             type="button"
             class="btn-ticket-create"
             id="confirmCreateTicket"
           >
+
             <i class="fas fa-ticket"></i>
+
             Create Ticket
+
           </button>
 
         </div>
@@ -492,21 +402,139 @@ export async function createTicketModal(container) {
       </div>
 
     </div>
+
   `;
 
-  container.classList.remove("create-ticket-hidden");
 
-  const closeButton = document.getElementById("closeCreateTicket");
-  const cancelButton = document.getElementById("cancelCreateTicket");
-  const violationSelect = document.getElementById("ticketViolationSelect");
-  const violationCard = document.getElementById("ticketViolationCard");
-  const officerSelect = document.getElementById("ticketOfficer");
-  const confirmCreateTicket = document.getElementById("confirmCreateTicket");
+  /*
+  ================================================================
+  SHOW MODAL
+  ================================================================
+  */
+
+  container.classList.remove(
+    "create-ticket-hidden"
+  );
+
+
+  /*
+  ================================================================
+  DOM REFERENCES
+  ================================================================
+  */
+
+  const closeButton =
+    document.getElementById(
+      "closeCreateTicket"
+    );
+
+  const cancelButton =
+    document.getElementById(
+      "cancelCreateTicket"
+    );
+
+  const violationSelect =
+    document.getElementById(
+      "ticketViolationSelect"
+    );
+
+  const violationCard =
+    document.getElementById(
+      "ticketViolationCard"
+    );
+
+  const officerSelect =
+    document.getElementById(
+      "ticketOfficer"
+    );
+
+  const issuedAtInput =
+    document.getElementById(
+      "ticketIssuedAt"
+    );
+
+  const dueDateInput =
+    document.getElementById(
+      "ticketDueDate"
+    );
+
+  const confirmCreateTicket =
+    document.getElementById(
+      "confirmCreateTicket"
+    );
+
+
+  /*
+  ================================================================
+  CLOSE MODAL
+  ================================================================
+  */
 
   function closeModal() {
-    container.classList.add("create-ticket-hidden");
+
+    container.classList.add(
+      "create-ticket-hidden"
+    );
+
     container.innerHTML = "";
+
   }
+
+
+  /*
+  ================================================================
+  FORMAT VIOLATION DATE
+  ================================================================
+  */
+
+  function formatViolationDateTime(datetime) {
+
+    if (!datetime) {
+
+      return "—";
+
+    }
+
+
+    const date =
+      new Date(
+        String(datetime).replace(
+          " ",
+          "T"
+        )
+      );
+
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+
+      return datetime;
+
+    }
+
+
+    return date.toLocaleString(
+      "en-US",
+      {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }
+    );
+
+  }
+
+
+  /*
+  ================================================================
+  RENDER VIOLATION
+  ================================================================
+  */
 
   function renderViolation(violation) {
 
@@ -565,56 +593,63 @@ export async function createTicketModal(container) {
     violationCard.classList.add(
       "visible"
     );
+
   }
 
-  function formatViolationDateTime(
-    datetime
-  ) {
 
-    if (!datetime) {
-      return "—";
-    }
+  /*
+  ================================================================
+  CLOSE BUTTON
+  ================================================================
+  */
 
-    const date =
-      new Date(
-        datetime.replace(" ", "T")
-      );
+  closeButton.addEventListener(
+    "click",
+    closeModal
+  );
 
-    if (Number.isNaN(date.getTime())) {
-      return datetime;
-    }
 
-    return date.toLocaleString(
-      "en-US",
-      {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
+  cancelButton.addEventListener(
+    "click",
+    closeModal
+  );
+
+
+  /*
+  ================================================================
+  CLICK OUTSIDE MODAL
+  ================================================================
+  */
+
+  container.addEventListener(
+    "click",
+    (event) => {
+
+      if (
+        event.target === container
+      ) {
+
+        closeModal();
+
       }
-    );
-  }
 
-  closeButton.addEventListener("click", closeModal);
-  cancelButton.addEventListener("click", closeModal);
-
-  // Close when clicking the dark overlay
-  container.addEventListener("click", (event) => {
-
-    if (event.target === container) {
-      closeModal();
     }
+  );
 
-  });
 
+  /*
+  ================================================================
+  ESCAPE KEY
+  ================================================================
+  */
 
-  // Close with Escape key
-  document.addEventListener("keydown", function handleEscape(event) {
+  function handleEscape(event) {
 
     if (
       event.key === "Escape" &&
-      !container.classList.contains("create-ticket-hidden")
+      !container.classList.contains(
+        "create-ticket-hidden"
+      )
     ) {
 
       closeModal();
@@ -626,32 +661,125 @@ export async function createTicketModal(container) {
 
     }
 
-  });
+  }
 
+
+  document.addEventListener(
+    "keydown",
+    handleEscape
+  );
+
+
+  /*
+  ================================================================
+  SET DEFAULT ISSUED DATE
+  ================================================================
+  */
+
+  function getLocalDateTimeForInput() {
+
+    const now =
+      new Date();
+
+
+    const year =
+      now.getFullYear();
+
+
+    const month =
+      String(
+        now.getMonth() + 1
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    const day =
+      String(
+        now.getDate()
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    const hours =
+      String(
+        now.getHours()
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    const minutes =
+      String(
+        now.getMinutes()
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+
+  }
+
+
+  issuedAtInput.value =
+    getLocalDateTimeForInput();
+
+
+  /*
+  ================================================================
+  LOAD VERIFIED VIOLATIONS
+  ================================================================
+  */
 
   try {
 
-    const violations = await fetchVerifiedViolations();
+    const violations =
+      await fetchVerifiedViolations();
 
-    violations.forEach(violation => {
 
-      const option =
-        document.createElement("option");
+    violations.forEach(
+      (violation) => {
 
-      option.value =
-        violation.violation_id;
+        const option =
+          document.createElement(
+            "option"
+          );
 
-      option.textContent =
-        `${violation.public_violation_id} — ${violation.violation_type}`;
 
-      option.dataset.violation =
-        JSON.stringify(violation);
+        option.value =
+          violation.violation_id;
 
-      violationSelect.appendChild(option);
 
-    });
+        option.textContent =
+          `${violation.public_violation_id} — ${violation.violation_type}`;
 
-  } catch(error) {
+
+        option.dataset.violation =
+          JSON.stringify(
+            violation
+          );
+
+
+        violationSelect.appendChild(
+          option
+        );
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Failed to load violations:",
+      error
+    );
+
 
     Swal.fire({
 
@@ -659,33 +787,58 @@ export async function createTicketModal(container) {
 
       title: "Failed to Load Violations",
 
-      text: error.message
+      text:
+        error.message ||
+        "Unable to load verified violations."
 
     });
 
   }
 
 
+  /*
+  ================================================================
+  LOAD AVAILABLE OFFICERS
+  ================================================================
+  */
+
   try {
 
-    const officers = await fetchAvailableOfficers();
+    const officers =
+      await fetchAvailableOfficers();
 
-    officers.forEach(officer => {
 
-      const option =
-        document.createElement("option");
+    officers.forEach(
+      (officer) => {
 
-      option.value =
-        officer.officer_id;
+        const option =
+          document.createElement(
+            "option"
+          );
 
-      option.textContent =
-        `${officer.officer_name} - ${officer.contact_number}`;
 
-      officerSelect.appendChild(option);
+        option.value =
+          officer.officer_id;
 
-    });
 
-  } catch(error) {
+        option.textContent =
+          `${officer.officer_name} - ${officer.contact_number}`;
+
+
+        officerSelect.appendChild(
+          option
+        );
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Failed to load officers:",
+      error
+    );
+
 
     Swal.fire({
 
@@ -693,271 +846,431 @@ export async function createTicketModal(container) {
 
       title: "Failed to Load Officers",
 
-      text: error.message
+      text:
+        error.message ||
+        "Unable to load available officers."
 
     });
 
   }
 
 
-  violationSelect.addEventListener("change", () => {
+  /*
+  ================================================================
+  VIOLATION SELECT
+  ================================================================
+  */
 
-    const selectedOption =
-      violationSelect.options[
-        violationSelect.selectedIndex
-      ];
+  violationSelect.addEventListener(
+    "change",
+    () => {
 
-
-    if (!selectedOption.value) {
-
-      violationCard.classList.remove(
-        "visible"
-      );
-
-      document.getElementById(
-        "selectedViolationId"
-      ).textContent =
-        "Select Violation";
-
-      document.getElementById(
-        "selectedViolationType"
-      ).textContent =
-        "—";
-
-      document.getElementById(
-        "selectedOffenseLevel"
-      ).textContent =
-        "—";
-
-      document.getElementById(
-        "selectedViolationRoad"
-      ).textContent =
-        "—";
-
-      document.getElementById(
-        "selectedViolationDateTime"
-      ).textContent =
-        "—";
-
-      document.getElementById(
-        "selectedViolationSubject"
-      ).textContent =
-        "—";
-
-      document.getElementById(
-        "selectedViolationPlate"
-      ).textContent =
-        "—";
-
-      document.getElementById(
-        "selectedViolationDescription"
-      ).textContent =
-        "Select a violation to view its details.";
-
-      return;
-
-    }
+      const selectedOption =
+        violationSelect.options[
+          violationSelect.selectedIndex
+        ];
 
 
-    const violation =
-      JSON.parse(
-        selectedOption.dataset.violation
-      );
+      if (
+        !selectedOption ||
+        !selectedOption.value
+      ) {
 
-
-    renderViolation(violation);
-
-  });
-
-
-  confirmCreateTicket.addEventListener("click", async () => {
-    const selectedViolationOption = violationSelect.options[violationSelect.selectedIndex];
-
-    if(!selectedViolationOption || !selectedViolationOption.value) {
-      Swal.fire({
-
-        icon: "warning",
-
-        title: "Violation Required",
-
-        text:
-          "Please select a verified violation."
-
-      });
-
-      return;
-    }
-
-    const selectedOfficerOption = officerSelect.options[officerSelect.selectedIndex];
-
-    if(!selectedOfficerOption || !selectedOfficerOption.value) {
-      Swal.fire({
-
-        icon: "warning",
-
-        title: "Officer Required",
-
-        text:
-          "Please select an available officer."
-
-      });
-
-      return;
-    }
-
-    const dueDateInput =
-      document.getElementById(
-        "ticketDueDate"
-      );
-
-    const notesInput =
-      document.getElementById(
-        "ticketNotes"
-      );
-
-
-    const dueDate =
-      dueDateInput.value;
-
-    const notes =
-      notesInput.value.trim();
-
-    if(!dueDate) {
-
-      Swal.fire({
-
-        icon: "warning",
-
-        title: "Due Date Required",
-
-        text:
-          "Please select a due date for this ticket."
-
-      });
-
-      return;
-
-    }
-
-    const issuedAtInput = document.getElementById("ticketIssuedAt");
-    
-    let issuedAt = issuedAtInput.value;
-
-    if(issuedAt) {
-      issuedAt =issuedAt.replace("T"," ") + ":00";
-    }
-
-    const formattedDueDate =
-      dueDate.replace(
-        "T",
-        " "
-      ) + ":00";
-
-    const ticketData = {
-
-      violation_id:
-        Number(
-          selectedViolationOption.value
-        ),
-
-      officer_id:
-        Number(
-          selectedOfficerOption.value
-        ),
-
-      issued_at:
-        issuedAt || null,
-
-      due_date:
-        formattedDueDate,
-
-      notes:
-        notes || null
-
-    };
-
-    console.log(
-      "Creating ticket:",
-      ticketData
-    );
-
-    confirmCreateTicket.disabled = true;
-
-    confirmCreateTicket.innerHTML = `
-      <i class="fas fa-spinner fa-spin"></i>
-      Creating Ticket...
-    `;
-
-    try {
-
-      const result =
-        await fetchCreateTicket(
-          ticketData
+        violationCard.classList.remove(
+          "visible"
         );
 
 
-      console.log(
-        "Ticket created:",
-        result
+        document.getElementById(
+          "selectedViolationId"
+        ).textContent =
+          "Select Violation";
+
+
+        document.getElementById(
+          "selectedViolationType"
+        ).textContent =
+          "—";
+
+
+        document.getElementById(
+          "selectedOffenseLevel"
+        ).textContent =
+          "—";
+
+
+        document.getElementById(
+          "selectedViolationRoad"
+        ).textContent =
+          "—";
+
+
+        document.getElementById(
+          "selectedViolationDateTime"
+        ).textContent =
+          "—";
+
+
+        document.getElementById(
+          "selectedViolationSubject"
+        ).textContent =
+          "—";
+
+
+        document.getElementById(
+          "selectedViolationPlate"
+        ).textContent =
+          "—";
+
+
+        document.getElementById(
+          "selectedViolationDescription"
+        ).textContent =
+          "Select a violation to view its details.";
+
+
+        return;
+
+      }
+
+
+      let violation;
+
+
+      try {
+
+        violation =
+          JSON.parse(
+            selectedOption.dataset.violation
+          );
+
+      } catch (error) {
+
+        console.error(
+          "Failed to parse violation data:",
+          error
+        );
+
+        Swal.fire({
+
+          icon: "error",
+
+          title: "Invalid Violation Data",
+
+          text:
+            "The selected violation could not be loaded."
+
+        });
+
+        return;
+
+      }
+
+
+      renderViolation(
+        violation
       );
-
-      await Swal.fire({
-
-        icon: "success",
-
-        title: "Ticket Created",
-
-        html: `
-          <p>
-            The violation ticket has been created successfully.
-          </p>
-
-          <strong>
-            Ticket ID:
-            ${result.ticket.public_ticket_id}
-          </strong>
-        `,
-
-        confirmButtonText: "Done"
-
-      });
-
-      closeModal();
-
-
-    } catch(error) {
-
-      console.error(
-        "Create ticket failed:",
-        error
-      );
-
-
-      Swal.fire({
-
-        icon: "error",
-
-        title: "Failed to Create Ticket",
-
-        text:
-          error.message ||
-          "Something went wrong while creating the ticket."
-
-      });
-
-
-    } finally {
-
-      confirmCreateTicket.disabled =
-        false;
-
-      confirmCreateTicket.innerHTML = `
-        <i class="fas fa-ticket"></i>
-        Create Ticket
-      `;
 
     }
+  );
 
-  });
-  
+
+  /*
+  ================================================================
+  CREATE TICKET
+  ================================================================
+  */
+
+  confirmCreateTicket.addEventListener(
+    "click",
+    async () => {
+
+      /*
+      --------------------------------------------------------------
+      VIOLATION VALIDATION
+      --------------------------------------------------------------
+      */
+
+      const selectedViolationOption =
+        violationSelect.options[
+          violationSelect.selectedIndex
+        ];
+
+
+      if (
+        !selectedViolationOption ||
+        !selectedViolationOption.value
+      ) {
+
+        Swal.fire({
+
+          icon: "warning",
+
+          title: "Violation Required",
+
+          text:
+            "Please select a verified violation."
+
+        });
+
+        return;
+
+      }
+
+
+      /*
+      --------------------------------------------------------------
+      OFFICER VALIDATION
+      --------------------------------------------------------------
+      */
+
+      const selectedOfficerOption =
+        officerSelect.options[
+          officerSelect.selectedIndex
+        ];
+
+
+      if (
+        !selectedOfficerOption ||
+        !selectedOfficerOption.value
+      ) {
+
+        Swal.fire({
+
+          icon: "warning",
+
+          title: "Officer Required",
+
+          text:
+            "Please select an available officer."
+
+        });
+
+        return;
+
+      }
+
+
+      /*
+      --------------------------------------------------------------
+      DUE DATE
+      --------------------------------------------------------------
+      */
+
+      const dueDate =
+        dueDateInput.value;
+
+
+      if (!dueDate) {
+
+        Swal.fire({
+
+          icon: "warning",
+
+          title: "Due Date Required",
+
+          text:
+            "Please select a due date for this ticket."
+
+        });
+
+        return;
+
+      }
+
+
+      /*
+      --------------------------------------------------------------
+      ISSUED DATE
+      --------------------------------------------------------------
+      */
+
+      const issuedAt =
+        issuedAtInput.value;
+
+
+      /*
+      --------------------------------------------------------------
+      VALIDATE DATE ORDER
+      --------------------------------------------------------------
+      */
+
+      if (
+        new Date(dueDate) <=
+        new Date(issuedAt)
+      ) {
+
+        Swal.fire({
+
+          icon: "warning",
+
+          title: "Invalid Due Date",
+
+          text:
+            "The due date must be later than the ticket issue date."
+
+        });
+
+        return;
+
+      }
+
+
+      /*
+      --------------------------------------------------------------
+      FORMAT DATETIME FOR MYSQL
+      --------------------------------------------------------------
+      */
+
+      const formattedIssuedAt =
+        issuedAt
+          ? issuedAt.replace(
+              "T",
+              " "
+            ) + ":00"
+          : null;
+
+
+      const formattedDueDate =
+        dueDate.replace(
+          "T",
+          " "
+        ) + ":00";
+
+
+      /*
+      --------------------------------------------------------------
+      TICKET DATA
+      --------------------------------------------------------------
+      */
+
+      const ticketData = {
+
+        violation_id:
+          Number(
+            selectedViolationOption.value
+          ),
+
+        officer_id:
+          Number(
+            selectedOfficerOption.value
+          ),
+
+        issued_at:
+          formattedIssuedAt,
+
+        due_date:
+          formattedDueDate,
+
+        notes:
+          null
+
+      };
+
+
+      console.log(
+        "Creating ticket:",
+        ticketData
+      );
+
+
+      /*
+      --------------------------------------------------------------
+      DISABLE BUTTON
+      --------------------------------------------------------------
+      */
+
+      confirmCreateTicket.disabled =
+        true;
+
+
+      confirmCreateTicket.innerHTML = `
+        <i class="fas fa-spinner fa-spin"></i>
+        Creating Ticket...
+      `;
+
+
+      /*
+      --------------------------------------------------------------
+      CREATE TICKET
+      --------------------------------------------------------------
+      */
+
+      try {
+
+        const result =
+          await fetchCreateTicket(
+            ticketData
+          );
+
+
+        console.log(
+          "Ticket created:",
+          result
+        );
+
+
+        await Swal.fire({
+
+          icon: "success",
+
+          title: "Ticket Created",
+
+          html: `
+            <p>
+              The violation ticket has been created successfully.
+            </p>
+
+            <strong>
+              Ticket ID:
+              ${result.ticket.public_ticket_id}
+            </strong>
+          `,
+
+          confirmButtonText:
+            "Done"
+
+        });
+
+
+        closeModal();
+
+
+      } catch (error) {
+
+        console.error(
+          "Create ticket failed:",
+          error
+        );
+
+
+        Swal.fire({
+
+          icon: "error",
+
+          title: "Failed to Create Ticket",
+
+          text:
+            error.message ||
+            "Something went wrong while creating the ticket."
+
+        });
+
+
+      } finally {
+
+        confirmCreateTicket.disabled =
+          false;
+
+
+        confirmCreateTicket.innerHTML = `
+          <i class="fas fa-ticket"></i>
+          Create Ticket
+        `;
+
+      }
+
+    }
+  );
+
 }

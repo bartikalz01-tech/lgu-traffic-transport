@@ -1,3 +1,5 @@
+import { fetchSaveTicketReportDetails } from "../data/tickets/fetch_tickets.js";
+
 export function openTicketDetail(container, ticket) {
 
   container.innerHTML = `
@@ -270,19 +272,22 @@ export function openTicketDetail(container, ticket) {
             </div>
 
 
-            <div class="ticket-detail-field">
+            <!--<div class="ticket-detail-field">
 
               <span class="field-label">
                 Person ID
               </span>
 
-              <span class="field-value">
+              <span
+                class="field-value"
+                id="ticketPersonId"
+              >
                 ${escapeHtml(
                   ticket.person_id || "Not assigned"
                 )}
               </span>
 
-            </div>
+            </div>-->
 
 
             <div class="ticket-detail-field">
@@ -313,6 +318,329 @@ export function openTicketDetail(container, ticket) {
               </span>
 
             </div>
+
+          </div>
+
+
+          ${
+            ticket.person_id
+              ? `
+
+                <!-- SAVED PERSON INFORMATION -->
+
+                <div class="ticket-saved-report-details">
+
+                  <div class="ticket-detail-section-title">
+
+                    <i class="fas fa-circle-check"></i>
+
+                    <span>
+                      Report Details
+                    </span>
+
+                  </div>
+
+
+                  <div class="ticket-detail-grid">
+
+
+                    <!-- FIRST NAME -->
+
+                    <div class="ticket-detail-field">
+
+                      <span class="field-label">
+                        First Name
+                      </span>
+
+                      <span class="field-value">
+
+                        ${escapeHtml(
+                          ticket.first_name || "—"
+                        )}
+
+                      </span>
+
+                    </div>
+
+
+                    <!-- MIDDLE NAME -->
+
+                    <div class="ticket-detail-field">
+
+                      <span class="field-label">
+                        Middle Name
+                      </span>
+
+                      <span class="field-value">
+
+                        ${escapeHtml(
+                          ticket.middle_name || "—"
+                        )}
+
+                      </span>
+
+                    </div>
+
+
+                    <!-- LAST NAME -->
+
+                    <div class="ticket-detail-field">
+
+                      <span class="field-label">
+                        Last Name
+                      </span>
+
+                      <span class="field-value">
+
+                        ${escapeHtml(
+                          ticket.last_name || "—"
+                        )}
+
+                      </span>
+
+                    </div>
+
+
+                    <!-- CONTACT NUMBER -->
+
+                    <div class="ticket-detail-field">
+
+                      <span class="field-label">
+                        Contact Number
+                      </span>
+
+                      <span class="field-value">
+
+                        ${escapeHtml(
+                          ticket.person_contact_number || "—"
+                        )}
+
+                      </span>
+
+                    </div>
+
+
+                    <!-- ADDRESS -->
+
+                    <div class="ticket-detail-field full">
+
+                      <span class="field-label">
+                        Address
+                      </span>
+
+                      <span class="field-value">
+
+                        ${escapeHtml(
+                          ticket.person_address || "—"
+                        )}
+
+                      </span>
+
+                    </div>
+
+
+                    <!-- INVESTIGATION NOTES -->
+
+                    <div class="ticket-detail-field full">
+
+                      <span class="field-label">
+                        Investigation Notes
+                      </span>
+
+                      <span class="field-value description">
+
+                        ${escapeHtml(
+                          ticket.notes || "—"
+                        )}
+
+                      </span>
+
+                    </div>
+
+
+                  </div>
+
+                </div>
+
+              `
+              : `
+
+                <button
+                  type="button"
+                  class="ticket-person-add-btn"
+                  id="addTicketReportDetails"
+                >
+
+                  <i class="fas fa-user-plus"></i>
+
+                  Add Report Information
+
+                </button>
+
+              `
+          }
+
+
+          <!-- PERSON FORM -->
+
+          <div
+            class="ticket-report-details-form"
+            id="ticketReportDetailsForm"
+            style="display: none;"
+          >
+
+            <div class="ticket-detail-section-title">
+
+              <i class="fas fa-user-pen"></i>
+
+              <span>
+                Report Details
+              </span>
+
+            </div>
+
+
+            <div class="ticket-detail-grid">
+
+
+              <div class="ticket-detail-field">
+
+                <label
+                  class="field-label"
+                  for="personFirstName"
+                >
+                  First Name
+                </label>
+
+                <input
+                  type="text"
+                  id="personFirstName"
+                  class="ticket-person-input"
+                  placeholder="Enter first name"
+                  maxlength="100"
+                  required
+                >
+
+              </div>
+
+
+              <div class="ticket-detail-field">
+
+                <label
+                  class="field-label"
+                  for="personMiddleName"
+                >
+                  Middle Name
+                </label>
+
+                <input
+                  type="text"
+                  id="personMiddleName"
+                  class="ticket-person-input"
+                  placeholder="Enter middle name"
+                  maxlength="100"
+                >
+
+              </div>
+
+
+              <div class="ticket-detail-field">
+
+                <label
+                  class="field-label"
+                  for="personLastName"
+                >
+                  Last Name
+                </label>
+
+                <input
+                  type="text"
+                  id="personLastName"
+                  class="ticket-person-input"
+                  placeholder="Enter last name"
+                  maxlength="100"
+                  required
+                >
+
+              </div>
+
+
+              <div class="ticket-detail-field">
+
+                <label
+                  class="field-label"
+                  for="personContactNumber"
+                >
+                  Contact Number
+                </label>
+
+                <input
+                  type="text"
+                  id="personContactNumber"
+                  class="ticket-person-input"
+                  placeholder="Enter contact number"
+                  maxlength="50"
+                >
+
+              </div>
+
+
+              <div class="ticket-detail-field full">
+
+                <label
+                  class="field-label"
+                  for="personAddress"
+                >
+                  Address
+                </label>
+
+                <textarea
+                  id="personAddress"
+                  class="ticket-person-input"
+                  placeholder="Enter complete address"
+                  rows="3"
+                ></textarea>
+
+              </div>
+
+
+              <div class="ticket-detail-field full">
+
+                <label
+                  class="field-label"
+                  for="ticketNotes"
+                >
+                  Investigation Notes
+                </label>
+
+                <textarea
+                  id="ticketNotes"
+                  class="ticket-person-input"
+                  placeholder="Enter notes about what happened during the investigation..."
+                  rows="5"
+                  maxlength="5000"
+                >${escapeHtml(ticket.notes || "")}</textarea>
+
+              </div>
+            </div>
+
+            <div
+              class="ticket-person-form-message"
+              id="ticketPersonFormMessage"
+            ></div>
+
+
+            <button
+              type="button"
+              class="ticket-person-save-btn"
+              id="saveTicketReportDetails"
+            >
+
+              <i class="fas fa-save"></i>
+
+              Save Report Details
+
+            </button>
 
           </div>
 
@@ -372,32 +700,6 @@ export function openTicketDetail(container, ticket) {
         </section>
 
 
-        <!-- NOTES -->
-
-        <section class="ticket-detail-section">
-
-          <div class="ticket-detail-section-title">
-
-            <i class="fas fa-note-sticky"></i>
-
-            <span>
-              Notes
-            </span>
-
-          </div>
-
-
-          <div class="ticket-notes">
-
-            ${escapeHtml(
-              ticket.notes || "No notes available."
-            )}
-
-          </div>
-
-        </section>
-
-
         <!-- EVIDENCE -->
 
         ${
@@ -441,10 +743,25 @@ export function openTicketDetail(container, ticket) {
 
         <button
           type="button"
+          class="ticket-detail-print-btn"
+          id="printTicket"
+        >
+
+          <i class="fas fa-print"></i>
+
+          Print Ticket
+
+        </button>
+
+
+        <button
+          type="button"
           class="ticket-detail-close-btn"
           id="closeTicketDetailFooter"
         >
+
           Close
+
         </button>
 
       </div>
@@ -470,6 +787,12 @@ export function openTicketDetail(container, ticket) {
   }
 
 
+  /*
+  ============================================================
+  CLOSE BUTTONS
+  ============================================================
+  */
+
   const closeButton =
     document.getElementById(
       "closeTicketDetail"
@@ -494,7 +817,89 @@ export function openTicketDetail(container, ticket) {
   );
 
 
-  // Close when clicking dark overlay
+  /*
+  ============================================================
+  ADD PERSON INFORMATION
+  ============================================================
+  */
+
+  const addReportDetailsButton =
+    document.getElementById(
+      "addTicketReportDetails"
+    );
+
+  const reportDetailsForm =
+    document.getElementById(
+      "ticketReportDetailsForm"
+    );
+
+  addReportDetailsButton?.addEventListener(
+    "click",
+    () => {
+
+      if (!reportDetailsForm) {
+        return;
+      }
+
+      reportDetailsForm.style.display = "block";
+
+      addReportDetailsButton.style.display = "none";
+
+    }
+  );
+
+
+  /*
+  ============================================================
+  SAVE PERSON INFORMATION
+  ============================================================
+  */
+
+  const saveReportDetailsButton =
+    document.getElementById(
+      "saveTicketReportDetails"
+    );
+
+  saveReportDetailsButton?.addEventListener(
+    "click",
+    async () => {
+
+      await saveTicketReportDetails(
+        ticket,
+        saveReportDetailsButton
+      );
+
+    }
+  );
+
+
+  /*
+  ============================================================
+  PRINT TICKET
+  ============================================================
+  */
+
+  const printButton =
+    document.getElementById(
+      "printTicket"
+    );
+
+
+  printButton?.addEventListener(
+    "click",
+    () => {
+
+      window.print();
+
+    }
+  );
+
+
+  /*
+  ============================================================
+  CLOSE WHEN CLICKING DARK OVERLAY
+  ============================================================
+  */
 
   container.addEventListener(
     "click",
@@ -512,7 +917,11 @@ export function openTicketDetail(container, ticket) {
   );
 
 
-  // Close with Escape
+  /*
+  ============================================================
+  ESCAPE KEY
+  ============================================================
+  */
 
   document.addEventListener(
     "keydown",
@@ -539,6 +948,279 @@ export function openTicketDetail(container, ticket) {
 
 }
 
+/*
+============================================================
+SAVE PERSON TO BACKEND
+============================================================
+*/
+
+async function saveTicketReportDetails(
+  ticket,
+  button
+) {
+
+  const firstName =
+    document
+      .getElementById(
+        "personFirstName"
+      )
+      ?.value
+      .trim();
+
+
+  const middleName =
+    document
+      .getElementById(
+        "personMiddleName"
+      )
+      ?.value
+      .trim();
+
+
+  const lastName =
+    document
+      .getElementById(
+        "personLastName"
+      )
+      ?.value
+      .trim();
+
+
+  const contactNumber =
+    document
+      .getElementById(
+        "personContactNumber"
+      )
+      ?.value
+      .trim();
+
+
+  const address =
+    document
+      .getElementById(
+        "personAddress"
+      )
+      ?.value
+      .trim();
+
+
+  const notes =
+    document
+      .getElementById(
+        "ticketNotes"
+      )
+      ?.value
+      .trim();
+
+
+  const message =
+    document.getElementById(
+      "ticketPersonFormMessage"
+    );
+
+
+  /*
+  ============================================================
+  VALIDATION
+  ============================================================
+  */
+
+  if (!firstName || !lastName) {
+
+    if (message) {
+
+      message.textContent =
+        "First name and last name are required.";
+
+      message.className =
+        "ticket-person-form-message error";
+
+    }
+
+    return;
+
+  }
+
+
+  if (!ticket.ticket_id) {
+
+    if (message) {
+
+      message.textContent =
+        "Ticket ID is missing.";
+
+      message.className =
+        "ticket-person-form-message error";
+
+    }
+
+    return;
+
+  }
+
+
+  button.disabled = true;
+
+  button.innerHTML = `
+
+    <i class="fas fa-spinner fa-spin"></i>
+
+    Saving...
+
+  `;
+
+
+  try {
+
+    /*
+    ============================================================
+    PREPARE DATA
+    ============================================================
+    */
+
+    const ticketData = {
+
+      ticket_id:
+        Number(
+          ticket.ticket_id
+        ),
+
+      first_name:
+        firstName,
+
+      middle_name:
+        middleName || null,
+
+      last_name:
+        lastName,
+
+      contact_number:
+        contactNumber || null,
+
+      address:
+        address || null,
+
+      notes:
+        notes || null
+
+    };
+
+
+    /*
+    ============================================================
+    SEND TO FETCH LAYER
+    ============================================================
+    */
+
+    const result =
+      await fetchSaveTicketReportDetails(
+        ticketData
+      );
+
+
+    /*
+    ============================================================
+    UPDATE CURRENT TICKET OBJECT
+    ============================================================
+    */
+
+    if (result.person_id) {
+
+      ticket.person_id =
+        result.person_id;
+
+    }
+
+
+    ticket.notes =
+      notes || null;
+
+
+    /*
+    ============================================================
+    SUCCESS MESSAGE
+    ============================================================
+    */
+
+    if (message) {
+
+      message.textContent =
+        "Report details saved successfully.";
+
+      message.className =
+        "ticket-person-form-message success";
+
+    }
+
+
+    /*
+    ============================================================
+    DISABLE FORM AFTER SUCCESS
+    ============================================================
+    */
+
+    document
+      .querySelectorAll(
+        ".ticket-person-input"
+      )
+      .forEach(input => {
+
+        input.disabled = true;
+
+      });
+
+
+    button.disabled = true;
+
+    button.innerHTML = `
+
+      <i class="fas fa-check"></i>
+
+      Report Details Saved
+
+    `;
+
+
+  } catch(error) {
+
+    console.error(
+      "Failed to save report details:",
+      error
+    );
+
+
+    if (message) {
+
+      message.textContent =
+        error.message ||
+        "Failed to save report details.";
+
+      message.className =
+        "ticket-person-form-message error";
+
+    }
+
+
+    button.disabled = false;
+
+    button.innerHTML = `
+
+      <i class="fas fa-save"></i>
+
+      Save Report Details
+
+    `;
+
+  }
+
+}
+
+
+/*
+============================================================
+DATE/TIME
+============================================================
+*/
 
 function formatDateTime(datetime) {
 
@@ -608,6 +1290,12 @@ function formatDateTime(datetime) {
 }
 
 
+/*
+============================================================
+VIOLATION BADGE
+============================================================
+*/
+
 function getViolationBadgeClass(
   violationType
 ) {
@@ -672,6 +1360,12 @@ function getViolationBadgeClass(
 
 }
 
+
+/*
+============================================================
+HTML ESCAPING
+============================================================
+*/
 
 function escapeHtml(value) {
 

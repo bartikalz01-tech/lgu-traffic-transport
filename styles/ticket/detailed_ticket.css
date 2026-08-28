@@ -201,6 +201,280 @@
 
 }
 
+/* ============================================================
+   TICKET PERSON / REPORT INPUTS
+   ============================================================ */
+
+.ticket-person-input {
+
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 0.7rem 0.8rem;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  font-family: inherit;
+  font-size: 0.9rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+
+}
+
+
+/* ============================================================
+   INPUT HOVER
+   ============================================================ */
+
+.ticket-person-input:hover {
+
+  border-color: #9ca3af;
+
+}
+
+
+/* ============================================================
+   INPUT FOCUS
+   ============================================================ */
+
+.ticket-person-input:focus {
+
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.12);
+
+}
+
+
+/* ============================================================
+   PLACEHOLDER
+   ============================================================ */
+
+.ticket-person-input::placeholder {
+
+  color: #9ca3af;
+
+  opacity: 1;
+
+}
+
+
+/* ============================================================
+   TEXTAREA
+   ============================================================ */
+
+textarea.ticket-person-input {
+
+  min-height: 90px;
+
+  resize: vertical;
+
+  line-height: 1.5;
+
+}
+
+
+/* Investigation notes */
+
+#ticketNotes {
+
+  min-height: 130px;
+
+}
+
+
+/* ============================================================
+   DISABLED / SAVED INPUTS
+   ============================================================ */
+
+.ticket-person-input:disabled {
+
+  background: #f3f4f6;
+
+  border-color: #e5e7eb;
+
+  color: #6b7280;
+
+  cursor: not-allowed;
+
+  box-shadow: none;
+
+}
+
+
+/* ============================================================
+   REPORT DETAILS FORM
+   ============================================================ */
+
+.ticket-report-details-form {
+
+  margin-top: 1.25rem;
+
+  padding-top: 1.25rem;
+
+  border-top: 1px solid #e5e7eb;
+
+}
+
+
+/* ============================================================
+   ADD REPORT INFORMATION BUTTON
+   ============================================================ */
+
+.ticket-person-add-btn {
+
+  margin-top: 1rem;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+  padding: 0.65rem 1rem;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #374151;
+
+  font-family: inherit;
+
+  font-size: 0.85rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+}
+
+
+.ticket-person-add-btn:hover {
+
+  background: #f9fafb;
+
+  border-color: #9ca3af;
+
+}
+
+
+/* ============================================================
+   SAVE BUTTON
+   ============================================================ */
+
+.ticket-person-save-btn {
+
+  margin-top: 1rem;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 0.5rem;
+
+  padding: 0.7rem 1.1rem;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #2563eb;
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 0.85rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease,
+    box-shadow 0.2s ease;
+
+}
+
+
+.ticket-person-save-btn:hover {
+
+  background: #1d4ed8;
+
+  box-shadow:
+    0 4px 12px rgba(37, 99, 235, 0.2);
+
+}
+
+
+.ticket-person-save-btn:active {
+
+  transform: translateY(1px);
+
+}
+
+
+.ticket-person-save-btn:disabled {
+
+  background: #93c5fd;
+
+  cursor: not-allowed;
+
+  box-shadow: none;
+
+}
+
+
+/* ============================================================
+   FORM MESSAGE
+   ============================================================ */
+
+.ticket-person-form-message {
+
+  margin-top: 0.75rem;
+
+  font-size: 0.8rem;
+
+  line-height: 1.4;
+
+}
+
+
+.ticket-person-form-message.success {
+
+  color: #15803d;
+
+}
+
+
+.ticket-person-form-message.error {
+
+  color: #dc2626;
+
+}
+
 
 .ticket-officer-card {
 

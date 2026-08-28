@@ -117,12 +117,6 @@ class Tickets extends config {
           ? $data['due_date']
           : null;
 
-      $notes =
-        !empty($data['notes'])
-          ? trim($data['notes'])
-          : null;
-
-
       if ($violationId <= 0) {
 
         throw new Exception(
@@ -340,9 +334,7 @@ class Tickets extends config {
           person_id,
           officer_id,
           issued_at,
-          due_date,
-          notes
-
+          due_date
         )
 
         VALUES (
@@ -352,9 +344,7 @@ class Tickets extends config {
           NULL,
           :officer_id,
           :issued_at,
-          :due_date,
-          :notes
-
+          :due_date
         )
       ";
 
@@ -377,9 +367,6 @@ class Tickets extends config {
 
         ':due_date' =>
           $dueDate,
-
-        ':notes' =>
-          $notes
 
       ]);
 
@@ -451,10 +438,7 @@ class Tickets extends config {
           $issuedAt,
 
         'due_date' =>
-          $dueDate,
-
-        'notes' =>
-          $notes
+          $dueDate
 
       ];
 
@@ -494,10 +478,23 @@ class Tickets extends config {
     $sql = "
       SELECT
 
+        /*
+        ============================================================
+        TICKET INFORMATION
+        ============================================================
+        */
+
         t.ticket_id,
         t.public_ticket_id,
 
         t.violation_id,
+
+
+        /*
+        ============================================================
+        VIOLATION INFORMATION
+        ============================================================
+        */
 
         vr.public_violation_id,
         vr.violation_type,
@@ -507,43 +504,525 @@ class Tickets extends config {
         vr.description,
         vr.location_details,
 
+
+        /*
+        ============================================================
+        ROAD INFORMATION
+        ============================================================
+        */
+
         r.road_name,
+
+
+        /*
+        ============================================================
+        VEHICLE INFORMATION
+        ============================================================
+        */
 
         v.plate_number,
         v.vehicle_type,
 
+
+        /*
+        ============================================================
+        PERSON INFORMATION
+        ============================================================
+        */
+
         t.person_id,
 
+        p.first_name,
+        p.middle_name,
+        p.last_name,
+
+        p.contact_number AS person_contact_number,
+        p.address AS person_address,
+
+
+        /*
+        ============================================================
+        INVESTIGATION NOTES
+        ============================================================
+        */
+
+        t.notes,
+
+
+        /*
+        ============================================================
+        OFFICER INFORMATION
+        ============================================================
+        */
+
         t.officer_id,
+
         o.officer_name,
-        o.contact_number,
+
+        o.contact_number AS officer_contact,
+
+
+        /*
+        ============================================================
+        TICKET DATES
+        ============================================================
+        */
 
         t.issued_at,
-        t.due_date,
-        t.notes
+        t.due_date
+
 
       FROM tickets t
+
+
+      /*
+      ============================================================
+      VIOLATION
+      ============================================================
+      */
 
       INNER JOIN violation_reports vr
         ON t.violation_id = vr.violation_id
 
+
+      /*
+      ============================================================
+      ROAD
+      ============================================================
+      */
+
       LEFT JOIN roads r
         ON vr.road_id = r.road_id
+
+
+      /*
+      ============================================================
+      VEHICLE
+      ============================================================
+      */
 
       LEFT JOIN vehicles v
         ON vr.vehicle_id = v.vehicle_id
 
+
+      /*
+      ============================================================
+      PERSON
+      ============================================================
+      */
+
+      LEFT JOIN persons p
+        ON t.person_id = p.person_id
+
+
+      /*
+      ============================================================
+      OFFICER
+      ============================================================
+      */
+
       LEFT JOIN officers o
         ON t.officer_id = o.officer_id
 
+
+      /*
+      ============================================================
+      ORDER
+      ============================================================
+      */
+
       ORDER BY t.issued_at DESC
     ";
+
 
     $stmt = $conn->prepare($sql);
 
     $stmt->execute();
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $stmt->fetchAll(
+      PDO::FETCH_ASSOC
+    );
+
+  }
+
+
+
+  public function saveTicketPersonAndNotes($data) {
+
+    $conn = $this->conn();
+
+    try {
+
+      $conn->beginTransaction();
+
+
+      /*
+      ============================================================
+      VALIDATE DATA
+      ============================================================
+      */
+
+      $ticketId =
+        isset($data['ticket_id'])
+          ? (int)$data['ticket_id']
+          : 0;
+
+      $firstName =
+        isset($data['first_name'])
+          ? trim($data['first_name'])
+          : '';
+
+      $middleName =
+        !empty($data['middle_name'])
+          ? trim($data['middle_name'])
+          : null;
+
+      $lastName =
+        isset($data['last_name'])
+          ? trim($data['last_name'])
+          : '';
+
+      $contactNumber =
+        !empty($data['contact_number'])
+          ? trim($data['contact_number'])
+          : null;
+
+      $address =
+        !empty($data['address'])
+          ? trim($data['address'])
+          : null;
+
+      $notes =
+        !empty($data['notes'])
+          ? trim($data['notes'])
+          : null;
+
+
+      /*
+      ============================================================
+      VALIDATE REQUIRED FIELDS
+      ============================================================
+      */
+
+      if ($ticketId <= 0) {
+
+        throw new Exception(
+          "Invalid ticket ID."
+        );
+
+      }
+
+
+      if ($firstName === '') {
+
+        throw new Exception(
+          "First name is required."
+        );
+
+      }
+
+
+      if ($lastName === '') {
+
+        throw new Exception(
+          "Last name is required."
+        );
+
+      }
+
+
+      /*
+      ============================================================
+      CHECK TICKET
+      ============================================================
+      
+      We also retrieve officer_id so we know which
+      officer needs to be released after the report
+      details have been successfully saved.
+      */
+
+      $ticketSql = "
+        SELECT
+
+          ticket_id,
+          person_id,
+          officer_id
+
+        FROM tickets
+
+        WHERE ticket_id = :ticket_id
+
+        FOR UPDATE
+      ";
+
+      $ticketStmt =
+        $conn->prepare(
+          $ticketSql
+        );
+
+      $ticketStmt->execute([
+
+        ':ticket_id' =>
+          $ticketId
+
+      ]);
+
+      $ticket =
+        $ticketStmt->fetch(
+          PDO::FETCH_ASSOC
+        );
+
+
+      if (!$ticket) {
+
+        throw new Exception(
+          "Ticket not found."
+        );
+
+      }
+
+
+      /*
+      ============================================================
+      PREVENT DUPLICATE PERSON
+      ============================================================
+      */
+
+      if (!empty($ticket['person_id'])) {
+
+        throw new Exception(
+          "A person is already assigned to this ticket."
+        );
+
+      }
+
+
+      /*
+      ============================================================
+      CREATE PERSON
+      ============================================================
+      */
+
+      $personSql = "
+        INSERT INTO persons (
+
+          first_name,
+          middle_name,
+          last_name,
+          contact_number,
+          address,
+          created_at,
+          updated_at
+
+        )
+
+        VALUES (
+
+          :first_name,
+          :middle_name,
+          :last_name,
+          :contact_number,
+          :address,
+          NOW(),
+          NOW()
+
+        )
+      ";
+
+      $personStmt =
+        $conn->prepare(
+          $personSql
+        );
+
+      $personStmt->execute([
+
+        ':first_name' =>
+          $firstName,
+
+        ':middle_name' =>
+          $middleName,
+
+        ':last_name' =>
+          $lastName,
+
+        ':contact_number' =>
+          $contactNumber,
+
+        ':address' =>
+          $address
+
+      ]);
+
+
+      /*
+      ============================================================
+      GET NEW PERSON ID
+      ============================================================
+      */
+
+      $personId =
+        (int)$conn->lastInsertId();
+
+
+      if ($personId <= 0) {
+
+        throw new Exception(
+          "Failed to create person record."
+        );
+
+      }
+
+
+      /*
+      ============================================================
+      LINK PERSON + SAVE NOTES TO TICKET
+      ============================================================
+      */
+
+      $updateTicketSql = "
+        UPDATE tickets
+
+        SET
+
+          person_id = :person_id,
+          notes = :notes
+
+        WHERE ticket_id = :ticket_id
+      ";
+
+      $updateTicketStmt =
+        $conn->prepare(
+          $updateTicketSql
+        );
+
+      $updateTicketStmt->execute([
+
+        ':person_id' =>
+          $personId,
+
+        ':notes' =>
+          $notes,
+
+        ':ticket_id' =>
+          $ticketId
+
+      ]);
+
+
+      /*
+      ============================================================
+      MAKE ASSIGNED OFFICER AVAILABLE
+      ============================================================
+      
+      The officer who was assigned to this ticket is
+      now released and can be deployed to another ticket.
+      */
+
+      if (!empty($ticket['officer_id'])) {
+
+        $updateOfficerSql = "
+          UPDATE officers
+
+          SET
+
+            status = 'Available'
+
+          WHERE officer_id = :officer_id
+        ";
+
+        $updateOfficerStmt =
+          $conn->prepare(
+            $updateOfficerSql
+          );
+
+        $updateOfficerStmt->execute([
+
+          ':officer_id' =>
+            (int)$ticket['officer_id']
+
+        ]);
+
+      }
+
+
+      /*
+      ============================================================
+      COMMIT
+      ============================================================
+      */
+
+      $conn->commit();
+
+
+      /*
+      ============================================================
+      RETURN SAVED DATA
+      ============================================================
+      */
+
+      return [
+
+        'success' =>
+          true,
+
+        'ticket_id' =>
+          $ticketId,
+
+        'person_id' =>
+          $personId,
+
+        'first_name' =>
+          $firstName,
+
+        'middle_name' =>
+          $middleName,
+
+        'last_name' =>
+          $lastName,
+
+        'contact_number' =>
+          $contactNumber,
+
+        'address' =>
+          $address,
+
+        'notes' =>
+          $notes
+
+      ];
+
+
+    } catch (PDOException $e) {
+
+      if ($conn->inTransaction()) {
+
+        $conn->rollBack();
+
+      }
+
+      error_log(
+        "[TICKET PERSON + NOTES] Database error: "
+        . $e->getMessage()
+      );
+
+      throw new Exception(
+        "Failed to save report details."
+      );
+
+
+    } catch (Exception $e) {
+
+      if ($conn->inTransaction()) {
+
+        $conn->rollBack();
+
+      }
+
+      throw $e;
+
+    }
+
   }
 
 }
