@@ -48,7 +48,7 @@ export function openRoadCondition(container, road) {
               </div>-->
 
               <div class="cctv-video-display" id="detailedVideoContainer">
-                <img id="roadVideo" class="stream-video" src="http://127.0.0.1:5001/video/${road.video_filename}" />
+                <img id="roadVideo" class="stream-video" src="/cctv-ai/video/${road.video_filename}"/>
               </div>
 
               <div class="video-controls">
@@ -280,7 +280,7 @@ export function openRoadCondition(container, road) {
       dom.requestHistoricalRecordingBtn.disabled = true;
 
       try {
-        const response = await fetch(`http://127.0.0.1:5001/recording/request/${encodeURIComponent(cameraName)}`,
+        const response = await fetch(`/cctv-ai/recording/request/${encodeURIComponent(cameraName)}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -336,7 +336,7 @@ export function openRoadCondition(container, road) {
             >
 
               <source
-                src="http://127.0.0.1:5001/recording/file/${encodeURIComponent(result.filename)}"
+                src="/cctv-ai/recording/file/${encodeURIComponent(result.filename)}"
                 type="video/mp4"
               >
 
