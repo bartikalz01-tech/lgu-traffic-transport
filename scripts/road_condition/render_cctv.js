@@ -48,7 +48,7 @@ export async function renderCctvAi(container) {
           <span class="stream-tag-id">${roads.camera_name}</span>
         </div>
         <div class="stream-video-viewport" id="viewport-${roads.road_id}">
-          <img class="stream-video" id="video-${roads.road_id}" src="/cctv-ai/video/${roads.video_filename}" />
+          <img class="stream-video" id="video-${roads.road_id}" src="/video/${roads.video_filename}"/>
 
           <div class="stream-overlay-metadata">
             <p class="stream-road-name">CCTV-${roads.road_name}</p>
