@@ -62,14 +62,14 @@ MIN_HISTORY_SIZE = 4
 DECELERATION_THRESHOLD = 0.40
 
 # Ignore extremely small movements
-MIN_MOVEMENT_SPEED = 5
+MIN_MOVEMENT_SPEED = 0.10
 
 # Maximum pixel distance considered nearby
-#NEARBY_DISTANCE_THRESHOLD = 120
+NEARBY_DISTANCE_THRESHOLD = 120
 
-VERY_CLOSE_DISTANCE_THRESHOLD = 50
+#VERY_CLOSE_DISTANCE_THRESHOLD = 50
 
-RAPID_DISTANCE_REDUCTION = 15
+#RAPID_DISTANCE_REDUCTION = 15
 
 # Number of consecutive qualifying frames required
 ACCIDENT_CONFIRMATION_FRAMES = 5
@@ -126,35 +126,40 @@ def detect_sudden_deceleration(
 
   history = vehicle_history.get(vehicle_id)
 
+  # Not enough movement history yet
   if not history or len(history) < MIN_HISTORY_SIZE:
-    return False
+      return False
 
+  # Previous frame's movement
   previous_speed = history[-1]["speed"]
 
-  if previous_speed <= MIN_MOVEMENT_SPEED:
-    return False
+  # Vehicle was already moving too slowly.
+  # Do not classify tiny movement fluctuations as sudden braking.
+  if previous_speed < MIN_MOVEMENT_SPEED:
+      return False
 
+  # Calculate percentage of movement lost
   speed_change = (
-    previous_speed - current_speed
+      previous_speed - current_speed
   ) / previous_speed
 
   print(
-    f"[DECELERATION] "
-    f"ID: {vehicle_id} | "
-    f"Previous: {previous_speed:.2f}px | "
-    f"Current: {current_speed:.2f}px | "
-    f"Change: {speed_change * 100:.2f}%"
+      f"[DECELERATION] "
+      f"ID: {vehicle_id} | "
+      f"Previous: {previous_speed:.2f}px | "
+      f"Current: {current_speed:.2f}px | "
+      f"Change: {speed_change * 100:.2f}%"
   )
 
   if speed_change >= DECELERATION_THRESHOLD:
 
-    print(
-      f"[DECELERATION DETECTED] "
-      f"ID: {vehicle_id} | "
-      f"Change: {speed_change * 100:.2f}%"
-    )
+      print(
+          f"[DECELERATION DETECTED] "
+          f"ID: {vehicle_id} | "
+          f"Change: {speed_change * 100:.2f}%"
+      )
 
-    return True
+      return True
 
   return False
 
@@ -380,6 +385,8 @@ def process_accident_video():
 
     if results is not None:
 
+      current_accident_detected = False
+
       for result in results:
 
         boxes = result.boxes
@@ -586,23 +593,7 @@ def process_accident_video():
             >= ACCIDENT_CONFIRMATION_FRAMES
           ):
 
-
-            # ------------------------------------------------
-            # SET GLOBAL STATUS
-            # ------------------------------------------------
-
-            accident_status[
-              "possible_accident"
-            ] = True
-
-            accident_status[
-              "sudden_deceleration"
-            ] = True
-
-            accident_status[
-              "nearby_vehicle"
-            ] = True
-
+            current_accident_detected = True
 
             # ------------------------------------------------
             # TERMINAL MESSAGE
@@ -656,6 +647,24 @@ def process_accident_video():
             (0, 255, 0),
             2
           )
+
+      if current_accident_detected:
+        accident_status[
+          "possible_accident"
+        ] = True
+
+        accident_status[
+          "sudden_deceleration"
+        ] = True
+
+        accident_status[
+          "nearby_vehicle"
+        ] = True
+
+      else:
+        accident_status["possible_accident"] = False
+        accident_status["sudden_deceleration"] = False
+        accident_status["nearby_vehicle"] = False
 
 
     # ========================================================
