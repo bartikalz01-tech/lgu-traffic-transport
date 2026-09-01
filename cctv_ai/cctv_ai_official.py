@@ -45,6 +45,8 @@ REPORT_INTERVAL = 15
 
 streams = []
 
+ACCIDENT_VIDEO = "cctv_sto_niño_accident.mp4"
+
 VIDEO_EXTENSIONS = (
   "*.mp4",
   "*.avi",
@@ -68,9 +70,13 @@ def load_videos():
   for extensions in VIDEO_EXTENSIONS:
     videos.extend(VIDEO_FOLDER.glob(extensions))
 
-  videos = sorted(videos)
+  videos = [
+    video
+    for video in videos
+    if video.name != ACCIDENT_VIDEO
+  ]
 
-  #print(f"Found {len(videos)} CCTV Videos.")
+  videos = sorted(videos)
 
   return videos
 
