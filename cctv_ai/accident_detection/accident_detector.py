@@ -1,56 +1,11 @@
-import cv2
+from datetime import datetime
+from collections import defaultdict
 import math
 import threading
-import time
-
-from pathlib import Path
-from ultralytics import YOLO
 
 
 # ============================================================
-# VIDEO / MODEL CONFIGURATION
-# ============================================================
-
-ACCIDENT_VIDEO = (
-  Path(__file__).parent.parent
-  / "cctv_feeds"
-  / "cctv_sto_niño_accident.mp4"
-)
-
-MODEL_NAME = "yolov8s.pt"
-
-# Analyze every frame
-ACCIDENT_FRAME_SKIP = 1
-
-
-# ============================================================
-# SHARED ACCIDENT STATE
-# ============================================================
-
-accident_frame = None
-
-accident_frame_lock = threading.Lock()
-
-accident_status = {
-  "running": False,
-  "finished": False,
-  "possible_accident": False,
-  "sudden_deceleration": False,
-  "nearby_vehicle": False,
-}
-
-
-# ============================================================
-# VEHICLE TRACKING DATA
-# ============================================================
-
-vehicle_history = {}
-
-vehicle_accident_confirmation = {}
-
-
-# ============================================================
-# DETECTION SETTINGS
+# ACCIDENT DETECTION SETTINGS
 # ============================================================
 
 HISTORY_SIZE = 10
@@ -67,24 +22,37 @@ MIN_MOVEMENT_SPEED = 0.10
 # Maximum pixel distance considered nearby
 NEARBY_DISTANCE_THRESHOLD = 120
 
-#VERY_CLOSE_DISTANCE_THRESHOLD = 50
-
-#RAPID_DISTANCE_REDUCTION = 15
-
 # Number of consecutive qualifying frames required
-ACCIDENT_CONFIRMATION_FRAMES = 5
+ACCIDENT_CONFIRMATION_FRAMES = 2
 
 
 # ============================================================
-# GET CENTER OF VEHICLE
+# PER-CAMERA VEHICLE TRACKING DATA
 # ============================================================
 
-def get_center(x1, y1, x2, y2):
+vehicle_history = defaultdict(dict)
 
-  center_x = (x1 + x2) / 2
-  center_y = (y1 + y2) / 2
+vehicle_accident_confirmation = defaultdict(dict)
 
-  return center_x, center_y
+
+# ============================================================
+# PER-CAMERA ACCIDENT STATE
+# ============================================================
+
+accident_states = defaultdict(lambda: {
+  "possible_accident": False,
+  "sudden_deceleration": False,
+  "nearby_vehicle": False,
+  "vehicle_id": None,
+  "detected_at": None
+})
+
+
+# ============================================================
+# THREAD LOCK
+# ============================================================
+
+accident_lock = threading.Lock()
 
 
 # ============================================================
@@ -93,26 +61,11 @@ def get_center(x1, y1, x2, y2):
 
 def calculate_distance(point_a, point_b):
 
-  return math.sqrt(
-    (point_a[0] - point_b[0]) ** 2
-    +
-    (point_a[1] - point_b[1]) ** 2
-  )
-
-
-# ============================================================
-# CALCULATE VEHICLE MOVEMENT
-# ============================================================
-
-def calculate_speed(previous_point, current_point):
-
-  if previous_point is None:
-    return 0.0
-
-  return calculate_distance(
-    previous_point,
-    current_point
-  )
+    return math.sqrt(
+        (point_a[0] - point_b[0]) ** 2
+        +
+        (point_a[1] - point_b[1]) ** 2
+    )
 
 
 # ============================================================
@@ -120,48 +73,37 @@ def calculate_speed(previous_point, current_point):
 # ============================================================
 
 def detect_sudden_deceleration(
-  vehicle_id,
-  current_speed
+    camera_name,
+    vehicle_id,
+    current_speed
 ):
 
-  history = vehicle_history.get(vehicle_id)
+    history = vehicle_history[
+        camera_name
+    ].get(vehicle_id)
 
-  # Not enough movement history yet
-  if not history or len(history) < MIN_HISTORY_SIZE:
-      return False
+    # Not enough movement history yet
+    if not history or len(history) < MIN_HISTORY_SIZE:
+        return False
 
-  # Previous frame's movement
-  previous_speed = history[-1]["speed"]
+    # Previous frame's movement
+    previous_speed = history[-1]["speed"]
 
-  # Vehicle was already moving too slowly.
-  # Do not classify tiny movement fluctuations as sudden braking.
-  if previous_speed < MIN_MOVEMENT_SPEED:
-      return False
+    # Vehicle was already moving too slowly.
+    # Do not classify tiny movement fluctuations as sudden braking.
+    if previous_speed < MIN_MOVEMENT_SPEED:
+        return False
 
-  # Calculate percentage of movement lost
-  speed_change = (
-      previous_speed - current_speed
-  ) / previous_speed
+    # Calculate percentage of movement lost
+    speed_change = (
+        previous_speed - current_speed
+    ) / previous_speed
 
-  print(
-      f"[DECELERATION] "
-      f"ID: {vehicle_id} | "
-      f"Previous: {previous_speed:.2f}px | "
-      f"Current: {current_speed:.2f}px | "
-      f"Change: {speed_change * 100:.2f}%"
-  )
+    if speed_change >= DECELERATION_THRESHOLD:
 
-  if speed_change >= DECELERATION_THRESHOLD:
+        return True
 
-      print(
-          f"[DECELERATION DETECTED] "
-          f"ID: {vehicle_id} | "
-          f"Change: {speed_change * 100:.2f}%"
-      )
-
-      return True
-
-  return False
+    return False
 
 
 # ============================================================
@@ -169,52 +111,48 @@ def detect_sudden_deceleration(
 # ============================================================
 
 def detect_nearby_vehicle(
-  vehicle_id,
-  current_point
+    camera_name,
+    vehicle_id,
+    current_point
 ):
 
-  nearest_distance = None
-  nearest_vehicle = None
+    histories = vehicle_history[
+        camera_name
+    ]
 
-  for other_id, history in vehicle_history.items():
+    nearest_distance = None
+    nearest_vehicle = None
 
-    if other_id == vehicle_id:
-      continue
+    for other_id, history in histories.items():
 
-    if not history:
-      continue
+        if other_id == vehicle_id:
+            continue
 
-    other_point = history[-1]["point"]
+        if not history:
+            continue
 
-    distance = calculate_distance(
-      current_point,
-      other_point
-    )
+        other_point = history[-1]["point"]
 
-    if (
-      nearest_distance is None
-      or distance < nearest_distance
-    ):
+        distance = calculate_distance(
+            current_point,
+            other_point
+        )
 
-      nearest_distance = distance
-      nearest_vehicle = other_id
+        if (
+            nearest_distance is None
+            or distance < nearest_distance
+        ):
 
-  if nearest_distance is None:
+            nearest_distance = distance
+            nearest_vehicle = other_id
+
+    if nearest_distance is None:
+        return False
+
+    if nearest_distance <= NEARBY_DISTANCE_THRESHOLD:
+        return True
 
     return False
-
-  print(
-    f"[NEARBY] "
-    f"ID: {vehicle_id} | "
-    f"Nearest Vehicle: {nearest_vehicle} | "
-    f"Distance: {nearest_distance:.2f}px"
-  )
-
-  if nearest_distance <= NEARBY_DISTANCE_THRESHOLD:
-
-    return True
-
-  return False
 
 
 # ============================================================
@@ -222,522 +160,263 @@ def detect_nearby_vehicle(
 # ============================================================
 
 def calculate_accident_features(
-  vehicle_id,
-  current_point,
-  current_speed
+    camera_name,
+    vehicle_id,
+    current_point,
+    current_speed
 ):
 
-  sudden_deceleration = (
-    detect_sudden_deceleration(
-      vehicle_id,
-      current_speed
+    sudden_deceleration = (
+        detect_sudden_deceleration(
+            camera_name,
+            vehicle_id,
+            current_speed
+        )
     )
-  )
 
-  nearby_vehicle = (
-    detect_nearby_vehicle(
-      vehicle_id,
-      current_point
+    nearby_vehicle = (
+        detect_nearby_vehicle(
+            camera_name,
+            vehicle_id,
+            current_point
+        )
     )
-  )
 
-  possible_accident = (
-    sudden_deceleration
-    and nearby_vehicle
-  )
+    possible_accident = (
+        sudden_deceleration
+        and nearby_vehicle
+    )
 
-  return {
-    "sudden_deceleration":
-      sudden_deceleration,
+    return {
+        "sudden_deceleration":
+            sudden_deceleration,
 
-    "nearby_vehicle":
-      nearby_vehicle,
+        "nearby_vehicle":
+            nearby_vehicle,
 
-    "possible_accident":
-      possible_accident
-  }
+        "possible_accident":
+            possible_accident
+    }
 
 
 # ============================================================
-# MAIN ACCIDENT DETECTION
+# PROCESS ONE VEHICLE
 # ============================================================
 
-def process_accident_video():
+def update_accident_detection(
+    camera_name,
+    vehicle_id,
+    current_point,
+    current_speed
+):
 
-  global accident_frame
+    with accident_lock:
 
-  frame_counter = 0
+        # ----------------------------------------------------
+        # CREATE CAMERA HISTORY
+        # ----------------------------------------------------
 
-  # ----------------------------------------------------------
-  # CHECK VIDEO
-  # ----------------------------------------------------------
+        if camera_name not in vehicle_history:
 
-  if not ACCIDENT_VIDEO.exists():
+            vehicle_history[
+                camera_name
+            ] = {}
 
-    print(
-      "[ACCIDENT AI] "
-      "Accident video not found:"
-    )
+        # ----------------------------------------------------
+        # CREATE VEHICLE HISTORY
+        # ----------------------------------------------------
 
-    print(ACCIDENT_VIDEO)
-
-    return
-
-
-  print(
-    "[ACCIDENT AI] "
-    "Loading accident video..."
-  )
-
-
-  # ----------------------------------------------------------
-  # LOAD YOLO
-  # ----------------------------------------------------------
-
-  model = YOLO(MODEL_NAME)
-
-
-  # ----------------------------------------------------------
-  # OPEN VIDEO
-  # ----------------------------------------------------------
-
-  capture = cv2.VideoCapture(
-    str(ACCIDENT_VIDEO)
-  )
-
-  if not capture.isOpened():
-
-    print(
-      "[ACCIDENT AI] "
-      "Unable to open accident video."
-    )
-
-    return
-
-
-  # ----------------------------------------------------------
-  # RESET STATE
-  # ----------------------------------------------------------
-
-  accident_status["running"] = True
-  accident_status["finished"] = False
-
-  accident_status["possible_accident"] = False
-  accident_status["sudden_deceleration"] = False
-  accident_status["nearby_vehicle"] = False
-
-  vehicle_history.clear()
-  vehicle_accident_confirmation.clear()
-
-
-  print(
-    "[ACCIDENT AI] "
-    "Accident detection started."
-  )
-
-
-  # ==========================================================
-  # FRAME PROCESSING LOOP
-  # ==========================================================
-
-  while True:
-
-    success, frame = capture.read()
-
-
-    # --------------------------------------------------------
-    # VIDEO FINISHED
-    # --------------------------------------------------------
-
-    if not success:
-
-      print(
-        "[ACCIDENT AI] "
-        "Accident video finished."
-      )
-
-      accident_status["running"] = False
-      accident_status["finished"] = True
-
-      break
-
-
-    frame_counter += 1
-
-
-    # ========================================================
-    # ANALYZE CURRENT FRAME
-    # ========================================================
-
-    results = model.track(
-      frame,
-      persist=True,
-      tracker="bytetrack.yaml",
-      verbose=False,
-      imgsz=416,
-      conf=0.35
-    )
-
-
-    # ========================================================
-    # PROCESS YOLO RESULTS
-    # ========================================================
-
-    if results is not None:
-
-      current_accident_detected = False
-
-      for result in results:
-
-        boxes = result.boxes
-
-        if boxes is None:
-          continue
-
-        if boxes.id is None:
-          continue
-
-
-        track_ids = (
-          boxes.id
-          .int()
-          .cpu()
-          .tolist()
-        )
-
-        coordinates = (
-          boxes.xyxy
-          .cpu()
-          .tolist()
-        )
-
-        classes = (
-          boxes.cls
-          .int()
-          .cpu()
-          .tolist()
-        )
-
-
-        # ====================================================
-        # PROCESS EACH VEHICLE
-        # ====================================================
-
-        for track_id, box, class_id in zip(
-          track_ids,
-          coordinates,
-          classes
+        if (
+            vehicle_id
+            not in vehicle_history[camera_name]
         ):
 
+            vehicle_history[
+                camera_name
+            ][vehicle_id] = []
 
-          # --------------------------------------------------
-          # VEHICLE CLASSES
-          # --------------------------------------------------
+        # ----------------------------------------------------
+        # CREATE CONFIRMATION COUNTER
+        # ----------------------------------------------------
 
-          if class_id not in [2, 3, 5, 7]:
-            continue
-
-
-          x1, y1, x2, y2 = box
-
-
-          # --------------------------------------------------
-          # GET VEHICLE CENTER
-          # --------------------------------------------------
-
-          center = get_center(
-            x1,
-            y1,
-            x2,
-            y2
-          )
-
-
-          # --------------------------------------------------
-          # CREATE VEHICLE HISTORY
-          # --------------------------------------------------
-
-          if track_id not in vehicle_history:
-
-            vehicle_history[track_id] = []
-
-
-          # --------------------------------------------------
-          # CREATE CONFIRMATION COUNTER
-          # --------------------------------------------------
-
-          if (
-            track_id
+        if (
+            camera_name
             not in vehicle_accident_confirmation
-          ):
+        ):
 
             vehicle_accident_confirmation[
-              track_id
-            ] = 0
+                camera_name
+            ] = {}
 
+        if (
+          vehicle_id
+          not in vehicle_accident_confirmation[
+            camera_name
+          ]
+        ):
 
-          history = vehicle_history[track_id]
+          vehicle_accident_confirmation[
+              camera_name
+          ][vehicle_id] = 0
 
+        history = (
+          vehicle_history[
+            camera_name
+          ][vehicle_id]
+        )
 
-          # --------------------------------------------------
-          # GET PREVIOUS POSITION
-          # --------------------------------------------------
+        # ====================================================
+        # DETECT FEATURES BEFORE STORING CURRENT MOVEMENT
+        # ====================================================
 
-          previous_point = None
+        features = calculate_accident_features(
+          camera_name,
+          vehicle_id,
+          current_point,
+          current_speed
+        )
 
-          if history:
+        # ====================================================
+        # STORE CURRENT MOVEMENT
+        # ====================================================
 
-            previous_point = (
-              history[-1]["point"]
-            )
-
-
-          # --------------------------------------------------
-          # CALCULATE CURRENT MOVEMENT
-          # --------------------------------------------------
-
-          current_speed = calculate_speed(
-            previous_point,
-            center
-          )
-
-          # ==================================================
-          # CALCULATE ACCIDENT FEATURES
-          # ==================================================
-
-          features = calculate_accident_features(
-            track_id,
-            center,
-            current_speed
-          )
-
-
-          # --------------------------------------------------
-          # STORE CURRENT MOVEMENT
-          # --------------------------------------------------
-
-          history.append({
-
-            "point": center,
-
+        history.append({
+            "point": current_point,
             "speed": current_speed
+        })
 
-          })
+        # ====================================================
+        # LIMIT HISTORY
+        # ====================================================
 
-
-          # --------------------------------------------------
-          # LIMIT HISTORY
-          # --------------------------------------------------
-
-          if len(history) > HISTORY_SIZE:
+        if len(history) > HISTORY_SIZE:
 
             history.pop(0)
 
-          # ==================================================
-          # DIAGNOSTIC OUTPUT
-          # ==================================================
+        # ====================================================
+        # UPDATE CONFIRMATION
+        # ====================================================
+
+        if features["possible_accident"]:
+
+            vehicle_accident_confirmation[
+                camera_name
+            ][vehicle_id] += 1
+
+        else:
+
+            vehicle_accident_confirmation[
+                camera_name
+            ][vehicle_id] = 0
+
+        confirmation = (
+            vehicle_accident_confirmation[
+                camera_name
+            ][vehicle_id]
+        )
+
+        # ====================================================
+        # CHECK ACCIDENT CONFIRMATION
+        # ====================================================
+
+        accident_confirmed = (
+					confirmation
+					>= ACCIDENT_CONFIRMATION_FRAMES
+        )
+
+        # ====================================================
+        # UPDATE CAMERA STATE
+        # ====================================================
+
+        if accident_confirmed:
+
+          detected_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+          accident_states[
+            camera_name
+          ] = {
+
+            "possible_accident": True,
+
+            "sudden_deceleration": True,
+
+            "nearby_vehicle": True,
+
+            "vehicle_id": vehicle_id,
+            "detected_at": detected_at
+          }
 
           print(
-            f"[ACCIDENT CHECK] "
-            f"Frame: {frame_counter} | "
-            f"ID: {track_id} | "
-            f"History: {len(history)} | "
-            f"Speed: {current_speed:.2f} | "
-            f"Sudden Deceleration: "
-            f"{features['sudden_deceleration']} | "
-            f"Nearby Vehicle: "
-            f"{features['nearby_vehicle']} | "
-            f"Possible Accident: "
-            f"{features['possible_accident']}"
+            "\n"
+            "========================================\n"
+            "       POSSIBLE ACCIDENT DETECTED\n"
+            "========================================\n"
+            f"Camera: {camera_name}\n"
+            f"Vehicle ID: {vehicle_id}\n"
+            f"Confirmation: "
+            f"{confirmation}/"
+            f"{ACCIDENT_CONFIRMATION_FRAMES}\n"
+            "========================================\n"
           )
 
+        # ====================================================
+        # RETURN RESULT
+        # ====================================================
 
-          # ==================================================
-          # UPDATE CONFIRMATION
-          # ==================================================
+        return {
 
-          if features["possible_accident"]:
+          "possible_accident":
+             accident_confirmed,
 
-            vehicle_accident_confirmation[
-              track_id
-            ] += 1
+          "sudden_deceleration":
+            features["sudden_deceleration"],
 
-          else:
+          "nearby_vehicle":
+            features["nearby_vehicle"],
 
-            vehicle_accident_confirmation[
-              track_id
-            ] = 0
+          "vehicle_id":
+            vehicle_id,
 
+          "confirmation":
+            confirmation,
 
-          # ==================================================
-          # CONFIRMATION OUTPUT
-          # ==================================================
-
-          print(
-            f"[ACCIDENT CONFIRMATION] "
-            f"ID: {track_id} | "
-            f"Count: "
-            f"{vehicle_accident_confirmation[track_id]} / "
-            f"{ACCIDENT_CONFIRMATION_FRAMES}"
-          )
-
-
-          # ==================================================
-          # ACCIDENT CONFIRMED
-          # ==================================================
-
-          if (
-            vehicle_accident_confirmation[
-              track_id
-            ]
-            >= ACCIDENT_CONFIRMATION_FRAMES
-          ):
-
-            current_accident_detected = True
-
-            # ------------------------------------------------
-            # TERMINAL MESSAGE
-            # ------------------------------------------------
-
-            print(
-              "\n"
-              "========================================\n"
-              "       POSSIBLE ACCIDENT DETECTED\n"
-              "========================================\n"
-              f"Frame: {frame_counter}\n"
-              f"Vehicle ID: {track_id}\n"
-              f"Confirmation: "
-              f"{vehicle_accident_confirmation[track_id]}\n"
-              "========================================\n"
-            )
-
-
-          # ==================================================
-          # DRAW VEHICLE
-          # ==================================================
-
-          cv2.rectangle(
-            frame,
-            (
-              int(x1),
-              int(y1)
-            ),
-            (
-              int(x2),
-              int(y2)
-            ),
-            (0, 255, 0),
-            2
-          )
-
-
-          # ==================================================
-          # DRAW TRACK ID
-          # ==================================================
-
-          cv2.putText(
-            frame,
-            f"ID {track_id}",
-            (
-              int(x1),
-              int(y1) - 10
-            ),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.6,
-            (0, 255, 0),
-            2
-          )
-
-      if current_accident_detected:
-        accident_status[
-          "possible_accident"
-        ] = True
-
-        accident_status[
-          "sudden_deceleration"
-        ] = True
-
-        accident_status[
-          "nearby_vehicle"
-        ] = True
-
-      else:
-        accident_status["possible_accident"] = False
-        accident_status["sudden_deceleration"] = False
-        accident_status["nearby_vehicle"] = False
-
-
-    # ========================================================
-    # SHOW POSSIBLE ACCIDENT
-    # ========================================================
-
-    if accident_status["possible_accident"]:
-
-      cv2.putText(
-        frame,
-        "POSSIBLE ACCIDENT",
-        (30, 80),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        1.0,
-        (0, 0, 255),
-        3
-      )
-
-
-    # ========================================================
-    # SAVE CURRENT FRAME
-    # ========================================================
-
-    with accident_frame_lock:
-
-      accident_frame = frame.copy()
-
-
-    # ========================================================
-    # SHOW VIDEO
-    # ========================================================
-
-    cv2.imshow(
-      "Accident Detection CCTV",
-      frame
-    )
-
-
-    # ========================================================
-    # PRESS Q TO STOP
-    # ========================================================
-
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-
-      print(
-        "[ACCIDENT AI] "
-        "Detection stopped by user."
-      )
-
-      break
-
-
-    time.sleep(0.01)
-
-
-  # ==========================================================
-  # CLEANUP
-  # ==========================================================
-
-  capture.release()
-
-  cv2.destroyAllWindows()
-
-  print(
-    "[ACCIDENT AI] "
-    "Accident detection stopped."
-  )
+          "detected_at":
+            accident_states[camera_name]["detected_at"]
+        }
 
 
 # ============================================================
-# RUN DIRECTLY
+# GET CAMERA ACCIDENT STATE
 # ============================================================
 
-if __name__ == "__main__":
+def get_accident_state(camera_name):
 
-  process_accident_video()
+    with accident_lock:
+
+        return accident_states[
+            camera_name
+        ].copy()
+
+
+# ============================================================
+# RESET CAMERA ACCIDENT STATE
+# ============================================================
+
+def reset_accident_state(camera_name):
+
+  with accident_lock:
+
+    accident_states[
+        camera_name
+    ] = {
+
+      "possible_accident": False,
+
+      "sudden_deceleration": False,
+
+      "nearby_vehicle": False,
+
+      "vehicle_id": None,
+
+      "detected_at": None
+    }

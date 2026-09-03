@@ -48,7 +48,7 @@ export function openRoadCondition(container, road) {
               </div>-->
 
               <div class="cctv-video-display" id="detailedVideoContainer">
-                <img id="roadVideo" class="stream-video" src="/video/${road.video_filename}/>
+                <img id="roadVideo" class="stream-video" src="http://127.0.0.1:5001/video/${road.video_filename}" />
               </div>
 
               <div class="video-controls">

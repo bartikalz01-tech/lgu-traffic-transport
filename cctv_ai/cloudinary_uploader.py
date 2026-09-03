@@ -26,17 +26,7 @@ def upload_video(file_path, cloudinary_folder, overwrite=False):
     "unique_filename": False
   }
 
-  print(
-    f"[CLOUDINARY] Uploading: "
-    f"{file_path.name}"
-  )
-
   if file_size >= MAX_NORMAL_UPLOAD_BYTES:
-    print(
-      "[CLOUDINARY] Large video detected. "
-      "Using chunked upload."
-    )
-
     result = uploader.upload_large(
       str(file_path),
       chunk_size=20 * 1024 * 1024,
@@ -48,11 +38,6 @@ def upload_video(file_path, cloudinary_folder, overwrite=False):
       str(file_path),
       **upload_options
     )
-
-  print(
-    f"[CLOUDINARY] Upload completed: "
-    f"{file_path.name}"
-  )
 
   return {
     "success": True,
@@ -87,19 +72,9 @@ def upload_image(
     "unique_filename": False
   }
 
-  print(
-    f"[CLOUDINARY] Uploading image: "
-    f"{file_path.name}"
-  )
-
   result = uploader.upload(
     str(file_path),
     **upload_options
-  )
-
-  print(
-    f"[CLOUDINARY] Image upload completed: "
-    f"{file_path.name}"
   )
 
   return {
@@ -127,11 +102,6 @@ def upload_video_background(file_path, cloudinary_folder, overwrite=False, delet
 
       result = upload_video(file_path=file_path, cloudinary_folder=cloudinary_folder, overwrite=overwrite)
 
-      print(
-        f"[CLOUDINARY] Upload Completed: "
-        f"{file_path.name}"
-      )
-
       if delete_after_upload:
         try:
 
@@ -139,28 +109,13 @@ def upload_video_background(file_path, cloudinary_folder, overwrite=False, delet
 
             file_path.unlink()
 
-            print(
-              f"[RECORDING] Local segment "
-              f"Deleted after Cloudinary upload: "
-              f"{file_path.name}"
-            )
-
-        except OSError as delete_error:
-          print(
-            f"[RECORDING] Cloud upload succeeded, "
-            f"but local deletion failed for "
-            f"{file_path.name}: "
-            f"{delete_error}"
-          )
+        except OSError:
+          pass
 
       return result
 
-    except Exception as error:
-
-      print(
-        f"[CLOUDINARY] Upload failed"
-        f"for {file_path}: {error}"
-      )
+    except Exception:
+      pass
 
   thread = threading.Thread(target=worker, daemon=True)
 
@@ -176,11 +131,6 @@ def get_cloudinary_recordings(cloudinary_folder, camera_name):
   prefix = (
     f"{cloudinary_folder}/"
     f"{camera_stem}_"
-  )
-
-  print(
-    "[CLOUDINARY] Searching recordings "
-    f"with prefix: {prefix}"
   )
 
   resources = []
@@ -215,12 +165,6 @@ def get_cloudinary_recordings(cloudinary_folder, camera_name):
     if not next_cursor:
       break
 
-  print(
-    "[CLOUDINARY] Found "
-    f"{len(resources)} recordings "
-    f"for {camera_stem}"
-  )
-
   return resources
 
 
@@ -251,11 +195,6 @@ def get_cloudinary_segment_info(
   )
 
   if not match:
-    print( 
-      "[CLOUDINARY] Skipping unexpected " 
-      f"public ID: {public_id}" 
-    )
-
     return None
 
   try:
@@ -285,11 +224,6 @@ def download_cloudinary_video(
     exist_ok=True
   )
 
-  print(
-    f"[CLOUDINARY] Downloading temporary "
-    f"segment: {destination.name}"
-  )
-
   try:
     with urllib.request.urlopen(secure_url, timeout=120) as response:
 
@@ -315,10 +249,5 @@ def download_cloudinary_video(
     raise RuntimeError(
       "Cloudinary download failed."
     )
-
-  print(
-    f"[CLOUDINARY] Temporary segment "
-    f"downloaded: {destination.name}"
-  )
 
   return destination

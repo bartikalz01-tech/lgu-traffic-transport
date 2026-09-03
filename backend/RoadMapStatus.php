@@ -68,7 +68,7 @@ class RoadMapStatus extends config{
       LEFT JOIN road_traffic_status rts
       ON r.road_id = rts.road_id
 
-      WHERE r.road_id IN (1, 2, 3)
+      WHERE r.road_id IN (1, 2, 3, 4)
       AND r.video_filename IS NOT NULL
 
       ORDER BY r.road_id

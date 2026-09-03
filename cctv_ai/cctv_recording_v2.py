@@ -75,13 +75,6 @@ class CameraRecorder:
         f"for {self.camera_name}" 
       )
 
-    print(
-      f"[RECORDING] Started segment: "
-      f"{self.filepath.name}"
-      f"({self.fps:.2f} FPS)"
-    )
-
-
   def write_frame(self, frame, timestamp):
 
     if self.writer is None:
@@ -100,12 +93,6 @@ class CameraRecorder:
 
       self.writer = None
 
-      print(
-        f"[RECORDING] Finished segment: "
-        f"{finished_file.name}"
-      )
-
-
       try:
         upload_video_background(
           file_path=finished_file,
@@ -114,16 +101,8 @@ class CameraRecorder:
           delete_after_upload=True
         )
 
-        print(
-          f"[CLOUDINARY] Upload queued: "
-          f"{finished_file.name}"
-        )
-
       except Exception as error:
-        print(
-          f"[CLOUDINARY] Failed to queue upload"
-          f"for {finished_file.name}: {error}"
-        )
+        pass
 
       self._create_segment(
         frame, timestamp
@@ -157,11 +136,6 @@ class CameraRecorder:
 
           filepath.unlink()
 
-          print(
-            f"[RECORDING] Deleted old segment: "
-            f"{filepath.name}"
-          )
-
       except (ValueError, FileNotFoundError):
         pass
 
@@ -170,11 +144,6 @@ class CameraRecorder:
     if self.writer is not None:
 
       self.writer.release()
-
-      print(
-        f"[RECORDING] Closed: "
-        f"{self.filepath}"
-      )
 
       self.writer = None
 
@@ -189,12 +158,6 @@ def initialize_camera(camera_name, fps):
       camera_recorders[camera_name] = CameraRecorder(
         camera_name, fps
       )
-
-      print(
-        f"[RECORDING] Initialized "
-        f"{camera_name} at {fps:.2f} FPS"
-      )
-
 
 def add_frame(camera_name, frame, timestamp):
 
@@ -299,11 +262,7 @@ def get_buffer_status(camera_name):
 
   except Exception as error:
 
-    print(
-      "[CLOUDINARY] Failed to retrieve "
-      f"buffer status for {camera_name}: "
-      f"{error}"
-    )
+    pass
 
 
   # =====================================================
@@ -500,13 +459,6 @@ def create_historical_recording(
           continue
 
 
-  print(
-      f"[HISTORICAL] Found "
-      f"{len(available_segments)} "
-      f"local segments."
-  )
-
-
   # =====================================================
   # 2. SEARCH CLOUDINARY FOR MISSING SEGMENTS
   # =====================================================
@@ -520,19 +472,7 @@ def create_historical_recording(
         )
     )
 
-    print(
-        f"[HISTORICAL] Found "
-        f"{len(cloudinary_resources)} "
-        f"Cloudinary recordings."
-    )
-
   except Exception as error:
-
-      print(
-          f"[CLOUDINARY] Unable to list "
-          f"recordings: {error}"
-      )
-
       cloudinary_resources = []
 
 
@@ -593,13 +533,6 @@ def create_historical_recording(
           })
 
 
-  print(
-      f"[HISTORICAL] Found "
-      f"{len(cloudinary_segments)} "
-      f"additional Cloudinary segments."
-  )
-
-
   # =====================================================
   # 3. COMBINE LOCAL + CLOUDINARY SOURCES
   # =====================================================
@@ -625,12 +558,6 @@ def create_historical_recording(
               "No footage found for the "
               "requested time range."
       }
-
-
-  print(
-      f"[HISTORICAL] Total segments "
-      f"available: {len(all_segments)}"
-  )
 
 
   # =====================================================
@@ -719,13 +646,6 @@ def create_historical_recording(
 
               except Exception as error:
 
-                  print(
-                      f"[CLOUDINARY] Failed to "
-                      f"download "
-                      f"{segment['filename']}: "
-                      f"{error}"
-                  )
-
                   continue
 
 
@@ -747,11 +667,6 @@ def create_historical_recording(
 
 
           if not capture.isOpened():
-
-              print(
-                  f"[HISTORICAL] Could not open "
-                  f"{segment_file}"
-              )
 
               continue
 
@@ -852,20 +767,8 @@ def create_historical_recording(
 
                   temporary_file.unlink()
 
-                  print(
-                      "[HISTORICAL] Deleted "
-                      "temporary Cloudinary file: "
-                      f"{temporary_file.name}"
-                  )
-
           except Exception as error:
-
-              print(
-                  "[HISTORICAL] Failed to delete "
-                  f"temporary file "
-                  f"{temporary_file.name}: "
-                  f"{error}"
-              )
+                  pass
 
 
   # =====================================================
