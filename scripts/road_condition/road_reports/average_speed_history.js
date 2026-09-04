@@ -1,6 +1,14 @@
 import { getAverageSpeedHistoryLogs } from "../../data/road_condition/fetch_road_condition.js";
 import { renderAverageSpeedHistoryChart } from "./road_report_charts/average_speed_history_chart.js";
 
+// Any single reading above this is not physically plausible for city
+// road traffic and is treated as a bad sensor/tracking reading rather
+// than a real vehicle speed. This is a safety net on top of the fix
+// already made at the source (calculate_speed.py) - it protects the
+// dashboard even if a bad reading somehow still makes it into the DB
+// (e.g. old rows recorded before that fix, or a future regression).
+const MAX_PLAUSIBLE_SPEED_KMH = 80;
+
 function parseMySQLDateTime(dateTime) {
   if (!dateTime) {
     return null;
@@ -83,6 +91,7 @@ export async function renderAverageSpeedHistory(container) {
     }
 
     const roadStats = {};
+    let discardedCount = 0;
 
     logs.forEach(log => {
       const roadId = log.road_id;
@@ -90,6 +99,15 @@ export async function renderAverageSpeedHistory(container) {
       const speed = Number(log.avg_speed);
 
       if(Number.isNaN(speed)) {
+        return;
+      }
+
+      // Drop physically-implausible readings (bad sensor/tracking data)
+      // before they can distort the average, peak, or lowest values for
+      // this road. Negative values are dropped too - a valid speed is
+      // never below 0.
+      if(speed < 0 || speed > MAX_PLAUSIBLE_SPEED_KMH) {
+        discardedCount++;
         return;
       }
 
@@ -109,6 +127,24 @@ export async function renderAverageSpeedHistory(container) {
         roadStats[roadId].latest_recorded_at = log.recorded_at;
       }
     });
+
+    if(discardedCount > 0) {
+      console.warn(
+        `Average Speed History: discarded ${discardedCount} implausible reading(s) `
+        + `(> ${MAX_PLAUSIBLE_SPEED_KMH} km/h or negative) before computing stats.`
+      );
+    }
+
+    if(Object.keys(roadStats).length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            No valid average speed records found for this range.
+          </td>
+        </tr>
+      `;
+      return;
+    }
 
     Object.values(roadStats).forEach(road => {
       const speeds = road.speeds;
