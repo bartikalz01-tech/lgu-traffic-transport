@@ -1,0 +1,151 @@
+.possible-accident-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.possible-accident-grid {
+  width: 100%;
+  background-color: transparent;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  column-gap: 20px;
+  row-gap: 30px;
+}
+
+.possible-accident-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.possible-accident-snapshot {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #111622;
+  border: 2px solid var(--border-color);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px var(--shadwo-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.possible-accident-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  padding: 12px 14px;
+
+  background: var(--card-bg);
+
+  border: 1px solid var(--border-color-1);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+
+  box-shadow: 0 2px 8px var(--shadow-1);
+
+  box-sizing: border-box;
+}
+
+.road-details {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  min-width: 0;
+}
+
+.road-details > p:first-child {
+  width: 30px;
+  height: 30px;
+
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(76, 138, 137, 0.10);
+
+  border: 1px solid rgba(76, 138, 137, 0.18);
+
+  border-radius: 7px;
+
+  color: var(--primary-color);
+
+  flex-shrink: 0;
+}
+
+.road-details > p:first-child i {
+  font-size: 12px;
+}
+
+.road-name {
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: var(--text-color-1);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detection-details {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin-left: 20px;
+}
+
+.detection-details p {
+  margin: 0;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: var(--text-secondary);
+
+  white-space: nowrap;
+}
+
+/* Date */
+.detection-details p:first-child {
+  position: relative;
+
+  padding-right: 14px;
+}
+
+.detection-details p:first-child::after {
+  content: "";
+
+  position: absolute;
+
+  right: 0;
+  top: 50%;
+
+  width: 1px;
+  height: 16px;
+
+  background: var(--border-color-1);
+
+  transform: translateY(-50%);
+}
+
+/* Time */
+.detection-details p:last-child {
+  color: var(--text-color-1);
+
+  font-weight: 700;
+}

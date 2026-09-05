@@ -8,8 +8,10 @@ import { renderAverageSpeedHistory } from "./road_reports/average_speed_history.
 import { updateRoadCondition } from "./update_road_details.js";
 import { renderPeakHour } from "./road_reports/peak_hour_analytics.js";
 import { renderCctvRecords } from "./render_cctv_records.js";
+import { renderPossibleAccidents } from "./render_possible_accidents.js";
 
 const subModuleTitle = document.getElementById("subModuleTitle");
+const subModuleDescription = document.getElementById("subModuleDescription");
 
 let reportsInitialized = false;
 
@@ -18,6 +20,7 @@ let reportContent = null;
 export async function renderCctvAi(container) {
 
   subModuleTitle.textContent = "CCTV Monitoring";
+  subModuleDescription.textContent = "Real-time surveillance and Real-Time analytics";
 
   let cctvRoads = getCurrentTraffic();
 
@@ -74,12 +77,21 @@ export async function renderCctvAi(container) {
         </div>
       </div>
 
-      <div class="cctv-sidebar-controller" style="cursor: pointer;" id="cctvRecordsController">
+      <!--<div class="cctv-sidebar-controller" style="cursor: pointer;" id="cctvRecordsController">
         <div class="cctv-sidebar-header">
           <div class="logo-container">
             <i class="fas fa-film"></i>
           </div>
           <h4>CCTV Records</h4>
+        </div>
+      </div>-->
+
+      <div class="cctv-sidebar-controller" id="possibleAccidentsController">
+        <div class="cctv-sidebar-header">
+          <div class="logo-container">
+            <i class="fas fa-car-burst"></i>
+          </div>
+          <h5>Possible Accidents</h5>
         </div>
       </div>
 
@@ -127,6 +139,8 @@ export async function renderCctvAi(container) {
 
     <div class="cctv-content hidden" id="cctvRecordsContainer"></div>
 
+    <div class="possible-accident-content hidden" id="possibleAccidentsContainer"></div>
+
     <div class="road-reports-content hidden" id="roadReportsView"></div>
   `;
 
@@ -159,12 +173,15 @@ export async function renderCctvAi(container) {
 
   const cctvItems = container.querySelectorAll(".cctv-road");
   const reportItems = container.querySelectorAll(".report-link");
-  const cctvRecordControl = container.querySelector("#cctvRecordsController");
+  //const cctvRecordControl = container.querySelector("#cctvRecordsController");
+  const possibleAccidentsControl = container.querySelector("#possibleAccidentsController");
 
   const reportsController = container.querySelector("#reportsController");
 
   const cctvContent = container.querySelector(".cctv-content");
-  const cctvRecordsContainer = container.querySelector("#cctvRecordsContainer");
+  //const cctvRecordsContainer = container.querySelector("#cctvRecordsContainer");
+  const possbileAccidentsContainer = container.querySelector("#possibleAccidentsContainer");
+  
   const reportsView = container.querySelector("#roadReportsView");
 
   cctvItems.forEach(item => item.classList.remove("active-stream"));
@@ -204,6 +221,7 @@ export async function renderCctvAi(container) {
 
   async function openReport(reportName) {
     subModuleTitle.textContent = "Road Reports";
+    subModuleDescription.textContent = "Real-time surveillance and Real-Time analytics";
 
     cctvContent.classList.add("hidden");
     reportsView.classList.remove("hidden");
@@ -249,7 +267,7 @@ export async function renderCctvAi(container) {
 
   });
 
-  cctvRecordControl.addEventListener("click", () => {
+  /*cctvRecordControl.addEventListener("click", () => {
     subModuleTitle.textContent = "CCTV Records";
 
     cctvContent.classList.add("hidden");
@@ -260,6 +278,21 @@ export async function renderCctvAi(container) {
     cctvItems.forEach(item => item.classList.remove("active-stream"));
 
     renderCctvRecords(cctvRecordsContainer);
+  });*/
+
+  possibleAccidentsControl.addEventListener("click", () => {
+    subModuleTitle.textContent = "Possible Accident Detections"
+    subModuleDescription.textContent = "Real-time possible accident detections."
+
+    cctvContent.classList.add("hidden");
+    reportsView.classList.add("hidden");
+
+    possbileAccidentsContainer.classList.remove("hidden");
+
+    cctvItems.forEach(item => item.classList.remove("active-stream"));
+
+    // Call function
+    renderPossibleAccidents(possbileAccidentsContainer);
   });
 
 }

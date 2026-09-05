@@ -56,6 +56,94 @@
   border: 1px solid var(--border-color-1);
 }
 
+#possibleAccidentsController {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#possibleAccidentsController::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: #e74c3c;
+  transform: scaleY(0.35);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+#possibleAccidentsController .cctv-sidebar-header {
+  position: relative;
+  background: linear-gradient(to right, rgba(231, 76, 60, 0.035), #ffffff);
+  transition: background 0.3s ease, color 0.3s ease, padding-left 0.3s ease;
+}
+
+#possibleAccidentsController .cctv-sidebar-header i {
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.07);
+  border-color: rgba(231, 76, 60, 0.16);
+
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#possibleAccidentsController .cctv-sidebar-header h5 {
+  color: var(--secondary-color);
+  margin: 0;
+
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+#possibleAccidentsController:hover::before {
+  transform: scaleY(1);
+}
+
+#possibleAccidentsController:hover .cctv-sidebar-header {
+  background: linear-gradient(
+    to right,
+    rgba(231, 76, 60, 0.10),
+    rgba(231, 76, 60, 0.025)
+  );
+
+  padding-left: 23px;
+}
+
+#possibleAccidentsController:hover .logo-container i {
+  color: #ffffff;
+  background: #e74c3c;
+  border-color: #e74c3c;
+
+  transform: scale(1.06);
+
+  box-shadow:
+    0 4px 12px rgba(231, 76, 60, 0.25);
+}
+
+#possibleAccidentsController:hover h5 {
+  color: #d63b2d;
+  transform: translateX(2px);
+}
+
+/* ============================================================
+   ACTIVE / SELECTED STATE
+   ============================================================ */
+
+#possibleAccidentsController.active-accidents::before {
+  transform: scaleY(1);
+}
+
+#possibleAccidentsController.active-accidents .cctv-sidebar-header {
+  background: rgba(231, 76, 60, 0.08);
+}
+
+#possibleAccidentsController.active-accidents .logo-container i {
+  color: #ffffff;
+  background: #e74c3c;
+  border-color: #e74c3c;
+}
+
 .live-indicator {
   width: 8px;
   height: 8px;

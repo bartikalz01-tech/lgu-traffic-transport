@@ -14,7 +14,7 @@ from .cctv_clock import get_cctv_timestamp
 from .cctv_recording_v2 import (initialize_camera, add_frame, create_historical_recording, get_buffer_status)
 from .violation_evidence.violation_snapshot import (create_violation_snapshot)
 from .accident_evidence.accident_snapshot import (create_accident_snapshots)
-from .accident_detection.accident_detector import (update_accident_detection, ACCIDENT_CONFIRMATION_FRAMES)
+from .accident_detection.accident_detector import (update_accident_detection, ACCIDENT_CANDIDATE_THRESHOLD)
 from flask import Flask, Response, request, send_file
 from flask_cors import CORS
 from datetime import datetime, timedelta
@@ -478,11 +478,17 @@ def process_camera(stream):
           f"Camera={camera_name} "
           f"Vehicle={track_id} "
           f"Speed={current_speed:.2f} "
-          f"SuddenDeceleration={accident_result['sudden_deceleration']} "
-          f"NearbyVehicle={accident_result['nearby_vehicle']} "
-          f"PossibleAccident={accident_result['possible_accident']} "
-          f"Confirmation={accident_result['confirmation']}/"
-          f"{ACCIDENT_CONFIRMATION_FRAMES}"
+          f"SuddenDeceleration="
+          f"{accident_result['sudden_deceleration']} "
+          f"NearbyVehicle="
+          f"{accident_result['nearby_vehicle']} "
+          f"State="
+          f"{accident_result['state']} "
+          f"Candidate="
+          f"{accident_result['candidate_score']}/"
+          f"{ACCIDENT_CANDIDATE_THRESHOLD} "
+          f"Confirmed="
+          f"{accident_result['possible_accident']}"
         )
 
         if accident_result["possible_accident"]:
@@ -499,8 +505,8 @@ def process_camera(stream):
             f"Vehicle ID: {track_id}\n"
             f"Detected At: {detected_at}\n"
             f"Confirmation: "
-            f"{accident_result['confirmation']}/"
-            f"{ACCIDENT_CONFIRMATION_FRAMES}\n"
+            f"{accident_result['candidate_score']}/"
+            f"{accident_result['candidate_threshold']}\n"
             "========================================\n"
           )
 

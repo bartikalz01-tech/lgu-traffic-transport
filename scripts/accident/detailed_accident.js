@@ -15,9 +15,7 @@ export function detailedAccidentReport(
       )}`
     : null;
 
-  const statusClass = accidentDetail.status
-    .toLowerCase()
-    .replace(/\s+/g, "-");
+  const statusClass = accidentDetail.status.toLowerCase().replace(/\s+/g, "-");
 
 
   container.innerHTML = `
