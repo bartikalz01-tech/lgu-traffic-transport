@@ -19,7 +19,7 @@ $userEmail = $_SESSION['email'] ?? '';
       </button>
 
       <p class="current-time" id="liveClock">
-        12:00:00 PM
+         12:00:00 PM
       </p>
     </div>
 

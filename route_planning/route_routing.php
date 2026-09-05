@@ -222,5 +222,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/route_planning/route_planning.js"></script>
+  <script src="../scripts/header.js"></script>
 </body>
 </html>
