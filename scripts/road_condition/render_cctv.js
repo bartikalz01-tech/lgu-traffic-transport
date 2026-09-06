@@ -147,6 +147,8 @@ export async function renderCctvAi(container) {
     <div class="possible-accident-content hidden" id="possibleAccidentsContainer"></div>
 
     <div class="road-reports-content hidden" id="roadReportsView"></div>
+
+    <div class="quick-report-overlay accident-hidden-overlay" id="accidentModalContainer"></div>
   `;
 
   subscribeTraffic((roads) => {
@@ -208,6 +210,10 @@ export async function renderCctvAi(container) {
 
       cctvContent.classList.remove("hidden");
       reportsView.classList.add("hidden");
+
+      possbileAccidentsContainer.classList.add("hidden");
+      possibleAccidentsControl.classList.remove("active-accidents");
+
       reportsController.classList.remove("active-stream");
       reportItems.forEach(item => item.classList.remove("active-report"));
 
@@ -274,6 +280,9 @@ export async function renderCctvAi(container) {
 
       item.classList.add("active-report");
 
+      possbileAccidentsContainer.classList.add("hidden");
+      possibleAccidentsControl.classList.remove("active-accidents");
+
       await openReport(item.dataset.report);
 
     });
@@ -296,6 +305,8 @@ export async function renderCctvAi(container) {
   possibleAccidentsControl.addEventListener("click", () => {
     subModuleTitle.textContent = "Possible Accident Detections"
     subModuleDescription.textContent = "Real-time possible accident detections."
+
+    possibleAccidentsControl.classList.add("active-accidents");
 
     cctvContent.classList.add("hidden");
     reportsView.classList.add("hidden");

@@ -1,6 +1,42 @@
 import { detailedAccidentReport } from "./detailed_accident.js";
 import { subscribeAccidents } from "../data/accident_report/accidentStore.js";
 
+function formatAccidentDateTime(detectedAt) {
+
+  if (!detectedAt) {
+    return {
+      date: "Unknown",
+      time: "Unknown"
+    };
+  }
+
+  const date = new Date(
+    detectedAt.replace(" ", "T")
+  );
+
+  if (isNaN(date.getTime())) {
+    return {
+      date: detectedAt,
+      time: ""
+    };
+  }
+
+  return {
+    date: date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }),
+
+    time: date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    })
+  };
+}
+
+
 export async function renderAccidentReportsPanel(container) {
 
   container.innerHTML = `
@@ -118,9 +154,12 @@ export async function renderAccidentReportsPanel(container) {
     const paginatedAccidents = accidents.slice(startIndex, endIndex);
 
     paginatedAccidents.forEach(accident => {
-      let statusClass = null;
-      const status = accident.status;
 
+      const formattedDateTime = formatAccidentDateTime(accident.detected_at);
+
+      let statusClass = null;
+
+      const status = accident.status;
 
       if (status === "Reported") {
         statusClass = "reported";
@@ -137,32 +176,58 @@ export async function renderAccidentReportsPanel(container) {
 
       accidentTbody.innerHTML += `
         <tr>
+
           <td>
-            <span class="accident-public-id">${accident.public_accident_id}</span>
+            <span class="accident-public-id">
+              ${accident.public_accident_id}
+            </span>
           </td>
+
           <td>
             <div class="road-cell">
               <i class="fas fa-road"></i>
-              <span>${accident.road_name}</span>
+              <span>
+                ${accident.road_name || "Unknown Road"}
+              </span>
             </div>
           </td>
+
           <td>
             <div class="date-cell">
-              <strong>${accident.accident_date}</strong>
-              <small>${accident.accident_time}</small>
+              <strong>
+                ${formattedDateTime.date}
+              </strong>
+
+              <small>
+                ${formattedDateTime.time}
+              </small>
             </div>
           </td>
-          <td>${accident.accident_type}</td>
-          <td>${accident.specific_location}</td>
+
           <td>
-            <span class="accident-status ${statusClass}">${status}</span>
+            ${accident.accident_type || "Not specified"}
           </td>
+
           <td>
-            <button class="accident-view-btn" id="viewAccidentDetailBtn" data-accident="${accident.accident_id}">
+            ${accident.specific_location || "Not specified"}
+          </td>
+
+          <td>
+            <span class="accident-status ${statusClass || ""}">
+              ${status || "Reported"}
+            </span>
+          </td>
+
+          <td>
+            <button
+              class="accident-view-btn"
+              data-accident="${accident.accident_id}"
+            >
               <i class="fas fa-eye"></i>
               View
             </button>
           </td>
+
         </tr>
       `;
     });
@@ -283,7 +348,7 @@ export async function renderAccidentReportsPanel(container) {
         accidentType.includes(searchTerm) ||
         status.includes(searchTerm);
 
-      const accidentDate = String(accident.accident_date ?? "");
+      const accidentDate = String(accident.detected_at ?? "").split(" ")[0];
 
       const matchesFromDate = !fromDate || accidentDate >= fromDate;
 

@@ -1,3 +1,5 @@
+import { openAccidentModal } from "./accident_and_violation/accident_modal.js";
+
 export function renderPossibleAccidents(container, possibleAccidents = []) {
 
   if(!possibleAccidents || possibleAccidents.length === 0) {
@@ -33,7 +35,7 @@ export function renderPossibleAccidents(container, possibleAccidents = []) {
         });
 
         return `
-          <div class="possible-accident-card" data-possible-accident-id="${accident.accident_detection_id}">
+          <div class="possible-accident-card js-possible-accident-card" data-possible-accident-id="${accident.accident_detection_id}">
             <div class="possible-accident-snapshot">
               ${
                 accident.snapshot_filename ? `
@@ -57,11 +59,72 @@ export function renderPossibleAccidents(container, possibleAccidents = []) {
                 <p>${time}</p>
               </div>
             </div>
+
+            <div class="accident-report-container accident-report-hidden js-accident-report-container">
+              <button class="btn btn-danger js-accident-report-btn" data-possible-accident-id="${accident.accident_detection_id}">
+                <i class="fas fa-car-crash"></i>
+                Accident Report
+              </button>
+            </div>
           </div>
         `;
       }).join("")}
 
     </div>
   `;
+
+  const possibleAccidentCards = container.querySelectorAll(".js-possible-accident-card");
+  const accidentReportBtn = container.querySelectorAll(".js-accident-report-btn");
+
+  possibleAccidentCards.forEach(card => {
+    card.addEventListener("click", () => {
+
+      possibleAccidentCards.forEach(c => {
+        c.classList.remove("active-possible-accident");
+
+        const reportContainer = c.querySelector(".js-accident-report-container");
+
+        if (reportContainer) {
+          reportContainer.classList.add("accident-report-hidden");
+        }
+      });
+
+      card.classList.add("active-possible-accident");
+
+      const reportContainer = card.querySelector(".js-accident-report-container");
+
+      if(reportContainer) {
+        reportContainer.classList.remove("accident-report-hidden");
+      }
+
+    });
+  });
+
+  accidentReportBtn.forEach(button => {
+    button.addEventListener("click", event => {
+      event.stopPropagation();
+
+      const accidentDetectionId = button.dataset.possibleAccidentId;
+
+      const accident = possibleAccidents.find(item => item.accident_detection_id == accidentDetectionId);
+
+      if(!accident) {
+        console.error("Possible Accident Detections not found: ", accidentDetectionId);
+
+        return;
+      }
+
+      const accidentModalContainer = document.querySelector("#accidentModalContainer");
+
+      if(!accidentModalContainer) {
+        console.error("Accident modal container not found.");
+
+        return;
+      }
+
+      openAccidentModal(accidentModalContainer, accident);
+
+    });
+  });
 
 }

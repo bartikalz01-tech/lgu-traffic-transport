@@ -6,77 +6,64 @@ class Accidents extends config {
   public function insertAccidentReport($data) {
     $conn = $this->conn();
 
-    $conn->beginTransaction();
-
-    $publicAccidentId = 'ACC-' . date('Ymd') . '-' .  strtoupper(substr(uniqid(), -6));
-    
-    $sql = "
-      INSERT INTO accident_cases (
-        public_accident_id,
-        road_id,
-        accident_date,
-        accident_time,
-        accident_type,
-        specific_location
-      )
-      VALUES (
-        :public_accident_id,
-        :road_id,
-        :accident_date,
-        :accident_time,
-        :accident_type,
-        :specific_location
-      )
-    ";
-
-    $stmt = $conn->prepare($sql);
-
-    $stmt->bindParam(':public_accident_id', $publicAccidentId);
-
-    $stmt->bindParam(':road_id', $data['road_id']);
-
-    $stmt->bindParam(':accident_date', $data['accident_date']);
-
-    $stmt->bindParam(':accident_time', $data['accident_time']);
-
-    $stmt->bindParam(':accident_type', $data['accident_type']);
-
-    $stmt->bindParam(':specific_location', $data['specific_location']);
-
     try {
+
+      $conn->beginTransaction();
+
+      $sql = "
+        SELECT
+          accident_detection_id
+        FROM accident_detections
+        WHERE accident_detection_id = :accident_detection_id
+        LIMIT 1
+      ";
+
+      $stmt = $conn->prepare($sql);
+
+      $stmt->bindParam(':accident_detection_id', $data['accident_detection_id'], PDO::PARAM_INT);
+
+      $stmt->execute();
+
+      $detection = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if(!$detection) {
+        throw new Exception("Accident detection not found.");
+      }
+
+      $publicAccidentId = 'ACC-' . date('Ymd') . '-' .  strtoupper(substr(uniqid(), -6));
+
+      $sql = "
+        INSERT INTO accident_cases (
+          public_accident_id,
+          accident_detection_id,
+          accident_type,
+          specific_location
+        ) VALUES (
+          :public_accident_id,
+          :accident_detection_id,
+          :accident_type,
+          :specific_location 
+        )
+      ";
+
+      $stmt = $conn->prepare($sql);
+
+      $stmt->bindValue(':public_accident_id', $publicAccidentId);
+
+      $stmt->bindValue(':accident_detection_id', $data['accident_detection_id'], PDO::PARAM_INT);
+
+      $stmt->bindValue(':accident_type', $data['accident_type']);
+
+      $stmt->bindValue(':specific_location', $data['specific_location']);
+
       $stmt->execute();
 
       $accidentId = $conn->lastInsertId();
 
-      $snapshotFileName = !empty($data['snapshot_filename']) ? $data['snapshot_filename'] : null;
-
-      $sqlEvidence = "
-        INSERT INTO accident_evidence (
-          accident_id,
-          snapshot_filename,
-          recording_filename,
-          recording_from,
-          recording_to 
-        ) VALUES (
-          :accident_id,
-          :snapshot_filename,
-          NULL,
-          NULL,
-          NULL
-        )
-      ";
-
-      $stmtEvidence = $conn->prepare($sqlEvidence);
-
-      $stmtEvidence->bindValue(':accident_id', $accidentId, PDO::PARAM_INT);
-      $stmtEvidence->bindValue(':snapshot_filename', $snapshotFileName);
-
-      $stmtEvidence->execute();
-
       $conn->commit();
 
       return [
-        'success' => True,
+        'success' => true,
         'accident_id' => $accidentId,
         'public_accident_id' => $publicAccidentId
       ];
@@ -91,36 +78,58 @@ class Accidents extends config {
         $e->getMessage()
       );
 
-      throw new Exception("Database insert failed");
+      throw new Exception("Database insert failed.");
+
+    } catch(Exception $e) {
+
+      if ($conn->inTransaction()) {
+        $conn->rollBack();
+      }
+
+      throw $e;
     }
+
   }
   
   public function getAccidentDetails() {
+
     $conn = $this->conn();
+
     $sql = "
       SELECT
         ac.accident_id,
         ac.public_accident_id,
-        ac.road_id,
+
+        ad.accident_detection_id,
+        ad.road_id,
         r.road_name,
-        ac.accident_date,
-        ac.accident_time,
+        r.camera_name,
+
+        ad.detected_at,
+        ad.snapshot_filename,
+
         ac.accident_type,
         ac.specific_location,
         ac.status,
-        ae.snapshot_filename,
+
         ae.recording_filename,
         ae.recording_from,
         ae.recording_to,
+
         ac.reported_at,
         ac.updated_at
+
       FROM accident_cases ac
+
+      INNER JOIN accident_detections ad
+        ON ac.accident_detection_id = ad.accident_detection_id
+
       INNER JOIN roads r
-        ON ac.road_id = r.road_id
+        ON ad.road_id = r.road_id
 
       LEFT JOIN accident_evidence ae
         ON ac.accident_id = ae.accident_id
-      
+
       ORDER BY ac.reported_at DESC
     ";
 
@@ -164,6 +173,7 @@ class Accidents extends config {
         ad.accident_detection_id,
         ad.road_id,
         r.road_name,
+        r.camera_name,
         ad.detected_at,
         ad.snapshot_filename
       FROM accident_detections ad
@@ -172,7 +182,7 @@ class Accidents extends config {
         ON ad.road_id = r.road_id
 
       ORDER BY ad.created_at DESC
-      LIMIT 6
+      LIMIT 30
     ";
 
     $stmt = $conn->prepare($sql);

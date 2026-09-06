@@ -1,22 +1,129 @@
+function formatAccidentDateTime(dateTime) {
+
+  if (!dateTime) {
+    return {
+      date: "-",
+      time: "-",
+      dateTime: "-"
+    };
+  }
+
+  const date = new Date(
+    dateTime.replace(" ", "T")
+  );
+
+  if (isNaN(date.getTime())) {
+    return {
+      date: dateTime,
+      time: "",
+      dateTime: dateTime
+    };
+  }
+
+  return {
+    date: date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }),
+
+    time: date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    }),
+
+    dateTime: date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    })
+  };
+}
+
+
 export function detailedAccidentReport(
   container,
   accidentDetail
 ) {
 
-  const snapshotUrl = accidentDetail.snapshot_filename
-    ? `http://127.0.0.1:5001/accident_evidence/snapshots/file/${encodeURIComponent(
-        accidentDetail.snapshot_filename
-      )}`
-    : null;
-  
-  const recordingUrl = accidentDetail.recording_filename
-    ? `http://127.0.0.1:5001/recording/file/${encodeURIComponent(
-        accidentDetail.recording_filename
-      )}`
-    : null;
+  /*
+   * ----------------------------------------
+   * FORMAT DATE / TIME DATA
+   * ----------------------------------------
+   */
 
-  const statusClass = accidentDetail.status.toLowerCase().replace(/\s+/g, "-");
+  const detectedDateTime =
+    formatAccidentDateTime(
+      accidentDetail.detected_at
+    );
 
+  const reportedDateTime =
+    formatAccidentDateTime(
+      accidentDetail.reported_at
+    );
+
+  const updatedDateTime =
+    formatAccidentDateTime(
+      accidentDetail.updated_at
+    );
+
+  const recordingFrom =
+    formatAccidentDateTime(
+      accidentDetail.recording_from
+    );
+
+  const recordingTo =
+    formatAccidentDateTime(
+      accidentDetail.recording_to
+    );
+
+
+  /*
+   * ----------------------------------------
+   * CCTV URLS
+   * ----------------------------------------
+   */
+
+  const snapshotUrl =
+    accidentDetail.snapshot_filename
+      ? `http://127.0.0.1:5001/accident_evidence/snapshots/file/${encodeURIComponent(
+          accidentDetail.snapshot_filename
+        )}`
+      : null;
+
+
+  const recordingUrl =
+    accidentDetail.recording_filename
+      ? `http://127.0.0.1:5001/recording/file/${encodeURIComponent(
+          accidentDetail.recording_filename
+        )}`
+      : null;
+
+
+  /*
+   * ----------------------------------------
+   * STATUS
+   * ----------------------------------------
+   */
+
+  const status =
+    accidentDetail.status || "Reported";
+
+  const statusClass =
+    status
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+
+
+  /*
+   * ----------------------------------------
+   * RENDER MODAL
+   * ----------------------------------------
+   */
 
   container.innerHTML = `
 
@@ -61,6 +168,7 @@ export function detailedAccidentReport(
           <div class="detailed-section-header">
 
             <div>
+
               <h3>
                 <i class="fas fa-camera"></i>
                 CCTV Evidence
@@ -69,6 +177,7 @@ export function detailedAccidentReport(
               <p>
                 Snapshot captured from the associated CCTV camera.
               </p>
+
             </div>
 
           </div>
@@ -105,9 +214,15 @@ export function detailedAccidentReport(
 
         </div>
 
-        <div class="detailed-accident-recording">
+
+        <!-- CCTV RECORDING -->
+
+        <!--<div class="detailed-accident-recording">
+
           <div class="detailed-section-header">
+
             <div>
+
               <h3>
                 <i class="fas fa-film"></i>
                 CCTV Historical Recording
@@ -116,92 +231,105 @@ export function detailedAccidentReport(
               <p>
                 Historical footage associated with this accident.
               </p>
+
             </div>
+
           </div>
+
 
           <div class="detailed-recording-container">
+
             ${
-            recordingUrl
-              ? `
-                <video
-                  class="detailed-accident-recording-video"
-                  controls
-                  preload="metadata"
-                  playsinline
-                >
-                
-                <source
-                  src="${recordingUrl}"
-                  type="video/mp4"
-                >
+              recordingUrl
+                ? `
+                  <video
+                    class="detailed-accident-recording-video"
+                    controls
+                    preload="metadata"
+                    playsinline
+                  >
 
-                Your browser does not support
-                HTML5 video playback.
+                    <source
+                      src="${recordingUrl}"
+                      type="video/mp4"
+                    >
 
-                </video>
-              ` : `
-                <div class="no-recording-film">
-                  <i class="fas fa-film"></i>
+                    Your browser does not support
+                    HTML5 video playback.
 
-                  <h4>No Historical Recording Available</h4>
+                  </video>
+                `
+                : `
+                  <div class="no-recording-film">
 
-                  <p>
-                    A CCTV recording has not yet been
-                    attached to this accident case.
-                  </p>
-                </div>
-              `
+                    <i class="fas fa-film"></i>
+
+                    <h4>
+                      No Historical Recording Available
+                    </h4>
+
+                    <p>
+                      A CCTV recording has not yet been
+                      attached to this accident case.
+                    </p>
+
+                  </div>
+                `
             }
+
           </div>
 
+
           ${
-          recordingUrl
-            ? `
-              <div class="detailed-recording-meta">
+            recordingUrl
+              ? `
+                <div class="detailed-recording-meta">
 
-                <div>
+                  <div>
 
-                  <span>
-                    Recording File
-                  </span>
+                    <span>
+                      Recording File
+                    </span>
 
-                  <strong>
-                    ${accidentDetail.recording_filename}
-                  </strong>
+                    <strong>
+                      ${accidentDetail.recording_filename}
+                    </strong>
+
+                  </div>
+
+
+                  <div>
+
+                    <span>
+                      From
+                    </span>
+
+                    <strong>
+                      ${recordingFrom.dateTime}
+                    </strong>
+
+                  </div>
+
+
+                  <div>
+
+                    <span>
+                      To
+                    </span>
+
+                    <strong>
+                      ${recordingTo.dateTime}
+                    </strong>
+
+                  </div>
 
                 </div>
-
-
-                <div>
-
-                  <span>
-                    From
-                  </span>
-
-                  <strong>
-                    ${accidentDetail.recording_from || "-"}
-                  </strong>
-
-                </div>
-
-
-                <div>
-
-                  <span>
-                    To
-                  </span>
-
-                  <strong>
-                    ${accidentDetail.recording_to || "-"}
-                  </strong>
-
-                </div>
-
-              </div>
-            `
-            : ""
+              `
+              : ""
           }
-        </div>
+
+        </div>-->
+
 
         <!-- ACCIDENT INFORMATION -->
 
@@ -210,6 +338,7 @@ export function detailedAccidentReport(
           <div class="detailed-section-header">
 
             <div>
+
               <h3>
                 <i class="fas fa-info-circle"></i>
                 Accident Information
@@ -218,12 +347,14 @@ export function detailedAccidentReport(
               <p>
                 Details recorded for this accident case.
               </p>
+
             </div>
 
           </div>
 
 
           <div class="detailed-info-grid">
+
 
             <div class="detailed-info-item">
 
@@ -245,7 +376,7 @@ export function detailedAccidentReport(
               </span>
 
               <strong>
-                ${accidentDetail.road_name}
+                ${accidentDetail.road_name || "-"}
               </strong>
 
             </div>
@@ -258,7 +389,7 @@ export function detailedAccidentReport(
               </span>
 
               <strong>
-                ${accidentDetail.accident_date}
+                ${detectedDateTime.date}
               </strong>
 
             </div>
@@ -271,7 +402,7 @@ export function detailedAccidentReport(
               </span>
 
               <strong>
-                ${accidentDetail.accident_time}
+                ${detectedDateTime.time}
               </strong>
 
             </div>
@@ -284,7 +415,7 @@ export function detailedAccidentReport(
               </span>
 
               <strong>
-                ${accidentDetail.accident_type}
+                ${accidentDetail.accident_type || "-"}
               </strong>
 
             </div>
@@ -310,10 +441,11 @@ export function detailedAccidentReport(
               </span>
 
               <span class="accident-status ${statusClass}">
-                ${accidentDetail.status}
+                ${status}
               </span>
 
             </div>
+
 
           </div>
 
@@ -327,16 +459,32 @@ export function detailedAccidentReport(
           <div class="detailed-section-header">
 
             <div>
+
               <h3>
                 <i class="fas fa-clock"></i>
                 Report Information
               </h3>
+
             </div>
 
           </div>
 
 
           <div class="metadata-grid">
+
+
+            <div>
+
+              <span>
+                Detection Time
+              </span>
+
+              <strong>
+                ${detectedDateTime.dateTime}
+              </strong>
+
+            </div>
+
 
             <div>
 
@@ -345,7 +493,7 @@ export function detailedAccidentReport(
               </span>
 
               <strong>
-                ${accidentDetail.reported_at}
+                ${reportedDateTime.dateTime}
               </strong>
 
             </div>
@@ -358,14 +506,16 @@ export function detailedAccidentReport(
               </span>
 
               <strong>
-                ${accidentDetail.updated_at}
+                ${updatedDateTime.dateTime}
               </strong>
 
             </div>
 
+
           </div>
 
         </div>
+
 
       </div>
 
@@ -387,18 +537,32 @@ export function detailedAccidentReport(
   `;
 
 
-  // Show overlay
+  /*
+   * ----------------------------------------
+   * SHOW OVERLAY
+   * ----------------------------------------
+   */
+
   container.classList.remove(
     "detailed-reports-hidden"
   );
 
 
-  // Close buttons
+  /*
+   * ----------------------------------------
+   * CLOSE BUTTONS
+   * ----------------------------------------
+   */
+
   const closeBtn =
-    container.querySelector("#closeDetailedAccident");
+    container.querySelector(
+      "#closeDetailedAccident"
+    );
 
   const closeFooterBtn =
-    container.querySelector("#closeDetailedAccidentFooter");
+    container.querySelector(
+      "#closeDetailedAccidentFooter"
+    );
 
 
   const closeModal = () => {
@@ -421,13 +585,21 @@ export function detailedAccidentReport(
   );
 
 
-  // Close when clicking outside the modal
-  container.addEventListener("click", event => {
+  /*
+   * ----------------------------------------
+   * CLOSE WHEN CLICKING OUTSIDE
+   * ----------------------------------------
+   */
 
-    if (event.target === container) {
-      closeModal();
+  container.addEventListener(
+    "click",
+    event => {
+
+      if(event.target === container) {
+        closeModal();
+      }
+
     }
-
-  });
+  );
 
 }

@@ -17,6 +17,12 @@
 .possible-accident-card {
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+  border-radius: 12px;
+
+  border: 2px solid transparent;
+
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .possible-accident-snapshot {
@@ -60,13 +66,14 @@
   box-shadow: 0 2px 8px var(--shadow-1);
 
   box-sizing: border-box;
+
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .road-details {
   display: flex;
   align-items: center;
   gap: 9px;
-
   min-width: 0;
 }
 
@@ -89,6 +96,11 @@
   color: var(--primary-color);
 
   flex-shrink: 0;
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
 }
 
 .road-details > p:first-child i {
@@ -106,6 +118,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  transition: color 0.25s ease;
 }
 
 .detection-details {
@@ -125,6 +139,7 @@
   color: var(--text-secondary);
 
   white-space: nowrap;
+  transition: color 0.25s ease;
 }
 
 /* Date */
@@ -148,11 +163,150 @@
   background: var(--border-color-1);
 
   transform: translateY(-50%);
+
+  transition: background-color 0.25s ease;
 }
 
 /* Time */
 .detection-details p:last-child {
   color: var(--text-color-1);
-
   font-weight: 700;
+}
+
+.accident-report-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  box-sizing: border-box;
+  border: 1px solid var(--border-color-1);
+  border-top: none;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.accident-report-hidden {
+  display: none;
+}
+
+.possible-accident-card:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(231, 76, 60, 0.55);
+
+  box-shadow:
+    0 8px 22px rgba(231, 76, 60, 0.16);
+}
+
+.possible-accident-card:hover .possible-accident-snapshot {
+  border-color: #e74c3c;
+
+  box-shadow:
+    0 4px 18px rgba(231, 76, 60, 0.20);
+}
+
+.possible-accident-card:hover .possible-accident-snapshot img {
+  transform: scale(1.015);
+}
+
+.possible-accident-card:hover .possible-accident-details {
+  background: rgba(231, 76, 60, 0.045);
+
+  border-color: rgba(231, 76, 60, 0.25);
+}
+
+.possible-accident-card:hover .road-details > p:first-child {
+  background: rgba(231, 76, 60, 0.10);
+
+  border-color: rgba(231, 76, 60, 0.20);
+
+  color: #e74c3c;
+}
+
+
+/* Road name */
+
+.possible-accident-card:hover .road-name {
+  color: #d63b2d;
+}
+
+
+/* Date */
+
+.possible-accident-card:hover .detection-details p:first-child {
+  color: #c94a3d;
+}
+
+
+/* Time */
+
+.possible-accident-card:hover .detection-details p:last-child {
+  color: #d63b2d;
+}
+
+
+/* Separator */
+
+.possible-accident-card:hover .detection-details p:first-child::after {
+  background: rgba(231, 76, 60, 0.25);
+}
+
+/* ============================================================
+   ACTIVE / SELECTED CARD
+   Same visual treatment as hover
+   ============================================================ */
+
+.possible-accident-card.active-possible-accident {
+  transform: translateY(-2px);
+  border-color: rgba(231, 76, 60, 0.55);
+  box-shadow:
+    0 8px 22px rgba(231, 76, 60, 0.16);
+}
+
+.possible-accident-card.active-possible-accident .possible-accident-snapshot {
+  border-color: #e74c3c;
+  box-shadow:
+    0 4px 18px rgba(231, 76, 60, 0.20);
+}
+
+.possible-accident-card.active-possible-accident .possible-accident-snapshot img {
+  transform: scale(1.015);
+}
+
+.possible-accident-card.active-possible-accident .possible-accident-details {
+  background: rgba(231, 76, 60, 0.045);
+  border-color: rgba(231, 76, 60, 0.25);
+}
+
+.possible-accident-card.active-possible-accident .road-details > p:first-child {
+  background: rgba(231, 76, 60, 0.10);
+  border-color: rgba(231, 76, 60, 0.20);
+  color: #e74c3c;
+}
+
+.possible-accident-card.active-possible-accident .road-name {
+  color: #d63b2d;
+}
+
+.possible-accident-card.active-possible-accident .detection-details p:first-child {
+  color: #c94a3d;
+}
+
+.possible-accident-card.active-possible-accident .detection-details p:last-child {
+  color: #d63b2d;
+}
+
+.possible-accident-card.active-possible-accident .detection-details p:first-child::after {
+  background: rgba(231, 76, 60, 0.25);
+}
+
+.possible-accident-card.active-possible-accident .accident-report-container {
+  background: rgba(231, 76, 60, 0.045);
+  border-color: rgba(231, 76, 60, 0.25);
 }

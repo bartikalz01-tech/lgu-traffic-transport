@@ -1,8 +1,82 @@
 import { insertAccidentReport } from "../../data/accident_report/fetch_accidents.js";
 
-export function openAccidentModal(container, road) {
 
-  let snapshotFileName = null;
+function formatAccidentDateTime(detectedAt) {
+  if (!detectedAt) {
+    return {
+      date: "",
+      time: "",
+      dateTime: ""
+    };
+  }
+
+  // Convert MySQL datetime:
+  // "2026-08-31 14:35:22"
+  // into something JavaScript can parse.
+  const date = new Date(detectedAt.replace(" ", "T"));
+
+  if (isNaN(date.getTime())) {
+    return {
+      date: "",
+      time: "",
+      dateTime: detectedAt
+    };
+  }
+
+  return {
+    date: date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }),
+
+    time: date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    }),
+
+    dateTime: date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    })
+  };
+}
+
+
+function automaticSpecificLocation(roadName) {
+
+  switch (roadName?.trim()) {
+
+    case "Susano Road":
+      return "Long road connected to Don Alejandro and Asuncion Street";
+
+    case "Don Alejandro Street":
+      return "Intersection on Susano Road near exit to Barangay San Agustin";
+
+    case "Del Rey":
+      return "Near Santo Niño Street";
+
+    case "Santo Niño Street":
+      return "Roads intersecting Del Rey and Don Alejandro Streets";
+
+    default:
+      return "Location based on detected CCTV road";
+  }
+}
+
+
+export function openAccidentModal(container, accident) {
+
+  let snapshotFileName = accident.snapshot_filename || null;
+
+  const formattedDateTime = formatAccidentDateTime(accident.detected_at);
+
+  const automaticLocation = automaticSpecificLocation(accident.road_name);
 
   container.innerHTML = `
     <div class="form-panel">
@@ -30,22 +104,22 @@ export function openAccidentModal(container, road) {
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Road/Street</label>
-            <input type="text" class="form-control" id="roadName" value="${road.road_name}" readonly>
+            <input type="text" class="form-control" id="roadName" value="${accident.road_name}" readonly>
           </div>
           <div class="form-group">
             <label class="form-label">Camera Name</label>
-            <input type="text" class="form-control" id="cameraName" value="CAM-${road.road_name}-${road.camera_name}" readonly>
+            <input type="text" class="form-control" id="cameraName" value="CAM-${accident.road_name}-${accident.camera_name}" readonly>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Accident Date</label>
-            <input type="date" class="form-control" id="accidentDate">
+            <input type="text" class="form-control" id="accidentDate" value="${formattedDateTime.date}" readonly>
           </div>
           <div class="form-group">
             <label class="form-label">Accident Time</label>
-            <input type="time" class="form-control" id="accidentTime">
+            <input type="text" class="form-control" id="accidentTime" value="${formattedDateTime.time}" readonly>
           </div>
         </div>
 
@@ -56,7 +130,7 @@ export function openAccidentModal(container, road) {
           </div>
           <div class="form-group">
             <label class="form-label">Specific Location</label>
-            <input type="text" class="form-control" id="specificLocation">
+            <input type="text" class="form-control" id="specificLocation" value="${automaticLocation}" readonly>
           </div>
         </div>
       </div>
@@ -65,48 +139,48 @@ export function openAccidentModal(container, road) {
         <div class="section-header">
           <h4><i class="fas fa-video"></i> CCTV Evidence</h4>
           <span class="section-badge evidence">
-            Evidence
+            Detection Evidence
           </span>
         </div>
 
         <div class="cctv-section">
-          <div class="cctv-empty-state" id="cctvEmptyState">
+          ${
+            snapshotFileName ? `
+              <div class="cctv-snapshot-preview" id="snapshotPreview">
+                <img 
+                  id="accidentSnapshot" 
+                  src="http://127.0.0.1:5001/accident_evidence/snapshots/file/${encodeURIComponent(snapshotFileName)}"
+                  alt="Accident CCTV Snapshot"
+                >
 
-            <div class="cctv-empty-icon">
-              <i class="fas fa-video"></i>
-            </div>
+                <div class="snapshot-meta">
+                  <div>
+                    <i class"fas fa-clock"></i>
+                    <span id="snapshotCapturedAt">
+                      ${accident.detected_at}
+                    </span>
+                  </div>
 
-            <h5>CCTV Evidence</h5>
-
-            <p>
-              CCTV recording and incident snapshots
-              will be attached here.
-            </p>
-
-            <button type="button" class="btn btn-primary" id="captureSnapshotBtn">
-              <i class="fas fa-camera"></i>
-              Capture Snapshot
-            </button>
-          </div>
-
-          <div class="cctv-snapshot-preview hidden" id="snapshotPreview">
-            <img id="accidentSnapshot" src="" alt="Accident CCTV Snapshot">
-            <div class="snapshot-meta">
-              <div>
-                <i class="fas fa-clock"></i>
-                <span id="snapshotCapturedAt"></span>
+                  <span class="snapshot-status">
+                    Detection Snapshot
+                  </span>
+                </div>
               </div>
+            `
+            : `
+              <div class="cctv-empty-state" id="cctvEmptyState">
+                <div class="cctv-empty-icon">
+                  <i class="fas fa-video"></i>
+                </div>
 
-              <span class="snapshot-status">
-                Snapshot Captured
-              </span>
-            </div>
+                <h5>No Snapshot Available</h5>
 
-            <button type="button" class="btn btn-secondary" id="retakeSnapshotBtn">
-              <i class="fas fa-camera"></i>
-              Retake Snapshot
-            </button>
-          </div>
+                <p>
+                  No CCTV snapshot was attached to this detection.
+                </p>
+              </div>
+            `
+          }
         </div>
       </div>
 
@@ -123,7 +197,7 @@ export function openAccidentModal(container, road) {
 
   container.classList.remove("accident-hidden-overlay")
 
-  const captureBtn = container.querySelector("#captureSnapshotBtn");
+  /*const captureBtn = container.querySelector("#captureSnapshotBtn");
   const snapshotPreview = container.querySelector("#snapshotPreview");
   const emptyState = container.querySelector("#cctvEmptyState");
   const snapshotImage = container.querySelector("#accidentSnapshot");
@@ -172,25 +246,31 @@ export function openAccidentModal(container, road) {
         Capture Snapshot
       `;
     }
-  });
+  });*/
 
 
   const submitAccidentBtn = document.getElementById("submitAccidentReport");
 
   submitAccidentBtn.addEventListener("click", async () => {
-    
-    const accidentDate = container.querySelector("#accidentDate").value;
-    const accidentTime = container.querySelector("#accidentTime").value;
-    const accidentType = container.querySelector("#accidentType").value;
-    const specificLocation = container.querySelector("#specificLocation").value;
+  
+    const accidentType = container.querySelector("#accidentType").value.trim();
+    const specificLocation = container.querySelector("#specificLocation").value.trim();
+
+    if (!accidentType) {
+      Swal.fire({
+        icon: "warning",
+        title: "Accident Type Required",
+        text: "Please specify the type of accident before submitting.",
+        confirmButtonText: "OK"
+      });
+
+      return;
+    }
 
     const accidentData = {
-      road_id: road.road_id,
-      accident_date: accidentDate,
-      accident_time: accidentTime,
+      accident_detection_id: accident.accident_detection_id,
       accident_type: accidentType,
-      specific_location: specificLocation,
-      snapshot_filename: snapshotFileName
+      specific_location: specificLocation
     };
 
     try {

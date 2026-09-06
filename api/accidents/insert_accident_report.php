@@ -7,7 +7,7 @@ try {
 
   if($_SERVER['REQUEST_METHOD'] !== "POST") {
     http_response_code(405);
-  
+
     echo json_encode([
       'success' => false,
       'message' => 'Method not allowed.'
@@ -29,15 +29,21 @@ try {
     exit;
   }
 
-   $requiredFields = [
-    'road_id',
-    'accident_date',
-    'accident_time',
+  /*
+   * Required fields for accident_cases
+   */
+  $requiredFields = [
+    'accident_detection_id',
     'accident_type'
   ];
 
   foreach($requiredFields as $field) {
-    if(!isset($data[$field]) || trim((string)$data[$field]) === '') {
+
+    if(
+      !isset($data[$field]) ||
+      trim((string)$data[$field]) === ''
+    ) {
+
       http_response_code(400);
 
       echo json_encode([
@@ -49,9 +55,14 @@ try {
     }
   }
 
-  $data['specific_location'] = $data['specific_location'] ?? null;
+  /*
+   * Optional field
+   */
+  $data['specific_location'] =
+    !empty($data['specific_location'])
+      ? trim($data['specific_location'])
+      : null;
 
-  $data['snapshot_filename'] = $data['snapshot_filename'] ?? null;
 
   $accidents = new Accidents();
 
@@ -65,6 +76,7 @@ try {
   ]);
 
 } catch(Exception $e) {
+
   http_response_code(500);
 
   echo json_encode([
