@@ -136,50 +136,9 @@ if(!isset($_SESSION['user_id'])) {
             <p class="subtitle">Real-time alerts and suspected incidents by road segment</p>
           </div>
 
-          <div class="incident-report-list">
-            <div class="incident-report high-severity">
-              <div class="icon">
-                <i class="fa-solid fa-car-crash"></i>
-              </div>
-              <div class="details">
-                <p class="incident-road">Tagaytay St</p>
-                <p class="incident-description">Possible stalled vehicle causing slow traffic</p>
-              </div>
-              <div class="meta">
-                <span class="status">High</span>
-                <span class="time">2 min ago</span>
-              </div>
-            </div>
-
-            <div class="incident-report moderate-severity">
-              <div class="icon">
-                <i class="fa-solid fa-traffic-light"></i>
-              </div>
-              <div class="details">
-                <p class="incident-road">Mt. Natib</p>
-                <p class="incident-description">Near intersection, slow-moving queue detected</p>
-              </div>
-              <div class="meta">
-                <span class="status">Moderate</span>
-                <span class="time">8 min ago</span>
-              </div>
-            </div>
-
-            <div class="incident-report low-severity">
-              <div class="icon">
-                <i class="fa-solid fa-exclamation-circle"></i>
-              </div>
-              <div class="details">
-                <p class="incident-road">Mauban</p>
-                <p class="incident-description">Possible lane obstruction from roadside activity</p>
-              </div>
-              <div class="meta">
-                <span class="status">Low</span>
-                <span class="time">12 min ago</span>
-              </div>
-            </div>
-          </div>
+          <div class="incident-report-list" id="incidentReportListContainer"></div>
         </div>
+
       </div>
     </section>
   </main>

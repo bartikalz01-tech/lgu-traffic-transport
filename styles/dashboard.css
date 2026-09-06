@@ -396,5 +396,278 @@
   color: var(--text-secondary);
 }
 
-  font-size: 12px;
+
+/* =========================================
+   POSSIBLE ACCIDENT DETECTIONS
+========================================= */
+
+.possible-incident-card {
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: center;
+  gap: 12px;
+
+  padding: 15px;
+
+  background: #f8f9fa;
+
+  border-radius: 10px;
+
+  border-left: 4px solid #db3d3d;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+
+.possible-incident-card:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08);
+
+  background-color: #ffffff;
+}
+
+
+/* Accident icon */
+
+.possible-incident-icon {
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(219, 61, 61, 0.12);
+
+}
+
+
+.possible-incident-icon i {
+
+  color: #db3d3d;
+
+  font-size: 17px;
+
+}
+
+
+/* Details */
+
+.possible-incident-details {
+
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+}
+
+
+.possible-incident-road {
+
+  font-weight: 700;
+
+  color: var(--text-color-1);
+
+  font-size: 0.95rem;
+
+}
+
+
+.possible-incident-description {
+
+  color: var(--text-secondary);
+
+  font-size: 0.82rem;
+
+  line-height: 1.3;
+
+}
+
+
+.possible-incident-detection {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 2px;
+
+  color: var(--text-secondary);
+
+  font-size: 0.75rem;
+
+}
+
+
+.possible-incident-detection i {
+
+  font-size: 0.7rem;
+
+}
+
+
+/* Right-side metadata */
+
+.possible-incident-meta {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  gap: 5px;
+
+}
+
+
+.possible-incident-status {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 4px 8px;
+
+  border-radius: 999px;
+
+  background: rgba(219, 61, 61, 0.12);
+
+  color: #b02a37;
+
+  font-size: 0.7rem;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.03em;
+
+}
+
+
+.live-dot {
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #db3d3d;
+
+  animation: possible-accident-pulse 1.5s infinite;
+
+}
+
+
+@keyframes possible-accident-pulse {
+
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.4);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+}
+
+
+.possible-incident-time {
+
+  font-size: 0.75rem;
+
+  color: var(--text-secondary);
+
+}
+
+
+/* Empty state */
+
+.possible-incident-empty {
+
+  min-height: 220px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 30px;
+
+  color: var(--text-secondary);
+
+}
+
+
+.possible-incident-empty-icon {
+
+  width: 55px;
+  height: 55px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(40, 167, 69, 0.12);
+
+  margin-bottom: 12px;
+
+}
+
+
+.possible-incident-empty-icon i {
+
+  color: #28a745;
+
+  font-size: 22px;
+
+}
+
+
+.possible-incident-empty h4 {
+
+  margin: 0 0 5px 0;
+
+  color: var(--text-color-1);
+
+}
+
+
+.possible-incident-empty p {
+
+  margin: 0;
+
+  font-size: 0.82rem;
+
 }
