@@ -37,6 +37,7 @@
   <script src="../scripts/sidebar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="../scripts/accident/accident.js" defer></script>
+  <script src="../scripts/header.js"></script>
 </body>
 
 </html>
