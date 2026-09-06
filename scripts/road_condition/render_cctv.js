@@ -1,5 +1,10 @@
 import { getCctvAiDetails } from "../data/road_condition/fetch_road_condition.js";
-import { getCurrentTraffic, subscribeTraffic } from "../data/road_condition/trafficStore.js";
+import { 
+  getCurrentTraffic, 
+  subscribeTraffic, 
+  subscribePossibleAccident, 
+  getLatestPossibleAccidents 
+} from "../data/road_condition/trafficStore.js";
 import { roadReports } from "./render_road_reports.js";
 import { getActiveRoadId, getRoadDetailDom, openRoadCondition } from "./road_details.js";
 import { renderCongestionFrequency } from "./road_reports/congestion_frequency.js";
@@ -181,6 +186,14 @@ export async function renderCctvAi(container) {
   const cctvContent = container.querySelector(".cctv-content");
   //const cctvRecordsContainer = container.querySelector("#cctvRecordsContainer");
   const possbileAccidentsContainer = container.querySelector("#possibleAccidentsContainer");
+
+  subscribePossibleAccident((possibleAccidents) => {
+
+    if(!possbileAccidentsContainer.classList.contains("hidden")) {
+      renderPossibleAccidents(possbileAccidentsContainer, possibleAccidents);
+    }
+
+  });
   
   const reportsView = container.querySelector("#roadReportsView");
 
@@ -292,7 +305,7 @@ export async function renderCctvAi(container) {
     cctvItems.forEach(item => item.classList.remove("active-stream"));
 
     // Call function
-    renderPossibleAccidents(possbileAccidentsContainer);
+    renderPossibleAccidents(possbileAccidentsContainer, getLatestPossibleAccidents());
   });
 
 }

@@ -2,11 +2,12 @@ import cv2
 from pathlib import Path
 from datetime import datetime
 
-SNAPSHOT_FOLDER = (Path(__file__).parent / "snapshots")
+SNAPSHOT_FOLDER = Path(__file__).parent / "snapshots"
 
 SNAPSHOT_FOLDER.mkdir(parents=True, exist_ok=True)
 
-def create_accident_snapshots(camera_name, frame):
+
+def create_accident_snapshots(camera_name, frame, captured_at=None):
 
   if frame is None:
     return {
@@ -14,8 +15,10 @@ def create_accident_snapshots(camera_name, frame):
       "message": "No CCTV frame available."
     }
 
-
-  timestamp = datetime.now()
+  if captured_at is None:
+    timestamp = datetime.now()
+  else:
+    timestamp = captured_at
 
   camera_name_only = Path(camera_name).stem
 

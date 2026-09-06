@@ -68,6 +68,17 @@ export async function getRoadMapTrafficlevel() {
   }
 }
 
+export async function getPossibleAccidents() {
+  try {
+    const response = await fetch("../api/accidents/possible_accidents.php");
+
+    return await response.json();
+  } catch(error) {
+    console.error(error);
+    return [];
+  }
+}
+
 export async function getTrafficTrendAndCongestionLogs(filters = {}) {
   try {
 

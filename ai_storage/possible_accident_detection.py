@@ -1,6 +1,6 @@
 from ai_storage.database import get_connection
 
-def save_possible_accident(road_id, detected_at):
+def save_possible_accident(road_id, detected_at, snapshot_filename):
 
   connection = get_connection()
 
@@ -9,15 +9,16 @@ def save_possible_accident(road_id, detected_at):
   try:
 
     query = """
-      INSERT INTO accident_detections(road_id, detected_at)
-      VALUES (%s, %s)
+      INSERT INTO accident_detections(road_id, detected_at, snapshot_filename)
+      VALUES (%s, %s, %s)
     """
 
     cursor.execute(
       query,
       (
         road_id,
-        detected_at
+        detected_at,
+        snapshot_filename
       )
     )
 

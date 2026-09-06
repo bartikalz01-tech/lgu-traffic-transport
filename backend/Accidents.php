@@ -157,4 +157,28 @@ class Accidents extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function getPossibleAccidents() {
+    $conn = $this->conn();
+    $sql = "
+      SELECT
+        ad.accident_detection_id,
+        ad.road_id,
+        r.road_name,
+        ad.detected_at,
+        ad.snapshot_filename
+      FROM accident_detections ad
+
+      LEFT JOIN roads r
+        ON ad.road_id = r.road_id
+
+      ORDER BY ad.created_at DESC
+      LIMIT 6
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 }

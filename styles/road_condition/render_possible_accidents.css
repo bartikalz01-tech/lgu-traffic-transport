@@ -35,6 +35,13 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.possible-accident-snapshot img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 .possible-accident-details {
   display: flex;
   align-items: center;

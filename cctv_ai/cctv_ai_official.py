@@ -514,24 +514,46 @@ def process_camera(stream):
 
           if accident_state_key not in saved_accident_states:
 
-            save_result = save_possible_accident(road_id=road_id, detected_at=detected_at)
+            snapshot_result = create_accident_snapshots(
+              camera_name=camera_name, 
+              frame=frame,
+              captured_at=datetime.strptime(detected_at, "%Y-%m-%d %H:%M:%S")
+            )
 
-            if save_result["success"]:
-              saved_accident_states[accident_state_key] = True
-
+            if not snapshot_result["success"]:
               print(
-                f"Possible accident saved to database. "
-                f"Detection ID: "
-                f"{save_result['accident_detection_id']}"
+                "WARNING: Failed to create "
+                "accident snapshot"
               )
 
             else:
+              snapshot_filename = snapshot_result["filename"]
 
               print(
-                "WARNING: Failed to save "
-                "possible accident to database."
+                f"Accident  snapshot saved: "
+                f"{snapshot_filename}"
               )
-      
+
+              save_result = save_possible_accident(road_id=road_id, detected_at=detected_at, snapshot_filename=snapshot_filename)
+
+              if save_result["success"]:
+                saved_accident_states[accident_state_key] = True
+
+                print(
+                  f"Possible accident saved to database. "
+                  f"Detection ID: "
+                  f"{save_result['accident_detection_id']} "
+                  f"Snapshot: "
+                  f"{snapshot_filename}"
+                )
+
+              else:
+
+                print(
+                  "WARNING: Failed to save "
+                  "possible accident to database."
+                )
+    
 
       update_vehicle_counter(
         vehicles,
