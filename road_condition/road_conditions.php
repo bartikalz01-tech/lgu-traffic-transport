@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+  <link rel="stylesheet" href="../styles/header_moodal.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_test.css">
   <link rel="stylesheet" href="../styles/road_condition/detailed_cctv.css">
   <link rel="stylesheet" href="../styles/road_condition/render_historical_recordings.css">
@@ -41,7 +42,7 @@
   <?php include '../includes/admin-footer.php' ?>
 
   <script src="../scripts/sidebar.js"></script>
-  <script src="../scripts/header.js"></script>
+  <script type="module" src="../scripts/header.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="../scripts/road_condition/road_condition.js"></script>
 </body>

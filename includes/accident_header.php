@@ -28,7 +28,7 @@ $userEmail = $_SESSION['email'] ?? '';
 
       <div class="notification-container">
 
-        <div class="notif-bell" title="Notifications">
+        <div class="notif-bell" title="Notifications" id="notificationBtn">
           <i class="fas fa-bell"></i>
         </div>
 
@@ -120,3 +120,5 @@ $userEmail = $_SESSION['email'] ?? '';
 
   </div>
 </header>
+
+<div class="notification-modal-overlay notification-modal-hidden" id="notificationOverlay"></div>

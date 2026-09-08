@@ -1,7 +1,11 @@
+import { openNotificationModal } from "./header_components/open_notification_modal.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const profileWrapper = document.querySelector(".user-profile-wrapper");
+  const notificationOverlay = document.getElementById("notificationOverlay");
 
   const profileButton = document.getElementById("userProfileBtn");
+  const notificationBtn = document.getElementById("notificationBtn");
   
   if(!profileWrapper || !profileButton) {
     return;
@@ -24,6 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if(event.key === "Escape") {
       profileWrapper.classList.remove("open");
     }
+  });
+
+  notificationBtn.addEventListener("click", () => {
+    openNotificationModal(notificationOverlay);
   });
 
 });

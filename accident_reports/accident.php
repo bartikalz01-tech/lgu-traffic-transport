@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../styles/accident/detailed_report.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
+  <link rel="stylesheet" href="../styles/header_moodal.css">
   <title>Accident Reports</title>
 </head>
 
@@ -37,7 +38,7 @@
   <script src="../scripts/sidebar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="../scripts/accident/accident.js" defer></script>
-  <script src="../scripts/header.js"></script>
+  <script type="module" src="../scripts/header.js"></script>
 </body>
 
 </html>
