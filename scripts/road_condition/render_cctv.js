@@ -252,6 +252,12 @@ export async function renderCctvAi(container) {
 
   openPossibleAccidentByIdHandler = openPossibleAccidentById;
 
+  document.addEventListener("possibleAccidentSelected", event => {
+    activePossibleAccidentId = String(event.detail.accidentDetectionId);
+
+    console.log("Active possible accident changed to: ", activePossibleAccidentId);
+  });
+
   document.addEventListener("openPossibleAccident", event => {
     const accidentDetectionId = event.detail.accidentDetectionId;
 

@@ -160,6 +160,14 @@ export function renderPossibleAccidents(container, possibleAccidents = []) {
 
       const accidentDetectionId = card.dataset.possibleAccidentId;
 
+      document.dispatchEvent(
+        new CustomEvent("possibleAccidentSelected", {
+          detail: {
+            accidentDetectionId
+          }
+        })
+      );
+
       activatePossibleAccidentCard(
         accidentDetectionId
       );
