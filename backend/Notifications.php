@@ -540,6 +540,46 @@ class Notifications extends config {
 
   }
 
+  public function markNotificationAsRead($notificationId) {
+    $conn = $this->conn();
+
+    try {
+      $sql = "
+        UPDATE notifications
+
+        SET
+          is_read = 1,
+          read_at = CURRENT_TIMESTAMP
+
+        WHERE notification_id = :notification_id
+
+          AND is_read = 0
+      ";
+
+      $stmt = $conn->prepare($sql);
+
+      $stmt->execute([
+        ':notification_id' => $notificationId
+      ]);
+
+      return [
+        'success' => true,
+        'notification_id' => $notificationId,
+        'updated' => $stmt->rowCount()
+      ];
+
+    } catch(PDOException $e) {
+
+      error_log(
+        "[NOTIFICATION] Database error: " .
+        $e->getMessage()
+      );
+
+      throw new Exception("Failed to mark notification as read.");
+
+    }
+  }
+
 }
 
 ?>

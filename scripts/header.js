@@ -78,6 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateNotificationIndicator();
 
+  setInterval(
+    updateNotificationIndicator,
+    5000
+  );
+
   notificationBtn.addEventListener("click", () => {
     openNotificationModal(notificationOverlay);
   });

@@ -1,5 +1,84 @@
 import { openAccidentModal } from "./accident_and_violation/accident_modal.js";
 
+
+export function activatePossibleAccidentCard(accidentDetectionId) {
+
+  const possibleAccidentCards =
+    document.querySelectorAll(
+      ".js-possible-accident-card"
+    );
+
+
+  possibleAccidentCards.forEach(card => {
+
+    card.classList.remove(
+      "active-possible-accident"
+    );
+
+
+    const reportContainer =
+      card.querySelector(
+        ".js-accident-report-container"
+      );
+
+
+    if (reportContainer) {
+
+      reportContainer.classList.add(
+        "accident-report-hidden"
+      );
+
+    }
+
+  });
+
+
+  const targetCard =
+    document.querySelector(
+      `.js-possible-accident-card[data-possible-accident-id="${accidentDetectionId}"]`
+    );
+
+
+  if (!targetCard) {
+
+    console.warn(
+      "Possible accident card not found:",
+      accidentDetectionId
+    );
+
+    return;
+
+  }
+
+
+  targetCard.classList.add(
+    "active-possible-accident"
+  );
+
+
+  const reportContainer =
+    targetCard.querySelector(
+      ".js-accident-report-container"
+    );
+
+
+  if (reportContainer) {
+
+    reportContainer.classList.remove(
+      "accident-report-hidden"
+    );
+
+  }
+
+
+  targetCard.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
+}
+
+
 export function renderPossibleAccidents(container, possibleAccidents = []) {
 
   if(!possibleAccidents || possibleAccidents.length === 0) {
@@ -79,23 +158,11 @@ export function renderPossibleAccidents(container, possibleAccidents = []) {
   possibleAccidentCards.forEach(card => {
     card.addEventListener("click", () => {
 
-      possibleAccidentCards.forEach(c => {
-        c.classList.remove("active-possible-accident");
+      const accidentDetectionId = card.dataset.possibleAccidentId;
 
-        const reportContainer = c.querySelector(".js-accident-report-container");
-
-        if (reportContainer) {
-          reportContainer.classList.add("accident-report-hidden");
-        }
-      });
-
-      card.classList.add("active-possible-accident");
-
-      const reportContainer = card.querySelector(".js-accident-report-container");
-
-      if(reportContainer) {
-        reportContainer.classList.remove("accident-report-hidden");
-      }
+      activatePossibleAccidentCard(
+        accidentDetectionId
+      );
 
     });
   });

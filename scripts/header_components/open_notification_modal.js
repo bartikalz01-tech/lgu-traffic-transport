@@ -1,4 +1,4 @@
-import { getNotifications } from "../data/fetch_notifications.js";
+import { getNotifications, markNotificationAsRead } from "../data/fetch_notifications.js";
 
 export async function openNotificationModal(container) {
 
@@ -27,7 +27,7 @@ export async function openNotificationModal(container) {
   const totalNotifications =
     notifications.length;
 
-  const unreadNotifications =
+  let unreadNotifications =
     notifications.filter(
       notification => Number(notification.is_read) === 0
     ).length;
@@ -72,6 +72,9 @@ export async function openNotificationModal(container) {
 
             <div
               class="notification-item ${isUnread ? "unread" : ""}"
+              data-notification-id="${notification.notification_id}"
+              data-notification-type=${notification.notification_type}
+              data-source-id=${notification.source_id}
             >
 
               <div
@@ -206,7 +209,7 @@ export async function openNotificationModal(container) {
 
           <div class="notification-summary-item">
 
-            <span class="notification-summary-number">
+            <span class="notification-summary-number" id="unreadNotificationCount">
               ${unreadNotifications}
             </span>
 
@@ -296,6 +299,17 @@ export async function openNotificationModal(container) {
   );
 
 
+  function updateUnreadNotificationCount() {
+    const unreadCountElement = container.querySelector("#unreadNotificationCount");
+
+    if(!unreadCountElement) {
+      return;
+    }
+
+    unreadCountElement.textContent = unreadNotifications;
+  }
+
+
   /*
   * Exit button
   */
@@ -315,5 +329,90 @@ export async function openNotificationModal(container) {
 
     }
   );
+
+  const notificationItems = container.querySelectorAll(".notification-item");
+
+  notificationItems.forEach(item => {
+
+    item.addEventListener("click", async () => {
+
+      const notificationId = item.dataset.notificationId;
+
+      const notificationType = item.dataset.notificationType;
+
+      const sourceId = item.dataset.sourceId;
+
+
+      if(item.classList.contains("unread")) {
+        try {
+          const result = await markNotificationAsRead(notificationId);
+
+          if(!result.success) {
+            console.error(
+              "Failed to mark notification as read:",
+              result.message
+            );
+
+            return;
+          }
+
+          item.classList.remove("unread");
+
+          unreadNotifications--;
+
+          updateUnreadNotificationCount();
+          
+          const meta = item.querySelector(".notification-item-meta");
+
+          if(meta) {
+            const statusDot = meta.querySelector(".notification-status-dot");
+
+            if(statusDot) {
+              statusDot.remove();
+            }
+
+            const unreadText = [...meta.children].find(element => element.textContent.trim() === "Unread");
+            
+            if(unreadText) {
+              unreadText.remove();
+            }
+
+            const readStatus = document.createElement("span");
+
+            readStatus.className = "notification-read";
+
+            readStatus.textContent = "Read";
+
+            meta.appendChild(readStatus);
+          }
+
+          console.log("Notification marked as read: ", notificationId);
+
+        } catch(error) {
+          console.error("Unable to mark notification as read:", error);
+
+          return;
+        }
+      }
+
+      if(notificationType !== "possible_accident") {
+        return;
+      }
+
+      console.log("Opening possible accident: ", sourceId);
+
+      container.classList.add("notification-modal-hidden");
+
+      document.dispatchEvent(
+        new CustomEvent("openPossibleAccident", {
+          detail: {
+            accidentDetectionId: sourceId
+          }
+        })
+      );
+
+    });
+
+  });
 
 }

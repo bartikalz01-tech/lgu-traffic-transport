@@ -13,7 +13,7 @@ import { renderAverageSpeedHistory } from "./road_reports/average_speed_history.
 import { updateRoadCondition } from "./update_road_details.js";
 import { renderPeakHour } from "./road_reports/peak_hour_analytics.js";
 import { renderCctvRecords } from "./render_cctv_records.js";
-import { renderPossibleAccidents } from "./render_possible_accidents.js";
+import { renderPossibleAccidents, activatePossibleAccidentCard } from "./render_possible_accidents.js";
 
 const subModuleTitle = document.getElementById("subModuleTitle");
 const subModuleDescription = document.getElementById("subModuleDescription");
@@ -21,6 +21,10 @@ const subModuleDescription = document.getElementById("subModuleDescription");
 let reportsInitialized = false;
 
 let reportContent = null;
+
+let openPossibleAccidentByIdHandler = null;
+
+let activePossibleAccidentId = null;
 
 export async function renderCctvAi(container) {
 
@@ -37,7 +41,7 @@ export async function renderCctvAi(container) {
   let cctvCardsHTML = "";
 
   //const VIDEO_FOLDER = "/lgu-traffic-transport/cctv_ai/cctv_feeds/";
-
+    
   cctvRoads.forEach((roads, index) => {
     sidebarHTML += `
       <div class="cctv-road ${index === 0 ? "active-stream" : ""}" data-road-id="${roads.road_id}">
@@ -189,14 +193,100 @@ export async function renderCctvAi(container) {
   //const cctvRecordsContainer = container.querySelector("#cctvRecordsContainer");
   const possbileAccidentsContainer = container.querySelector("#possibleAccidentsContainer");
 
+  async function openPossibleAccidentById(accidentDetectionId) {
+
+    activePossibleAccidentId = String(accidentDetectionId);
+
+    /*
+    * Open Possible Accidents section
+    */
+    subModuleTitle.textContent =
+      "Possible Accident Detections";
+
+    subModuleDescription.textContent =
+      "Real-time possible accident detections.";
+
+    possibleAccidentsControl.classList.add(
+      "active-accidents"
+    );
+
+    cctvContent.classList.add("hidden");
+
+    reportsView.classList.add("hidden");
+
+    possbileAccidentsContainer.classList.remove(
+      "hidden"
+    );
+
+    cctvItems.forEach(item => {
+      item.classList.remove("active-stream");
+    });
+
+
+    /*
+    * Get latest possible accidents
+    */
+    const possibleAccidents = getLatestPossibleAccidents();
+
+    /*
+    * Render the cards
+    */
+    renderPossibleAccidents(
+      possbileAccidentsContainer,
+      possibleAccidents
+    );
+
+
+    /*
+    * Activate the requested accident
+    */
+    requestAnimationFrame(() => {
+
+      activatePossibleAccidentCard(
+        accidentDetectionId
+      );
+
+    });
+
+  }
+
+  openPossibleAccidentByIdHandler = openPossibleAccidentById;
+
+  document.addEventListener("openPossibleAccident", event => {
+    const accidentDetectionId = event.detail.accidentDetectionId;
+
+    console.log("Opening Possible Accident from notification: ", accidentDetectionId);
+
+    openPossibleAccidentById(
+      accidentDetectionId
+    );
+  });
+
   subscribePossibleAccident((possibleAccidents) => {
 
-    if(!possbileAccidentsContainer.classList.contains("hidden")) {
-      renderPossibleAccidents(possbileAccidentsContainer, possibleAccidents);
+    if (!possbileAccidentsContainer.classList.contains("hidden")) {
+
+      renderPossibleAccidents(
+        possbileAccidentsContainer,
+        possibleAccidents
+      );
+
+      if (activePossibleAccidentId !== null) {
+
+        requestAnimationFrame(() => {
+
+          activatePossibleAccidentCard(
+            activePossibleAccidentId
+          );
+
+        });
+
+      }
+
     }
 
   });
-  
+
   const reportsView = container.querySelector("#roadReportsView");
 
   cctvItems.forEach(item => item.classList.remove("active-stream"));
@@ -318,5 +408,23 @@ export async function renderCctvAi(container) {
     // Call function
     renderPossibleAccidents(possbileAccidentsContainer, getLatestPossibleAccidents());
   });
+
+}
+
+export function openPossibleAccidentNotification(accidentDetectionId) {
+
+  if (!openPossibleAccidentByIdHandler) {
+
+    console.warn(
+      "Possible Accident navigation is not ready yet."
+    );
+
+    return;
+
+  }
+
+  openPossibleAccidentByIdHandler(
+    accidentDetectionId
+  );
 
 }
