@@ -1,16 +1,17 @@
 export async function getNotifications() {
-  const endpoint = new URL(
-    '../../api/notifications/get_notifications.php',
-    import.meta.url
-  );
+  const response = await fetch('../api/notifications/get_notifications.php');
 
-  const response = await fetch(endpoint);
-
-  if (!response.ok) {
-    throw new Error(`Notifications request failed: HTTP ${response.status}`);
-  }
-
-  const result = await response.json();
+  const result = response.json();
 
   return result;
+}
+
+export async function generateNotifications() {
+
+  const response = await fetch('../api/notifications/generate_notifications.php');
+
+  const result = response.json();
+
+  return result;
+
 }

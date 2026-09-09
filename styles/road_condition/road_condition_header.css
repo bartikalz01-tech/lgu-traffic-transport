@@ -97,7 +97,7 @@
 }
 
 /* Red dot for notifications */
-.notif-bell::after {
+.notif-bell.has-notifications::after {
   content: '';
   position: absolute;
   top: 8px;

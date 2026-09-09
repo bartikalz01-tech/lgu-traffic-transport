@@ -1,4 +1,48 @@
 import { openNotificationModal } from "./header_components/open_notification_modal.js";
+import { startNotificationGeneration } from "./header_components/notification_interval.js";
+import { getNotifications } from "./data/fetch_notifications.js";
+
+async function updateNotificationIndicator() {
+
+  try {
+
+    const result = await getNotifications();
+
+    const notificationBtn =
+      document.getElementById("notificationBtn");
+
+    if (!notificationBtn) {
+      return;
+    }
+
+    if (!result.success) {
+      return;
+    }
+
+    const notifications =
+      result.notifications || [];
+
+    const hasUnreadNotifications =
+      notifications.some(
+        notification =>
+          Number(notification.is_read) === 0
+      );
+
+    notificationBtn.classList.toggle(
+      "has-notifications",
+      hasUnreadNotifications
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Unable to update notification indicator:",
+      error
+    );
+
+  }
+
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const profileWrapper = document.querySelector(".user-profile-wrapper");
@@ -29,6 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
       profileWrapper.classList.remove("open");
     }
   });
+
+  startNotificationGeneration();
+
+  updateNotificationIndicator();
 
   notificationBtn.addEventListener("click", () => {
     openNotificationModal(notificationOverlay);
