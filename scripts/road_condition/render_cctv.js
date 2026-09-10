@@ -193,6 +193,44 @@ export async function renderCctvAi(container) {
   //const cctvRecordsContainer = container.querySelector("#cctvRecordsContainer");
   const possbileAccidentsContainer = container.querySelector("#possibleAccidentsContainer");
 
+
+  document.addEventListener("accidentReportCreated", event => {
+
+    const accidentDetectionId =
+      String(event.detail.accidentDetectionId);
+
+    const card =
+      possbileAccidentsContainer.querySelector(
+        `.js-possible-accident-card[data-possible-accident-id="${accidentDetectionId}"]`
+      );
+
+    if (!card) {
+      return;
+    }
+
+    card.remove();
+
+    activePossibleAccidentId = null;
+
+    const remainingCards =
+      possbileAccidentsContainer.querySelectorAll(
+        ".js-possible-accident-card"
+      );
+
+    if (remainingCards.length === 0) {
+
+      possbileAccidentsContainer.innerHTML = `
+        <div class="possible-accident-empty">
+          <i class="fas fa-circle-check"></i>
+          <p>No possible accidents detected.</p>
+        </div>
+      `;
+
+    }
+
+  });
+
+
   async function openPossibleAccidentById(accidentDetectionId) {
 
     activePossibleAccidentId = String(accidentDetectionId);

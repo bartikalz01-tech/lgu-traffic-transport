@@ -253,7 +253,7 @@ class Notifications extends config {
 
 
       /*
-      * Nothing to notify.
+      * Nothing to process.
       */
       if (!$accidentCases) {
 
@@ -267,12 +267,12 @@ class Notifications extends config {
 
 
       /*
-      * Find the latest notification generated
-      * for each accident case.
+      * Check whether this accident already
+      * has an undispatched notification.
       */
-      $latestNotificationSql = "
+      $existingNotificationSql = "
         SELECT
-          created_at
+          notification_id
 
         FROM notifications
 
@@ -283,23 +283,17 @@ class Notifications extends config {
 
           AND source_id = :source_id
 
-        ORDER BY created_at DESC
-
         LIMIT 1
       ";
 
-      $latestNotificationStmt =
+      $existingNotificationStmt =
         $conn->prepare(
-          $latestNotificationSql
+          $existingNotificationSql
         );
 
 
       /*
-      * Insert a new notification.
-      *
-      * created_at is intentionally NOT supplied.
-      *
-      * MySQL will use CURRENT_TIMESTAMP.
+      * Insert notification.
       */
       $insertNotificationSql = "
         INSERT INTO notifications (
@@ -328,6 +322,9 @@ class Notifications extends config {
       $insertedCount = 0;
 
 
+      /*
+      * Process each accident case.
+      */
       foreach ($accidentCases as $accident) {
 
         $accidentId =
@@ -340,114 +337,105 @@ class Notifications extends config {
         $publicAccidentId =
           $accident['public_accident_id'];
 
-        $reportedAt =
-          new DateTime(
-            $accident['reported_at']
-          );
-
-        $now =
-          new DateTime();
-
 
         /*
-        * Check the latest notification
-        * for this accident.
+        * Check if an undispatched notification
+        * already exists for this accident.
         */
-        $latestNotificationStmt->execute([
-          ':source_id' => $accidentId
+        $existingNotificationStmt->execute([
+          ':source_id' =>
+            $accidentId
         ]);
 
-        $latestNotification =
-          $latestNotificationStmt->fetch(
+        $existingNotification =
+          $existingNotificationStmt->fetch(
             PDO::FETCH_ASSOC
           );
 
 
         /*
-        * Determine whether a notification
-        * is due.
+        * If notification already exists,
+        * DO NOT create another one.
         */
-        $shouldNotify = false;
-
-
-        if (!$latestNotification) {
-
-          /*
-          * No notification exists yet.
-          *
-          * Start the notification cycle from
-          * the accident's reported_at.
-          */
-          $secondsSinceReported =
-            $now->getTimestamp()
-            - $reportedAt->getTimestamp();
-
-
-          if ($secondsSinceReported >= 30) {
-            $shouldNotify = true;
-          }
-
-        } else {
-
-          /*
-          * A notification already exists.
-          *
-          * Check whether 30 seconds have
-          * passed since the last notification.
-          */
-          $lastNotificationAt =
-            new DateTime(
-              $latestNotification['created_at']
-            );
-
-          $secondsSinceLastNotification =
-            $now->getTimestamp()
-            - $lastNotificationAt->getTimestamp();
-
-
-          if ($secondsSinceLastNotification >= 30) {
-            $shouldNotify = true;
-          }
-
+        if ($existingNotification) {
+          continue;
         }
 
 
         /*
-        * Insert the reminder only when
-        * the 30-second interval has passed.
+        * Calculate how many seconds have
+        * passed since the accident was reported.
         */
-        if ($shouldNotify) {
+        $elapsedSql = "
+          SELECT
+            TIMESTAMPDIFF(
+              SECOND,
+              :reported_at,
+              CURRENT_TIMESTAMP
+            ) AS elapsed_seconds
+        ";
 
-          $message =
-            "Accident " .
-            $publicAccidentId .
-            " on " .
-            $roadName .
-            " has not been dispatched yet.";
+        $elapsedStmt =
+          $conn->prepare($elapsedSql);
 
-          $insertNotificationStmt->execute([
-            ':module' =>
-              'accident',
+        $elapsedStmt->execute([
+          ':reported_at' =>
+            $accident['reported_at']
+        ]);
 
-            ':notification_type' =>
-              'undispatched_accident',
+        $elapsed =
+          $elapsedStmt->fetch(
+            PDO::FETCH_ASSOC
+          );
 
-            ':title' =>
-              'Accident Awaiting Dispatch',
 
-            ':message' =>
-              $message,
-
-            ':source_id' =>
-              $accidentId,
-
-            ':source_public_id' =>
-              $publicAccidentId
-          ]);
-
-          $insertedCount++;
-
+        /*
+        * Only create the notification
+        * after 30 seconds.
+        */
+        if (
+          (int)$elapsed['elapsed_seconds'] < 30
+        ) {
+          continue;
         }
+
+
+        /*
+        * Create the single undispatched
+        * notification.
+        */
+        $message =
+          "Accident " .
+          $publicAccidentId .
+          " on " .
+          $roadName .
+          " has not been dispatched yet.";
+
+
+        $insertNotificationStmt->execute([
+
+          ':module' =>
+            'accident',
+
+          ':notification_type' =>
+            'undispatched_accident',
+
+          ':title' =>
+            'Accident Awaiting Dispatch',
+
+          ':message' =>
+            $message,
+
+          ':source_id' =>
+            $accidentId,
+
+          ':source_public_id' =>
+            $publicAccidentId
+
+        ]);
+
+
+        $insertedCount++;
 
       }
 
@@ -508,6 +496,27 @@ class Notifications extends config {
           read_at
 
         FROM notifications
+
+        WHERE NOT (
+          notification_type = 'possible_accident'
+
+          AND EXISTS (
+            SELECT 1
+            FROM accident_cases ac
+            WHERE ac.accident_detection_id = notifications.source_id
+          )
+        )
+
+        AND (
+          notification_type <> 'undispatched_accident'
+
+          OR EXISTS (
+            SELECT 1
+            FROM accident_cases ac
+            WHERE ac.accident_id = notifications.source_id
+              AND ac.status = 'Reported'
+          )
+        )
 
         ORDER BY created_at DESC
       ";

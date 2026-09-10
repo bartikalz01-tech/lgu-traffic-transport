@@ -1,5 +1,46 @@
 import { getNotifications, markNotificationAsRead } from "../data/fetch_notifications.js";
 
+function formatRelativeTime(createdAt) {
+
+  const createdTime = new Date(createdAt.replace(" ", "T")).getTime();
+
+  const now =
+    Date.now();
+
+  const seconds =
+    Math.floor(
+      (now - createdTime) / 1000
+    );
+
+
+  if (seconds < 60) {
+    return `${seconds} second${seconds === 1 ? "" : "s"} ago`;
+  }
+
+
+  const minutes =
+    Math.floor(seconds / 60);
+
+  if (minutes < 60) {
+    return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+  }
+
+
+  const hours =
+    Math.floor(minutes / 60);
+
+  if (hours < 24) {
+    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  }
+
+
+  const days =
+    Math.floor(hours / 24);
+
+  return `${days} day${days === 1 ? "" : "s"} ago`;
+}
+
+
 export async function openNotificationModal(container) {
 
   let notifications = [];
@@ -73,8 +114,8 @@ export async function openNotificationModal(container) {
             <div
               class="notification-item ${isUnread ? "unread" : ""}"
               data-notification-id="${notification.notification_id}"
-              data-notification-type=${notification.notification_type}
-              data-source-id=${notification.source_id}
+              data-notification-type="${notification.notification_type}"
+              data-source-id="${notification.source_id}"
             >
 
               <div
@@ -92,8 +133,20 @@ export async function openNotificationModal(container) {
                     ${notification.title}
                   </h3>
 
-                  <span class="notification-time">
-                    ${notification.created_at}
+                  <span class="notification-time ${
+                    notification.notification_type === "undispatched_accident"
+                    ? "relative-notification-time" : ""
+                    }"
+
+                    ${notification.notification_type === "undispatched_accident"
+                      ? `data-created-at="${notification.created_at}"` : ""
+                    }
+                  >
+                    ${
+                      notification.notification_type === "undispatched_accident"
+                      ? formatRelativeTime(notification.created_at)
+                      : notification.created_at
+                    }
                   </span>
 
                 </div>
@@ -298,6 +351,21 @@ export async function openNotificationModal(container) {
     "notification-modal-hidden"
   );
 
+  const notificationTimes = container.querySelectorAll(".relative-notification-time");
+
+  function updateNotificationTimes() {
+
+    notificationTimes.forEach(element => {
+      const createdAt = element.dataset.createdAt;
+
+      element.textContent = formatRelativeTime(createdAt);
+    });
+
+  }
+  updateNotificationTimes();
+
+  const notificationTimeInterval = setInterval(updateNotificationTimes, 1000);
+
 
   function updateUnreadNotificationCount() {
     const unreadCountElement = container.querySelector("#unreadNotificationCount");
@@ -322,6 +390,8 @@ export async function openNotificationModal(container) {
   exitNotificationModalBtn.addEventListener(
     "click",
     () => {
+
+      clearInterval(notificationTimeInterval);
 
       container.classList.add(
         "notification-modal-hidden"

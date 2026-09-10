@@ -180,6 +180,12 @@ class Accidents extends config {
 
       LEFT JOIN roads r
         ON ad.road_id = r.road_id
+      
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM accident_cases ac
+        WHERE ac.accident_detection_id = ad.accident_detection_id
+      )
 
       ORDER BY ad.created_at DESC
       LIMIT 30

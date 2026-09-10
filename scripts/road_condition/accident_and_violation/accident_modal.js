@@ -155,7 +155,7 @@ export function openAccidentModal(container, accident) {
 
                 <div class="snapshot-meta">
                   <div>
-                    <i class"fas fa-clock"></i>
+                    <i class="fas fa-clock"></i>
                     <span id="snapshotCapturedAt">
                       ${accident.detected_at}
                     </span>
@@ -287,6 +287,14 @@ export function openAccidentModal(container, accident) {
       });
 
       const data = await insertAccidentReport(accidentData);
+
+      document.dispatchEvent(
+        new CustomEvent("accidentReportCreated", {
+          detail: {
+            accidentDetectionId: accident.accident_detection_id
+          }
+        })
+      );
 
       await Swal.fire({
         icon: "success",
