@@ -1,4 +1,5 @@
 import { getNotifications, markNotificationAsRead } from "../data/fetch_notifications.js";
+import { openAccidentReport } from "../navigavtion/global_navigation.js";
 
 function formatRelativeTime(createdAt) {
 
@@ -116,6 +117,7 @@ export async function openNotificationModal(container) {
               data-notification-id="${notification.notification_id}"
               data-notification-type="${notification.notification_type}"
               data-source-id="${notification.source_id}"
+              data-source-public-id="${notification.source_public_id || ""}"
             >
 
               <div
@@ -412,6 +414,8 @@ export async function openNotificationModal(container) {
 
       const sourceId = item.dataset.sourceId;
 
+      const sourcePublicId = item.dataset.sourcePublicId;
+
 
       if(item.classList.contains("unread")) {
         try {
@@ -465,21 +469,43 @@ export async function openNotificationModal(container) {
         }
       }
 
-      if(notificationType !== "possible_accident") {
+      if(notificationType === "possible_accident") {
+
+        console.log("Opening possible accident: ", sourceId);
+
+        container.classList.add("notification-modal-hidden");
+
+        document.dispatchEvent(
+          new CustomEvent("openPossibleAccident", {
+            detail: {
+              accidentDetectionId: sourceId
+            }
+          })
+        );
+
         return;
       }
 
-      console.log("Opening possible accident: ", sourceId);
+      if(notificationType === "undispatched_accident") {
+        console.log(
+          "Opening possible accident:", 
+          sourcePublicId
+        );
 
-      container.classList.add("notification-modal-hidden");
+        container.classList.add("notification-modal-hidden");
 
-      document.dispatchEvent(
-        new CustomEvent("openPossibleAccident", {
-          detail: {
-            accidentDetectionId: sourceId
-          }
-        })
-      );
+        /*document.dispatchEvent(
+          new CustomEvent("openAccidentReport", {
+            detail: {
+              publicAccidentId: sourcePublicId
+            }
+          })
+        );*/
+
+        openAccidentReport(sourcePublicId);
+
+        return;
+      }
 
     });
 

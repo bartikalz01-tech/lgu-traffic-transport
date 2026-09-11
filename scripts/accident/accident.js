@@ -9,7 +9,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	startAccidentStore();
 
-	await renderAccidentReportsPanel(reportsContainer);
+	const publicAccidentId = sessionStorage.getItem("openAccidentReportId");
+
+	if (publicAccidentId) {
+
+    sessionStorage.removeItem(
+      "openAccidentReportId"
+    );
+
+  }
+
+	await renderAccidentReportsPanel(reportsContainer, publicAccidentId);
 
 	subscribeAccidents(accidents => {
 		renderAccidentSummary(summaryContainer, accidents);

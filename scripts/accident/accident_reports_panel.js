@@ -36,8 +36,32 @@ function formatAccidentDateTime(detectedAt) {
   };
 }
 
+/*
 
-export async function renderAccidentReportsPanel(container) {
+document.addEventListener("openAccidentReport", event => {
+    const publicAccidentId = event.detail?.publicAccidentId;
+
+    if(!publicAccidentId) {
+      console.error(
+        "No public accident ID received."
+      );
+
+      return;
+    }
+
+    console.log("Filtering accident report: ", publicAccidentId);
+
+    searchInput.value = publicAccidentId;
+
+    currentPage = 1;
+
+    applyFilters();
+  });
+
+*/
+
+
+export async function renderAccidentReportsPanel(container, publicAccidentId = null) {
 
   container.innerHTML = `
     <div class="accident-panel-header">
@@ -115,6 +139,7 @@ export async function renderAccidentReportsPanel(container) {
   let currentPage = 1;
 
   let accidentDetails = [];
+  let pendingPublicAccidentId = null;
 
   function renderTable(accidents) {
     accidentTbody.innerHTML = "";
@@ -358,6 +383,12 @@ export async function renderAccidentReportsPanel(container) {
     });
 
     renderTable(filteredAccidents);
+  }
+
+  if(publicAccidentId) {
+    pendingPublicAccidentId = String(publicAccidentId).trim();
+
+    searchInput.value = pendingPublicAccidentId;
   }
 
   subscribeAccidents(accidents => {

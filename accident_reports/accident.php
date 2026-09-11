@@ -40,5 +40,4 @@
   <script type="module" src="../scripts/accident/accident.js" defer></script>
   <script type="module" src="../scripts/header.js"></script>
 </body>
-
 </html>
