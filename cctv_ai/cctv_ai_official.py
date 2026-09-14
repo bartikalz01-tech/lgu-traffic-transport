@@ -31,7 +31,7 @@ ai_frame_locks = {}
 
 AI_FRAME_SKIP = 2
 
-FRAME_SKIP = 1
+#FRAME_SKIP = 1
 
 app = Flask(__name__)
 CORS(app)
@@ -110,8 +110,8 @@ def open_video_streams(videos):
 def read_frame(stream):
   capture = stream["capture"]
 
-  for _ in range(FRAME_SKIP):
-    capture.grab()
+  #for _ in range(FRAME_SKIP):
+    #capture.grab()
 
   success, frame = capture.read()
 
@@ -473,42 +473,10 @@ def process_camera(stream):
           )
         )
 
-        print(
-          f"[ACCIDENT DEBUG] "
-          f"Camera={camera_name} "
-          f"Vehicle={track_id} "
-          f"Speed={current_speed:.2f} "
-          f"SuddenDeceleration="
-          f"{accident_result['sudden_deceleration']} "
-          f"NearbyVehicle="
-          f"{accident_result['nearby_vehicle']} "
-          f"State="
-          f"{accident_result['state']} "
-          f"Candidate="
-          f"{accident_result['candidate_score']}/"
-          f"{ACCIDENT_CANDIDATE_THRESHOLD} "
-          f"Confirmed="
-          f"{accident_result['possible_accident']}"
-        )
-
         if accident_result["possible_accident"]:
           accident_vehicle_id = track_id
 
           detected_at = accident_result["detected_at"]
-
-          print(
-            "\n"
-            "========================================\n"
-            "       POSSIBLE ACCIDENT DETECTED\n"
-            "========================================\n"
-            f"Camera: {camera_name}\n"
-            f"Vehicle ID: {track_id}\n"
-            f"Detected At: {detected_at}\n"
-            f"Confirmation: "
-            f"{accident_result['candidate_score']}/"
-            f"{accident_result['candidate_threshold']}\n"
-            "========================================\n"
-          )
 
           accident_state_key = (camera_name, track_id)
 
@@ -521,38 +489,15 @@ def process_camera(stream):
             )
 
             if not snapshot_result["success"]:
-              print(
-                "WARNING: Failed to create "
-                "accident snapshot"
-              )
+              pass
 
             else:
               snapshot_filename = snapshot_result["filename"]
-
-              print(
-                f"Accident  snapshot saved: "
-                f"{snapshot_filename}"
-              )
 
               save_result = save_possible_accident(road_id=road_id, detected_at=detected_at, snapshot_filename=snapshot_filename)
 
               if save_result["success"]:
                 saved_accident_states[accident_state_key] = True
-
-                print(
-                  f"Possible accident saved to database. "
-                  f"Detection ID: "
-                  f"{save_result['accident_detection_id']} "
-                  f"Snapshot: "
-                  f"{snapshot_filename}"
-                )
-
-              else:
-
-                print(
-                  "WARNING: Failed to save "
-                  "possible accident to database."
-                )
     
 
       update_vehicle_counter(
