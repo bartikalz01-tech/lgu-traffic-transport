@@ -5,8 +5,11 @@ import { initializedTrafficChart, updateTrafficChart } from "./traffic_volume_ve
 import { initializeCongestionPieChart, updateCongestionPieChart } from "./congestion_pie_chart.js";
 import { initializeAverageSpeedChart, updateAverageSpeedChart } from "./average_speed_chart.js";
 import { possibleAccidentDashboard } from "./possible_accident_report.js";
+import { startGlobalNotifications } from "../navigavtion/global_notifications.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  startGlobalNotifications();
 
   const mapId = document.getElementById("map");
 

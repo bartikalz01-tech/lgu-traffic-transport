@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+  <link rel="stylesheet" href="../styles/header_moodal.css">
   <link rel="stylesheet" href="../styles/route_planning/diversions.css">
   <link rel="stylesheet" href="../styles/route_planning/diversion_schedule.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
@@ -50,6 +51,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../scripts/sidebar.js"></script>
+  <script type="module" src="../scripts/header.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="../scripts/route_planning/diversions/diversion_plans.js"></script>
 </body>
 </html>

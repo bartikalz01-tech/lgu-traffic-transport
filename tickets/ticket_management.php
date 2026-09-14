@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+  <link rel="stylesheet" href="../styles/header_moodal.css">
   <link rel="stylesheet" href="../styles/ticket/tickets.css">
   <link rel="stylesheet" href="../styles/ticket/create_ticket.css">
   <link rel="stylesheet" href="../styles/ticket/detailed_ticket.css">

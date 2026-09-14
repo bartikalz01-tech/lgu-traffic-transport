@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+  <link rel="stylesheet" href="../styles/header_moodal.css">
   <link rel="stylesheet" href="../styles/route_planning/route_plan_trial.css">
   <link rel="stylesheet" href="../styles/route_planning/diversion_plan.css">
   <link rel="stylesheet" href="../styles/route_planning/emergency_plan.css">
@@ -223,5 +224,6 @@
   <script src="../scripts/sidebar.js"></script>
   <script type="module" src="../scripts/route_planning/route_planning.js"></script>
   <script type="module" src="../scripts/header.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

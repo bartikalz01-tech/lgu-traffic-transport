@@ -1,5 +1,6 @@
 import { fetchRoadNodes, fetchRoadMap, fetchDiversions } from "../../data/fetch_road_map.js";
 import { initMap } from "../../utils/diversions.js";
+import { startGlobalNotifications } from "../../navigavtion/global_notifications.js";
 import {
   state,
   renderRouteSelectionSidebar,
@@ -86,6 +87,8 @@ async function renderDiversionManagement(container) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  startGlobalNotifications();
+
   const diversionContent = document.querySelector('.diversion-main-content');
 
   await renderDiversionManagement(diversionContent);

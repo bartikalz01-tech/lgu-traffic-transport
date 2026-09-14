@@ -3,6 +3,7 @@ import { fetchRoadEvents, fetchRoadMap, fetchDiversions, fetchDiversionDetails, 
 import { getAssignedEmergenciesLocation, getEmergenciesLocation, getEmergencyCounts, getPendingEmergenciesLocation } from "../data/fetch_emergencies.js";
 import { getEventMarker, getTrafficColor } from "../utils/traffic_and_events.js";
 import { renderDiversionMaps } from "./diversions/final_render_diversion.js";
+import { startGlobalNotifications } from "../navigavtion/global_notifications.js";
 //import { trafficData, fetchTrafficData } from "../data/fetch_traffic_flow.js";
 //import { trafficPercent, fetchTrafficPercent } from "../data/brgy_traffic_percent.js";
 
@@ -64,6 +65,8 @@ async function renderEmergencyCounts() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+
+  startGlobalNotifications();
 
   /*const activeElSummary = document.getElementById('activeCount');
   const scheduledElSummary = document.getElementById('scheduledCount');

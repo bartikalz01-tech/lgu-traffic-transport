@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="../styles/forms.css">
     <link rel="stylesheet" href="../styles/sidebar-footer.css">
     <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+    <link rel="stylesheet" href="../styles/header_moodal.css">
     <link rel="stylesheet" href="../styles/permits.css">
     <title>Permits Management System</title>
 </head>
@@ -359,6 +360,8 @@
         <?php include '../includes/admin-footer.php'; ?>
     </main>
 
+    <script type="module" src="../scripts/header.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="../scripts/permits.js"></script>
 </body>
 

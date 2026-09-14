@@ -1,12 +1,14 @@
 import { startAccidentStore, subscribeAccidents } from "../data/accident_report/accidentStore.js";
 import { renderAccidentReportsPanel } from "./accident_reports_panel.js";
 import { renderAccidentSummary } from "./accident_summary.js";
+import { startGlobalNotifications } from "../navigavtion/global_notifications.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 	
 	const summaryContainer = document.getElementById("accidentSummary");
 	const reportsContainer = document.getElementById("accidentReportsPanel");
 
+	startGlobalNotifications();
 	startAccidentStore();
 
 	const publicAccidentId = sessionStorage.getItem("openAccidentReportId");

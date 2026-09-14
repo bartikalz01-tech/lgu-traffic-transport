@@ -2,6 +2,7 @@ import { renderActiveEmergency } from "./active/render_active_emergency.js";
 import { renderPendingEmergency } from "./pending/render_pending_emergency.js";
 import { renderEmergencyCounts } from "./emergency_counts.js";
 import { mapMemory } from "./emergency_memory.js";
+import { startGlobalNotifications } from "../../navigavtion/global_notifications.js";
 
 function setActiveCard(cardId) {
   document.querySelectorAll(".overview-card").forEach(card => {
@@ -38,6 +39,8 @@ function clearMap(map) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  startGlobalNotifications();
 
   await renderEmergencyCounts();
 

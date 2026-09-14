@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+  <link rel="stylesheet" href="../styles/header_moodal.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <link rel="stylesheet" href="../styles/violations/violation.css">
   <link rel="stylesheet" href="../styles/violations/detailed_violaton_report.css">

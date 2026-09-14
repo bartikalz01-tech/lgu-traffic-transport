@@ -1,6 +1,9 @@
 // permits.js - Permits Management System JavaScript
+import { startGlobalNotifications } from "./navigavtion/global_notifications.js";
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    startGlobalNotifications();
     // DOM Elements
     const newPermitBtn = document.getElementById('newPermitBtn');
     const newPermitModal = document.getElementById('newPermitModal');

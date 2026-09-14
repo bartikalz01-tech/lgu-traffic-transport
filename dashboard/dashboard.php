@@ -27,6 +27,7 @@ if(!isset($_SESSION['user_id'])) {
   <link rel="stylesheet" href="../styles/buttons.css">
   <link rel="stylesheet" href="../styles/dashboard.css">
   <link rel="stylesheet" href="../styles/road_condition/road_condition_header.css">
+  <link rel="stylesheet" href="../styles/header_moodal.css">
   <link rel="stylesheet" href="../styles/sidebar-footer.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>Dashboard</title>
@@ -147,6 +148,7 @@ if(!isset($_SESSION['user_id'])) {
 
   <script type="module" src="../scripts/header.js"></script>
   <script src="../scripts/sidebar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="../scripts/dashboard/dashboard.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
