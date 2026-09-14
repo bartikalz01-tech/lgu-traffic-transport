@@ -80,87 +80,100 @@ def calculate_speed(vehicles, camera_name, fps, report=False):
 
     for vehicle in vehicles:
 
-        track_id = vehicle["track_id"]
-        class_name = vehicle["class_name"]
+      track_id = vehicle["track_id"]
+      class_name = vehicle["class_name"]
 
-        if track_id not in printed_ids[camera_name]:
-            printed_ids[camera_name].add(track_id)
+      if track_id not in printed_ids[camera_name]:
+          printed_ids[camera_name].add(track_id)
 
-        box = vehicle["box"]
+      box = vehicle["box"]
 
-        # Bounding box coordinates
-        x1, y1, x2, y2 = box.xyxy[0].tolist()
+      # Bounding box coordinates
+      x1, y1, x2, y2 = box.xyxy[0].tolist()
 
-        vehicle_width_pixels = abs(y2 - y1)
+      vehicle_width_pixels = abs(y2 - y1)
 
-        if class_name in ["truck", "bus"]:
-            reference_length = AVERAGE_TRUCK_LENGTH
-        else:
-            reference_length = AVERAGE_CAR_LENGTH
+      if class_name in ["truck", "bus"]:
+        reference_length = AVERAGE_TRUCK_LENGTH
+      else:
+        reference_length = AVERAGE_CAR_LENGTH
 
-        # center point
-        center_x = (x1 + x2) / 2
-        center_y = (y1 + y2) / 2
+      # center point
+      center_x = (x1 + x2) / 2
+      center_y = (y1 + y2) / 2
 
-        current_position = (center_x, center_y)
+      current_position = (center_x, center_y)
 
-        speed = 0
+      speed = 0
 
-        # Guard 1: skip degenerate/too-thin boxes. Dividing reference_length
-        # by a near-zero pixel value is what produces most of the absurd
-        # speed spikes.
-        box_is_valid = vehicle_width_pixels >= MIN_VEHICLE_WIDTH_PIXELS
+      # Guard 1: skip degenerate/too-thin boxes. Dividing reference_length
+      # by a near-zero pixel value is what produces most of the absurd
+      # speed spikes.
+      box_is_valid = vehicle_width_pixels >= MIN_VEHICLE_WIDTH_PIXELS
 
-        if track_id in camera_positions and box_is_valid:
+      if track_id in camera_positions and box_is_valid:
 
-            previous_x, previous_y = camera_positions[track_id]
-            previous_time = camera_timestamps.get(track_id, now)
+        previous_x, previous_y = camera_positions[track_id]
+        previous_time = camera_timestamps.get(track_id, now)
 
-            # Guard 2: use the ACTUAL elapsed time since this track was
-            # last seen, instead of assuming exactly 1/fps has passed.
-            # If the vehicle was briefly lost/occluded, previous_position
-            # may be several frames old - assuming 1 frame here is what
-            # made the code overestimate speed after any gap.
-            elapsed_seconds = now - previous_time
+        # Guard 2: use the ACTUAL elapsed time since this track was
+        # last seen, instead of assuming exactly 1/fps has passed.
+        # If the vehicle was briefly lost/occluded, previous_position
+        # may be several frames old - assuming 1 frame here is what
+        # made the code overestimate speed after any gap.
+        elapsed_seconds = now - previous_time
 
-            if elapsed_seconds <= 0:
-                elapsed_seconds = 1.0 / fps
+        if elapsed_seconds <= 0:
+          elapsed_seconds = 1.0 / fps
 
-            if elapsed_seconds <= MAX_GAP_SECONDS:
+        if elapsed_seconds <= MAX_GAP_SECONDS:
 
-                distance = math.sqrt(
-                    (center_x - previous_x) ** 2 +
-                    (center_y - previous_y) ** 2
-                )
+          distance = math.sqrt(
+            (center_x - previous_x) ** 2 +
+            (center_y - previous_y) ** 2
+          )
 
-                meters_per_pixel = reference_length / vehicle_width_pixels
+          meters_per_pixel = reference_length / vehicle_width_pixels
 
-                speed_mps = distance * meters_per_pixel / elapsed_seconds
+          speed_mps = distance * meters_per_pixel / elapsed_seconds
 
-                raw_speed = speed_mps * 3.6
+          raw_speed = speed_mps * 3.6
 
-                speed = raw_speed * SPEED_CALIBRATION_FACTOR
+          speed = raw_speed * SPEED_CALIBRATION_FACTOR
 
-                # Guard 3: physical sanity cap. Whatever slipped through
-                # guards 1 and 2, a reading this high on a city road is
-                # a tracking/measurement glitch, not a real vehicle -
-                # drop it rather than let it poison the average/peak.
-                if speed > MAX_PLAUSIBLE_SPEED_KMH:
-                    speed = 0
+          print(
+            f"[SPEED DEBUG] "
+            f"Camera={camera_name} "
+            f"ID={track_id} "
+            f"Distance={distance:.2f}px "
+            f"Elapsed={elapsed_seconds:.3f}s "
+            f"BoxHeight={vehicle_width_pixels:.2f}px "
+            f"MetersPerPixel={meters_per_pixel:.4f} "
+            f"RawSpeed={raw_speed:.2f} km/h "
+            f"Calibration={SPEED_CALIBRATION_FACTOR} "
+            f"FinalSpeed={speed:.2f} km/h"
+          )
 
-        vehicle["speed"] = speed
+          # Guard 3: physical sanity cap. Whatever slipped through
+          # guards 1 and 2, a reading this high on a city road is
+          # a tracking/measurement glitch, not a real vehicle -
+          # drop it rather than let it poison the average/peak.
+          if speed > MAX_PLAUSIBLE_SPEED_KMH:
+            speed = 0
 
-        camera_positions[track_id] = current_position
-        camera_timestamps[track_id] = now
+      vehicle["speed"] = speed
 
-        camera_speeds = vehicle_speeds[camera_name]
+      camera_positions[track_id] = current_position
+      camera_timestamps[track_id] = now
 
-        if track_id not in camera_speeds:
-            camera_speeds[track_id] = []
+      camera_speeds = vehicle_speeds[camera_name]
 
-        # Only record genuine, plausible readings into the rolling average.
-        # (speed == 0 here means "no reliable reading this frame", not
-        # "vehicle is stationary" - a stationary vehicle would still
-        # produce a valid near-zero speed the frame before this guard.)
-        if speed > 0:
-            camera_speeds[track_id].append(speed)
+      if track_id not in camera_speeds:
+          camera_speeds[track_id] = []
+
+      # Only record genuine, plausible readings into the rolling average.
+      # (speed == 0 here means "no reliable reading this frame", not
+      # "vehicle is stationary" - a stationary vehicle would still
+      # produce a valid near-zero speed the frame before this guard.)
+      if speed > 0:
+        camera_speeds[track_id].append(speed)

@@ -546,6 +546,12 @@ def process_camera(stream):
         )
       )
 
+      print("\n================ TRAFFIC REPORT ================")
+      print(f"Camera: {camera_name}")
+      print(f"Vehicle Count: {vehicle_count}")
+      print(f"Vehicle Per Minute: {vehicle_per_minute:.2f}")
+      print(f"Average Speed: {average_speed:.2f} km/h")
+
       (
         congestion_score,
         congestion
@@ -553,6 +559,10 @@ def process_camera(stream):
         vehicle_per_minute,
         average_speed
       )
+
+      print(f"Congestion Score: {congestion_score:.2f}")
+      print(f"Congestion Level: {congestion}")
+      print("=================================================\n")
 
       with stats_lock:
 

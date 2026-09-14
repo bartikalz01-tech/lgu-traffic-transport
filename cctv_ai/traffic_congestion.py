@@ -14,6 +14,15 @@ def calculate_congestion(vehicle_per_minute, average_speed):
     speed_score = ((50 - average_speed) / 40) * 50
 
 
+  print("\n---------- CONGESTION CALCULATION ----------")
+  print(f"Vehicle Per Minute: {vehicle_per_minute:.2f}")
+  print(f"Average Speed: {average_speed:.2f} km/h")
+  print(f"Flow Score: {flow_score:.2f}")
+  print(f"Speed Score: {speed_score:.2f}")
+  print(f"Total Score: {flow_score + speed_score:.2f}")
+  print("---------------------------------------------")
+
+
   congestion_score = flow_score + speed_score
 
   if congestion_score < 30:
