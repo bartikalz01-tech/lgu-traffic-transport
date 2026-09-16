@@ -1,6 +1,7 @@
 <?php
 
 require_once 'config.php';
+require_once 'Tickets.php';
 
 class Violations extends config {
 
@@ -377,10 +378,7 @@ class Violations extends config {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function updateVerificationStatus(
-    $violationId,
-    $verificationStatus
-  ) {
+  public function updateVerificationStatus($violationId, $verificationStatus) {
 
     $conn = $this->conn();
 
@@ -391,20 +389,30 @@ class Violations extends config {
     ];
 
     if (!in_array($verificationStatus, $allowedStatuses, true)) {
-      throw new Exception("Invalid verification status.");
+
+      throw new Exception(
+        "Invalid verification status."
+      );
+
     }
 
     try {
 
       $conn->beginTransaction();
 
+
       /*
-      * Get current violation.
+      ============================================================
+      GET CURRENT VIOLATION
+      ============================================================
       */
+
       $sql = "
         SELECT
+
           violation_id,
           vehicle_id,
+          person_id,
           subject_type,
           violation_type,
           verification_status,
@@ -417,78 +425,115 @@ class Violations extends config {
         FOR UPDATE
       ";
 
-      $stmt = $conn->prepare($sql);
+      $stmt =
+        $conn->prepare($sql);
 
       $stmt->execute([
-        ':violation_id' => $violationId
+
+        ':violation_id' =>
+          $violationId
+
       ]);
 
-      $violation = $stmt->fetch(PDO::FETCH_ASSOC);
+      $violation =
+        $stmt->fetch(
+          PDO::FETCH_ASSOC
+        );
+
 
       if (!$violation) {
+
         throw new Exception(
           "Violation report not found."
         );
+
       }
 
 
       /*
-      * REJECTED
+      ============================================================
+      REJECTED
+      ============================================================
       */
+
       if ($verificationStatus === 'Rejected') {
 
         $updateSql = "
           UPDATE violation_reports
 
           SET
+
             verification_status = 'Rejected',
             offense_level = NULL
 
           WHERE violation_id = :violation_id
         ";
 
-        $updateStmt = $conn->prepare($updateSql);
+        $updateStmt =
+          $conn->prepare(
+            $updateSql
+          );
 
         $updateStmt->execute([
-          ':violation_id' => $violationId
+
+          ':violation_id' =>
+            $violationId
+
         ]);
+
       }
 
 
       /*
-      * PENDING
+      ============================================================
+      PENDING REVIEW
+      ============================================================
       */
+
       elseif ($verificationStatus === 'Pending Review') {
 
         $updateSql = "
           UPDATE violation_reports
 
           SET
+
             verification_status = 'Pending Review'
 
           WHERE violation_id = :violation_id
         ";
 
-        $updateStmt = $conn->prepare($updateSql);
+        $updateStmt =
+          $conn->prepare(
+            $updateSql
+          );
 
         $updateStmt->execute([
-          ':violation_id' => $violationId
+
+          ':violation_id' =>
+            $violationId
+
         ]);
+
       }
 
 
       /*
-      * VERIFIED
+      ============================================================
+      VERIFIED
+      ============================================================
       */
+
       elseif ($verificationStatus === 'Verified') {
 
         $offenseLevel = null;
 
 
         /*
-        * Only vehicles participate
-        * in plate-based offense tracking.
+        ------------------------------------------------------------
+        DETERMINE OFFENSE LEVEL
+        ------------------------------------------------------------
         */
+
         if (
           $violation['subject_type'] === 'Vehicle' &&
           !empty($violation['vehicle_id'])
@@ -509,7 +554,9 @@ class Violations extends config {
           ";
 
           $historyStmt =
-            $conn->prepare($historySql);
+            $conn->prepare(
+              $historySql
+            );
 
           $historyStmt->execute([
 
@@ -521,10 +568,13 @@ class Violations extends config {
 
             ':violation_id' =>
               $violationId
+
           ]);
 
           $history =
-            $historyStmt->fetch(PDO::FETCH_ASSOC);
+            $historyStmt->fetch(
+              PDO::FETCH_ASSOC
+            );
 
           $verifiedCount =
             (int)$history['verified_count'];
@@ -544,17 +594,23 @@ class Violations extends config {
 
             $offenseLevel =
               'Third Offense';
+
           }
+
         }
 
 
         /*
-        * Save verification + offense together.
+        ------------------------------------------------------------
+        SAVE VERIFIED STATUS + OFFENSE LEVEL
+        ------------------------------------------------------------
         */
+
         $updateSql = "
           UPDATE violation_reports
 
           SET
+
             verification_status = 'Verified',
             offense_level = :offense_level
 
@@ -562,7 +618,9 @@ class Violations extends config {
         ";
 
         $updateStmt =
-          $conn->prepare($updateSql);
+          $conn->prepare(
+            $updateSql
+          );
 
         $updateStmt->execute([
 
@@ -571,27 +629,352 @@ class Violations extends config {
 
           ':violation_id' =>
             $violationId
+
         ]);
+
+
+        /*
+        ============================================================
+        AUTOMATIC TICKET CREATION
+        ============================================================
+        
+        A ticket is automatically created whenever
+        the violation becomes VERIFIED.
+        ============================================================
+        */
+
+
+        /*
+        ------------------------------------------------------------
+        PREVENT DUPLICATE TICKET
+        ------------------------------------------------------------
+        
+        This is important because the user could change
+        the status to Verified again later.
+        */
+
+        $existingTicketSql = "
+          SELECT
+
+            ticket_id,
+            public_ticket_id
+
+          FROM tickets
+
+          WHERE violation_id = :violation_id
+
+          LIMIT 1
+
+          FOR UPDATE
+        ";
+
+        $existingTicketStmt =
+          $conn->prepare(
+            $existingTicketSql
+          );
+
+        $existingTicketStmt->execute([
+
+          ':violation_id' =>
+            $violationId
+
+        ]);
+
+        $existingTicket =
+          $existingTicketStmt->fetch(
+            PDO::FETCH_ASSOC
+          );
+
+
+        /*
+        ------------------------------------------------------------
+        ONLY CREATE TICKET IF ONE DOES NOT EXIST
+        ------------------------------------------------------------
+        */
+
+        if (!$existingTicket) {
+
+
+          /*
+          ==========================================================
+          FIND AN AVAILABLE OFFICER
+          ==========================================================
+          */
+
+          $officerSql = "
+            SELECT
+
+              officer_id,
+              officer_name,
+              contact_number,
+              status
+
+            FROM officers
+
+            WHERE status = 'Available'
+
+            ORDER BY officer_id ASC
+
+            LIMIT 1
+
+            FOR UPDATE
+          ";
+
+          $officerStmt =
+            $conn->prepare(
+              $officerSql
+            );
+
+          $officerStmt->execute();
+
+
+          $officer =
+            $officerStmt->fetch(
+              PDO::FETCH_ASSOC
+            );
+
+
+          /*
+          ----------------------------------------------------------
+          FOR NOW:
+          If there is no available officer, the ticket will not
+          be created.
+
+          ----------------------------------------------------------
+          */
+
+          if (!$officer) {
+
+            throw new Exception(
+              "No available officer is currently available to handle this violation."
+            );
+
+          }
+
+
+          $officerId =
+            (int)$officer['officer_id'];
+
+
+          /*
+          ==========================================================
+          GENERATE TICKET DATES
+          ==========================================================
+          */
+
+          $issuedAt =
+            date(
+              'Y-m-d H:i:s'
+            );
+
+
+          /*
+          30 MINUTES AFTER ISSUANCE
+          */
+
+          $dueDate =
+            date(
+              'Y-m-d H:i:s',
+              strtotime(
+                $issuedAt . ' +30 minutes'
+              )
+            );
+
+
+          /*
+          ==========================================================
+          GENERATE PUBLIC TICKET ID
+          ==========================================================
+          */
+
+          $publicTicketId =
+            'TKT-' .
+            date('Ymd') .
+            '-' .
+            strtoupper(
+              substr(
+                uniqid(),
+                -6
+              )
+            );
+
+
+          /*
+          ==========================================================
+          INSERT TICKET
+          ==========================================================
+          
+          person_id remains NULL because the assigned officer
+          will investigate the violation and identify/register
+          the person later.
+          ==========================================================
+          */
+
+          $ticketSql = "
+            INSERT INTO tickets (
+
+              public_ticket_id,
+              violation_id,
+              person_id,
+              officer_id,
+              issued_at,
+              due_date
+
+            )
+
+            VALUES (
+
+              :public_ticket_id,
+              :violation_id,
+              NULL,
+              :officer_id,
+              :issued_at,
+              :due_date
+
+            )
+          ";
+
+          $ticketStmt =
+            $conn->prepare(
+              $ticketSql
+            );
+
+          $ticketStmt->execute([
+
+            ':public_ticket_id' =>
+              $publicTicketId,
+
+            ':violation_id' =>
+              $violationId,
+
+            ':officer_id' =>
+              $officerId,
+
+            ':issued_at' =>
+              $issuedAt,
+
+            ':due_date' =>
+              $dueDate
+
+          ]);
+
+
+          /*
+          ==========================================================
+          GET NEW TICKET ID
+          ==========================================================
+          */
+
+          $ticketId =
+            (int)$conn->lastInsertId();
+
+
+          if ($ticketId <= 0) {
+
+            throw new Exception(
+              "Failed to create ticket record."
+            );
+
+          }
+
+
+          /*
+          ==========================================================
+          CHANGE OFFICER STATUS
+          ==========================================================
+          
+          The officer is now handling the ticket.
+          ==========================================================
+          */
+
+          $updateOfficerSql = "
+            UPDATE officers
+
+            SET
+
+              status = 'Assigned',
+              updated_at = NOW()
+
+            WHERE officer_id = :officer_id
+          ";
+
+          $updateOfficerStmt =
+            $conn->prepare(
+              $updateOfficerSql
+            );
+
+          $updateOfficerStmt->execute([
+
+            ':officer_id' =>
+              $officerId
+
+          ]);
+
+
+        } else {
+
+          /*
+          ----------------------------------------------------------
+          Ticket already exists.
+          Do not create another one.
+          ----------------------------------------------------------
+          */
+
+          $ticketId =
+            (int)$existingTicket['ticket_id'];
+
+        }
 
       }
 
 
+      /*
+      ============================================================
+      COMMIT
+      ============================================================
+      */
+
       $conn->commit();
 
 
+      /*
+      ============================================================
+      RETURN RESULT
+      ============================================================
+      */
+
       return [
-        'success' => true,
-        'violation_id' => $violationId,
-        'verification_status' => $verificationStatus,
+
+        'success' =>
+          true,
+
+        'violation_id' =>
+          $violationId,
+
+        'verification_status' =>
+          $verificationStatus,
+
         'offense_level' =>
-          $offenseLevel ?? $violation['offense_level']
+          $offenseLevel ??
+          $violation['offense_level'],
+
+        'ticket_created' =>
+          $verificationStatus === 'Verified'
+            ? true
+            : false,
+
+        'ticket_id' =>
+          $ticketId ?? null
+
       ];
 
 
     } catch (PDOException $e) {
 
       if ($conn->inTransaction()) {
+
         $conn->rollBack();
+
       }
 
       error_log(
@@ -603,14 +986,19 @@ class Violations extends config {
         "Failed to update violation verification."
       );
 
+
     } catch (Exception $e) {
 
       if ($conn->inTransaction()) {
+
         $conn->rollBack();
+
       }
 
       throw $e;
+
     }
+
   }
 }
 

@@ -166,9 +166,9 @@ export function openRoadCondition(container, road) {
               </div>
 
               <div class="traffic-stats">
-                <div class="stat-card">
+                <!--<div class="stat-card">
                   <button class="btn btn-danger" id="accidentReportBtn"><i class="fas fa-car-crash"></i> Accident Report</button>
-                </div>
+                </div>-->
                 <div class="stat-card">
                   <button class="btn btn-info" id="violationReportBtn"><i class="fas fa-triangle-exclamation"></i> Violation Report</button>
                 </div>
@@ -489,9 +489,9 @@ export function openRoadCondition(container, road) {
   const accidentModal = document.getElementById("accidentModal");
   const accidentReportBtn = document.getElementById("accidentReportBtn");
 
-  accidentReportBtn.addEventListener("click", () => {
+  /*accidentReportBtn.addEventListener("click", () => {
     openAccidentModal(accidentModal, road);
-  });
+  });*/
 
   const violationModal = document.getElementById("violationModal");
   const violationReportBtn = document.getElementById("violationReportBtn");

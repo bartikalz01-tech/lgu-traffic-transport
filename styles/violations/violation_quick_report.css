@@ -18,6 +18,8 @@
 .violation-modal {
   width: min(1000px, 100%);
   max-height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
   background: var(--card-bg);
   border: 1px solid var(--border-color-1);
   border-radius: 12px;
@@ -35,6 +37,7 @@
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--border-color-1);
   background: var(--header-bg);
+  flex-shrink: 0;
 }
 
 .violation-modal-title {
@@ -80,7 +83,8 @@
 .violation-modal-body {
   padding: 1.5rem;
   overflow-y: auto;
-  max-height: calc(100vh - 12rem);
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 
@@ -307,6 +311,7 @@
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--border-color-1);
   background: var(--header-bg);
+  flex-shrink: 0;
 }
 
 .violation-footer-info {

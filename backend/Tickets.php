@@ -102,43 +102,11 @@ class Tickets extends config {
           ? (int)$data['violation_id']
           : 0;
 
-      $officerId =
-        isset($data['officer_id'])
-          ? (int)$data['officer_id']
-          : 0;
-
-      $issuedAt =
-        !empty($data['issued_at'])
-          ? $data['issued_at']
-          : date('Y-m-d H:i:s');
-
-      $dueDate =
-        !empty($data['due_date'])
-          ? $data['due_date']
-          : null;
 
       if ($violationId <= 0) {
 
         throw new Exception(
           "A violation report must be selected."
-        );
-
-      }
-
-
-      if ($officerId <= 0) {
-
-        throw new Exception(
-          "An officer must be assigned."
-        );
-
-      }
-
-
-      if (empty($dueDate)) {
-
-        throw new Exception(
-          "Due date is required."
         );
 
       }
@@ -152,6 +120,7 @@ class Tickets extends config {
 
       $violationSql = "
         SELECT
+
           violation_id,
           verification_status
 
@@ -163,15 +132,29 @@ class Tickets extends config {
       ";
 
       $violationStmt =
-        $conn->prepare($violationSql);
+        $conn->prepare(
+          $violationSql
+        );
 
       $violationStmt->execute([
-        ':violation_id' => $violationId
+
+        ':violation_id' =>
+          $violationId
+
       ]);
 
-      $violation =
-        $violationStmt->fetch(PDO::FETCH_ASSOC);
 
+      $violation =
+        $violationStmt->fetch(
+          PDO::FETCH_ASSOC
+        );
+
+
+      /*
+      ============================================================
+      VIOLATION NOT FOUND
+      ============================================================
+      */
 
       if (!$violation) {
 
@@ -183,8 +166,9 @@ class Tickets extends config {
 
 
       /*
-      Only VERIFIED violations can
-      become tickets.
+      ============================================================
+      ONLY VERIFIED VIOLATIONS CAN BECOME TICKETS
+      ============================================================
       */
 
       if (
@@ -206,7 +190,10 @@ class Tickets extends config {
       */
 
       $existingTicketSql = "
-        SELECT ticket_id
+        SELECT
+
+          ticket_id,
+          public_ticket_id
 
         FROM tickets
 
@@ -221,8 +208,12 @@ class Tickets extends config {
         );
 
       $existingTicketStmt->execute([
-        ':violation_id' => $violationId
+
+        ':violation_id' =>
+          $violationId
+
       ]);
+
 
       $existingTicket =
         $existingTicketStmt->fetch(
@@ -231,6 +222,12 @@ class Tickets extends config {
 
 
       if ($existingTicket) {
+
+        /*
+        ----------------------------------------------------------
+        A ticket already exists for this violation.
+        ----------------------------------------------------------
+        */
 
         throw new Exception(
           "A ticket has already been created for this violation."
@@ -241,12 +238,18 @@ class Tickets extends config {
 
       /*
       ============================================================
-      LOCK OFFICER
+      FIND AVAILABLE OFFICER
+      ============================================================
+      
+      The system automatically selects an available officer.
+
+      No officer_id is supplied by the frontend.
       ============================================================
       */
 
       $officerSql = "
         SELECT
+
           officer_id,
           officer_name,
           contact_number,
@@ -254,17 +257,22 @@ class Tickets extends config {
 
         FROM officers
 
-        WHERE officer_id = :officer_id
+        WHERE status = 'Available'
+
+        ORDER BY officer_id ASC
+
+        LIMIT 1
 
         FOR UPDATE
       ";
 
       $officerStmt =
-        $conn->prepare($officerSql);
+        $conn->prepare(
+          $officerSql
+        );
 
-      $officerStmt->execute([
-        ':officer_id' => $officerId
-      ]);
+      $officerStmt->execute();
+
 
       $officer =
         $officerStmt->fetch(
@@ -272,31 +280,57 @@ class Tickets extends config {
         );
 
 
+      /*
+      ============================================================
+      NO AVAILABLE OFFICER
+      ============================================================
+      */
+
       if (!$officer) {
 
         throw new Exception(
-          "Selected officer was not found."
+          "No available officer is currently available to handle this violation."
         );
 
       }
 
 
       /*
-      Make sure the officer is
-      STILL available.
-
-      This is important because another
-      user could have assigned the officer
-      after the dropdown was loaded.
+      ============================================================
+      GET OFFICER ID
+      ============================================================
       */
 
-      if ($officer['status'] !== 'Available') {
+      $officerId =
+        (int)$officer['officer_id'];
 
-        throw new Exception(
-          "The selected officer is no longer available."
+
+      /*
+      ============================================================
+      GENERATE TICKET DATES
+      ============================================================
+      
+      Issued At:
+        Current server date and time.
+
+      Due Date:
+        30 minutes after ticket issuance.
+      ============================================================
+      */
+
+      $issuedAt =
+        date(
+          'Y-m-d H:i:s'
         );
 
-      }
+
+      $dueDate =
+        date(
+          'Y-m-d H:i:s',
+          strtotime(
+            $issuedAt . ' +30 minutes'
+          )
+        );
 
 
       /*
@@ -323,7 +357,10 @@ class Tickets extends config {
       ============================================================
       
       person_id is intentionally NULL.
-      It will be populated later.
+
+      It will be populated later after the assigned
+      officer completes the investigation.
+      ============================================================
       */
 
       $ticketSql = "
@@ -335,6 +372,7 @@ class Tickets extends config {
           officer_id,
           issued_at,
           due_date
+
         )
 
         VALUES (
@@ -345,11 +383,14 @@ class Tickets extends config {
           :officer_id,
           :issued_at,
           :due_date
+
         )
       ";
 
       $ticketStmt =
-        $conn->prepare($ticketSql);
+        $conn->prepare(
+          $ticketSql
+        );
 
       $ticketStmt->execute([
 
@@ -366,13 +407,28 @@ class Tickets extends config {
           $issuedAt,
 
         ':due_date' =>
-          $dueDate,
+          $dueDate
 
       ]);
 
 
+      /*
+      ============================================================
+      GET NEW TICKET ID
+      ============================================================
+      */
+
       $ticketId =
         (int)$conn->lastInsertId();
+
+
+      if ($ticketId <= 0) {
+
+        throw new Exception(
+          "Failed to create ticket record."
+        );
+
+      }
 
 
       /*
@@ -380,14 +436,18 @@ class Tickets extends config {
       UPDATE OFFICER STATUS
       ============================================================
       
-      Officer is now handling this ticket.
+      The officer is now handling this ticket.
+      ============================================================
       */
 
       $updateOfficerSql = "
         UPDATE officers
 
         SET
-          status = 'Assigned'
+
+          status = 'Assigned',
+
+          updated_at = NOW()
 
         WHERE officer_id = :officer_id
       ";
@@ -398,18 +458,27 @@ class Tickets extends config {
         );
 
       $updateOfficerStmt->execute([
-        ':officer_id' => $officerId
+
+        ':officer_id' =>
+          $officerId
+
       ]);
 
 
       /*
       ============================================================
-      COMMIT
+      COMMIT TRANSACTION
       ============================================================
       */
 
       $conn->commit();
 
+
+      /*
+      ============================================================
+      RETURN CREATED TICKET
+      ============================================================
+      */
 
       return [
 
@@ -445,14 +514,24 @@ class Tickets extends config {
 
     } catch (PDOException $e) {
 
+      /*
+      ============================================================
+      DATABASE ERROR
+      ============================================================
+      */
+
       if ($conn->inTransaction()) {
+
         $conn->rollBack();
+
       }
+
 
       error_log(
         "[TICKET] Database error: "
         . $e->getMessage()
       );
+
 
       throw new Exception(
         "Failed to create ticket."
@@ -461,11 +540,21 @@ class Tickets extends config {
 
     } catch (Exception $e) {
 
+      /*
+      ============================================================
+      APPLICATION ERROR
+      ============================================================
+      */
+
       if ($conn->inTransaction()) {
+
         $conn->rollBack();
+
       }
 
+
       throw $e;
+
     }
 
   }

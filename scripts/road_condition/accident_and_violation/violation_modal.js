@@ -1,5 +1,26 @@
 import { insertViolationReport } from "../../data/violation_report/fetch_violations.js";
 
+function automaticSpecificLocation(roadName) {
+
+  switch (roadName?.trim()) {
+
+    case "Susano Road":
+      return "Long road connected to Don Alejandro and Asuncion Street";
+
+    case "Don Alejandro Street":
+      return "Intersection on Susano Road near exit to Barangay San Agustin";
+
+    case "Del Rey":
+      return "Near Santo Niño Street";
+
+    case "Santo Niño Street":
+      return "Roads intersecting Del Rey and Don Alejandro Streets";
+
+    default:
+      return "Location based on detected CCTV road";
+  }
+}
+
 export async function openViolationModal(container, road) {
 
   let snapshotFileName = null;
@@ -225,7 +246,7 @@ export async function openViolationModal(container, road) {
                 type="text"
                 id="locationDetails"
                 maxlength="255"
-                placeholder="e.g. Near the barangay entrance / eastbound lane"
+                value="${automaticSpecificLocation(road.road_name)}"
               />
 
             </div>
@@ -415,11 +436,11 @@ export async function openViolationModal(container, road) {
 
   const evidenceStatus = container.querySelector("#evidenceStatus");
 
-  subjectType.addEventListener("change", () => {
+
+  function updateSubjectFields() {
     const type = subjectType.value;
 
     vehiclePlateField.classList.add("hidden");
-
     vehicleTypeField.classList.add("hidden");
 
     plateNumber.required = false;
@@ -430,7 +451,14 @@ export async function openViolationModal(container, road) {
 
       plateNumber.required = true;
     }
-  });
+
+    subjectType.addEventListener("change", updateSubjectFields);
+  }
+
+
+  subjectType.addEventListener("change", updateSubjectFields);
+
+  updateSubjectFields();
 
   // Set current date/time
   const now = new Date();
