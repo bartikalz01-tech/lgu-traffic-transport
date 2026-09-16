@@ -40,11 +40,10 @@
         </div>
       </div>
     </div>
-    <a href="../public_transport_coordination/public_transport.php" class="sidebar-link">
+    <!--<a href="../public_transport_coordination/public_transport.php" class="sidebar-link">
       <i class="fas fa-car"></i>
       <span>Public Transport</span>
-      <!--<span class="purpose">Coordination</span>-->
-    </a>
+    </a>-->
     <a href="../accident_reports/accident.php" class="sidebar-link">
       <i class="fas fa-car-crash"></i>
       <span>Accident Reports</span>

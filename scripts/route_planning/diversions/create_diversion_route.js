@@ -216,19 +216,50 @@ export function updateHighTrafficCount(roads) {
     highTrafficRoads.length;
 }
 
+
+function createIntersectionIcon(state = "default") {
+
+  const colors = {
+    default: "#1e88e5",
+    start: "#43a047",
+    end: "#e53935"
+  };
+
+  return L.divIcon({
+    className: "intersection-marker-wrapper",
+    html: `
+      <div
+        class="intersection-marker ${state}"
+        style="--marker-color: ${colors[state]};"
+      >
+        <div class="intersection-horizontal"></div>
+        <div class="intersection-vertical"></div>
+        <div class="intersection-center"></div>
+      </div>
+    `,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+    popupAnchor: [0, -16]
+  });
+
+}
+
+
 export function renderRoadNodes(map, nodes) {
 
   nodes.forEach(node => {
     const marker = L.circleMarker(
       [node.lat, node.lng],
       {
-        radius: 6,
-        color: "#1e88e5",
-        fillColor: "#42a5f5",
+        radius: 9,
+        color: "#ffffff",
+        fillColor: "#1e88e5",
         fillOpacity: 1,
-        weight: 2
+        weight: 3
       }
     ).addTo(map);
+
+    marker.getElement()?.classList.add("road-node-marker");
 
     marker.bindPopup(`
       <b>Intersection</b><br>

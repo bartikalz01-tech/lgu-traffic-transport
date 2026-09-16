@@ -647,3 +647,80 @@
   border: 2px solid white;
   box-shadow: 0 2px 8px rgba(0,0,0,.3);
 }
+
+
+.intersection-marker-wrapper {
+  background: transparent;
+  border: none;
+}
+
+.intersection-marker {
+  position: relative;
+  width: 28px;
+  height: 28px;
+
+  border-radius: 50%;
+
+  background: white;
+  border: 2px solid var(--marker-color);
+
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.35);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.intersection-marker:hover {
+  transform: scale(1.15);
+
+  box-shadow:
+    0 3px 9px rgba(0, 0, 0, 0.45);
+}
+
+.intersection-horizontal {
+  position: absolute;
+
+  width: 14px;
+  height: 4px;
+
+  background: var(--marker-color);
+
+  left: 5px;
+  top: 10px;
+
+  border-radius: 2px;
+}
+
+.intersection-vertical {
+  position: absolute;
+
+  width: 4px;
+  height: 14px;
+
+  background: var(--marker-color);
+
+  left: 10px;
+  top: 5px;
+
+  border-radius: 2px;
+}
+
+.intersection-center {
+  position: absolute;
+
+  width: 6px;
+  height: 6px;
+
+  background: var(--marker-color);
+
+  border-radius: 50%;
+
+  left: 9px;
+  top: 9px;
+}
+
+.road-node-marker {
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
