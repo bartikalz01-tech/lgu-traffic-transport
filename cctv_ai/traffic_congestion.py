@@ -1,21 +1,21 @@
 def calculate_congestion(average_speed):
 
   # ==========================================
-  # CONGESTION SCORE BASED ONLY ON SPEED
+  # CONGESTION SCORE BASED ON SPEED
   # ==========================================
 
-  if average_speed >= 50:
+  if average_speed >= 30:
 
     congestion_score = 0
 
-  elif average_speed <= 10:
+  elif average_speed <= 15:
 
     congestion_score = 100
 
   else:
 
     congestion_score = (
-      (50 - average_speed) / 40
+      (30 - average_speed) / 15
     ) * 100
 
 
@@ -23,11 +23,11 @@ def calculate_congestion(average_speed):
   # CONGESTION LEVEL
   # ==========================================
 
-  if average_speed >= 50:
+  if average_speed >= 30:
 
     congestion = "low"
 
-  elif average_speed >= 30:
+  elif average_speed >= 20:
 
     congestion = "moderate"
 
