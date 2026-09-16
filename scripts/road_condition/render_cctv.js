@@ -119,10 +119,10 @@ export async function renderCctvAi(container) {
             <span>Traffic Trend</span>
           </div>
 
-          <div class="report-link active-report" data-report="congestion-frequency">
+          <!--<div class="report-link active-report" data-report="congestion-frequency">
             <i class="fas fa-road"></i>
             <span>Congestion Frequency</span>
-          </div>
+          </div>-->
 
           <div class="report-link" data-report="average-speed-history">
             <i class="fas fa-gauge-high"></i>

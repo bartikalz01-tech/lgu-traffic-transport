@@ -1,6 +1,43 @@
 import { getTrafficTrendAndCongestionLogs } from "../../data/road_condition/fetch_road_condition.js";
 import { renderTrafficTrendChart } from "./road_report_charts/traffic_trend_chart.js";
 
+
+function parseMySQLDateTime(dateTime) {
+
+  if (!dateTime) {
+    return null;
+  }
+
+  return new Date(
+    dateTime.replace(" ", "T")
+  );
+
+}
+
+
+function formatReportDateTime(dateTime) {
+
+  const date = parseMySQLDateTime(dateTime);
+
+  if (!date || Number.isNaN(date.getTime())) {
+    return "N/A";
+  }
+
+  const formattedDate = date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+
+  return `${formattedDate} • ${formattedTime}`;
+
+}
+
 export async function renderTrafficTrend(container) {
   container.innerHTML = `
     <div class="report-card">
@@ -75,7 +112,7 @@ export async function renderTrafficTrend(container) {
 
       tbody.innerHTML += `
         <tr>
-          <td>${new Date(log.recorded_at).toLocaleString()}</td>
+          <td>${formatReportDateTime(log.recorded_at)}</td>
           <td>${log.road_name}</td>
           <td>${Number(log.avg_speed).toFixed(2)} km/h</td>
           <td>${Math.round(log.vehicle_flow)} veh/min</td>
