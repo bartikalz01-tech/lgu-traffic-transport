@@ -4,22 +4,18 @@ import time
 AVERAGE_CAR_LENGTH = 4.5
 AVERAGE_TRUCK_LENGTH = 10.0
 
-SPEED_CALIBRATION_FACTOR = 0.22
+# --- Sanity guards ---
 
-# --- Sanity guards (this is the actual bug fix) ---
+# Ignore bounding boxes that are too small to provide
+# a reasonably stable scale estimate.
+MIN_VEHICLE_HEIGHT_PIXELS = 15
 
-# Ignore bounding boxes that are too thin/degenerate to give a reliable
-# meters-per-pixel estimate (partial detections, edge clipping, occlusion).
-MIN_VEHICLE_WIDTH_PIXELS = 15
-
-# Any single-frame reading above this is physically implausible for city
-# road traffic and almost certainly a tracking glitch, not a real vehicle.
+# Reject obviously impossible city-road speeds.
 MAX_PLAUSIBLE_SPEED_KMH = 80
 
-# If a track hasn't been seen for longer than this, don't trust the
-# distance between "previous" and "current" position for a speed calc -
-# the vehicle was probably lost/occluded for multiple frames, not one.
-MAX_GAP_SECONDS = 1.0
+# YOLO can sometimes take more than 1 second between detections.
+# Allow a longer gap before rejecting the measurement.
+MAX_GAP_SECONDS = 2.0
 
 previous_positions = {}
 previous_timestamps = {}
@@ -28,152 +24,331 @@ vehicle_speeds = {}
 
 printed_ids = {}
 
+speed_debug_times = {}
 
-def calculate_speed(vehicles, camera_name, fps, report=False):
 
-    global previous_positions
-    global previous_timestamps
-    global vehicle_speeds
+def calculate_speed(vehicles, camera_name, fps, video_timestamp=None, report=False):
 
-    if report:
-        speed = vehicle_speeds.get(camera_name, {})
+	global previous_positions
+	global previous_timestamps
+	global vehicle_speeds
 
-        if len(speed) == 0:
-            return 0
+	# ==========================================================
+	# REPORT AVERAGE SPEED
+	# ==========================================================
 
-        vehicle_averages = []
+	if report:
 
-        for speed_list in speed.values():
+		speed = vehicle_speeds.get(camera_name, {})
 
-            if len(speed_list) == 0:
-                continue
+		if len(speed) == 0:
+				return 0
 
-            average_vehicle_speed = sum(speed_list) / len(speed_list)
+		vehicle_averages = []
 
-            vehicle_averages.append(average_vehicle_speed)
+		for speed_list in speed.values():
 
-        if len(vehicle_averages) == 0:
-            return 0
+				if len(speed_list) == 0:
+						continue
 
-        road_average = sum(vehicle_averages) / len(vehicle_averages)
+				average_vehicle_speed = (
+						sum(speed_list) / len(speed_list)
+				)
 
-        vehicle_speeds[camera_name].clear()
+				vehicle_averages.append(
+						average_vehicle_speed
+				)
 
-        return road_average
+		if len(vehicle_averages) == 0:
+				return 0
 
-    if camera_name not in previous_positions:
-        previous_positions[camera_name] = {}
+		road_average = (
+				sum(vehicle_averages)
+				/ len(vehicle_averages)
+		)
 
-    if camera_name not in previous_timestamps:
-        previous_timestamps[camera_name] = {}
+		vehicle_speeds[camera_name].clear()
 
-    if camera_name not in vehicle_speeds:
-        vehicle_speeds[camera_name] = {}
+		return road_average
 
-    camera_positions = previous_positions[camera_name]
-    camera_timestamps = previous_timestamps[camera_name]
 
-    if camera_name not in printed_ids:
-        printed_ids[camera_name] = set()
+	# ==========================================================
+	# INITIALIZE CAMERA STORAGE
+	# ==========================================================
 
-    now = time.monotonic()
+	if camera_name not in previous_positions:
+		previous_positions[camera_name] = {}
 
-    for vehicle in vehicles:
+	if camera_name not in previous_timestamps:
+		previous_timestamps[camera_name] = {}
 
-      track_id = vehicle["track_id"]
-      class_name = vehicle["class_name"]
+	if camera_name not in vehicle_speeds:
+		vehicle_speeds[camera_name] = {}
 
-      if track_id not in printed_ids[camera_name]:
-          printed_ids[camera_name].add(track_id)
+	camera_positions = (
+		previous_positions[camera_name]
+	)
 
-      box = vehicle["box"]
+	camera_timestamps = (
+		previous_timestamps[camera_name]
+	)
 
-      # Bounding box coordinates
-      x1, y1, x2, y2 = box.xyxy[0].tolist()
 
-      vehicle_width_pixels = abs(y2 - y1)
+	# ==========================================================
+	# DEBUG TRACKING
+	# ==========================================================
 
-      if class_name in ["truck", "bus"]:
-        reference_length = AVERAGE_TRUCK_LENGTH
-      else:
-        reference_length = AVERAGE_CAR_LENGTH
+	if camera_name not in printed_ids:
+		printed_ids[camera_name] = set()
 
-      # center point
-      center_x = (x1 + x2) / 2
-      center_y = (y1 + y2) / 2
+	if video_timestamp is None:
+		current_video_time = time.monotonic()
+	else:
+		current_video_time = video_timestamp
 
-      current_position = (center_x, center_y)
+	previous_speed_debug_time = (
+		speed_debug_times.get(camera_name)
+	)
 
-      speed = 0
+	if previous_speed_debug_time is not None:
 
-      # Guard 1: skip degenerate/too-thin boxes. Dividing reference_length
-      # by a near-zero pixel value is what produces most of the absurd
-      # speed spikes.
-      box_is_valid = vehicle_width_pixels >= MIN_VEHICLE_WIDTH_PIXELS
+		speed_interval = (
+			current_video_time - previous_speed_debug_time
+		)
 
-      if track_id in camera_positions and box_is_valid:
+		print(
+			f"[SPEED TIMING] "
+			f"Camera={camera_name} "
+			f"TimeSincePreviousCalculateSpeed="
+			f"{speed_interval:.3f}s"
+		)
 
-        previous_x, previous_y = camera_positions[track_id]
-        previous_time = camera_timestamps.get(track_id, now)
+	speed_debug_times[camera_name] = current_video_time
 
-        # Guard 2: use the ACTUAL elapsed time since this track was
-        # last seen, instead of assuming exactly 1/fps has passed.
-        # If the vehicle was briefly lost/occluded, previous_position
-        # may be several frames old - assuming 1 frame here is what
-        # made the code overestimate speed after any gap.
-        elapsed_seconds = now - previous_time
 
-        if elapsed_seconds <= 0:
-          elapsed_seconds = 1.0 / fps
+	# ==========================================================
+	# PROCESS VEHICLES
+	# ==========================================================
 
-        if elapsed_seconds <= MAX_GAP_SECONDS:
+	for vehicle in vehicles:
 
-          distance = math.sqrt(
-            (center_x - previous_x) ** 2 +
-            (center_y - previous_y) ** 2
-          )
+		track_id = vehicle["track_id"]
+		class_name = vehicle["class_name"]
 
-          meters_per_pixel = reference_length / vehicle_width_pixels
+		if track_id not in printed_ids[camera_name]:
 
-          speed_mps = distance * meters_per_pixel / elapsed_seconds
+			printed_ids[camera_name].add(track_id)
 
-          raw_speed = speed_mps * 3.6
 
-          speed = raw_speed * SPEED_CALIBRATION_FACTOR
+		box = vehicle["box"]
 
-          print(
-            f"[SPEED DEBUG] "
-            f"Camera={camera_name} "
-            f"ID={track_id} "
-            f"Distance={distance:.2f}px "
-            f"Elapsed={elapsed_seconds:.3f}s "
-            f"BoxHeight={vehicle_width_pixels:.2f}px "
-            f"MetersPerPixel={meters_per_pixel:.4f} "
-            f"RawSpeed={raw_speed:.2f} km/h "
-            f"Calibration={SPEED_CALIBRATION_FACTOR} "
-            f"FinalSpeed={speed:.2f} km/h"
-          )
+		# Bounding box coordinates
+		x1, y1, x2, y2 = (
+			box.xyxy[0].tolist()
+		)
 
-          # Guard 3: physical sanity cap. Whatever slipped through
-          # guards 1 and 2, a reading this high on a city road is
-          # a tracking/measurement glitch, not a real vehicle -
-          # drop it rather than let it poison the average/peak.
-          if speed > MAX_PLAUSIBLE_SPEED_KMH:
-            speed = 0
 
-      vehicle["speed"] = speed
+		# ======================================================
+		# VEHICLE SIZE
+		# ======================================================
 
-      camera_positions[track_id] = current_position
-      camera_timestamps[track_id] = now
+		# We use the bounding-box HEIGHT as the reference
+		# because the vehicle's apparent height changes with
+		# its distance from the camera.
 
-      camera_speeds = vehicle_speeds[camera_name]
+		vehicle_height_pixels = abs(
+			y2 - y1
+		)
 
-      if track_id not in camera_speeds:
-          camera_speeds[track_id] = []
 
-      # Only record genuine, plausible readings into the rolling average.
-      # (speed == 0 here means "no reliable reading this frame", not
-      # "vehicle is stationary" - a stationary vehicle would still
-      # produce a valid near-zero speed the frame before this guard.)
-      if speed > 0:
-        camera_speeds[track_id].append(speed)
+		if class_name in ["truck", "bus"]:
+
+			reference_length = (
+				AVERAGE_TRUCK_LENGTH
+			)
+
+		else:
+
+			reference_length = (
+				AVERAGE_CAR_LENGTH
+			)
+
+
+		# ======================================================
+		# CENTER POSITION
+		# ======================================================
+
+		center_x = (
+			x1 + x2
+		) / 2
+
+		center_y = (
+			y1 + y2
+		) / 2
+
+		current_position = (
+			center_x,
+			center_y
+		)
+
+
+		speed = 0.0
+
+
+		# ======================================================
+		# VALID BOUNDING BOX
+		# ======================================================
+
+		box_is_valid = (
+			vehicle_height_pixels
+			>= MIN_VEHICLE_HEIGHT_PIXELS
+		)
+
+
+		# ======================================================
+		# CALCULATE SPEED
+		# ======================================================
+
+		if (
+			track_id in camera_positions
+			and box_is_valid
+		):
+
+				previous_x, previous_y = (
+					camera_positions[track_id]
+				)
+
+				previous_time = camera_timestamps.get(track_id, current_video_time)
+
+
+				# Actual elapsed wall-clock time
+				elapsed_seconds = (
+					current_video_time - previous_time
+				)
+
+
+				if elapsed_seconds <= 0:
+
+					elapsed_seconds = (
+						1.0 / fps
+					)
+
+
+				# Only calculate if the track was
+				# seen recently enough.
+				if elapsed_seconds <= MAX_GAP_SECONDS:
+
+					# ----------------------------------------------
+					# Pixel movement
+					# ----------------------------------------------
+
+					distance_pixels = math.sqrt(
+							(center_x - previous_x) ** 2
+							+
+							(center_y - previous_y) ** 2
+					)
+
+
+					# ----------------------------------------------
+					# Approximate meters per pixel
+					# ----------------------------------------------
+
+					meters_per_pixel = (
+							reference_length
+							/ vehicle_height_pixels
+					)
+
+
+					# ----------------------------------------------
+					# Convert pixel movement to meters
+					# ----------------------------------------------
+
+					distance_meters = (
+							distance_pixels
+							* meters_per_pixel
+					)
+
+
+					# ----------------------------------------------
+					# Convert to meters per second
+					# ----------------------------------------------
+
+					speed_mps = (
+							distance_meters
+							/ elapsed_seconds
+					)
+
+
+					# ----------------------------------------------
+					# Convert m/s to km/h
+					# ----------------------------------------------
+
+					speed = (
+							speed_mps * 3.6
+					)
+
+
+					# ==================================================
+					# DEBUG
+					# ==================================================
+
+					print(
+							f"[SPEED DEBUG] "
+							f"Camera={camera_name} "
+							f"ID={track_id} "
+							f"Distance={distance_pixels:.2f}px "
+							f"Elapsed={elapsed_seconds:.3f}s "
+							f"BoxHeight={vehicle_height_pixels:.2f}px "
+							f"MetersPerPixel={meters_per_pixel:.4f} "
+							f"Speed={speed:.2f}km/h"
+					)
+
+
+					# ==================================================
+					# PHYSICAL SANITY CHECK
+					# ==================================================
+
+					if speed > MAX_PLAUSIBLE_SPEED_KMH:
+
+						print(
+								f"[SPEED REJECTED] "
+								f"Camera={camera_name} "
+								f"ID={track_id} "
+								f"Speed={speed:.2f}km/h"
+						)
+
+						speed = 0.0
+
+
+		# ==========================================================
+		# STORE CURRENT POSITION/TIME
+		# ==========================================================
+
+		vehicle["speed"] = speed
+
+		camera_positions[track_id] = (
+			current_position
+		)
+
+		camera_timestamps[track_id] = current_video_time
+
+
+		# ==========================================================
+		# STORE SPEED HISTORY
+		# ==========================================================
+
+		camera_speeds = (
+			vehicle_speeds[camera_name]
+		)
+
+		if track_id not in camera_speeds:
+
+			camera_speeds[track_id] = []
+
+
+		# Only store valid positive measurements.
+		if speed > 0:
+
+			camera_speeds[track_id].append(
+				speed
+			)

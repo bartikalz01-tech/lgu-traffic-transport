@@ -1,36 +1,50 @@
-def calculate_congestion(vehicle_per_minute, average_speed):
+def calculate_congestion(average_speed):
 
-  if vehicle_per_minute >= 100:
-    flow_score = 50
+  # ==========================================
+  # CONGESTION SCORE BASED ONLY ON SPEED
+  # ==========================================
+
+  if average_speed >= 50:
+
+    congestion_score = 0
+
+  elif average_speed <= 10:
+
+    congestion_score = 100
+
   else:
-    flow_score = (vehicle_per_minute / 100) * 50
+
+    congestion_score = (
+      (50 - average_speed) / 40
+    ) * 100
 
 
-  if average_speed <= 10:
-    speed_score = 50
-  elif average_speed >= 50:
-    speed_score = 0
+  # ==========================================
+  # CONGESTION LEVEL
+  # ==========================================
+
+  if average_speed >= 50:
+
+    congestion = "low"
+
+  elif average_speed >= 30:
+
+    congestion = "moderate"
+
   else:
-    speed_score = ((50 - average_speed) / 40) * 50
 
+    congestion = "high"
+
+
+  # ==========================================
+  # DEBUG OUTPUT
+  # ==========================================
 
   print("\n---------- CONGESTION CALCULATION ----------")
-  print(f"Vehicle Per Minute: {vehicle_per_minute:.2f}")
   print(f"Average Speed: {average_speed:.2f} km/h")
-  print(f"Flow Score: {flow_score:.2f}")
-  print(f"Speed Score: {speed_score:.2f}")
-  print(f"Total Score: {flow_score + speed_score:.2f}")
+  print(f"Congestion Score: {congestion_score:.2f}")
+  print(f"Congestion Level: {congestion}")
   print("---------------------------------------------")
 
 
-  congestion_score = flow_score + speed_score
-
-  if congestion_score < 30:
-    congestion = "low"
-  elif congestion_score < 60:
-    congestion = "moderate"
-  else:
-    congestion = "high"
-
-  
   return congestion_score, congestion

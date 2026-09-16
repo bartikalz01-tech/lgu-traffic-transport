@@ -29,7 +29,7 @@ ai_frames = {}
 
 ai_frame_locks = {}
 
-AI_FRAME_SKIP = 2
+AI_FRAME_SKIP = 1
 
 #FRAME_SKIP = 1
 
@@ -43,7 +43,7 @@ saved_accident_states = {}
 
 VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
 
-MODEL_NAME = "yolov8s.pt"
+MODEL_NAME = "yolov8n.pt"
 
 REPORT_INTERVAL = 15
 
@@ -352,6 +352,10 @@ def capture_camera(stream):
 
       continue
 
+    video_timestamp_seconds = (
+      capture.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
+    )
+
     cctv_timestamp = get_cctv_timestamp()
 
     frame_timestamp = datetime.strptime(cctv_timestamp, "%Y-%m-%d %H:%M:%S")
@@ -383,7 +387,10 @@ def capture_camera(stream):
 
     with ai_frame_locks[camera_name]:
 
-      ai_frames[camera_name] = frame.copy()
+      ai_frames[camera_name] = {
+        "frame": frame.copy(),
+        "video_timestamp": video_timestamp_seconds
+      }
 
 
 def process_camera(stream):
@@ -408,12 +415,16 @@ def process_camera(stream):
       continue
 
     with ai_frame_locks[camera_name]:
-      frame = ai_frames.get(camera_name)
+      ai_data = ai_frames.get(camera_name)
 
-      if frame is not None:
-        frame = frame.copy()
+      if ai_data is not None:
+        frame = ai_data["frame"].copy()
 
-    if frame is None:
+        video_timestamp = (
+          ai_data["video_timestamp"]
+        )
+
+    if ai_data is None:
       time.sleep(0.01)
       continue
 
@@ -432,7 +443,8 @@ def process_camera(stream):
       calculate_speed(
         vehicles,
         camera_name,
-        fps=fps
+        fps=fps,
+        video_timestamp=video_timestamp
       )
 
       accident_vehicle_id = None
@@ -556,7 +568,6 @@ def process_camera(stream):
         congestion_score,
         congestion
       ) = calculate_congestion(
-        vehicle_per_minute,
         average_speed
       )
 
