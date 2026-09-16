@@ -4,9 +4,10 @@
   margin-left: 20px;
   margin-bottom: 15px;
   display: grid;
-  grid-template-columns: 250px 1fr;
+  grid-template-columns: 250px minmax(0, 1fr);
   column-gap: 20px;
-  min-height: 600px
+  min-height: 600px;
+  min-width: 0;
 }
 
 .hidden {
@@ -15,6 +16,7 @@
 
 .cctv-content {
   width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
 }
@@ -568,6 +570,53 @@
   justify-content: center;
   align-items: center;
   color: #999;
+}
+
+.traffic-chart-panel {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.traffic-chart-scroll {
+  width: 100%;
+  max-width: 100%;
+  height: 360px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  position: relative;
+
+  /* IMPORTANT:
+     Prevent the wide chart from expanding the page */
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   WIDE CHART CONTENT
+   ============================================================ */
+
+.traffic-chart-inner {
+  height: 100%;
+  min-width: 100%;
+
+  position: relative;
+
+  /* The inner chart is allowed to be wider
+     than the visible chart area */
+}
+
+
+/* ============================================================
+   CANVAS
+   ============================================================ */
+
+.traffic-chart-inner canvas {
+  display: block;
+
+  height: 100% !important;
 }
 
 .table-wrapper{
