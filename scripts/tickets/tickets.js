@@ -8,17 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const ticketPanel = document.getElementById("ticketPanelContainer");
 
-  const createTicketBtn =
-    document.getElementById("createTicketBtn");
+  //const createTicketBtn = document.getElementById("createTicketBtn");
 
-  const createTicketOverlay =
-    document.querySelector(".create-ticket-overlay");
+  //const createTicketOverlay = document.querySelector(".create-ticket-overlay");
 
   renderTicketPanel(ticketPanel);
 
-  createTicketBtn.addEventListener("click", () => {
+  /*createTicketBtn.addEventListener("click", () => {
 
     createTicketModal(createTicketOverlay);
 
-  });
+  });*/
 });

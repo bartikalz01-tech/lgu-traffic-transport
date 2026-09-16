@@ -1215,10 +1215,9 @@ async function saveTicketReportDetails(
 
 }
 
-
 /*
 ============================================================
-PRINT TICKET
+PRINT TICKET - ONE PAGE A4
 ============================================================
 */
 
@@ -1273,53 +1272,31 @@ function printTicket(ticket) {
           PERSON INFORMATION
         </div>
 
-
-        <div class="person-grid">
+        <div class="grid">
 
           <div class="field">
-            <span class="label">
-              First Name
-            </span>
-
+            <span class="label">First Name</span>
             <span class="value">
-              ${escapeHtml(
-                ticket.first_name || "—"
-              )}
+              ${escapeHtml(ticket.first_name || "—")}
             </span>
           </div>
 
-
           <div class="field">
-            <span class="label">
-              Middle Name
-            </span>
-
+            <span class="label">Middle Name</span>
             <span class="value">
-              ${escapeHtml(
-                ticket.middle_name || "—"
-              )}
+              ${escapeHtml(ticket.middle_name || "—")}
             </span>
           </div>
 
-
           <div class="field">
-            <span class="label">
-              Last Name
-            </span>
-
+            <span class="label">Last Name</span>
             <span class="value">
-              ${escapeHtml(
-                ticket.last_name || "—"
-              )}
+              ${escapeHtml(ticket.last_name || "—")}
             </span>
           </div>
 
-
           <div class="field">
-            <span class="label">
-              Contact Number
-            </span>
-
+            <span class="label">Contact Number</span>
             <span class="value">
               ${escapeHtml(
                 ticket.person_contact_number || "—"
@@ -1327,12 +1304,8 @@ function printTicket(ticket) {
             </span>
           </div>
 
-
           <div class="field full">
-            <span class="label">
-              Address
-            </span>
-
+            <span class="label">Address</span>
             <span class="value">
               ${escapeHtml(
                 ticket.person_address || "—"
@@ -1353,51 +1326,31 @@ function printTicket(ticket) {
           PERSON INFORMATION
         </div>
 
+        <div class="grid">
 
-        <div class="writing-grid">
-
-          <div class="write-field">
-            <span>
-              First Name
-            </span>
-
-            <div class="write-line"></div>
+          <div class="field">
+            <span class="label">First Name</span>
+            <span class="value blank-line"></span>
           </div>
 
-
-          <div class="write-field">
-            <span>
-              Middle Name
-            </span>
-
-            <div class="write-line"></div>
+          <div class="field">
+            <span class="label">Middle Name</span>
+            <span class="value blank-line"></span>
           </div>
 
-
-          <div class="write-field">
-            <span>
-              Last Name
-            </span>
-
-            <div class="write-line"></div>
+          <div class="field">
+            <span class="label">Last Name</span>
+            <span class="value blank-line"></span>
           </div>
 
-
-          <div class="write-field">
-            <span>
-              Contact Number
-            </span>
-
-            <div class="write-line"></div>
+          <div class="field">
+            <span class="label">Contact Number</span>
+            <span class="value blank-line"></span>
           </div>
 
-
-          <div class="write-field full">
-            <span>
-              Address
-            </span>
-
-            <div class="write-line"></div>
+          <div class="field full">
+            <span class="label">Address</span>
+            <span class="value blank-line"></span>
           </div>
 
         </div>
@@ -1409,7 +1362,7 @@ function printTicket(ticket) {
 
   /*
   ============================================================
-  INVESTIGATION NOTES
+  NOTES
   ============================================================
   */
 
@@ -1421,7 +1374,6 @@ function printTicket(ticket) {
         <div class="section-title">
           INVESTIGATION NOTES
         </div>
-
 
         <div class="notes-box">
           ${escapeHtml(ticket.notes)}
@@ -1438,11 +1390,8 @@ function printTicket(ticket) {
           INVESTIGATION NOTES
         </div>
 
+        <div class="notes-box empty-notes">
 
-        <div class="notes-writing-area">
-
-          <div></div>
-          <div></div>
           <div></div>
           <div></div>
           <div></div>
@@ -1456,7 +1405,7 @@ function printTicket(ticket) {
 
   /*
   ============================================================
-  PRINT DOCUMENT
+  DOCUMENT
   ============================================================
   */
 
@@ -1466,437 +1415,597 @@ function printTicket(ticket) {
 
     <html>
 
-      <head>
+    <head>
 
-        <meta charset="UTF-8">
+      <meta charset="UTF-8">
 
-        <title>
-          Traffic Violation Ticket
-          ${escapeHtml(
-            ticket.public_ticket_id || ""
-          )}
-        </title>
-
-
-        <style>
-
-          * {
-            box-sizing: border-box;
-          }
+      <title>
+        Traffic Violation Ticket
+        ${escapeHtml(
+          ticket.public_ticket_id || ""
+        )}
+      </title>
 
 
+      <style>
+
+        * {
+          box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+
+          margin: 0;
+          padding: 0;
+
+          width: 100%;
+
+          font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+          color: #111827;
+
+          background: #ffffff;
+
+        }
+
+
+        body {
+
+          padding: 0;
+
+        }
+
+
+        /*
+        ========================================================
+        A4 PAGE
+        ========================================================
+        */
+
+        .ticket {
+
+          width: 194mm;
+
+          height: 279mm;
+
+          margin: 0 auto;
+
+          padding: 12mm;
+
+          border: 2px solid #111827;
+
+          overflow: hidden;
+
+          display: flex;
+
+          flex-direction: column;
+
+        }
+
+
+        /*
+        ========================================================
+        HEADER
+        ========================================================
+        */
+
+        .header {
+
+          text-align: center;
+
+          border-bottom: 2px solid #111827;
+
+          padding-bottom: 8px;
+
+          margin-bottom: 10px;
+
+          flex-shrink: 0;
+
+        }
+
+
+        .header h1 {
+
+          margin: 0 0 3px;
+
+          font-size: 19px;
+
+          font-weight: 700;
+
+          letter-spacing: 0.04em;
+
+        }
+
+
+        .header p {
+
+          margin: 0;
+
+          font-size: 9px;
+
+          color: #4b5563;
+
+        }
+
+
+        .ticket-id {
+
+          margin-top: 6px;
+
+          font-size: 14px;
+
+          font-weight: bold;
+
+          letter-spacing: 0.05em;
+
+        }
+
+
+        /*
+        ========================================================
+        SECTIONS
+        ========================================================
+        */
+
+        .section {
+
+          margin-bottom: 9px;
+
+          flex-shrink: 0;
+
+          break-inside: avoid;
+
+          page-break-inside: avoid;
+
+        }
+
+
+        .section-title {
+
+          padding-bottom: 4px;
+
+          margin-bottom: 6px;
+
+          border-bottom: 1px solid #9ca3af;
+
+          font-size: 9px;
+
+          font-weight: bold;
+
+          letter-spacing: 0.06em;
+
+        }
+
+
+        /*
+        ========================================================
+        GRID
+        ========================================================
+        */
+
+        .grid {
+
+          display: grid;
+
+          grid-template-columns: 1fr 1fr;
+
+          gap: 6px 15px;
+
+        }
+
+
+        .field {
+
+          display: flex;
+
+          flex-direction: column;
+
+          min-width: 0;
+
+        }
+
+
+        .field.full {
+
+          grid-column: 1 / -1;
+
+        }
+
+
+        .label {
+
+          margin-bottom: 2px;
+
+          font-size: 7.5px;
+
+          font-weight: bold;
+
+          color: #6b7280;
+
+          text-transform: uppercase;
+
+        }
+
+
+        .value {
+
+          min-height: 16px;
+
+          font-size: 10px;
+
+          line-height: 1.3;
+
+          word-break: break-word;
+
+        }
+
+
+        /*
+        ========================================================
+        BLANK INPUT LINES
+        ========================================================
+        */
+
+        .blank-line {
+
+          height: 18px;
+
+          border-bottom: 1px solid #111827;
+
+        }
+
+
+        /*
+        ========================================================
+        VIOLATION BOX
+        ========================================================
+        */
+
+        .violation-box {
+
+          padding: 8px;
+
+          border: 1px solid #9ca3af;
+
+          background: #f9fafb;
+
+          break-inside: avoid;
+
+          page-break-inside: avoid;
+
+        }
+
+
+        .violation-name {
+
+          margin-bottom: 6px;
+
+          font-size: 13px;
+
+          font-weight: bold;
+
+        }
+
+
+        .description {
+
+          line-height: 1.3;
+
+        }
+
+
+        /*
+        ========================================================
+        NOTES
+        ========================================================
+        */
+
+        .notes-box {
+
+          min-height: 50px;
+
+          max-height: 58px;
+
+          padding: 7px;
+
+          border: 1px solid #9ca3af;
+
+          font-size: 9px;
+
+          line-height: 1.3;
+
+          white-space: pre-wrap;
+
+          overflow: hidden;
+
+        }
+
+
+        .empty-notes {
+
+          min-height: 52px;
+
+          max-height: 52px;
+
+          padding: 5px 7px;
+
+        }
+
+
+        .empty-notes div {
+
+          height: 13px;
+
+          border-bottom: 1px solid #d1d5db;
+
+        }
+
+
+        /*
+        ========================================================
+        SIGNATURES
+        ========================================================
+        */
+
+        .footer {
+
+          margin-top: auto;
+
+          padding-top: 10px;
+
+          border-top: 1px solid #9ca3af;
+
+          display: grid;
+
+          grid-template-columns: 1fr 1fr;
+
+          gap: 30px;
+
+          flex-shrink: 0;
+
+        }
+
+
+        .signature {
+
+          height: 30px;
+
+          border-bottom: 1px solid #111827;
+
+        }
+
+
+        .signature-label {
+
+          margin-top: 4px;
+
+          text-align: center;
+
+          font-size: 7.5px;
+
+          color: #6b7280;
+
+        }
+
+
+        /*
+        ========================================================
+        NOTICE
+        ========================================================
+        */
+
+        .notice {
+
+          margin-top: 7px;
+
+          padding: 6px;
+
+          border: 1px solid #d1d5db;
+
+          font-size: 7px;
+
+          line-height: 1.3;
+
+          color: #4b5563;
+
+          flex-shrink: 0;
+
+        }
+
+
+        /*
+        ========================================================
+        PRINT SETTINGS
+        ========================================================
+        */
+
+        @page {
+
+          size: A4 portrait;
+
+          margin: 0;
+
+        }
+
+
+        @media print {
+
+          html,
           body {
+
+            width: 210mm;
+
+            height: 297mm;
 
             margin: 0;
 
-            padding: 30px;
-
-            font-family:
-              Arial,
-              Helvetica,
-              sans-serif;
-
-            color: #111827;
-
-            background: #ffffff;
+            padding: 0;
 
           }
 
 
           .ticket {
 
-            width: 100%;
+            width: 194mm;
 
-            max-width: 800px;
+            height: 279mm;
 
-            margin: 0 auto;
+            margin: 9mm auto;
+
+            padding: 10mm;
 
             border: 2px solid #111827;
 
-            padding: 28px;
+            overflow: hidden;
 
           }
 
+        }
 
-          .header {
+      </style>
 
-            text-align: center;
+    </head>
 
-            border-bottom:
-              2px solid #111827;
 
-            padding-bottom: 18px;
+    <body>
 
-            margin-bottom: 20px;
+      <div class="ticket">
 
-          }
 
+        <!-- HEADER -->
 
-          .header h1 {
+        <div class="header">
 
-            margin: 0 0 6px;
+          <h1>
+            TRAFFIC VIOLATION TICKET
+          </h1>
 
-            font-size: 22px;
+          <p>
+            Barangay Traffic and Transport Management
+          </p>
 
-            letter-spacing: 0.05em;
+          <div class="ticket-id">
 
-          }
+            Ticket ID:
+            ${escapeHtml(
+              ticket.public_ticket_id || "—"
+            )}
 
+          </div>
 
-          .header p {
+        </div>
 
-            margin: 0;
 
-            font-size: 12px;
+        <!-- TICKET INFORMATION -->
 
-            color: #4b5563;
+        <div class="section">
 
-          }
+          <div class="section-title">
+            TICKET INFORMATION
+          </div>
 
+          <div class="grid">
 
-          .ticket-id {
+            <div class="field">
 
-            margin-top: 12px;
+              <span class="label">
+                Violation ID
+              </span>
 
-            font-size: 18px;
+              <span class="value">
+                ${escapeHtml(
+                  ticket.public_violation_id || "—"
+                )}
+              </span>
 
-            font-weight: bold;
+            </div>
 
-            letter-spacing: 0.08em;
 
-          }
+            <div class="field">
 
+              <span class="label">
+                Offense Level
+              </span>
 
-          .section {
+              <span class="value">
+                ${escapeHtml(
+                  ticket.offense_level || "—"
+                )}
+              </span>
 
-            margin-bottom: 22px;
+            </div>
 
-          }
 
+            <div class="field">
 
-          .section-title {
+              <span class="label">
+                Issued At
+              </span>
 
-            padding-bottom: 7px;
+              <span class="value">
+                ${formatPlainDateTime(
+                  ticket.issued_at
+                )}
+              </span>
 
-            margin-bottom: 12px;
+            </div>
 
-            border-bottom:
-              1px solid #9ca3af;
 
-            font-size: 12px;
+            <div class="field">
 
-            font-weight: bold;
+              <span class="label">
+                Due Date
+              </span>
 
-            letter-spacing: 0.06em;
+              <span class="value">
+                ${formatPlainDateTime(
+                  ticket.due_date
+                )}
+              </span>
 
-          }
+            </div>
 
+          </div>
 
-          .grid,
-          .person-grid,
-          .writing-grid {
+        </div>
 
-            display: grid;
 
-            grid-template-columns:
-              repeat(2, 1fr);
+        <!-- VIOLATION INFORMATION -->
 
-            gap: 14px 20px;
+        <div class="section">
 
-          }
+          <div class="section-title">
+            VIOLATION INFORMATION
+          </div>
 
 
-          .field {
+          <div class="violation-box">
 
-            display: flex;
+            <div class="violation-name">
 
-            flex-direction: column;
-
-            gap: 4px;
-
-          }
-
-
-          .field.full,
-          .write-field.full {
-
-            grid-column:
-              1 / -1;
-
-          }
-
-
-          .label,
-          .write-field span {
-
-            font-size: 10px;
-
-            font-weight: bold;
-
-            color: #6b7280;
-
-            text-transform: uppercase;
-
-          }
-
-
-          .value {
-
-            min-height: 20px;
-
-            font-size: 13px;
-
-            line-height: 1.4;
-
-          }
-
-
-          .violation-box {
-
-            padding: 14px;
-
-            border:
-              1px solid #9ca3af;
-
-            background: #f9fafb;
-
-          }
-
-
-          .violation-name {
-
-            margin-bottom: 8px;
-
-            font-size: 17px;
-
-            font-weight: bold;
-
-          }
-
-
-          .description {
-
-            font-size: 12px;
-
-            line-height: 1.5;
-
-          }
-
-
-          .writing-grid {
-
-            gap: 20px;
-
-          }
-
-
-          .write-field {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 8px;
-
-          }
-
-
-          .write-line {
-
-            height: 28px;
-
-            border-bottom:
-              1px solid #111827;
-
-          }
-
-
-          .notes-box {
-
-            min-height: 80px;
-
-            padding: 12px;
-
-            border:
-              1px solid #9ca3af;
-
-            font-size: 12px;
-
-            line-height: 1.5;
-
-            white-space: pre-wrap;
-
-          }
-
-
-          .notes-writing-area {
-
-            min-height: 150px;
-
-            border:
-              1px solid #9ca3af;
-
-            padding: 10px 12px;
-
-          }
-
-
-          .notes-writing-area div {
-
-            height: 26px;
-
-            border-bottom:
-              1px solid #d1d5db;
-
-          }
-
-
-          .footer {
-
-            margin-top: 28px;
-
-            padding-top: 16px;
-
-            border-top:
-              1px solid #9ca3af;
-
-            display: grid;
-
-            grid-template-columns:
-              1fr 1fr;
-
-            gap: 30px;
-
-          }
-
-
-          .signature {
-
-            padding-top: 35px;
-
-            border-bottom:
-              1px solid #111827;
-
-            text-align: center;
-
-            font-size: 11px;
-
-          }
-
-
-          .signature-label {
-
-            margin-top: 6px;
-
-            text-align: center;
-
-            font-size: 10px;
-
-            color: #6b7280;
-
-          }
-
-
-          .notice {
-
-            margin-top: 20px;
-
-            padding: 10px;
-
-            border:
-              1px solid #d1d5db;
-
-            font-size: 10px;
-
-            line-height: 1.4;
-
-            color: #4b5563;
-
-          }
-
-
-          @media print {
-
-            body {
-
-              padding: 0;
-
-            }
-
-
-            .ticket {
-
-              max-width: none;
-
-              border: 2px solid #111827;
-
-            }
-
-          }
-
-
-          @page {
-
-            size: A4;
-
-            margin: 12mm;
-
-          }
-
-        </style>
-
-      </head>
-
-
-      <body>
-
-        <div class="ticket">
-
-
-          <!-- HEADER -->
-
-          <div class="header">
-
-            <h1>
-              TRAFFIC VIOLATION TICKET
-            </h1>
-
-            <p>
-              Barangay Traffic and Transport Management
-            </p>
-
-            <div class="ticket-id">
-
-              Ticket ID:
               ${escapeHtml(
-                ticket.public_ticket_id || "—"
+                ticket.violation_type || "—"
               )}
 
             </div>
 
-          </div>
-
-
-          <!-- TICKET INFORMATION -->
-
-          <div class="section">
-
-            <div class="section-title">
-              TICKET INFORMATION
-            </div>
-
 
             <div class="grid">
 
               <div class="field">
 
                 <span class="label">
-                  Violation ID
+                  Road / Street
                 </span>
 
                 <span class="value">
                   ${escapeHtml(
-                    ticket.public_violation_id || "—"
+                    ticket.road_name || "—"
                   )}
                 </span>
 
@@ -1906,175 +2015,42 @@ function printTicket(ticket) {
               <div class="field">
 
                 <span class="label">
-                  Offense Level
-                </span>
-
-                <span class="value">
-                  ${escapeHtml(
-                    ticket.offense_level || "—"
-                  )}
-                </span>
-
-              </div>
-
-
-              <div class="field">
-
-                <span class="label">
-                  Issued At
+                  Violation Date & Time
                 </span>
 
                 <span class="value">
                   ${formatPlainDateTime(
-                    ticket.issued_at
+                    ticket.violation_datetime
                   )}
                 </span>
 
               </div>
 
 
-              <div class="field">
+              <div class="field full">
 
                 <span class="label">
-                  Due Date
-                </span>
-
-                <span class="value">
-                  ${formatPlainDateTime(
-                    ticket.due_date
-                  )}
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <!-- VIOLATION -->
-
-          <div class="section">
-
-            <div class="section-title">
-              VIOLATION INFORMATION
-            </div>
-
-
-            <div class="violation-box">
-
-              <div class="violation-name">
-
-                ${escapeHtml(
-                  ticket.violation_type || "—"
-                )}
-
-              </div>
-
-
-              <div class="grid">
-
-                <div class="field">
-
-                  <span class="label">
-                    Road / Street
-                  </span>
-
-                  <span class="value">
-                    ${escapeHtml(
-                      ticket.road_name || "—"
-                    )}
-                  </span>
-
-                </div>
-
-
-                <div class="field">
-
-                  <span class="label">
-                    Violation Date & Time
-                  </span>
-
-                  <span class="value">
-                    ${formatPlainDateTime(
-                      ticket.violation_datetime
-                    )}
-                  </span>
-
-                </div>
-
-
-                <div class="field full">
-
-                  <span class="label">
-                    Location Details
-                  </span>
-
-                  <span class="value">
-                    ${escapeHtml(
-                      ticket.location_details || "—"
-                    )}
-                  </span>
-
-                </div>
-
-
-                <div class="field full">
-
-                  <span class="label">
-                    Description
-                  </span>
-
-                  <span class="value description">
-                    ${escapeHtml(
-                      ticket.description || "—"
-                    )}
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <!-- VEHICLE -->
-
-          <div class="section">
-
-            <div class="section-title">
-              VEHICLE INFORMATION
-            </div>
-
-
-            <div class="grid">
-
-              <div class="field">
-
-                <span class="label">
-                  Plate Number
+                  Location Details
                 </span>
 
                 <span class="value">
                   ${escapeHtml(
-                    ticket.plate_number || "—"
+                    ticket.location_details || "—"
                   )}
                 </span>
 
               </div>
 
 
-              <div class="field">
+              <div class="field full">
 
                 <span class="label">
-                  Vehicle Type
+                  Description
                 </span>
 
-                <span class="value">
+                <span class="value description">
                   ${escapeHtml(
-                    ticket.vehicle_type || "—"
+                    ticket.description || "—"
                   )}
                 </span>
 
@@ -2083,103 +2059,171 @@ function printTicket(ticket) {
             </div>
 
           </div>
-
-
-          ${personSection}
-
-
-          ${notesSection}
-
-
-          <!-- OFFICER -->
-
-          <div class="section">
-
-            <div class="section-title">
-              ASSIGNED OFFICER
-            </div>
-
-
-            <div class="grid">
-
-              <div class="field">
-
-                <span class="label">
-                  Officer
-                </span>
-
-                <span class="value">
-                  ${escapeHtml(
-                    ticket.officer_name ||
-                    "Unassigned"
-                  )}
-                </span>
-
-              </div>
-
-
-              <div class="field">
-
-                <span class="label">
-                  Contact
-                </span>
-
-                <span class="value">
-                  ${escapeHtml(
-                    ticket.officer_contact ||
-                    "—"
-                  )}
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <!-- SIGNATURES -->
-
-          <div class="footer">
-
-            <div>
-
-              <div class="signature"></div>
-
-              <div class="signature-label">
-                Issuing Officer Signature
-              </div>
-
-            </div>
-
-
-            <div>
-
-              <div class="signature"></div>
-
-              <div class="signature-label">
-                Recipient / Driver Signature
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div class="notice">
-
-            This document records the traffic violation
-            identified by the issuing officer. The information
-            written in the designated fields should be completed
-            by the authorized officer during or after the
-            investigation.
-
-          </div>
-
 
         </div>
 
-      </body>
+
+        <!-- SUBJECT / VEHICLE INFORMATION -->
+
+        <div class="section">
+
+          <div class="section-title">
+            SUBJECT INFORMATION
+          </div>
+
+
+          <div class="grid">
+
+            <div class="field">
+
+              <span class="label">
+                Subject Type
+              </span>
+
+              <span class="value">
+                ${escapeHtml(
+                  ticket.subject_type || "—"
+                )}
+              </span>
+
+            </div>
+
+
+            <div class="field">
+
+              <span class="label">
+                Plate Number
+              </span>
+
+              <span class="value">
+                ${escapeHtml(
+                  ticket.plate_number || "—"
+                )}
+              </span>
+
+            </div>
+
+
+            <div class="field">
+
+              <span class="label">
+                Vehicle Type
+              </span>
+
+              <span class="value">
+                ${escapeHtml(
+                  ticket.vehicle_type || "—"
+                )}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- PERSON -->
+
+        ${personSection}
+
+
+        <!-- NOTES -->
+
+        ${notesSection}
+
+
+        <!-- OFFICER -->
+
+        <div class="section">
+
+          <div class="section-title">
+            ASSIGNED OFFICER
+          </div>
+
+
+          <div class="grid">
+
+            <div class="field">
+
+              <span class="label">
+                Officer
+              </span>
+
+              <span class="value">
+                ${escapeHtml(
+                  ticket.officer_name ||
+                  "Unassigned"
+                )}
+              </span>
+
+            </div>
+
+
+            <div class="field">
+
+              <span class="label">
+                Contact
+              </span>
+
+              <span class="value">
+                ${escapeHtml(
+                  ticket.officer_contact ||
+                  "—"
+                )}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- SIGNATURES -->
+
+        <div class="footer">
+
+          <div>
+
+            <div class="signature"></div>
+
+            <div class="signature-label">
+              ISSUING OFFICER SIGNATURE
+            </div>
+
+          </div>
+
+
+          <div>
+
+            <div class="signature"></div>
+
+            <div class="signature-label">
+              RECIPIENT / DRIVER SIGNATURE
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- NOTICE -->
+
+        <div class="notice">
+
+          This document records the traffic violation
+          identified by the issuing officer. The information
+          written in the designated fields should be completed
+          by the authorized officer during or after the
+          investigation.
+
+        </div>
+
+
+      </div>
+
+    </body>
 
     </html>
 
@@ -2188,13 +2232,12 @@ function printTicket(ticket) {
 
   printWindow.document.close();
 
-
   printWindow.focus();
 
 
   /*
   ============================================================
-  WAIT FOR DOCUMENT TO RENDER
+  PRINT AFTER RENDER
   ============================================================
   */
 

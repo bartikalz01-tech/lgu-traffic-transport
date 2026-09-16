@@ -46,7 +46,7 @@
         </div>
 
 
-        <div class="header-actions">
+        <!--<div class="header-actions">
           <button
             type="button"
             class="btn-create-ticket"
@@ -55,7 +55,7 @@
             <i class="fas fa-plus"></i>
             Create Ticket
           </button>
-        </div>
+        </div>-->
       </div>
 
       <!--<div class="ticket-stats-grid">
