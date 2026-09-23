@@ -22,6 +22,8 @@ previous_timestamps = {}
 
 vehicle_speeds = {}
 
+last_valid_speeds = {}
+
 printed_ids = {}
 
 speed_debug_times = {}
@@ -32,6 +34,7 @@ def calculate_speed(vehicles, camera_name, fps, video_timestamp=None, report=Fal
 	global previous_positions
 	global previous_timestamps
 	global vehicle_speeds
+	global last_valid_speeds
 
 	# ==========================================================
 	# REPORT AVERAGE SPEED
@@ -85,12 +88,19 @@ def calculate_speed(vehicles, camera_name, fps, video_timestamp=None, report=Fal
 	if camera_name not in vehicle_speeds:
 		vehicle_speeds[camera_name] = {}
 
+	if camera_name not in last_valid_speeds:
+		last_valid_speeds[camera_name] = {}
+
 	camera_positions = (
 		previous_positions[camera_name]
 	)
 
 	camera_timestamps = (
 		previous_timestamps[camera_name]
+	)
+
+	camera_last_speeds = (
+		last_valid_speeds[camera_name]
 	)
 
 
@@ -192,7 +202,7 @@ def calculate_speed(vehicles, camera_name, fps, video_timestamp=None, report=Fal
 		)
 
 
-		speed = 0.0
+		speed = camera_last_speeds.get(track_id, 0.0)
 
 
 		# ======================================================
@@ -283,7 +293,7 @@ def calculate_speed(vehicles, camera_name, fps, video_timestamp=None, report=Fal
 					# Convert m/s to km/h
 					# ----------------------------------------------
 
-					speed = (
+					calculate_speed = (
 							speed_mps * 3.6
 					)
 
@@ -300,7 +310,7 @@ def calculate_speed(vehicles, camera_name, fps, video_timestamp=None, report=Fal
 							f"Elapsed={elapsed_seconds:.3f}s "
 							f"BoxHeight={vehicle_height_pixels:.2f}px "
 							f"MetersPerPixel={meters_per_pixel:.4f} "
-							f"Speed={speed:.2f}km/h"
+							f"Speed={calculate_speed:.2f}km/h"
 					)
 
 
@@ -308,7 +318,15 @@ def calculate_speed(vehicles, camera_name, fps, video_timestamp=None, report=Fal
 					# PHYSICAL SANITY CHECK
 					# ==================================================
 
-					if speed > MAX_PLAUSIBLE_SPEED_KMH:
+					if calculate_speed <= MAX_PLAUSIBLE_SPEED_KMH:
+
+						speed = calculate_speed
+
+						camera_last_speeds[track_id] = (
+							calculate_speed
+						)
+
+					else:
 
 						print(
 								f"[SPEED REJECTED] "

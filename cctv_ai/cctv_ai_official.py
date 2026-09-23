@@ -45,7 +45,8 @@ VIDEO_FOLDER = Path(__file__).parent / "cctv_feeds"
 
 MODEL_NAME = "yolov8n.pt"
 
-REPORT_INTERVAL = 15
+REPORT_INTERVAL = 60
+CONGESTION_INTERVAL = 5
 
 streams = []
 
@@ -401,6 +402,7 @@ def process_camera(stream):
   model = load_model()
 
   report_start = time.time()
+  congestion_start = time.time()
 
   frame_counter = 0
 
@@ -542,12 +544,12 @@ def process_camera(stream):
         camera_name
       ] = frame
 
-    if(time.time() - report_start >= REPORT_INTERVAL):
+    if time.time() - report_start >= REPORT_INTERVAL:
       vehicle_count = (
         report_vehicle_count(camera_name)
       )
 
-      vehicle_per_minute = (vehicle_count * (60 / REPORT_INTERVAL))
+      vehicle_per_minute = vehicle_count
 
       average_speed = (
         calculate_speed(
@@ -568,7 +570,8 @@ def process_camera(stream):
         congestion_score,
         congestion
       ) = calculate_congestion(
-        average_speed
+        average_speed,
+        last_vehicles
       )
 
       print(f"Congestion Score: {congestion_score:.2f}")
