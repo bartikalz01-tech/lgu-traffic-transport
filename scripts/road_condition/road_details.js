@@ -241,11 +241,11 @@ export function openRoadCondition(container, road) {
       historicalRecordingResult: document.getElementById("historicalRecordingResult")
     };
 
-    dom.recordBtn.addEventListener("click", () => {
+   /* dom.recordBtn.addEventListener("click", () => {
       dom.recordingRequest.classList.toggle("hidden");
-    });
+    });*/
 
-    dom.cancelRecordingRequestBtn.addEventListener("click", () => {
+    /*dom.cancelRecordingRequestBtn.addEventListener("click", () => {
       // Hide the historical recording request UI
       dom.recordingRequest.classList.add("hidden");
 
@@ -258,9 +258,9 @@ export function openRoadCondition(container, road) {
 
       // Reset the historical recording result
       dom.historicalRecordingResult.innerHTML = "";
-    });
+    });*/
 
-    dom.requestHistoricalRecordingBtn.addEventListener("click", async () => {
+    /*dom.requestHistoricalRecordingBtn.addEventListener("click", async () => {
       const fromTime = dom.recordFromTime.value;
       const toTime = dom.recordToTime.value;
 
@@ -473,7 +473,7 @@ export function openRoadCondition(container, road) {
       } finally {
         dom.requestHistoricalRecordingBtn.disabled = false;
       }
-    });
+    });*/
 
     getRoadDetailDom();
 
