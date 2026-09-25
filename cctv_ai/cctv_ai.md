@@ -18,11 +18,21 @@
 
     - So in general context, it calculates based vehicles previous position and current position.
 
+    - Removed the 0.00 value when a vehicle id is being tracked.
+
 
 4. #### The calculations on traffic congestion
 
    - Based on average speed.
 
+5. #### Separated the cctv_ai processors to make the calculations much smoother, but the video are still somewhat slow.
+
 *********
 
 ### Plans for CCTV AI
+
+1. #### Improve possible accident detections
+
+    - Connected to average speed, the vehicles of that have a possible accident should determine the speed they are when that accident detection happens
+
+    - Plan the part of inserting the km/h of an accident cases.

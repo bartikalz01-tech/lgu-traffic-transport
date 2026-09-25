@@ -335,7 +335,7 @@ def calculate_speed(vehicles, camera_name, fps, video_timestamp=None, report=Fal
 								f"Speed={speed:.2f}km/h"
 						)
 
-						speed = 0.0
+						speed = camera_last_speeds.get(track_id, 0.0)
 
 
 		# ==========================================================
