@@ -4,6 +4,17 @@ import { updateRoadCondition } from "./update_road_details.js";
 import { openAccidentModal } from "./accident_and_violation/accident_modal.js";
 import { openViolationModal } from "./accident_and_violation/violation_modal.js";
 
+const CCTV_AI_PORTS = {
+  "Susano Road": 5001,
+  "Del Rey": 5002,
+  "Don Alejandro Street": 5003,
+  "Santo Niño Street": 5004
+};
+
+function getCctvAiPort(roadName) {
+  return CCTV_AI_PORTS[roadName];
+} 
+
 let activeRoadId = null;
 //let subscribed = false;
 
@@ -22,6 +33,8 @@ export function getRoadDetailDom() {
 export function openRoadCondition(container, road) {
 
   activeRoadId = road.road_id;
+
+  const cctvPort = getCctvAiPort(road.road_name);
 
   if(!initialized) {
     container.innerHTML = `
@@ -48,11 +61,11 @@ export function openRoadCondition(container, road) {
               </div>-->
 
               <div class="cctv-video-display" id="detailedVideoContainer">
-                <img id="roadVideo" class="stream-video" src="http://127.0.0.1:5001/video/${road.video_filename}" />
+                <img id="roadVideo" class="stream-video" src="http://127.0.0.1:${cctvPort}/video/${road.video_filename}" />
               </div>
 
               <div class="video-controls">
-                <div class="control-buttons">
+                <!--<div class="control-buttons">
                   <button class="btn btn-warning btn-sm" id="recordBtn">
                     <i class="fas fa-record-vinyl"></i>
                     <span>Record</span>
@@ -70,7 +83,7 @@ export function openRoadCondition(container, road) {
                   <button class="btn btn-secondary btn-sm" id="rotateBtn">
                     <i class="fas fa-sync"></i>
                   </button>
-                </div>
+                </div>-->
 
                 <div class="recording-request hidden" id="recordingRequest">
                   <div class="recording-request-title">

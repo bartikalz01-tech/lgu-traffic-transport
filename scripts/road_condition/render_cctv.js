@@ -15,6 +15,17 @@ import { renderPeakHour } from "./road_reports/peak_hour_analytics.js";
 import { renderCctvRecords } from "./render_cctv_records.js";
 import { renderPossibleAccidents, activatePossibleAccidentCard } from "./render_possible_accidents.js";
 
+const CCTV_AI_PORTS = {
+  "Susano Road": 5001,
+  "Del Rey": 5002,
+  "Don Alejandro Street": 5003,
+  "Santo Niño Street": 5004
+};
+
+function getCctvAiPort(roadName) {
+  return CCTV_AI_PORTS[roadName]
+}
+
 const subModuleTitle = document.getElementById("subModuleTitle");
 const subModuleDescription = document.getElementById("subModuleDescription");
 
@@ -43,6 +54,9 @@ export async function renderCctvAi(container) {
   //const VIDEO_FOLDER = "/lgu-traffic-transport/cctv_ai/cctv_feeds/";
     
   cctvRoads.forEach((roads, index) => {
+
+    const cctvPort = getCctvAiPort(roads.road_name);
+
     sidebarHTML += `
       <div class="cctv-road ${index === 0 ? "active-stream" : ""}" data-road-id="${roads.road_id}">
         <div class="cctv-road-meta">
@@ -60,7 +74,7 @@ export async function renderCctvAi(container) {
           <span class="stream-tag-id">${roads.camera_name}</span>
         </div>
         <div class="stream-video-viewport" id="viewport-${roads.road_id}">
-          <img class="stream-video" id="video-${roads.road_id}" src="http://127.0.0.1:5001/video/${roads.video_filename}" />
+          <img class="stream-video" id="video-${roads.road_id}" src="http://127.0.0.1:${cctvPort}/video/${roads.video_filename}" />
 
           <div class="stream-overlay-metadata">
             <p class="stream-road-name">CCTV-${roads.road_name}</p>
