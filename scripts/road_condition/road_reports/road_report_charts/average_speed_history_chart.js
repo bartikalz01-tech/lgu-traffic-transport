@@ -1,6 +1,5 @@
 let averageSpeedHistoryChart = null;
 
-
 export function renderAverageSpeedHistoryChart(
   canvas,
   logs
@@ -31,28 +30,49 @@ export function renderAverageSpeedHistoryChart(
 
 
   // ==========================================================
-  // GET UNIQUE ROADS
+  // AVERAGE SPEED STATUS
   // ==========================================================
 
-  const roads = [];
+  let slowCount = 0;
+  let moderateCount = 0;
+  let fastCount = 0;
+
 
   logs.forEach(log => {
 
-    const existingRoad =
-      roads.find(
-        road => road.road_id === log.road_id
-      );
+    const averageSpeed =
+      Number(log.avg_speed);
 
 
-    if (!existingRoad) {
+    if (Number.isNaN(averageSpeed)) {
+      return;
+    }
 
-      roads.push({
 
-        road_id: log.road_id,
+    /*
+     * Average speed status:
+     *
+     * Below 20 km/h
+     * = Slow
+     *
+     * 20 - 39.99 km/h
+     * = Moderate
+     *
+     * 40 km/h and above
+     * = Fast
+     */
 
-        road_name: log.road_name
+    if (averageSpeed < 20) {
 
-      });
+      slowCount++;
+
+    } else if (averageSpeed < 40) {
+
+      moderateCount++;
+
+    } else {
+
+      fastCount++;
 
     }
 
@@ -60,175 +80,55 @@ export function renderAverageSpeedHistoryChart(
 
 
   // ==========================================================
-  // TIME LABELS
-  // ==========================================================
-
-  const labels = logs.map(log => {
-
-    const date =
-      new Date(
-        log.recorded_at.replace(" ", "T")
-      );
-
-
-    return date.toLocaleString([], {
-
-      month: "short",
-
-      day: "numeric",
-
-      hour: "numeric",
-
-      minute: "2-digit"
-
-    });
-
-  });
-
-
-  // ==========================================================
-  // CHART WIDTH
-  // ==========================================================
-
-  /*
-     Approximately 10 records are visible at once.
-
-     If there are more records, the chart becomes wider
-     and .traffic-chart-scroll provides horizontal scrolling.
-  */
-
-  const visibleRecords = 30;
-
-
-  const scrollContainer =
-    canvas.parentElement.parentElement;
-
-
-  const containerWidth =
-    scrollContainer.clientWidth;
-
-
-  const pointWidth =
-    containerWidth / visibleRecords;
-
-
-  const chartWidth =
-    Math.max(
-
-      containerWidth,
-
-      logs.length * pointWidth
-
-    );
-
-
-  const chartInner =
-    canvas.parentElement;
-
-
-  chartInner.style.width =
-    `${chartWidth}px`;
-
-
-  // ==========================================================
-  // CANVAS SIZE
-  // ==========================================================
-
-  canvas.width = chartWidth;
-
-  canvas.height = 360;
-
-  canvas.style.width =
-    `${chartWidth}px`;
-
-  canvas.style.height =
-    "360px";
-
-
-  // ==========================================================
-  // DATASETS
-  // ==========================================================
-
-  const datasets = roads.map(road => {
-
-    return {
-
-      label: road.road_name,
-
-      data: logs.map(log => {
-
-        if (
-          Number(log.road_id)
-          ===
-          Number(road.road_id)
-        ) {
-
-          return Number(log.avg_speed);
-
-        }
-
-
-        return null;
-
-      }),
-
-      fill: false,
-
-      borderWidth: 2,
-
-      tension: 0.3,
-
-      pointRadius: 3,
-
-      pointHoverRadius: 5,
-
-      spanGaps: false
-
-    };
-
-  });
-
-
-  // ==========================================================
-  // CREATE CHART
+  // CREATE PIE CHART
   // ==========================================================
 
   averageSpeedHistoryChart =
     new Chart(canvas, {
 
-      type: "line",
-
+      type: "pie",
 
       data: {
 
-        labels,
+        labels: [
+          "Slow",
+          "Moderate",
+          "Fast"
+        ],
 
-        datasets
+        datasets: [
+
+          {
+
+            data: [
+              slowCount,
+              moderateCount,
+              fastCount
+            ],
+
+            borderWidth: 1
+
+          }
+
+        ]
 
       },
 
 
       options: {
 
-        responsive: false,
+        responsive: true,
 
         maintainAspectRatio: false,
-
-
-        interaction: {
-
-          mode: "index",
-
-          intersect: false
-
-        },
 
 
         plugins: {
 
           legend: {
 
-            display: true
+            display: true,
+
+            position: "bottom"
 
           },
 
@@ -237,79 +137,30 @@ export function renderAverageSpeedHistoryChart(
 
             callbacks: {
 
-              title: function(context) {
-
-                return context[0].label;
-
-              },
-
-
               label: function(context) {
 
-                if (
-                  context.parsed.y === null
-                ) {
+                const value =
+                  context.parsed;
 
-                  return null;
+                const total =
+                  context.dataset.data.reduce(
+                    (sum, number) =>
+                      sum + number,
+                    0
+                  );
 
-                }
+
+                const percentage =
+                  total > 0
+                    ? ((value / total) * 100).toFixed(1)
+                    : 0;
 
 
-                return `${context.dataset.label}: `
-                  + `${context.parsed.y.toFixed(2)} km/h`;
+                return `${context.label}: `
+                  + `${value} records `
+                  + `(${percentage}%)`;
 
               }
-
-            }
-
-          }
-
-        },
-
-
-        // ======================================================
-        // AXES
-        // ======================================================
-
-        scales: {
-
-          x: {
-
-            title: {
-
-              display: true,
-
-              text: "Time"
-
-            },
-
-
-            ticks: {
-
-              autoSkip: false,
-
-              maxRotation: 45,
-
-              minRotation: 45
-
-            }
-
-          },
-
-
-          y: {
-
-            beginAtZero: true,
-
-
-            suggestedMax: 80,
-
-
-            title: {
-
-              display: true,
-
-              text: "Average Speed (km/h)"
 
             }
 

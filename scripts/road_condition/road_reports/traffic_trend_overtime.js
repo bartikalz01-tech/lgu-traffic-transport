@@ -38,7 +38,7 @@ function formatReportDateTime(dateTime) {
 
 }
 
-export async function renderTrafficTrend(container) {
+export async function renderTrafficTrend(container, filters = {}) {
   container.innerHTML = `
     <div class="report-card">
       <div class="report-header">
@@ -87,11 +87,11 @@ export async function renderTrafficTrend(container) {
   const tbody = container.querySelector("#trafficReportTableBody");
 
   async function loadLogs() {
-    const filters = {
+    /*const filters = {
       start_date: document.querySelector("#startDate")?.value || "",
       end_date: document.querySelector("#endDate")?.value || "",
       road_id: document.querySelector("#roadFilter")?.value || "all"
-    };
+    };*/
 
     const logs = await getTrafficTrendAndCongestionLogs(filters);
     

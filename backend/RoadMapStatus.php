@@ -119,45 +119,195 @@ class RoadMapStatus extends config{
 
 
   public function trafficTrendAndCongestionFrequencyLogs() {
+
     $conn = $this->conn();
+
+    // ==========================================================
+    // REPORT INTERVAL
+    // ==========================================================
+
+    $interval = (int)($_GET['interval'] ?? 1);
+
+    $allowedIntervals = [1, 2, 4, 6, 12, 24];
+
+    if (!in_array($interval, $allowedIntervals, true)) {
+        $interval = 1;
+    }
+
+
+    // ==========================================================
+    // SQL
+    // ==========================================================
+
     $sql = "
       SELECT
-        rtl.traffic_log_id,
         rtl.road_id,
         r.road_name,
-        rtl.vehicle_flow,
-        rtl.avg_speed,
+
+        DATE(rtl.recorded_at) AS record_date,
+
+        FLOOR(
+            HOUR(rtl.recorded_at) / $interval
+        ) * $interval AS interval_hour,
+
+        AVG(rtl.vehicle_flow) AS vehicle_flow,
+
+        AVG(rtl.avg_speed) AS avg_speed,
+
         rtl.traffic_level,
-        rtl.recorded_at
+
+        COUNT(*) AS record_count
+
       FROM road_traffic_logs rtl
+
       INNER JOIN roads r
-      ON rtl.road_id = r.road_id
-      WHERE 1=1
+          ON rtl.road_id = r.road_id
+
+      WHERE 1 = 1
     ";
 
     $params = [];
 
-    if(!empty($_GET['start_date'])) {
-      $sql .= " AND DATE(rtl.recorded_at) >= ?";
-      $params[] = $_GET['start_date'];
+
+    // ==========================================================
+    // DATE RANGE
+    // ==========================================================
+
+    if (!empty($_GET['start_date'])) {
+
+        $sql .= "
+            AND DATE(rtl.recorded_at) >= ?
+        ";
+
+        $params[] = $_GET['start_date'];
     }
 
-    if(!empty($_GET['end_date'])) {
-      $sql .= " AND DATE(rtl.recorded_at) <= ?";
-      $params[] = $_GET['end_date'];
+
+    if (!empty($_GET['end_date'])) {
+
+        $sql .= "
+            AND DATE(rtl.recorded_at) <= ?
+        ";
+
+        $params[] = $_GET['end_date'];
     }
 
-    if(!empty($_GET['road_id']) && $_GET['road_id'] != "all") {
-      $sql .= " AND rtl.road_id = ?";
-      $params[] = $_GET['road_id'];
+
+    // ==========================================================
+    // ROAD FILTER
+    // ==========================================================
+
+    if (
+        !empty($_GET['road_id']) &&
+        $_GET['road_id'] !== 'all'
+    ) {
+
+        $sql .= "
+            AND rtl.road_id = ?
+        ";
+
+        $params[] = $_GET['road_id'];
     }
 
-    $sql .= " ORDER BY rtl.recorded_at ASC";
+
+    // ==========================================================
+    // GROUP BY
+    // ==========================================================
+
+    $sql .= "
+        GROUP BY
+            rtl.road_id,
+            r.road_name,
+            DATE(rtl.recorded_at),
+            FLOOR(
+                HOUR(rtl.recorded_at) / $interval
+            )
+    ";
+
+
+    // ==========================================================
+    // ORDER
+    // ==========================================================
+
+    $sql .= "
+      ORDER BY
+        record_date ASC,
+        interval_hour ASC,
+        rtl.road_id ASC
+    ";
+
+
+    // ==========================================================
+    // EXECUTE
+    // ==========================================================
 
     $stmt = $conn->prepare($sql);
+
     $stmt->execute($params);
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // ==========================================================
+    // BUILD REPORT RESULTS
+    // ==========================================================
+
+    $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+    foreach ($logs as &$log) {
+      /*
+      * Reconstruct the beginning of the time bucket.
+      *
+      * Example:
+      *
+      * interval = 1
+      * 08:00
+      *
+      * interval = 4
+      * 08:00
+      * 12:00
+      * 16:00
+      *
+      * interval = 24
+      * 00:00
+      */
+
+      $hour = (int)$log['interval_hour'];
+
+      $log['recorded_at'] =
+        sprintf(
+          '%s %02d:00:00',
+          $log['record_date'],
+          $hour
+        );
+
+
+      /*
+        * Convert numeric values to proper numbers.
+        */
+
+      $log['vehicle_flow'] =
+        (float)$log['vehicle_flow'];
+
+      $log['avg_speed'] =
+        (float)$log['avg_speed'];
+
+      $log['record_count'] =
+        (int)$log['record_count'];
+
+
+      /*
+        * Remove internal grouping fields from
+        * the response.
+        */
+
+      unset($log['record_date']);
+      unset($log['interval_hour']);
+    }
+
+    unset($log);
+
+
+    return $logs;
   }
 
   public function averageSpeedHistoryLogs() {

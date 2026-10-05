@@ -18,6 +18,19 @@ export async function roadReports(container) {
         </div>
 
         <div class="filter-group">
+          <label>Report Interval</label>
+
+          <select id="reportInterval">
+            <option value="1">Hourly</option>
+            <option value="2">Every 2 Hours</option>
+            <option value="4">Every 4 Hours</option>
+            <option value="6">Every 6 Hours</option>
+            <option value="12">Every 12 Hours</option>
+            <option value="24">Daily</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
           <label>Road</label>
           <select id="roadFilter">
             <option value="all">All Roads</option>
@@ -45,6 +58,7 @@ export async function roadReports(container) {
   const roads = await getCctvAiDetails();
 
   const roadFilter = container.querySelector("#roadFilter");
+  const reportInterval = container.querySelector("#reportInterval");
   roads.forEach(road => {
 
     const option = document.createElement("option");
@@ -75,6 +89,7 @@ export async function roadReports(container) {
     startDate: startDate,
     endDate: endDate,
     roadFilter: roadFilter,
+    reportInterval: reportInterval,
     hasValidDateRange
   };
 }

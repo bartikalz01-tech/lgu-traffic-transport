@@ -419,6 +419,19 @@ export async function renderCctvAi(container) {
         }
 
       });
+
+      reportContent.roadFilter.addEventListener("change", () => {
+        if(reportContent.hasValidDateRange()) {
+          openReport(currentReportName);
+        }
+      });
+
+      reportContent.reportInterval.addEventListener("change", () => {
+        if(reportContent.hasValidDateRange()) {
+          openReport(currentReportName);
+        }
+      })
+
     }
 
     if(!reportContent.hasValidDateRange()) {
@@ -442,19 +455,47 @@ export async function renderCctvAi(container) {
 
     switch(reportName) {
       case "traffic-trend":
-        await renderTrafficTrend(reportContent.reportContent);
+        await renderTrafficTrend(reportContent.reportContent, 
+          {
+            start_date: reportContent.startDate.value,
+            end_date: reportContent.endDate.value,
+            road_id: reportContent.roadFilter.value,
+            interval: reportContent.reportInterval.value
+          }
+        );
         break;
 
       case "congestion-frequency":
-        await renderCongestionFrequency(reportContent.reportContent);
+        await renderCongestionFrequency(reportContent.reportContent, 
+          {
+            start_date: reportContent.startDate.value,
+            end_date: reportContent.endDate.value,
+            road_id: reportContent.roadFilter.value,
+            interval: reportContent.reportInterval.value
+          }
+        );
         break;
 
       case "average-speed-history":
-        await renderAverageSpeedHistory(reportContent.reportContent);
+        await renderAverageSpeedHistory(reportContent.reportContent, 
+          {
+            start_date: reportContent.startDate.value,
+            end_date: reportContent.endDate.value,
+            road_id: reportContent.roadFilter.value,
+            interval: reportContent.reportInterval.value
+          }
+        );
         break;
 
       case "peak-hour-analysis":
-        await renderPeakHour(reportContent.reportContent);
+        await renderPeakHour(reportContent.reportContent, 
+          {
+            start_date: reportContent.startDate.value,
+            end_date: reportContent.endDate.value,
+            road_id: reportContent.roadFilter.value,
+            interval: reportContent.reportInterval.value
+          }
+        );
         break;
     }
   }
