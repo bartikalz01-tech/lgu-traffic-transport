@@ -3,6 +3,17 @@ import {
 } from "../data/road_condition/fetch_road_condition.js";
 
 
+const CCTV_AI_PORTS = {
+  "Susano Road": 5001,
+  "Del Rey": 5002,
+  "Don Alejandro Street": 5003,
+  "Santo Niño Street": 5004
+};
+
+function getCctvAiPort(roadName) {
+  return CCTV_AI_PORTS[roadName]
+}
+
 export async function renderCctvRecords(container) {
 
   container.innerHTML = `
@@ -716,6 +727,8 @@ export async function renderCctvRecords(container) {
 
     const filename =
       record.recording_filename;
+    
+    const cctvPort = getCctvAiPort(record.camera_name)
 
     const sourceUrl =
       `http://127.0.0.1:5001/recording/file/${encodeURIComponent(filename)}`;

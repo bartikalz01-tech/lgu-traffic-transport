@@ -12,7 +12,8 @@ class Notifications extends config {
     try {
 
       /*
-      * Get all accident detections.
+      * Get the latest accident detection
+      * for every road.
       */
       $possibleAccidentSql = "
         SELECT
@@ -26,7 +27,19 @@ class Notifications extends config {
         LEFT JOIN roads r
           ON ad.road_id = r.road_id
 
-        ORDER BY ad.created_at DESC
+        INNER JOIN (
+          SELECT
+            road_id,
+            MAX(accident_detection_id) AS latest_detection_id
+
+          FROM accident_detections
+
+          GROUP BY road_id
+        ) latest
+          ON ad.accident_detection_id =
+            latest.latest_detection_id
+
+        ORDER BY ad.accident_detection_id DESC
       ";
 
       $possibleAccidentStmt =
@@ -49,28 +62,38 @@ class Notifications extends config {
 
         return [
           'success' => true,
-          'inserted' => 0
+          'inserted' => 0,
+          'updated' => 0
         ];
       }
 
 
       /*
-      * Check whether a possible_accident
-      * notification already exists for
-      * this accident detection.
+      * Find the existing possible-accident
+      * notification for the same road.
+      *
+      * We use the accident_detections table
+      * to determine the road.
       */
       $existingNotificationSql = "
         SELECT
-          notification_id
+          n.notification_id,
+          n.source_id,
+          n.created_at
 
-        FROM notifications
+        FROM notifications n
 
-        WHERE module = 'accident'
+        INNER JOIN accident_detections ad
+          ON ad.accident_detection_id = n.source_id
 
-          AND notification_type =
+        WHERE n.module = 'accident'
+
+          AND n.notification_type =
               'possible_accident'
 
-          AND source_id = :source_id
+          AND ad.road_id = :road_id
+
+        ORDER BY n.notification_id DESC
 
         LIMIT 1
       ";
@@ -82,8 +105,7 @@ class Notifications extends config {
 
 
       /*
-      * Insert a new possible accident
-      * notification.
+      * Insert notification.
       */
       $insertNotificationSql = "
         INSERT INTO notifications (
@@ -107,16 +129,43 @@ class Notifications extends config {
         );
 
 
+      /*
+      * Update existing notification.
+      */
+      $updateNotificationSql = "
+        UPDATE notifications
+
+        SET
+          source_id = :source_id,
+          message = :message,
+          created_at = CURRENT_TIMESTAMP,
+          is_read = 0,
+          read_at = NULL
+
+        WHERE notification_id = :notification_id
+      ";
+
+      $updateNotificationStmt =
+        $conn->prepare(
+          $updateNotificationSql
+        );
+
+
       $insertedCount = 0;
+      $updatedCount = 0;
 
 
       /*
-      * Process each accident detection.
+      * Process the latest detection
+      * for each road.
       */
       foreach ($possibleAccidents as $accident) {
 
         $accidentDetectionId =
           $accident['accident_detection_id'];
+
+        $roadId =
+          $accident['road_id'];
 
         $roadName =
           $accident['road_name']
@@ -124,12 +173,11 @@ class Notifications extends config {
 
 
         /*
-        * Check whether this detection
-        * already has a notification.
+        * Find existing notification
+        * belonging to this road.
         */
         $existingNotificationStmt->execute([
-          ':source_id' =>
-            $accidentDetectionId
+          ':road_id' => $roadId
         ]);
 
         $existingNotification =
@@ -139,42 +187,72 @@ class Notifications extends config {
 
 
         /*
-        * If a notification already exists,
-        * do not create another one.
-        */
-        if ($existingNotification) {
-          continue;
-        }
-
-
-        /*
-        * Create the notification.
+        * Build notification message.
         */
         $message =
           "Possible accident detected on " .
           $roadName;
 
 
-        $insertNotificationStmt->execute([
+        /*
+        * No notification exists for this road.
+        *
+        * Create one.
+        */
+        if (!$existingNotification) {
 
-          ':module' =>
-            'accident',
+          $insertNotificationStmt->execute([
 
-          ':notification_type' =>
-            'possible_accident',
+            ':module' =>
+              'accident',
 
-          ':title' =>
-            'Possible Accident Detected',
+            ':notification_type' =>
+              'possible_accident',
 
-          ':message' =>
-            $message,
+            ':title' =>
+              'Possible Accident Detected',
 
-          ':source_id' =>
-            $accidentDetectionId
-        ]);
+            ':message' =>
+              $message,
+
+            ':source_id' =>
+              $accidentDetectionId
+
+          ]);
+
+          $insertedCount++;
+
+          continue;
+        }
 
 
-        $insertedCount++;
+        /*
+        * Notification already exists.
+        *
+        * Only update it if a NEW
+        * accident detection exists.
+        */
+        if (
+          (int)$existingNotification['source_id']
+          !==
+          (int)$accidentDetectionId
+        ) {
+
+          $updateNotificationStmt->execute([
+
+            ':source_id' =>
+              $accidentDetectionId,
+
+            ':message' =>
+              $message,
+
+            ':notification_id' =>
+              $existingNotification['notification_id']
+
+          ]);
+
+          $updatedCount++;
+        }
 
       }
 
@@ -184,7 +262,8 @@ class Notifications extends config {
 
       return [
         'success' => true,
-        'inserted' => $insertedCount
+        'inserted' => $insertedCount,
+        'updated' => $updatedCount
       ];
 
 

@@ -37,6 +37,8 @@ let openPossibleAccidentByIdHandler = null;
 
 let activePossibleAccidentId = null;
 
+let currentReportName = "traffic-trend";
+
 export async function renderCctvAi(container) {
 
   subModuleTitle.textContent = "CCTV Monitoring";
@@ -74,7 +76,7 @@ export async function renderCctvAi(container) {
           <span class="stream-tag-id">${roads.camera_name}</span>
         </div>
         <div class="stream-video-viewport" id="viewport-${roads.road_id}">
-          <img class="stream-video" id="video-${roads.road_id}" src="http://127.0.0.1:${cctvPort}/video/${roads.video_filename}" />
+          <img class="stream-video" id="video-${roads.road_id}" src="http://127.0.0.1:5001/video/${roads.video_filename}" />
 
           <div class="stream-overlay-metadata">
             <p class="stream-road-name">CCTV-${roads.road_name}</p>
@@ -100,14 +102,14 @@ export async function renderCctvAi(container) {
         </div>
       </div>
 
-      <!--<div class="cctv-sidebar-controller" style="cursor: pointer;" id="cctvRecordsController">
+      <div class="cctv-sidebar-controller" style="cursor: pointer;" id="cctvRecordsController">
         <div class="cctv-sidebar-header">
           <div class="logo-container">
             <i class="fas fa-film"></i>
           </div>
           <h4>CCTV Records</h4>
         </div>
-      </div>-->
+      </div>
 
       <div class="cctv-sidebar-controller" id="possibleAccidentsController">
         <div class="cctv-sidebar-header">
@@ -198,13 +200,13 @@ export async function renderCctvAi(container) {
 
   const cctvItems = container.querySelectorAll(".cctv-road");
   const reportItems = container.querySelectorAll(".report-link");
-  //const cctvRecordControl = container.querySelector("#cctvRecordsController");
+  const cctvRecordControl = container.querySelector("#cctvRecordsController");
   const possibleAccidentsControl = container.querySelector("#possibleAccidentsController");
 
   const reportsController = container.querySelector("#reportsController");
 
   const cctvContent = container.querySelector(".cctv-content");
-  //const cctvRecordsContainer = container.querySelector("#cctvRecordsContainer");
+  const cctvRecordsContainer = container.querySelector("#cctvRecordsContainer");
   const possbileAccidentsContainer = container.querySelector("#possibleAccidentsContainer");
 
 
@@ -387,6 +389,9 @@ export async function renderCctvAi(container) {
 
 
   async function openReport(reportName) {
+
+    currentReportName = reportName;
+
     subModuleTitle.textContent = "Road Reports";
     subModuleDescription.textContent = "Real-time surveillance and Real-Time analytics";
 
@@ -398,23 +403,58 @@ export async function renderCctvAi(container) {
     if(!reportsInitialized) {
       reportContent = await roadReports(reportsView);
       reportsInitialized = true;
+
+      reportContent.startDate.addEventListener("change", () => {
+
+        if(reportContent.hasValidDateRange()) {
+          openReport(currentReportName);
+        }
+
+      });
+
+      reportContent.endDate.addEventListener("change", () => {
+
+        if(reportContent.hasValidDateRange()) {
+          openReport(currentReportName);
+        }
+
+      });
+    }
+
+    if(!reportContent.hasValidDateRange()) {
+      reportContent.reportContent.innerHTML = `
+        <div class="report-date-required">
+
+          <i class="fas fa-calendar-days"></i>
+
+          <h3>Select a date range</h3>
+
+          <p>
+            Please select a start date and end date
+            to view road traffic reports.
+          </p>
+
+        </div>
+      `
+
+      return;
     }
 
     switch(reportName) {
       case "traffic-trend":
-        await renderTrafficTrend(reportContent);
+        await renderTrafficTrend(reportContent.reportContent);
         break;
 
       case "congestion-frequency":
-        await renderCongestionFrequency(reportContent);
+        await renderCongestionFrequency(reportContent.reportContent);
         break;
 
       case "average-speed-history":
-        await renderAverageSpeedHistory(reportContent);
+        await renderAverageSpeedHistory(reportContent.reportContent);
         break;
 
       case "peak-hour-analysis":
-        await renderPeakHour(reportContent);
+        await renderPeakHour(reportContent.reportContent);
         break;
     }
   }
@@ -437,18 +477,18 @@ export async function renderCctvAi(container) {
 
   });
 
-  /*cctvRecordControl.addEventListener("click", () => {
+  cctvRecordControl.addEventListener("click", () => {
     subModuleTitle.textContent = "CCTV Records";
 
     cctvContent.classList.add("hidden");
-    reportsView.classList.add("hidden");
+    reportsView.classList.add("hidden");        
 
     cctvRecordsContainer.classList.remove("hidden");
 
     cctvItems.forEach(item => item.classList.remove("active-stream"));
 
     renderCctvRecords(cctvRecordsContainer);
-  });*/
+  });
 
   possibleAccidentsControl.addEventListener("click", () => {
     subModuleTitle.textContent = "Possible Accident Detections"

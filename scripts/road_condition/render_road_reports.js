@@ -38,6 +38,10 @@ export async function roadReports(container) {
 
   const reportContent = container.querySelector('#reportContent');
 
+  const startDate = container.querySelector('#startDate');
+
+  const endDate = container.querySelector('#endDate');
+
   const roads = await getCctvAiDetails();
 
   const roadFilter = container.querySelector("#roadFilter");
@@ -52,5 +56,25 @@ export async function roadReports(container) {
 
   });
 
-  return reportContent;
+  function hasValidDateRange() {
+
+    if(!startDate || !endDate) {
+      return false;
+    }
+
+     if (!startDate.value || !endDate.value) {
+      return false;
+    }
+
+    return startDate.value <= endDate.value;
+
+  }
+
+  return {
+    reportContent: reportContent,
+    startDate: startDate,
+    endDate: endDate,
+    roadFilter: roadFilter,
+    hasValidDateRange
+  };
 }

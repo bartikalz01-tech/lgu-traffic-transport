@@ -1,5 +1,15 @@
 import { openAccidentModal } from "./accident_and_violation/accident_modal.js";
 
+const CCTV_AI_PORTS = {
+  "Susano Road": 5001,
+  "Del Rey": 5002,
+  "Don Alejandro Street": 5003,
+  "Santo Niño Street": 5004
+};
+
+function getCctvAiPort(roadName) {
+  return CCTV_AI_PORTS[roadName]
+}
 
 export function activatePossibleAccidentCard(accidentDetectionId) {
 
@@ -96,6 +106,8 @@ export function renderPossibleAccidents(container, possibleAccidents = []) {
     <div class="possible-accident-grid">
     
       ${possibleAccidents.map(accident => {
+
+        const cctvPort = getCctvAiPort(accident.road_name);
         
         const detectedDate = new Date(
           accident.detected_at.replace(" ", "T")
