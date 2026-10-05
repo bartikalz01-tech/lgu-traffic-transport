@@ -96,7 +96,7 @@ export async function getTrafficTrendAndCongestionLogs(filters = {}) {
   }
 }
 
-export async function getAverageSpeedHistoryLogs(filters = {}) {
+/*export async function getAverageSpeedHistoryLogs(filters = {}) {
   try {
     const params = new URLSearchParams(filters);
 
@@ -110,6 +110,41 @@ export async function getAverageSpeedHistoryLogs(filters = {}) {
 
   } catch (error) {
     console.error("Failed to fetch average speed history:", error);
+    return [];
+  }
+}*/
+
+export async function getAverageSpeedHistoryLogs(filters = {}) {
+  try {
+
+    const params = new URLSearchParams(filters);
+
+    const response = await fetch(
+      `../api/road_condition/get_average_speed_history.php?${params.toString()}`
+    );
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      console.error(
+        "Average speed backend error:",
+        responseText
+      );
+
+      throw new Error(
+        `HTTP error: ${response.status} - ${responseText}`
+      );
+    }
+
+    return JSON.parse(responseText);
+
+  } catch (error) {
+
+    console.error(
+      "Failed to fetch average speed history:",
+      error
+    );
+
     return [];
   }
 }

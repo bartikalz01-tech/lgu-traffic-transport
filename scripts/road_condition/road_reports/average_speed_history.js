@@ -38,12 +38,12 @@ function formatReportDateTime(dateTime) {
 
 function getSpeedStatus(speed) {
 
-  let status = "Low";
+  let status = "Slow";
   let statusClass = "low";
 
   if (speed >= 50) {
 
-    status = "High";
+    status = "Fast";
     statusClass = "high";
 
   } else if (speed >= 30) {
@@ -61,7 +61,7 @@ function getSpeedStatus(speed) {
 }
 
 
-export async function renderAverageSpeedHistory(container) {
+export async function renderAverageSpeedHistory(container, filters = {}) {
 
   container.innerHTML = `
 
@@ -163,22 +163,54 @@ export async function renderAverageSpeedHistory(container) {
 
   async function loadAverageSpeedHistory() {
 
-    const filters = {
+    const startDateInput =
+      container.querySelector("#startDate");
+
+    const endDateInput =
+      container.querySelector("#endDate");
+
+    const roadFilterInput =
+      container.querySelector("#roadFilter");
+
+    const reportIntervalInput =
+      container.querySelector("#reportInterval");
+
+
+    const reportFilters = {
 
       start_date:
-        document.querySelector("#startDate")?.value || "",
+        startDateInput?.value ||
+        filters.start_date ||
+        "",
 
       end_date:
-        document.querySelector("#endDate")?.value || "",
+        endDateInput?.value ||
+        filters.end_date ||
+        "",
 
       road_id:
-        document.querySelector("#roadFilter")?.value || "all"
+        roadFilterInput?.value ||
+        filters.road_id ||
+        "all",
+
+      interval:
+        reportIntervalInput?.value ||
+        filters.interval ||
+        1
 
     };
 
 
+    console.log(
+      "Loading average speed with filters:",
+      reportFilters
+    );
+
+
     const logs =
-      await getAverageSpeedHistoryLogs(filters);
+      await getAverageSpeedHistoryLogs(
+        reportFilters
+      );
 
 
     tbody.innerHTML = "";
@@ -244,8 +276,11 @@ export async function renderAverageSpeedHistory(container) {
 
 
       validLogs.push({
+
         ...log,
+
         avg_speed: speed
+
       });
 
     });
@@ -290,44 +325,44 @@ export async function renderAverageSpeedHistory(container) {
 
     // =========================================================
     // CHART DATA
-    //
-    // Chart needs chronological order.
+    // CHRONOLOGICAL ORDER
     // =========================================================
 
-    const chartLogs = [...validLogs].sort(
+    const chartLogs =
+      [...validLogs].sort(
 
-      (a, b) => {
+        (a, b) => {
 
-        return (
-          parseMySQLDateTime(a.recorded_at)
-          -
-          parseMySQLDateTime(b.recorded_at)
-        );
+          return (
+            parseMySQLDateTime(a.recorded_at)
+            -
+            parseMySQLDateTime(b.recorded_at)
+          );
 
-      }
+        }
 
-    );
+      );
 
 
     // =========================================================
     // TABLE DATA
-    //
-    // Keep newest records first.
+    // NEWEST FIRST
     // =========================================================
 
-    const tableLogs = [...validLogs].sort(
+    const tableLogs =
+      [...validLogs].sort(
 
-      (a, b) => {
+        (a, b) => {
 
-        return (
-          parseMySQLDateTime(b.recorded_at)
-          -
-          parseMySQLDateTime(a.recorded_at)
-        );
+          return (
+            parseMySQLDateTime(a.recorded_at)
+            -
+            parseMySQLDateTime(b.recorded_at)
+          );
 
-      }
+        }
 
-    );
+      );
 
 
     // =========================================================
@@ -344,6 +379,7 @@ export async function renderAverageSpeedHistory(container) {
         status,
         statusClass
       } = getSpeedStatus(speed);
+
 
       tbody.innerHTML += `
 
@@ -402,7 +438,7 @@ export async function renderAverageSpeedHistory(container) {
   // FILTER EVENTS
   // ===========================================================
 
-  document
+  container
     .querySelector("#startDate")
     ?.addEventListener(
       "change",
@@ -410,7 +446,7 @@ export async function renderAverageSpeedHistory(container) {
     );
 
 
-  document
+  container
     .querySelector("#endDate")
     ?.addEventListener(
       "change",
@@ -418,11 +454,13 @@ export async function renderAverageSpeedHistory(container) {
     );
 
 
-  document
+  container
     .querySelector("#roadFilter")
     ?.addEventListener(
       "change",
       loadAverageSpeedHistory
     );
+
+  container.querySelector('#reportInterval')?.addEventListener("change", loadAverageSpeedHistory);
 
 }

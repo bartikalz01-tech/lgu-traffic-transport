@@ -312,13 +312,29 @@ class RoadMapStatus extends config{
 
   public function averageSpeedHistoryLogs() {
     $conn = $this->conn();
+    
+    $interval = (int)($_GET['interval'] ?? 1);
+
+    $allowedIntervals = [1, 2, 4, 6, 12, 24];
+
+    if(!in_array($interval, $allowedIntervals, true)) {
+      $interval = 1;
+    }
+
     $sql = "
       SELECT
-        rtl.traffic_log_id,
         rtl.road_id,
         r.road_name,
-        rtl.avg_speed,
-        rtl.recorded_at
+
+        DATE(rtl.recorded_at) AS recorded_date,
+
+        FLOOR(
+          HOUR(rtl.recorded_at) / $interval
+        ) * $interval AS interval_hour,
+
+        AVG(rtl.avg_speed) AS avg_speed,
+
+        COUNT(*) AS record_count
       FROM road_traffic_logs rtl
       INNER JOIN roads r
         ON rtl.road_id = r.road_id
@@ -343,14 +359,50 @@ class RoadMapStatus extends config{
     }
 
     $sql .= "
-      ORDER BY rtl.recorded_at DESC
+      GROUP BY
+        rtl.road_id,
+        r.road_name,
+        DATE(rtl.recorded_at),
+        FLOOR(
+          HOUR(rtl.recorded_at) / $interval
+        )
+    ";
+
+    $sql .= "
+      ORDER BY
+        DATE(rtl.recorded_at) ASC,
+        FLOOR(
+          HOUR(rtl.recorded_at) / $interval
+        ) * $interval ASC,
+        rtl.road_id ASC
     ";
 
     $stmt = $conn->prepare($sql);
 
     $stmt->execute($params);
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach($logs as &$log) {
+      $hour = (int)$log['interval_hour'];
+
+      $log['recorded_at'] = sprintf(
+        '%s %02d:00:00',
+        $log['recorded_date'],
+        $hour
+      );
+
+      $log['avg_speed'] = (float)$log['avg_speed'];
+
+      $log['record_count'] = (int)$log['record_count'];
+
+      unset($log['record_date']);
+      unset($log['interval_hour']);
+    }
+
+    unset($log);
+
+    return $logs;
   }
 
   public function peakHourAnalyticsLogs() {

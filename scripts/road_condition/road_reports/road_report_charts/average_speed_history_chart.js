@@ -50,29 +50,29 @@ export function renderAverageSpeedHistoryChart(
 
 
     /*
-     * Average speed status:
-     *
-     * Below 20 km/h
-     * = Slow
-     *
-     * 20 - 39.99 km/h
-     * = Moderate
-     *
-     * 40 km/h and above
-     * = Fast
-     */
+    * Average speed status:
+    *
+    * Below 30 km/h
+    * = Slow
+    *
+    * 30 - 49.99 km/h
+    * = Moderate
+    *
+    * 50 km/h and above
+    * = Fast
+    */
 
-    if (averageSpeed < 20) {
+    if (averageSpeed >= 50) {
 
-      slowCount++;
+      fastCount++;
 
-    } else if (averageSpeed < 40) {
+    } else if (averageSpeed >= 30) {
 
       moderateCount++;
 
     } else {
 
-      fastCount++;
+      slowCount++;
 
     }
 
@@ -104,6 +104,12 @@ export function renderAverageSpeedHistoryChart(
               slowCount,
               moderateCount,
               fastCount
+            ],
+
+            backgroundColor: [
+              "#c62828",
+              "#f9a825",
+              "#2e7d32"
             ],
 
             borderWidth: 1
