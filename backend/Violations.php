@@ -1,7 +1,12 @@
 <?php
 
+if(session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
 require_once 'config.php';
 require_once 'Tickets.php';
+require_once 'AuditLogs.php';
 
 class Violations extends config {
 
@@ -169,6 +174,25 @@ class Violations extends config {
 
 
       $violationReportId = $conn->lastInsertId();
+
+      if(empty($_SESSION['user_id'])) {
+        throw new Exception("User session is not found.");
+      }
+
+      $userId = $_SESSION['user_id'];
+      $userName = $_SESSION['full_name'];
+
+      $auditLogs = new AuditLogs();
+
+      $auditLogs->createLog(
+        $userId,
+        'CREATE',
+        'Violation Reports',
+        'Violation Report',
+        $violationReportId,
+        $publicViolationId,
+        $userName . ' created an violation report'
+      );
 
       if (!empty($data['evidence'])) {
 
