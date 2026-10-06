@@ -1,5 +1,11 @@
 <?php
+
+if(session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
 require_once 'config.php';
+require_once 'AuditLogs.php';
 
 class Accidents extends config {
 
@@ -60,6 +66,25 @@ class Accidents extends config {
 
       $accidentId = $conn->lastInsertId();
 
+      if(empty($_SESSION['user_id'])) {
+        throw new Exception("User session is not found.");
+      }
+
+      $userId = $_SESSION['user_id'];
+      $userName = $_SESSION['full_name'];
+
+      $auditLogs = new AuditLogs();
+
+      $auditLogs->createLog(
+        $userId,
+        'CREATE',
+        'Accident Reports',
+        'Accident Report',
+        $accidentId,
+        $publicAccidentId,
+        $userName . ' created an accident report'
+      );
+
       $conn->commit();
 
       return [
@@ -69,6 +94,7 @@ class Accidents extends config {
       ];
 
     } catch(PDOException $e) {
+
       if ($conn->inTransaction()) {
         $conn->rollBack();
       }
