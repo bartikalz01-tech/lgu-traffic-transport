@@ -96,7 +96,7 @@ export async function getTrafficTrendAndCongestionLogs(filters = {}) {
   }
 }
 
-/*export async function getAverageSpeedHistoryLogs(filters = {}) {
+export async function getAverageSpeedHistoryLogs(filters = {}) {
   try {
     const params = new URLSearchParams(filters);
 
@@ -112,9 +112,9 @@ export async function getTrafficTrendAndCongestionLogs(filters = {}) {
     console.error("Failed to fetch average speed history:", error);
     return [];
   }
-}*/
+}
 
-export async function getAverageSpeedHistoryLogs(filters = {}) {
+/*export async function getAverageSpeedHistoryLogs(filters = {}) {
   try {
 
     const params = new URLSearchParams(filters);
@@ -147,7 +147,7 @@ export async function getAverageSpeedHistoryLogs(filters = {}) {
 
     return [];
   }
-}
+}*/
 
 export async function getPeakHourAnalyticsLogs(filters = {}) {
   try {

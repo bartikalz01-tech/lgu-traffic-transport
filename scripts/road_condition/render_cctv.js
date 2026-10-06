@@ -39,6 +39,8 @@ let activePossibleAccidentId = null;
 
 let currentReportName = "traffic-trend";
 
+let previousReportName = null;
+
 export async function renderCctvAi(container) {
 
   subModuleTitle.textContent = "CCTV Monitoring";
@@ -434,6 +436,28 @@ export async function renderCctvAi(container) {
 
     }
 
+    const isPeakHourReport = reportName === "peak-hour-analysis";
+
+    const reportIntervalGroup = reportContent.reportInterval.closest(".filter-group");
+
+    if(isPeakHourReport) {
+      reportIntervalGroup?.classList.add("hidden");
+    } else {
+      reportIntervalGroup?.classList.remove("hidden");
+    }
+
+    const enteringPeakHour = 
+      reportName === "peak-hour-analysis" && 
+      previousReportName !== "peak-hour-analysis"; 
+
+    
+    if(enteringPeakHour) {
+      reportContent.startDate.value = "";
+      reportContent.endDate.value = "";
+      reportContent.roadFilter.value = "all";
+    }
+
+
     if(!reportContent.hasValidDateRange()) {
       reportContent.reportContent.innerHTML = `
         <div class="report-date-required">
@@ -448,7 +472,9 @@ export async function renderCctvAi(container) {
           </p>
 
         </div>
-      `
+      `;
+
+      previousReportName = reportName;
 
       return;
     }
@@ -498,6 +524,8 @@ export async function renderCctvAi(container) {
         );
         break;
     }
+
+    previousReportName = reportName;
   }
 
 

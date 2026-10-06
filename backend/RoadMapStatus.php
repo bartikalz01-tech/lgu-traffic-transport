@@ -415,97 +415,110 @@ class RoadMapStatus extends config{
     $params = [];
 
     if (!empty($_GET['start_date'])) {
-        $where .= " AND DATE(rtl.recorded_at) >= ?";
-        $params[] = $_GET['start_date'];
+      $where .= " AND DATE(rtl.recorded_at) >= ?";
+      $params[] = $_GET['start_date'];
     }
 
     if (!empty($_GET['end_date'])) {
-        $where .= " AND DATE(rtl.recorded_at) <= ?";
-        $params[] = $_GET['end_date'];
+      $where .= " AND DATE(rtl.recorded_at) <= ?";
+      $params[] = $_GET['end_date'];
     }
 
     if ($roadId !== 'all' && !empty($roadId)) {
-        $where .= " AND rtl.road_id = ?";
-        $params[] = $roadId;
+      $where .= " AND rtl.road_id = ?";
+      $params[] = $roadId;
     }
 
     /*
-     * First get the hourly traffic averages.
-     */
+    * Get the average traffic conditions for each hour.
+    *
+    * Peak traffic is determined by the LOWEST
+    * average speed.
+    */
     $sql = "
 
-        SELECT
-            HOUR(rtl.recorded_at) AS traffic_hour,
+      SELECT
+        HOUR(rtl.recorded_at) AS traffic_hour,
 
-            AVG(rtl.vehicle_flow) AS avg_vehicle_flow,
+        AVG(rtl.vehicle_flow) AS avg_vehicle_flow,
 
-            AVG(rtl.avg_speed) AS avg_speed,
+        AVG(rtl.avg_speed) AS avg_speed,
 
-            COUNT(*) AS recorded_count,
+        COUNT(*) AS recorded_count,
 
-            r.road_id,
-            r.road_name
+        r.road_id,
+        r.road_name
 
-        FROM road_traffic_logs rtl
+      FROM road_traffic_logs rtl
 
-        INNER JOIN roads r
-            ON rtl.road_id = r.road_id
+      INNER JOIN roads r
+        ON rtl.road_id = r.road_id
 
-        $where
+      $where
 
-        GROUP BY
-            HOUR(rtl.recorded_at)
+      GROUP BY
+        HOUR(rtl.recorded_at)
 
-        ORDER BY
-            traffic_hour ASC
+      ORDER BY
+        traffic_hour ASC
     ";
 
     $stmt = $conn->prepare($sql);
+
     $stmt->execute($params);
 
     $hourlyData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($hourlyData)) {
-        return [
-            "peak" => null,
-            "lowest" => null,
-            "hourly_data" => []
-        ];
+
+      return [
+        "peak" => null,
+        "lowest" => null,
+        "hourly_data" => []
+      ];
+
     }
 
     /*
-     * Find the hour with the highest vehicle flow.
-     */
+    * Peak traffic hour:
+    * The hour with the LOWEST average speed.
+    *
+    * Lower speed = slower traffic movement.
+    */
     $peakHour = $hourlyData[0];
 
     /*
-     * Find the hour with the lowest vehicle flow.
-     */
+    * Lowest traffic hour:
+    * The hour with the HIGHEST average speed.
+    *
+    * Higher speed = faster traffic movement.
+    */
     $lowestHour = $hourlyData[0];
 
     foreach ($hourlyData as $hour) {
 
-        if (
-            (float)$hour['avg_vehicle_flow']
-            >
-            (float)$peakHour['avg_vehicle_flow']
-        ) {
-            $peakHour = $hour;
-        }
+      if (
+        (float)$hour['avg_speed']
+        <
+        (float)$peakHour['avg_speed']
+      ) {
+        $peakHour = $hour;
+      }
 
-        if (
-            (float)$hour['avg_vehicle_flow']
-            <
-            (float)$lowestHour['avg_vehicle_flow']
-        ) {
-            $lowestHour = $hour;
-        }
+      if (
+        (float)$hour['avg_speed']
+        >
+        (float)$lowestHour['avg_speed']
+      ) {
+        $lowestHour = $hour;
+      }
+
     }
 
     return [
-        "peak" => $peakHour,
-        "lowest" => $lowestHour,
-        "hourly_data" => $hourlyData
+      "peak" => $peakHour,
+      "lowest" => $lowestHour,
+      "hourly_data" => $hourlyData
     ];
   }
 
