@@ -435,6 +435,7 @@ class Violations extends config {
         SELECT
 
           violation_id,
+          public_violation_id,
           vehicle_id,
           person_id,
           subject_type,
@@ -951,6 +952,46 @@ class Violations extends config {
 
       }
 
+
+      if(empty($_SESSION['user_id'])) {
+        throw new Exception("User session is not found.");
+      }
+
+      $userId = $_SESSION['user_id'];
+      $userName = $_SESSION['full_name'] ?? 'Unknown User';
+
+      $auditMessage =
+        $userName . 
+        ' changed violation report ' .
+        $violation['violation_id'] . 
+        ' verification status from "' .
+        ($violation['verification_status'] ?? 'Unknown') . 
+        '" to "' .
+        $verificationStatus .
+        '"';
+
+      if($verificationStatus === 'Verified') {
+
+        $auditMessage .=
+          '. Offense level: ' .
+          ($offenseLevel ?? 'Not Assigned');
+
+        if(!empty($ticketId)) {
+          $auditMessage .= '. Ticket ID: ' . $ticketId;
+        }
+      }
+
+      $auditLogs = new AuditLogs();
+
+      $auditLogs->createLog(
+        $userId,
+        'UPDATE',
+        'Violation Reports',
+        'Violation Verification',
+        $violationId,
+        $violation['public_violation_id'] ?? null,
+        $auditMessage
+      );
 
       /*
       ============================================================
