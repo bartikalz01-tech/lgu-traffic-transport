@@ -30,6 +30,13 @@ class LoginValidation extends config {
       ];
     }
 
+    if(!in_array($user['role'], ['admin', 'super-admin'], true)) {
+      return [
+        'status' => 'error',
+        'message' => 'Only Admin and Super Admin can log in.'
+      ];
+    }
+
     unset($user['password']);
 
     return [

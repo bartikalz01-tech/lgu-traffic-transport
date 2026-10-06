@@ -245,16 +245,29 @@ loginForm.addEventListener("submit", async (e) => {
 
       
     } else {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        title: "Login Failed",
-        text: data.message || "Invalid email or password",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true
-      });
+
+      if(data.message === "Only Admin and Super Admin can log in.") {
+        Swal.fire({
+          icon: "warning",
+          title: "Access Denied",
+          text: "Only Admin and Super Admin can log in.",
+          confirmButtonText: "OK"
+        });
+      } else {
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Login Failed",
+          text: data.message || "Invalid email or password",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
+
+      }
+      
     }
   } catch(error) {
     console.error("Login error", error);
