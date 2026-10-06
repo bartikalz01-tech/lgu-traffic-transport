@@ -3,19 +3,19 @@ export function renderViolationSummaryReports(container, violationDetails= []) {
   const totalViolations = violationDetails.length;
 
   const pendingCount = violationDetails.filter(
-    violation => String(violation.status ?? "").trim().toLowerCase() === "pending review"
+    violation => String(violation.verification_status ?? "").trim().toLowerCase() === "pending review"
   ).length;
 
   const firstOffenseCount = violationDetails.filter(
-    violation => String(violation.status ?? "").trim().toLowerCase() === "first offense"
+    violation => String(violation.offense_level ?? "").trim().toLowerCase() === "first offense"
   ).length;
 
   const secondOffenseCount = violationDetails.filter(
-    violation => String(violation.status ?? "").trim().toLowerCase() === "second offense"
+    violation => String(violation.offense_level ?? "").trim().toLowerCase() === "second offense"
   ).length;
 
   const thirdOffenseCount = violationDetails.filter(
-    violation => String(violation.status ?? "").trim().toLowerCase() === "third offense"
+    violation => String(violation.offense_level ?? "").trim().toLowerCase() === "third offense"
   ).length;
 
   container.innerHTML = `
