@@ -14,7 +14,7 @@ export function startNotificationGeneration() {
     try {
       const result = await generateNotifications();
 
-      console.log("Notification generation: ", result);
+      //console.log("Notification generation: ", result);
     } catch(error) {
       console.error("Unable to generate notification:", error);
     }
