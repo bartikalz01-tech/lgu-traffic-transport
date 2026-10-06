@@ -58,6 +58,10 @@
       <i class="fas fa-ticket-alt"></i>
       <span>Ticketing Management</span>
     </a>
+    <a href="../audit_page/audit_logs_page.php" class="sidebar-link">
+      <i class="fas fa-history"></i>
+      <span>Audit Logs</span>
+    </a>
   </div>
 
   <div class="sidebar-footer">
