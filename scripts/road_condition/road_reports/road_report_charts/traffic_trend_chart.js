@@ -9,8 +9,13 @@ export function renderTrafficTrendChart(container, logs) {
     return;
   }
 
-  // Clear previous chart
+
+  // ==========================================================
+  // CLEAR PREVIOUS CHART
+  // ==========================================================
+
   container.innerHTML = "";
+
 
   // ==========================================================
   // SCROLL CONTAINER
@@ -23,7 +28,7 @@ export function renderTrafficTrendChart(container, logs) {
   chartInner.className = "traffic-chart-inner";
 
   const canvas = document.createElement("canvas");
-  canvas.id = "trafficTrendAreaChart";
+  canvas.id = "trafficTrendBarChart";
 
   chartInner.appendChild(canvas);
   scrollContainer.appendChild(chartInner);
@@ -49,7 +54,7 @@ export function renderTrafficTrendChart(container, logs) {
 
 
   // ==========================================================
-  // DATA
+  // VEHICLE FLOW
   // ==========================================================
 
   const vehicleFlow = logs.map(log =>
@@ -58,15 +63,86 @@ export function renderTrafficTrendChart(container, logs) {
 
 
   // ==========================================================
+  // TRAFFIC LEVEL NORMALIZATION
+  // ==========================================================
+
+  /*
+     Normalize every traffic level first.
+
+     Example:
+
+     "HIGH"       -> "high"
+     "High "      -> "high"
+     " moderate " -> "moderate"
+     "LOW"        -> "low"
+  */
+
+  const trafficLevels = logs.map(log => {
+
+    return String(log.traffic_level || "")
+      .trim()
+      .toLowerCase();
+
+  });
+
+
+  // ==========================================================
+  // BAR COLORS
+  // ==========================================================
+
+  const backgroundColors = trafficLevels.map(trafficLevel => {
+
+    switch (trafficLevel) {
+
+      case "high":
+        return "#dc2626";       // RED
+
+      case "moderate":
+        return "#facc15";       // YELLOW
+
+      case "low":
+        return "#16a34a";       // GREEN
+
+      default:
+        return "#94a3b8";       // UNKNOWN / INVALID
+    }
+
+  });
+
+
+  // ==========================================================
+  // BORDER COLORS
+  // ==========================================================
+
+  const borderColors = trafficLevels.map(trafficLevel => {
+
+    switch (trafficLevel) {
+
+      case "high":
+        return "#b91c1c";       // DARK RED
+
+      case "moderate":
+        return "#ca8a04";       // DARK YELLOW
+
+      case "low":
+        return "#15803d";       // DARK GREEN
+
+      default:
+        return "#64748b";       // UNKNOWN / INVALID
+    }
+
+  });
+
+
+  // ==========================================================
   // CHART WIDTH
   // ==========================================================
 
   /*
-     The visible chart should show approximately 10 records.
+     Approximately 15 records are visible at once.
 
-     Each record gets a fixed amount of horizontal space.
-     When there are more than 10 records, the chart becomes
-     wider and the chart container scrolls horizontally.
+     If there are more records, the chart becomes
+     horizontally scrollable.
   */
 
   const visibleRecords = 15;
@@ -79,7 +155,6 @@ export function renderTrafficTrendChart(container, logs) {
     containerWidth,
     logs.length * pointWidth
   );
-
 
   chartInner.style.width = `${chartWidth}px`;
 
@@ -96,33 +171,37 @@ export function renderTrafficTrendChart(container, logs) {
 
 
   // ==========================================================
-  // AREA CHART
+  // BAR CHART
   // ==========================================================
 
   new Chart(ctx, {
 
-    type: "line",
+    type: "bar",
 
     data: {
 
       labels,
 
       datasets: [
+
         {
           label: "Vehicle Flow",
 
           data: vehicleFlow,
 
-          fill: true,
+          backgroundColor: backgroundColors,
 
-          borderWidth: 2,
+          borderColor: borderColors,
 
-          tension: 0.3,
+          borderWidth: 1,
 
-          pointRadius: 3,
+          borderRadius: 4,
 
-          pointHoverRadius: 5
+          barPercentage: 0.7,
+
+          categoryPercentage: 0.8
         }
+
       ]
 
     },
@@ -133,14 +212,6 @@ export function renderTrafficTrendChart(container, logs) {
     // ========================================================
 
     options: {
-
-      /*
-         IMPORTANT:
-         Chart.js must NOT resize the canvas to the
-         visible container width.
-
-         The canvas width is controlled above.
-      */
 
       responsive: false,
 
@@ -171,7 +242,7 @@ export function renderTrafficTrendChart(container, logs) {
               return [
                 `Vehicle Flow: ${Number(log.vehicle_flow).toFixed(0)} veh/min`,
                 `Average Speed: ${Number(log.avg_speed).toFixed(2)} km/h`,
-                `Traffic Level: ${log.traffic_level}`
+                `Traffic Level: ${String(log.traffic_level).trim()}`
               ];
 
             }
@@ -201,6 +272,7 @@ export function renderTrafficTrendChart(container, logs) {
             autoSkip: false,
 
             maxRotation: 45,
+
             minRotation: 45
 
           }
