@@ -1,5 +1,6 @@
 <?php
 require_once '../backend/LoginValidation.php';
+require_once '../backend/AuditLogs.php';
 
 session_start();
 
@@ -38,6 +39,25 @@ if($result['status'] === 'success') {
   $_SESSION['full_name'] = $user['full_name'];
 
   $_SESSION['login-time'] = time();
+
+  try {
+    $auditLogs = new AuditLogs();
+
+    $auditLogs->createLog(
+      $user['user_id'],
+      'LOGIN',
+      'Authentication',
+      'User',
+      $user['user_id'],
+      null,
+      $user['full_name'] . ' logged into the system'
+    );
+  } catch(Exception $e) {
+    error_log(
+      "[AUDIT LOG] Login audit failed: "
+      . $e->getMessage()
+    );
+  }
 }
 
 echo json_encode($result);
